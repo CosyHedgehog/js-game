@@ -20,6 +20,8 @@ class Game {
         this.player = new Player();
         // Starting items
         this.player.addItem(createItem('wooden_sword'));
+        this.player.addItem(createItem('wooden_sword'));
+
         this.player.addItem(createItem('leather_helm'));
         for (let i = 0; i < 3; i++) {
             this.player.addItem(createItem('bread'));
@@ -192,6 +194,8 @@ class Game {
                 return `Fight ${MONSTERS[encounter.monsterId]?.name}`;
             case 'fishing':
                 return 'Go Fishing!';
+            case 'blacksmith':
+                return "Visit Blacksmith";
             default:
                 return 'Unknown Encounter';
         }
@@ -248,6 +252,10 @@ class Game {
                        "- Medium Fish (Uncommon) - Heals 5 HP\n" +
                        "- Large Fish (Rare) - Heals 8 HP\n\n" +
                        "Go fishing?";
+            case 'blacksmith':
+                return "Visit the Blacksmith to combine two similar items into a stronger version.\n" +
+                       "You can combine weapons or armor pieces of the same type.\n\n" +
+                       "Enter the forge?";
             default:
                 return "Unknown encounter type.";
         }
@@ -272,6 +280,9 @@ class Game {
                 break;
             case 'fishing':
                 handleFishingEncounter(this, this.ui);
+                break;
+            case 'blacksmith':
+                handleBlacksmithEncounter(this, this.ui);
                 break;
             default:
                 this.addLog("Unknown encounter type selected.");

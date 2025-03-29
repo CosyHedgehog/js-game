@@ -143,3 +143,9 @@ function handleFishingEncounter(game, ui) {
     // Enter loot state with caught fish
     game.enterLootState(0, caughtItems); // No gold, just fish
 }
+
+function handleBlacksmithEncounter(game, ui) {
+    game.state = 'blacksmith';
+    game.addLog("You find a Blacksmith's forge. The smith offers to combine similar items.");
+    ui.showBlacksmithUI();
+}

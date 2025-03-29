@@ -237,11 +237,12 @@ const MONSTERS = {
 
 // Probabilities for encounters
 const ENCOUNTER_PROBABILITY = [
-    { type: 'monster', weight: 30 },
-    { type: 'rest', weight: 30 },
+    { type: 'monster', weight: 25 },
+    { type: 'rest', weight: 25 },
     { type: 'shop', weight: 15 },
     { type: 'mini-boss', weight: 15 },
     { type: 'fishing', weight: 10 },
+    { type: 'blacksmith', weight: 10 },
 ];
 
 // Define which monsters appear in which stages

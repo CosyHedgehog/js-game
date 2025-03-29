@@ -462,12 +462,16 @@ class UI {
         this.combatArea.classList.add('hidden');
         this.shopArea.classList.add('hidden');
         this.restArea.classList.add('hidden');
-        this.lootArea.classList.add('hidden'); // <<< HIDE LOOT AREA TOO
+        this.lootArea.classList.add('hidden');
+        
+        // Add this line to remove blacksmith area if it exists
+        const blacksmithArea = document.getElementById('blacksmith-area');
+        if (blacksmithArea) {
+            blacksmithArea.remove();
+        }
 
         this.choicesArea.innerHTML = '';
-        // Reset innerHTML for other areas if needed, or just hide them
-        // ... (reset combat area structure, shop, rest if needed) ...
-        this.cacheDynamicElements(); // Re-cache anything dynamic inside cleared areas
+        this.cacheDynamicElements();
         this.outputLogArea.classList.add('hidden');
     }
 
@@ -989,5 +993,259 @@ class UI {
             choicesArea.classList.remove('encounter-starting');
             this.startEncounter(selectedChoice.encounter);
         }, 500); // Match this with the animation duration
+    }
+
+    showBlacksmithUI() {
+        this.clearMainArea();
+        
+        // Create blacksmith area HTML
+        const blacksmithArea = document.createElement('div');
+        blacksmithArea.id = 'blacksmith-area';
+        blacksmithArea.innerHTML = `
+            <h3>Blacksmith's Forge</h3>
+            <p>Select two items of the same type to combine their power.</p>
+            <div class="forge-container">
+                <div class="forge-slot" id="forge-slot-1">
+                    <div class="forge-slot-label">Item 1</div>
+                    <div class="forge-slot-content">Click to select item</div>
+                </div>
+                <div class="forge-symbol">+</div>
+                <div class="forge-slot" id="forge-slot-2">
+                    <div class="forge-slot-label">Item 2</div>
+                    <div class="forge-slot-content">Click to select item</div>
+                </div>
+                <div class="forge-symbol">=</div>
+                <div class="forge-result">
+                    <button id="forge-button" disabled>Forge Items</button>
+                    <div id="forge-preview" class="hidden"></div>
+                </div>
+            </div>
+            <button id="blacksmith-leave-button">Leave Forge</button>
+        `;
+
+        // Add to main area
+        document.getElementById('main-content').appendChild(blacksmithArea);
+        blacksmithArea.classList.remove('hidden');
+
+        // Add event listeners
+        const forgeSlot1 = document.getElementById('forge-slot-1');
+        const forgeSlot2 = document.getElementById('forge-slot-2');
+        const forgeButton = document.getElementById('forge-button');
+        const leaveButton = document.getElementById('blacksmith-leave-button');
+
+        // Handle slot clicks
+        forgeSlot1.onclick = () => this.showForgeItemSelection(1);
+        forgeSlot2.onclick = () => this.showForgeItemSelection(2);
+
+        // Handle forge button - Fix: Bind the handler to 'this'
+        forgeButton.onclick = () => {
+            const slot1 = document.getElementById('forge-slot-1');
+            const slot2 = document.getElementById('forge-slot-2');
+            
+            if (slot1.dataset.itemIndex && slot2.dataset.itemIndex) {
+                this.handleForgeItems();
+            }
+        };
+
+        // Handle leave button
+        leaveButton.onclick = () => {
+            this.game.addLog("You leave the Blacksmith's forge.");
+            this.game.proceedToNextRound();
+        };
+    }
+
+    showForgeItemSelection(slotNum) {
+        // Get the other slot's selected item
+        const otherSlotNum = slotNum === 1 ? 2 : 1;
+        const otherSlot = document.getElementById(`forge-slot-${otherSlotNum}`);
+        const otherSlotIndex = otherSlot.dataset.itemIndex;
+        const otherItem = otherSlotIndex ? this.game.player.inventory[parseInt(otherSlotIndex)] : null;
+        
+        // Filter items: must be weapon or armor, and not already selected in other slot
+        const items = this.game.player.inventory.filter((item, idx) => {
+            if (!item || !(item.type === 'weapon' || item.type === 'armor')) {
+                return false;
+            }
+
+            // If other slot has an item selected
+            if (otherItem) {
+                // Must be same type and slot as other item
+                if (item.type !== otherItem.type || item.slot !== otherItem.slot) {
+                    return false;
+                }
+                // Must not be the exact same item instance
+                if (idx === parseInt(otherSlotIndex)) {
+                    return false;
+                }
+            }
+
+            return true;
+        });
+        
+        const menu = document.createElement('div');
+        menu.classList.add('forge-selection-menu');
+        
+        if (items.length === 0) {
+            const noItemsMsg = document.createElement('div');
+            noItemsMsg.textContent = otherItem ? 
+                'No other matching items available' : 
+                'No forgeable items in inventory';
+            noItemsMsg.style.padding = '10px';
+            menu.appendChild(noItemsMsg);
+        } else {
+            items.forEach(item => {
+                const itemButton = document.createElement('button');
+                itemButton.classList.add('forge-item-option');
+                itemButton.textContent = `${item.name} (${this.getItemStats(item)})`;
+                // Find the actual inventory index of this item
+                const inventoryIndex = this.game.player.inventory.indexOf(item);
+                itemButton.onclick = () => this.selectForgeItem(item, inventoryIndex, slotNum);
+                menu.appendChild(itemButton);
+            });
+        }
+
+        // Position and show menu
+        const slot = document.getElementById(`forge-slot-${slotNum}`);
+        const rect = slot.getBoundingClientRect();
+        menu.style.position = 'absolute';
+        menu.style.left = `${rect.left}px`;
+        menu.style.top = `${rect.bottom + 5}px`;
+        
+        // Remove any existing menus
+        document.querySelectorAll('.forge-selection-menu').forEach(m => m.remove());
+        document.body.appendChild(menu);
+
+        // Click outside to close
+        const closeMenu = (e) => {
+            if (!menu.contains(e.target) && !slot.contains(e.target)) {
+                menu.remove();
+                document.removeEventListener('click', closeMenu);
+            }
+        };
+        document.addEventListener('click', closeMenu);
+    }
+
+    getItemStats(item) {
+        const stats = [];
+        if (item.stats.attack) stats.push(`Atk: ${item.stats.attack}`);
+        if (item.stats.defense) stats.push(`Def: ${item.stats.defense}`);
+        if (item.speed) stats.push(`Spd: ${item.speed}`);
+        return stats.join(', ');
+    }
+
+    selectForgeItem(item, inventoryIndex, slotNum) {
+        const slot = document.getElementById(`forge-slot-${slotNum}`);
+        const content = slot.querySelector('.forge-slot-content');
+        content.textContent = `${item.name} (${this.getItemStats(item)})`;
+        
+        // Store selected item data
+        slot.dataset.itemIndex = inventoryIndex;
+        slot.dataset.itemType = item.type;
+        slot.dataset.itemSlot = item.slot;
+
+        // Remove selection menu
+        document.querySelector('.forge-selection-menu')?.remove();
+
+        // Check if we can forge
+        this.updateForgeButton();
+    }
+
+    updateForgeButton() {
+        const slot1 = document.getElementById('forge-slot-1');
+        const slot2 = document.getElementById('forge-slot-2');
+        const forgeButton = document.getElementById('forge-button');
+        const forgePreview = document.getElementById('forge-preview');
+
+        const item1Index = slot1.dataset.itemIndex;
+        const item2Index = slot2.dataset.itemIndex;
+
+        if (item1Index && item2Index) {
+            const item1 = this.game.player.inventory[item1Index];
+            const item2 = this.game.player.inventory[item2Index];
+
+            const canForge = item1 && item2 && 
+                            item1.type === item2.type && 
+                            item1.slot === item2.slot &&
+                            item1Index !== item2Index;
+
+            forgeButton.disabled = !canForge;
+
+            if (canForge) {
+                const previewItem = this.previewForgedItem(item1, item2);
+                forgePreview.textContent = `Result: ${previewItem.name} (${this.getItemStats(previewItem)})`;
+                forgePreview.classList.remove('hidden');
+            } else {
+                forgePreview.classList.add('hidden');
+            }
+        } else {
+            forgeButton.disabled = true;
+            forgePreview.classList.add('hidden');
+        }
+    }
+
+    previewForgedItem(item1, item2) {
+        // Create the forged item with proper stats structure
+        const forgedItem = {
+            name: `Reinforced ${item1.name}`,
+            type: item1.type,
+            slot: item1.slot,
+            stats: {
+                attack: (item1.stats.attack || 0) + (item2.stats.attack || 0),
+                defense: (item1.stats.defense || 0) + (item2.stats.defense || 0)
+            },
+            speed: item1.speed ? Math.max(item1.speed * 0.9, item2.speed * 0.9) : undefined,
+            hands: item1.hands, // Preserve hands property for weapons
+            description: `A strengthened version of ${item1.name}.\n` +
+                        `Attack: +${(item1.stats.attack || 0) + (item2.stats.attack || 0)}\n` +
+                        `Defense: +${(item1.stats.defense || 0) + (item2.stats.defense || 0)}` +
+                        (item1.speed ? `\nSpeed: ${(Math.max(item1.speed * 0.9, item2.speed * 0.9)).toFixed(1)}s` : '') +
+                        (item1.hands ? `\n${item1.hands}-Handed` : '')
+        };
+
+        return forgedItem;
+    }
+
+    handleForgeItems() {
+        const slot1 = document.getElementById('forge-slot-1');
+        const slot2 = document.getElementById('forge-slot-2');
+        
+        const item1Index = parseInt(slot1.dataset.itemIndex);
+        const item2Index = parseInt(slot2.dataset.itemIndex);
+        
+        const item1 = this.game.player.inventory[item1Index];
+        const item2 = this.game.player.inventory[item2Index];
+        
+        if (!item1 || !item2) return;
+
+        // Create new forged item with proper stats
+        const forgedItem = {
+            ...this.previewForgedItem(item1, item2),
+            value: Math.floor((item1.value + item2.value) * 1.5) // Increase value of forged item
+        };
+        
+        // Remove original items
+        this.game.player.inventory[item1Index] = null;
+        this.game.player.inventory[item2Index] = null;
+        
+        // Add new item
+        this.game.player.addItem(forgedItem);
+        
+        // Update UI
+        this.game.addLog(`The Blacksmith combines your ${item1.name} and ${item2.name} into a ${forgedItem.name}!`);
+        this.game.ui.renderInventory();
+        
+        // Reset forge slots
+        slot1.querySelector('.forge-slot-content').textContent = 'Click to select item';
+        slot2.querySelector('.forge-slot-content').textContent = 'Click to select item';
+        delete slot1.dataset.itemIndex;
+        delete slot2.dataset.itemIndex;
+        
+        // Disable forge button
+        const forgeButton = document.getElementById('forge-button');
+        forgeButton.disabled = true;
+        
+        // Hide preview
+        const forgePreview = document.getElementById('forge-preview');
+        forgePreview.classList.add('hidden');
     }
 }
