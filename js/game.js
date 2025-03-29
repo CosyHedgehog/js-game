@@ -20,7 +20,8 @@ class Game {
         this.player = new Player();
         // Starting items
         this.player.addItem(createItem('wooden_sword'));
-        for (let i = 0; i < 11; i++) {
+        this.player.addItem(createItem('leather_helm'));
+        for (let i = 0; i < 3; i++) {
             this.player.addItem(createItem('bread'));
         }
 
@@ -31,7 +32,7 @@ class Game {
         this.ui.renderAll(); // <<< Ensures orbs are rendered on start
 
         this.ui.renderAll(); // Initial render of inventory, stats, etc.
-        this.addLog("Game started. You find a Wooden Sword and 3 Bread.");
+        this.addLog("Game started. You find a Wooden Sword, Leather Helm, and 3 Bread.");
         this.ui.switchScreen('game-screen');
         this.proceedToNextRound(); // Generate first set of choices
     }
