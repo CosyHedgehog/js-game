@@ -822,26 +822,26 @@ class UI {
 
         // --- Updated Positioning Logic ---
         const slotRect = slotElement.getBoundingClientRect();
-        const inventoryRect = this.inventoryArea.getBoundingClientRect();
-
-        // Calculate position relative to the clicked slot
-        let top = slotRect.top - inventoryRect.top + slotRect.height + 5;
-        let left = slotRect.left - inventoryRect.left + (slotRect.width / 2);
-
+        
         // Make menu visible to get its dimensions
         this.itemContextMenu.classList.remove('hidden');
         const menuRect = this.itemContextMenu.getBoundingClientRect();
 
-        // Adjust position if menu would go outside inventory area
-        if (left + (menuRect.width / 2) > inventoryRect.width) {
-            left = slotRect.left - inventoryRect.left - menuRect.width + slotRect.width;
+        // Calculate position relative to viewport
+        let left = slotRect.left;
+        let top = slotRect.bottom + 5; // 5px gap below the slot
+
+        // Adjust if menu would go off screen
+        if (left + menuRect.width > window.innerWidth) {
+            left = slotRect.right - menuRect.width;
         }
-        if (left - (menuRect.width / 2) < 0) {
-            left = menuRect.width / 2;
+        if (top + menuRect.height > window.innerHeight) {
+            top = slotRect.top - menuRect.height - 5; // Show above instead
         }
-        if (top + menuRect.height > inventoryRect.height) {
-            top = slotRect.top - inventoryRect.top - menuRect.height - 5;
-        }
+
+        // Keep menu on screen
+        left = Math.max(5, Math.min(left, window.innerWidth - menuRect.width - 5));
+        top = Math.max(5, Math.min(top, window.innerHeight - menuRect.height - 5));
 
         // Apply final position
         this.itemContextMenu.style.left = `${left}px`;

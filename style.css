@@ -444,7 +444,7 @@ button:disabled {
 }
 
 .context-menu {
-    position: absolute;
+    position: fixed;
     background: #323232;
     border: 1px solid #404040;
     border-radius: 5px;
@@ -454,7 +454,6 @@ button:disabled {
     flex-direction: column;
     gap: 5px;
     min-width: 120px;
-    transform: translateX(-50%);
 }
 
 /* --- Combat/Shop/Rest Specific --- */
