@@ -149,3 +149,9 @@ function handleBlacksmithEncounter(game, ui) {
     game.addLog("You find a Blacksmith's forge. The smith offers to combine similar items.");
     ui.showBlacksmithUI();
 }
+
+function handleSharpenEncounter(game, ui) {
+    game.state = 'sharpen';
+    game.addLog("You find a sharpening stone. You can use it to enhance a weapon's attack power.");
+    ui.showSharpenUI();
+}

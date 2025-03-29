@@ -464,10 +464,15 @@ class UI {
         this.restArea.classList.add('hidden');
         this.lootArea.classList.add('hidden');
         
-        // Add this line to remove blacksmith area if it exists
+        // Add these lines to remove both blacksmith and sharpen areas
         const blacksmithArea = document.getElementById('blacksmith-area');
         if (blacksmithArea) {
             blacksmithArea.remove();
+        }
+        
+        const sharpenArea = document.getElementById('sharpen-area');
+        if (sharpenArea) {
+            sharpenArea.remove();
         }
 
         this.choicesArea.innerHTML = '';
@@ -1247,5 +1252,143 @@ class UI {
         // Hide preview
         const forgePreview = document.getElementById('forge-preview');
         forgePreview.classList.add('hidden');
+    }
+
+    showSharpenUI() {
+        this.clearMainArea();
+        
+        // Get reference to main-content instead of undefined mainArea
+        const mainContent = document.getElementById('main-content');
+        
+        const sharpenArea = document.createElement('div');
+        sharpenArea.id = 'sharpen-area';
+        
+        // Create weapon slot
+        const slotContainer = document.createElement('div');
+        slotContainer.className = 'sharpen-container';
+        
+        const weaponSlot = document.createElement('div');
+        weaponSlot.className = 'sharpen-slot';
+        weaponSlot.innerHTML = `
+            <div class="sharpen-slot-label">Select Weapon</div>
+            <div class="sharpen-slot-content">Click to choose</div>
+        `;
+        weaponSlot.onclick = () => this.showSharpenItemSelection();
+        
+        // Preview area
+        const previewArea = document.createElement('div');
+        previewArea.id = 'sharpen-preview';
+        previewArea.textContent = 'Select a weapon to preview enhancement';
+        
+        // Sharpen button
+        const sharpenButton = document.createElement('button');
+        sharpenButton.id = 'sharpen-button';
+        sharpenButton.textContent = 'Enhance Weapon (+1 Attack)';
+        sharpenButton.disabled = true;
+        sharpenButton.onclick = () => this.handleSharpenItem();
+        
+        // Leave button
+        const leaveButton = document.createElement('button');
+        leaveButton.id = 'sharpen-leave-button';
+        leaveButton.textContent = 'Leave';
+        leaveButton.onclick = () => {
+            this.game.addLog("You leave without using the sharpening stone.");
+            this.game.proceedToNextRound();
+        };
+        
+        slotContainer.appendChild(weaponSlot);
+        sharpenArea.appendChild(slotContainer);
+        sharpenArea.appendChild(previewArea);
+        sharpenArea.appendChild(sharpenButton);
+        sharpenArea.appendChild(leaveButton);
+        
+        // Append to main-content instead of undefined mainArea
+        mainContent.appendChild(sharpenArea);
+    }
+
+    showSharpenItemSelection() {
+        // Filter inventory to only show weapons
+        const weapons = this.game.player.inventory.filter((item, idx) => {
+            return item && item.type === 'weapon';
+        });
+        
+        const menu = document.createElement('div');
+        menu.classList.add('sharpen-selection-menu');
+        
+        if (weapons.length === 0) {
+            const noItemsMsg = document.createElement('div');
+            noItemsMsg.textContent = 'No weapons in inventory';
+            noItemsMsg.style.padding = '10px';
+            menu.appendChild(noItemsMsg);
+        } else {
+            weapons.forEach(item => {
+                const itemButton = document.createElement('button');
+                itemButton.classList.add('sharpen-item-option');
+                itemButton.textContent = `${item.name} (${this.getItemStats(item)})`;
+                const inventoryIndex = this.game.player.inventory.indexOf(item);
+                itemButton.onclick = () => this.selectSharpenItem(item, inventoryIndex);
+                menu.appendChild(itemButton);
+            });
+        }
+        
+        // Position and show menu
+        const slot = document.querySelector('.sharpen-slot');
+        const rect = slot.getBoundingClientRect();
+        menu.style.position = 'absolute';
+        menu.style.left = `${rect.left}px`;
+        menu.style.top = `${rect.bottom + 5}px`;
+        
+        // Remove any existing menus
+        document.querySelectorAll('.sharpen-selection-menu').forEach(m => m.remove());
+        document.body.appendChild(menu);
+        
+        // Click outside to close
+        const closeMenu = (e) => {
+            if (!menu.contains(e.target) && !slot.contains(e.target)) {
+                menu.remove();
+                document.removeEventListener('click', closeMenu);
+            }
+        };
+        document.addEventListener('click', closeMenu);
+    }
+
+    selectSharpenItem(item, inventoryIndex) {
+        const slot = document.querySelector('.sharpen-slot');
+        slot.dataset.itemIndex = inventoryIndex;
+        slot.querySelector('.sharpen-slot-content').textContent = item.name;
+        
+        // Update preview
+        const previewArea = document.getElementById('sharpen-preview');
+        const newAttack = (item.stats.attack || 0) + 1;
+        previewArea.textContent = `${item.name} → Attack: ${item.stats.attack} → ${newAttack}`;
+        
+        // Enable sharpen button
+        document.getElementById('sharpen-button').disabled = false;
+        
+        // Remove selection menu
+        document.querySelector('.sharpen-selection-menu')?.remove();
+    }
+
+    handleSharpenItem() {
+        const slot = document.querySelector('.sharpen-slot');
+        const itemIndex = parseInt(slot.dataset.itemIndex);
+        const item = this.game.player.inventory[itemIndex];
+        
+        if (!item || item.type !== 'weapon') {
+            this.game.addLog("Invalid item selected.");
+            return;
+        }
+        
+        // Enhance the weapon
+        item.stats.attack += 1;
+        item.name = `Sharpened ${item.name}`;
+        item.description = item.description.replace(/Attack: \+\d+/, `Attack: +${item.stats.attack}`);
+        
+        this.game.addLog(`Enhanced ${item.name}! Attack power increased by 1.`);
+        this.renderInventory();
+        
+        // Proceed to next round
+        this.clearMainArea();
+        this.game.proceedToNextRound();
     }
 }

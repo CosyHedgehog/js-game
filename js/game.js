@@ -196,6 +196,8 @@ class Game {
                 return 'Go Fishing!';
             case 'blacksmith':
                 return "Visit Blacksmith";
+            case 'sharpen':
+                return "Use Sharpening Stone";
             default:
                 return 'Unknown Encounter';
         }
@@ -256,6 +258,10 @@ class Game {
                 return "Visit the Blacksmith to combine two similar items into a stronger version.\n" +
                        "You can combine weapons or armor pieces of the same type.\n\n" +
                        "Enter the forge?";
+            case 'sharpen':
+                return "You find a sharpening stone that can enhance a weapon.\n" +
+                       "Select one weapon to permanently increase its attack power by 1.\n\n" +
+                       "Use the sharpening stone?";
             default:
                 return "Unknown encounter type.";
         }
@@ -283,6 +289,9 @@ class Game {
                 break;
             case 'blacksmith':
                 handleBlacksmithEncounter(this, this.ui);
+                break;
+            case 'sharpen':
+                handleSharpenEncounter(this, this.ui);
                 break;
             default:
                 this.addLog("Unknown encounter type selected.");
