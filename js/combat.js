@@ -18,6 +18,12 @@ class Combat {
         this.player.attackTimer = 0; // Reset timers at start of combat
         this.enemy.attackTimer = 0;
         this.player.pendingActionDelay = 0; // Reset action delay
+
+        // Add run button listener when combat starts
+        const runButton = document.getElementById('combat-run-button');
+        if (runButton) {
+            runButton.onclick = () => this.handleRun();
+        }
     }
 
     start() {
@@ -127,7 +133,19 @@ class Combat {
         return combatEnded;
     }
 
-    endCombat(playerWon) {
+    handleRun() {
+        // Deal 5 damage to player for running
+        const runDamage = 5;
+        const damageResult = this.player.takeDamage(runDamage);
+        
+        this.game.addLog(`You flee from the ${this.enemy.name}, taking ${damageResult.actualDamage} damage in the process!`);
+        this.ui.updateCombatantHealth('player', this.player.health, this.player.maxHealth, damageResult.actualDamage);
+        
+        // End combat without victory
+        this.endCombat(false, true); // Pass true as second parameter to indicate running
+    }
+
+    endCombat(playerWon, ranAway = false) {
         clearInterval(this.intervalId);
         this.intervalId = null;
         this.ui.hideCombatUI();
@@ -164,6 +182,9 @@ class Combat {
                 this.checkBossWinAndProceed(); // This checks boss/proceeds
             }
 
+        } else if (ranAway) {
+            // Just proceed to next round if ran away
+            this.game.proceedToNextRound();
         } else {
             // Player lost
             this.game.addLog(`You were defeated by the ${this.enemy.name}...`);
