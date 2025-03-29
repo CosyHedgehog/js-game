@@ -357,10 +357,24 @@ class UI {
         this.choicesArea.classList.remove('hidden');
         this.choicesArea.innerHTML = '';
 
+        const buttonsContainer = document.createElement('div');
+        buttonsContainer.style.display = 'flex';
+        buttonsContainer.style.justifyContent = 'center';
+        buttonsContainer.style.gap = '15px';
+        buttonsContainer.style.width = '100%';
+
         choices.forEach((choice, index) => {
             const button = document.createElement('button');
             button.textContent = choice.text;
             button.classList.add('choice-button');
+            
+            // Automatically select the first option
+            if (index === 0) {
+                button.classList.add('selected');
+                // Trigger the selection immediately
+                setTimeout(() => this.game.selectChoice(0), 0);
+            }
+            
             button.addEventListener('click', () => {
                 // Remove selected class from all buttons
                 this.choicesArea.querySelectorAll('.choice-button').forEach(btn => {
@@ -370,8 +384,10 @@ class UI {
                 button.classList.add('selected');
                 this.game.selectChoice(index);
             });
-            this.choicesArea.appendChild(button);
+            buttonsContainer.appendChild(button);
         });
+
+        this.choicesArea.appendChild(buttonsContainer);
     }
 
     showEncounterConfirmation(choice, index) {
@@ -397,23 +413,29 @@ class UI {
         buttonsContainer.classList.add('confirmation-buttons');
 
         const confirmButton = document.createElement('button');
-        confirmButton.textContent = 'Start Encounter';
-        confirmButton.classList.add('confirm-button');
-
-        // Add difficulty coloring for combat encounters
+        let difficultyText = '';
+        
+        // Add difficulty coloring and text for combat encounters
         if (choice.encounter.type === 'monster' || choice.encounter.type === 'mini-boss' || choice.encounter.type === 'boss') {
             const monster = MONSTERS[choice.encounter.monsterId];
             const playerAttack = this.game.player.getAttack();
             
             if (monster.defense >= playerAttack) {
                 confirmButton.classList.add('difficulty-hard');
+                difficultyText = 'HARD';
             } else if (monster.defense >= playerAttack - 2) {
                 confirmButton.classList.add('difficulty-medium');
+                difficultyText = 'DIFFICULT';
             } else {
                 confirmButton.classList.add('difficulty-easy');
+                difficultyText = 'EASY';
             }
+            confirmButton.textContent = `Start (${difficultyText})`;
+        } else {
+            confirmButton.textContent = 'Start';
         }
 
+        confirmButton.classList.add('confirm-button');
         confirmButton.onclick = () => this.game.confirmChoice(index);
         buttonsContainer.appendChild(confirmButton);
         confirmationBox.appendChild(buttonsContainer);

@@ -185,13 +185,13 @@ class Game {
             case 'monster':
                 return `Fight ${MONSTERS[encounter.monsterId]?.name || 'Monster'}`;
             case 'rest':
-                return 'Rest Site (Heal 50% Max HP)';
+                return 'Rest Site';
             case 'shop':
-                return 'Visit Shop';
+                return 'Shop';
             case 'mini-boss':
-                return `Fight Mini-Boss: ${MONSTERS[encounter.monsterId]?.name || 'Mini-Boss'}`;
+                return `Fight ${MONSTERS[encounter.monsterId]?.name}`;
             case 'fishing':
-                return 'Go Fishing (1-5 Fish)';
+                return 'Go Fishing!';
             default:
                 return 'Unknown Encounter';
         }
@@ -237,7 +237,7 @@ class Game {
                        `This will start a combat encounter. Are you ready to fight?`;
             }
             case 'rest':
-                return `Rest at this site to recover 50% of your maximum health (${Math.floor(this.player.maxHealth * 0.5)} HP).\n\n` +
+                return `Rest at this site to recover 20-70% of your maximum health (${Math.floor(this.player.maxHealth * 0.5)} HP).\n\n` +
                        `Do you want to rest here?`;
             case 'shop':
                 return "Visit a merchant to buy and sell items.\n" +
