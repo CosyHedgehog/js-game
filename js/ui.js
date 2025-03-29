@@ -820,7 +820,7 @@ class UI {
             if (fullBlock) {
                 splat.innerHTML = `<span style="color: #aaaaaa">BLOCKED ${blocked}</span>`;
             } else if (blocked > 0) {
-                splat.innerHTML = `${amount}<span style="color: #aaaaaa"> (${blocked} blocked)</span>`;
+                splat.innerHTML = `${amount};` // <span style="color: #aaaaaa"> (${blocked} blocked)</span>`
             } else {
                 splat.textContent = amount;
             }
@@ -830,6 +830,6 @@ class UI {
 
         // Add to container and remove after animation
         container.appendChild(splat);
-        setTimeout(() => splat.remove(), 1000);
+        setTimeout(() => splat.remove(), 2000);
     }
 }

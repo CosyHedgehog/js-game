@@ -1135,11 +1135,12 @@ button:disabled {
 
 .damage-splat {
     position: absolute;
-    animation: damage-float 1s ease-out forwards;
+    animation: damage-float 2s ease-out forwards;
     font-weight: bold;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
     font-size: 1.2em;
     pointer-events: none;
+    top: 30%; /* Changed from 50% to 30% to start higher */
 }
 
 .damage-splat.damage {
@@ -1159,8 +1160,12 @@ button:disabled {
         transform: translateY(0) scale(1);
         opacity: 1;
     }
+    50% {
+        transform: translateY(-80px) scale(1.2); /* Increased from -30px to -40px */
+        opacity: 1;
+    }
     100% {
-        transform: translateY(-50px) scale(1.2);
+        transform: translateY(-100px) scale(1.2); /* Increased from -50px to -60px */
         opacity: 0;
     }
 }
