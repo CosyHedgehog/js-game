@@ -557,6 +557,9 @@ button:disabled {
     border-radius: 5px;
     padding: 20px;
     margin: 10px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 #loot-area h3 {
@@ -564,31 +567,34 @@ button:disabled {
     margin-bottom: 15px;
     color: #aaaaaa;
     font-size: 1.2em;
+    width: 100%;
+    text-align: center;
 }
 
-#loot-area p {
-    /* For the Gold display */
+/* Make gold container match item container style */
+.loot-gold-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    background-color: #2f2f2f;
+    border-radius: 4px;
+    border: 1px solid #404040;
+    width: 80%;
     margin-bottom: 15px;
-    font-size: 1.1em;
-    color: #cccccc;
 }
 
-#loot-area #loot-gold {
+.loot-gold-container span {
     color: #ffd700;
-    /* Gold color */
     font-weight: bold;
 }
 
-#loot-items {
-    margin-bottom: 20px;
+.loot-items-container {
+    margin-bottom: 15px;
     max-height: 200px;
-    /* Limit height if many items */
     overflow-y: auto;
     width: 80%;
-    /* Limit width */
-    padding: 10px;
     background-color: #2f2f2f;
-    /* Slightly different background */
     border-radius: 4px;
     border: 1px solid #404040;
 }
@@ -598,7 +604,7 @@ button:disabled {
     align-items: center;
     justify-content: space-between;
     padding: 10px 12px;
-    border-bottom: 1px dashed #444;
+    border-bottom: 1px solid #404040;
     gap: 10px;
 }
 
@@ -606,57 +612,64 @@ button:disabled {
     border-bottom: none;
 }
 
-.loot-item-info {
+/* Center the buttons container */
+.loot-buttons {
     display: flex;
-    align-items: center;
     gap: 10px;
-    flex: 1;
+    margin-top: 15px;
+    justify-content: center;
+    width: 100%;
 }
 
-.loot-item-icon {
-    flex-shrink: 0;
-    width: 28px;
-    height: 28px;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-color: #505050;
-    border: 1px solid #606060;
-    border-radius: 3px;
-}
-
-.loot-item-name {
-    font-size: 0.95em;
-    color: #dddddd;
-    flex: 1;
-}
-
+/* Make buttons consistent */
+.loot-gold-button, 
 .loot-item-button {
-    flex-shrink: 0;
+    background-color: #505050;
+    color: #ffffff;
+    border: 1px solid #3a3a3a;
+    padding: 8px 15px;
+    font-size: 0.95em;
+    border-radius: 4px;
     min-width: 60px;
-    text-align: center;
-}
-
-#loot-take-button {
-    /* Use existing button styles or define specific ones */
-    /* Example using flat button style: */
-    background-color: #4CAF50;
-    /* Greenish */
-    color: white;
-    border: 1px solid #3a9a3d;
-    padding: 12px 30px;
-    font-size: 1.1em;
-    border-radius: 5px;
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 1px rgba(0, 0, 0, 0.2);
-    cursor: pointer;
     transition: all 0.15s ease;
 }
 
-#loot-take-button:hover {
-    background-color: #5cd65f;
-    border-color: #4CAF50;
+.loot-gold-button:hover, 
+.loot-item-button:hover {
+    background-color: #5a5a5a;
+    border-color: #454545;
 }
 
+#loot-take-all-button, 
+#loot-continue-button {
+    padding: 12px 30px;
+    font-size: 1.1em;
+    border-radius: 5px;
+    min-width: 120px;
+}
+
+#loot-take-all-button {
+    background-color: #4a6b4a;
+    border-color: #3a5a3a;
+    color: #ffffff;
+}
+
+#loot-take-all-button:hover {
+    background-color: #557755;
+    border-color: #456945;
+}
+
+#loot-continue-button {
+    background-color: #505050;
+    border-color: #3a3a3a;
+    color: #ffffff;
+}
+
+#loot-continue-button:hover {
+    background-color: #5a5a5a;
+    border-color: #454545;
+}
 
 /* --- Ensure rest of style.css is present --- */
 
