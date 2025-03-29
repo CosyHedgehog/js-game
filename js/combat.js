@@ -15,9 +15,10 @@ class Combat {
         this.isPlayerTurn = false; // Used if simultaneous attacks aren't desired
         this.isEnemyTurn = false;
 
-        this.player.attackTimer = 0; // Reset timers at start of combat
+        this.player.attackTimer = 0;
         this.enemy.attackTimer = 0;
-        this.player.pendingActionDelay = 0; // Reset action delay
+        this.player.pendingActionDelay = 0;
+        this.player.attackTimerPaused = false;
 
         // Add run button listener when combat starts
         const runButton = document.getElementById('combat-run-button');
@@ -40,20 +41,30 @@ class Combat {
         let enemyActed = false;
 
         // Decrement timers
-        this.player.attackTimer = Math.max(0, this.player.attackTimer - this.timeScale);
+        if (!this.player.attackTimerPaused) {
+            this.player.attackTimer = Math.max(0, this.player.attackTimer - this.timeScale);
+        }
+        if (this.player.pendingActionDelay > 0) {
+            this.player.pendingActionDelay = Math.max(0, this.player.pendingActionDelay - this.timeScale);
+            if (this.player.pendingActionDelay === 0) {
+                this.player.attackTimerPaused = false; // Resume attack timer when delay is done
+            }
+        }
         this.enemy.attackTimer = Math.max(0, this.enemy.attackTimer - this.timeScale);
 
         // Update UI timers
-        this.ui.updateCombatTimers(this.player.attackTimer, this.enemy.attackTimer);
+        this.ui.updateCombatTimers(
+            this.player.attackTimer,
+            this.enemy.attackTimer,
+            this.player.pendingActionDelay
+        );
 
         // Check if player can attack
-        if (this.player.attackTimer <= 0) {
+        if (!this.player.attackTimerPaused && this.player.attackTimer <= 0) {
             this.playerAttack();
             playerActed = true;
-            // Apply pending delay AFTER attacking, then reset timer
-            this.player.attackTimer = this.player.getAttackSpeed() + this.player.pendingActionDelay;
-            this.player.pendingActionDelay = 0; // Reset delay after applying it
-            if (this.checkCombatEnd()) return; // Check if enemy died
+            this.player.attackTimer = this.player.getAttackSpeed();
+            if (this.checkCombatEnd()) return;
         }
 
         // Check if enemy can attack
@@ -99,8 +110,14 @@ class Combat {
         if (useResult.success) {
             this.game.addLog(useResult.message);
             if (useResult.actionDelay > 0) {
-                this.player.pendingActionDelay += useResult.actionDelay;
+                this.player.attackTimerPaused = true;
+                this.player.pendingActionDelay = useResult.actionDelay;
                 this.game.addLog(`Your next attack is delayed by ${useResult.actionDelay}s!`);
+                this.ui.updateCombatTimers(
+                    this.player.attackTimer,
+                    this.enemy.attackTimer,
+                    this.player.pendingActionDelay
+                );
             }
             // Update health display immediately if healed
             if (useResult.item?.healAmount) {

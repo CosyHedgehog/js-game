@@ -681,19 +681,30 @@ class UI {
         }
     }
 
-    updateCombatTimers(playerTime, enemyTime) {
+    updateCombatTimers(playerTime, enemyTime, playerDelay = 0) {
         // Update text
-        this.combatPlayerTimer.textContent = playerTime.toFixed(1);
+        this.combatPlayerTimer.textContent = playerDelay > 0 ? 
+            `Delayed: ${playerDelay.toFixed(1)}s` : 
+            playerTime.toFixed(1);
         this.combatEnemyTimer.textContent = enemyTime.toFixed(1);
         
         // Update timer bars
-        const playerMaxTime = this.game.player.getAttackSpeed() || this.game.player.defaultAttackSpeed; // Add fallback
+        const playerMaxTime = this.game.player.getAttackSpeed();
         const enemyMaxTime = this.game.currentCombat.enemy.speed;
         
         const playerTimerBar = document.querySelector('.player-timer');
         const enemyTimerBar = document.querySelector('.enemy-timer');
         
-        playerTimerBar.style.width = `${(playerTime / playerMaxTime) * 100}%`;
+        if (playerDelay > 0) {
+            // Show delay timer in yellow
+            playerTimerBar.style.width = `${(playerDelay / 2) * 100}%`; // 2 seconds is max delay
+            playerTimerBar.style.backgroundColor = '#ffd700';
+        } else {
+            // Show normal attack timer
+            playerTimerBar.style.width = `${(playerTime / playerMaxTime) * 100}%`;
+            playerTimerBar.style.backgroundColor = ''; // Reset to default color
+        }
+        
         enemyTimerBar.style.width = `${(enemyTime / enemyMaxTime) * 100}%`;
     }
 
