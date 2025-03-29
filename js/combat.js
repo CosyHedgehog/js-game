@@ -78,30 +78,54 @@ class Combat {
 
     playerAttack() {
         const playerAttackRoll = rollDamage(this.player.getAttack());
-        const enemyDefense = this.enemy.defense || 0;
-        const damageDealt = Math.max(0, playerAttackRoll - enemyDefense);
-        const blocked = enemyDefense > playerAttackRoll ? playerAttackRoll : enemyDefense;
+        const enemyDefenseRoll = rollDamage(this.enemy.defense || 0); // Roll defense randomly
+        const damageDealt = Math.max(0, playerAttackRoll - enemyDefenseRoll);
         
         this.enemy.health = Math.max(0, this.enemy.health - damageDealt);
         
         // Update log message to be clearer about full blocks
-        if (damageDealt === 0 && blocked > 0) {
-            this.game.addLog(`You attack ${this.enemy.name} but they block all ${blocked} damage!`);
+        if (damageDealt === 0 && enemyDefenseRoll > 0) {
+            this.game.addLog(`You attack ${this.enemy.name} but they block all ${enemyDefenseRoll} damage!`);
         } else {
-            this.game.addLog(`You attack ${this.enemy.name} for ${damageDealt} damage. (${playerAttackRoll} - ${blocked} blocked)`);
+            this.game.addLog(`You attack ${this.enemy.name} for ${damageDealt} damage. (${playerAttackRoll} - ${enemyDefenseRoll} blocked)`);
         }
         
-        // Pass a special flag for full blocks
-        this.ui.updateCombatantHealth('enemy', this.enemy.health, this.enemy.maxHealth, damageDealt, blocked, false, damageDealt === 0 && blocked > 0);
+        this.ui.updateCombatantHealth(
+            'enemy', 
+            this.enemy.health, 
+            this.enemy.maxHealth, 
+            damageDealt, 
+            enemyDefenseRoll, 
+            false, 
+            damageDealt === 0 && enemyDefenseRoll > 0
+        );
+        this.ui.updatePlayerStats();
     }
 
     enemyAttack() {
         const enemyAttackRoll = rollDamage(this.enemy.attack);
-        const playerDefense = this.player.getDefense();
-        const damageResult = this.player.takeDamage(enemyAttackRoll);
+        const playerDefenseRoll = rollDamage(this.player.getDefense()); // Roll defense randomly
+        const damageDealt = Math.max(0, enemyAttackRoll - playerDefenseRoll);
         
-        this.game.addLog(`${this.enemy.name} attacks you for ${damageResult.actualDamage} damage. (${enemyAttackRoll} - ${playerDefense} blocked)`);
-        this.ui.updateCombatantHealth('player', this.player.health, this.player.maxHealth, damageResult.actualDamage, playerDefense);
+        this.player.health = Math.max(0, this.player.health - damageDealt);
+        
+        // Update log message to be clearer about full blocks
+        if (damageDealt === 0 && playerDefenseRoll > 0) {
+            this.game.addLog(`${this.enemy.name} attacks but you block all ${playerDefenseRoll} damage!`);
+        } else {
+            this.game.addLog(`${this.enemy.name} attacks you for ${damageDealt} damage. (${enemyAttackRoll} - ${playerDefenseRoll} blocked)`);
+        }
+        
+        // Pass the same parameters as in playerAttack for consistency
+        this.ui.updateCombatantHealth(
+            'player', 
+            this.player.health, 
+            this.player.maxHealth, 
+            damageDealt, 
+            playerDefenseRoll, 
+            false, 
+            damageDealt === 0 && playerDefenseRoll > 0
+        );
         this.ui.updatePlayerStats();
     }
 

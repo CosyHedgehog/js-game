@@ -4,7 +4,7 @@ class Player {
         this.maxHealth = 20;
         this.health = 20;
         this.baseAttack = 1; // Base stats, can be increased by effects later
-        this.baseDefense = 0;
+        this.baseDefense = 1; // Changed from 0 to 1
         this.inventory = new Array(15).fill(null); // Changed from 12 to 15 slots
         this.equipment = {
             helm: null,
