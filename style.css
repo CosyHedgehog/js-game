@@ -1,0 +1,767 @@
+/* --- Global Styles & Dark Mode Base --- */
+body {
+    font-family: sans-serif;
+    background-color: #1f1f1f;
+    color: #cccccc;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+#game-container {
+    width: 1000px;
+    height: 700px;
+    background-color: #252525;
+    /* Slightly lighter container */
+    border: 1px solid #3a3a3a;
+    /* Dim border */
+    position: relative;
+    display: flex;
+    box-sizing: border-box;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+/* --- Screen Visibility --- */
+.screen {
+    width: 100%;
+    height: 100%;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.screen:not(.hidden) {
+    display: flex;
+}
+
+/* --- NEW Game Screen Grid Layout --- */
+#game-screen:not(.hidden) {
+    display: grid;
+    /* Columns: Left area (stats/main/log), Right Column */
+    grid-template-columns: 2.6fr 1.4fr;
+    /* Adjust ratio: ~65% / ~35% */
+    /* Rows: Stats height, Main Area flexible height, Log fixed height */
+    grid-template-rows: auto 1fr auto;
+    grid-template-areas:
+        "stats right"
+        /* Stats top left, Right column spans */
+        "main  right"
+        /* Main content middle left, Right column spans */
+        "log   right";
+    /* Log bottom left, Right column spans */
+    padding: 25px;
+    /* More padding inside container */
+    gap: 25px;
+    /* More gap between areas */
+    overflow: hidden;
+    background-color: #252525;
+    /* Match container */
+}
+
+/* --- Grid Area Assignments --- */
+
+/* Player Stats (Top Left) */
+#player-stats-area {
+    grid-area: stats;
+    background-color: #313131;
+    /* Background for stats block */
+    border: 1px solid #444;
+    border-radius: 5px;
+    padding: 12px 15px;
+    box-sizing: border-box;
+    width: 200px;
+    /* min-height: 100px; */
+    /* Ensure minimum height */
+}
+
+#player-stats-area h3 {
+    display: none;
+    /* Hide "Stats" header */
+}
+
+#player-stats-area p {
+    margin: 6px 0;
+    /* Spacing between stats */
+    font-size: 0.9em;
+    color: #aaaaaa;
+    display: flex;
+    justify-content: space-between;
+    /* Label left, value right */
+    align-items: center;
+    /* Vertically align items */
+    border-bottom: 1px solid #3f3f3f;
+    /* Subtle separator */
+    padding-bottom: 4px;
+}
+
+#player-stats-area p:last-child {
+    border-bottom: none;
+    /* No border on last stat */
+}
+
+#player-stats-area p span {
+    color: #ffffff;
+    font-weight: bold;
+    margin-left: 10px;
+    /* Box style for value */
+    background-color: #404040;
+    padding: 1px 5px;
+    border-radius: 3px;
+    border: 1px solid #555;
+    min-width: 25px;
+    /* Ensure some width */
+    text-align: center;
+}
+
+/* Main Content Area (Middle Left) */
+#main-area {
+    grid-area: main;
+    background-color: transparent;
+    border: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* Center content block vertically */
+    align-items: center;
+    /* Center content block horizontally */
+    gap: 25px;
+    /* Gap between elements like choices/combat/etc. */
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+/* Output Log Area (Bottom Left) */
+#output-log-area {
+    grid-area: log;
+    height: 150px; /* Ensure height matches grid row */
+    background-color: #313131;
+    /* Match stats background */
+    border: 1px solid #444;
+    border-radius: 5px;
+    padding: 10px 12px;
+    box-sizing: border-box;
+    color: #bbbbbb;
+    overflow-y: scroll;
+    /* Always show scroll? */
+    height: 150px;
+    /* Fixed height from grid */
+}
+
+#output-log {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.9em;
+}
+
+#output-log li {
+    margin-bottom: 5px;
+    border-bottom: 1px solid #3f3f3f;
+    padding-bottom: 5px;
+    line-height: 1.3;
+}
+
+#output-log li:last-child {
+    border-bottom: none;
+}
+
+/* Right Column Container (Spans Right Side) */
+#right-column {
+    grid-area: right;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    /* Gap between inventory and equipment */
+    overflow: hidden;
+    /* Prevent internal overflow issues */
+}
+
+/* Inventory Area (Inside Right Column) */
+#inventory-area {
+    background-color: #313131;
+    /* Match stats/log background */
+    border: 1px solid #444;
+    border-radius: 5px;
+    padding: 15px;
+    position: relative;
+    box-sizing: border-box;
+    flex-grow: 1;
+    /* Allow to grow */
+    flex-basis: 60%;
+    /* Suggest it takes more space initially */
+    overflow: hidden;
+    /* Contains the grid */
+    display: flex;
+    /* Use flex to control grid height */
+    flex-direction: column;
+}
+
+#inventory-area h3 {
+    margin-top: 0;
+    margin-bottom: 12px;
+    color: #aaaaaa;
+    border-bottom: 1px solid #444;
+    padding-bottom: 8px;
+    font-size: 0.9em;
+    font-weight: normal;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
+    /* Prevent header shrinking */
+}
+
+#inventory-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    gap: 10px;
+    /* Wider gap */
+    width: auto;
+    box-sizing: border-box;
+    flex-grow: 1;
+    /* Grid fills remaining space */
+}
+
+/* Equipment Area (Inside Right Column) */
+#equipment-area {
+    background-color: #313131;
+    border: 1px solid #444;
+    border-radius: 5px;
+    padding: 15px;
+    position: relative;
+    box-sizing: border-box;
+    text-align: center;
+    flex-shrink: 0;
+    /* Don't shrink disproportionately */
+}
+
+#equipment-area h3 {
+    margin-top: 0;
+    margin-bottom: 12px;
+    color: #aaaaaa;
+    border-bottom: 1px solid #444;
+    padding-bottom: 8px;
+    font-size: 0.9em;
+    font-weight: normal;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.equip-row {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.equip-row:last-child {
+    margin-bottom: 0;
+}
+
+
+/* --- Slot Styling (Inventory & Equipment) --- */
+.inventory-slot,
+.equip-slot {
+    /* Base background for both */
+    background-color: #404040;
+    border: 1px solid #4a4a4a;
+    /* Default border */
+    color: #cccccc;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    position: relative;
+    box-sizing: border-box;
+    border-radius: 4px;
+    transition: all 0.15s ease;
+    /* Smooth transitions */
+    font-size: 0.85em;
+    min-height: 50px;
+    /* Ensure min size */
+    min-width: 50px;
+}
+
+.equip-slot {
+    /* Equipment specific base overrides */
+    width: 68px;
+    height: 68px;
+    font-size: 0.7em;
+    white-space: normal;
+    text-align: center;
+    padding: 2px;
+}
+
+.equip-slot[data-slot="weapon"],
+.equip-slot[data-slot="shield"] {
+    width: 85px;
+}
+
+
+/* Style for EMPTY slots */
+.inventory-slot.slot-empty,
+.equip-slot.slot-empty {
+    background-color: #363636;
+    /* Slightly different empty background */
+    border: 1px dashed #555;
+    /* Dashed border for empty */
+    color: #666666;
+    cursor: default;
+    box-shadow: none;
+    /* No shadow on empty */
+}
+
+.inventory-slot.slot-empty {
+    font-size: 1.5em;
+    /* Keep placeholder idea */
+}
+
+
+/* Style for FILLED slots */
+.inventory-slot.slot-filled,
+.equip-slot.slot-filled {
+    /* Uses the base background */
+    border: 2px solid #ffffff;
+    /* Bright white SOLID border */
+    color: #ffffff;
+    /* Bright text */
+    font-weight: 500;
+    cursor: pointer;
+    /* Optional subtle glow/shadow */
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.3);
+}
+
+.equip-slot.slot-filled {
+    font-size: 0.75em;
+}
+
+/* Hover states adjusted for new borders */
+.inventory-slot.slot-filled:hover,
+.equip-slot.slot-filled:hover {
+    background-color: #4a4a4a;
+    /* Slightly lighten bg */
+    border-color: #dddddd;
+    /* Slightly dim white border */
+    box-shadow: 0 0 7px rgba(255, 255, 255, 0.5);
+    /* Enhance glow */
+}
+
+.inventory-slot.slot-empty:hover,
+.equip-slot.slot-empty:hover {
+    background-color: #3d3d3d;
+    /* Slightly lighten empty bg */
+    border-color: #666;
+}
+
+#choices-area {
+    display: flex;
+    /* Use flexbox for layout */
+    flex-direction: column;
+    /* <<<< STACK VERTICALLY */
+    align-items: center;
+    /* Center buttons horizontally within this area */
+    gap: 20px;
+    /* <<<< Add gap BETWEEN the buttons */
+    width: 100%;
+    /* Allow choices area to take width if needed */
+}
+
+
+/* --- Buttons (Keep Flat Style) --- */
+button {
+    margin: 0;
+    font: inherit;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+#choices-area button {
+    background-color: #505050;
+    color: #ffffff;
+    border: 1px solid #3a3a3a;
+    padding: 15px 30px;
+    font-size: 1.1em;
+    font-weight: bold;
+    min-width: 280px;
+    /* Keep minimum width */
+    max-width: 80%;
+    /* Prevent buttons getting excessively wide */
+    text-align: center;
+    border-radius: 5px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 1px rgba(0, 0, 0, 0.2);
+    /* Transitions and hover/active states remain the same */
+    transition: all 0.15s ease;
+}
+
+#choices-area button:hover {
+    background-color: #5a5a5a;
+    border-color: #454545;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+#choices-area button:active {
+    background-color: #484848;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Other Buttons (Start/End/Rest/Shop) */
+#start-screen button, #end-screen button, #rest-area button, #shop-leave-button, #shop-reroll-button {
+    background-color: #4a4a4a;
+    color: #eeeeee;
+    border: 1px solid #333;
+    padding: 10px 25px;
+    font-size: 1.05em;
+    border-radius: 4px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 1px 1px rgba(0, 0, 0, 0.15);
+    margin: 8px;
+}
+
+#start-screen button:hover, #end-screen button:hover, #rest-area button:hover, #shop-leave-button:hover, #shop-reroll-button:hover {
+    background-color: #555;
+    border-color: #404040;
+}
+
+#start-screen button:active, #end-screen button:active, #rest-area button:active, #shop-leave-button:active, #shop-reroll-button:active {
+    background-color: #404040;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+button:disabled {
+    background-color: #404040 !important;
+    color: #777 !important;
+    border-color: #303030 !important;
+    cursor: not-allowed;
+    opacity: 0.6;
+    box-shadow: none !important;
+}
+
+/* Shop Buy Buttons */
+.shop-item button {
+    background-color: #407540;
+    color: white;
+    border: 1px solid #285028;
+    padding: 5px 12px;
+    font-size: 0.9em;
+    border-radius: 3px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 1px rgba(0, 0, 0, 0.15);
+}
+
+.shop-item button:hover {
+    background-color: #4e8a4e;
+    border-color: #356835;
+}
+
+/* Context Menu Buttons (Keep previous style) */
+.context-menu button {
+    display: block;
+    width: 100%;
+    background: #484848;
+    color: #eee;
+    border: none;
+    border-bottom: 1px solid #555;
+    padding: 9px 12px;
+    cursor: pointer;
+    text-align: left;
+    border-radius: 0;
+    font-size: 0.95em;
+    transition: background-color 0.1s ease;
+}
+
+.context-menu button:last-child {
+    border-bottom: none;
+}
+
+.context-menu button:hover {
+    background: #5a5a5a;
+}
+
+.context-menu button.context-destroy-button {
+    color: #ff9090;
+}
+
+.context-menu button.context-destroy-button:hover {
+    background: #6b4040;
+    color: #ffaaaa;
+}
+
+.context-menu button.context-cancel-button {
+    color: #cccccc;
+    background: #404040;
+    border-top: 1px solid #555;
+    margin-top: 3px;
+}
+
+.context-menu button.context-cancel-button:hover {
+    background: #505050;
+    color: #ffffff;
+}
+
+
+/* --- Tooltips & Context Menus (Keep previous style) --- */
+.tooltip {
+    position: fixed;
+    background-color: rgba(30, 30, 30, 0.95);
+    color: #e0e0e0;
+    padding: 8px 10px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    pointer-events: none;
+    z-index: 100;
+    white-space: pre-wrap;
+    max-width: 250px;
+    border: 1px solid #404040;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+}
+
+.context-menu {
+    position: absolute;
+    background-color: #3f3f3f;
+    padding: 0;
+    border: 1px solid #555;
+    border-radius: 4px;
+    pointer-events: auto;
+    z-index: 101;
+    min-width: 130px;
+    box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.6);
+    overflow: hidden;
+}
+
+/* --- Combat/Shop/Rest Specific --- */
+#combat-area p {
+    margin: 5px 0;
+}
+
+#shop-items {
+    margin-bottom: 15px;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.shop-item {
+    background-color: #404040;
+    border: 1px solid #4a4a4a;
+    padding: 8px 12px;
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 3px;
+}
+
+.shop-item span {
+    color: #cccccc;
+}
+
+/* --- Add these styles to style.css --- */
+
+#loot-area {
+    /* Styles inherited from #main-area sections (background, border etc) */
+    /* Or add specific styles if needed */
+    display: flex;
+    /* Use flex for layout */
+    flex-direction: column;
+    align-items: center;
+    /* Center content horizontally */
+    padding: 20px;
+    text-align: center;
+}
+
+#loot-area h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #aaaaaa;
+    font-size: 1.2em;
+}
+
+#loot-area p {
+    /* For the Gold display */
+    margin-bottom: 15px;
+    font-size: 1.1em;
+    color: #cccccc;
+}
+
+#loot-area #loot-gold {
+    color: #ffd700;
+    /* Gold color */
+    font-weight: bold;
+}
+
+#loot-items {
+    margin-bottom: 20px;
+    max-height: 150px;
+    /* Limit height if many items */
+    overflow-y: auto;
+    width: 80%;
+    /* Limit width */
+    padding: 10px;
+    background-color: #2f2f2f;
+    /* Slightly different background */
+    border-radius: 4px;
+    border: 1px solid #404040;
+}
+
+.loot-item {
+    display: flex;
+    align-items: center;
+    padding: 5px 0;
+    border-bottom: 1px dashed #444;
+}
+
+.loot-item:last-child {
+    border-bottom: none;
+}
+
+.loot-item-icon {
+    display: inline-block;
+    width: 24px;
+    /* Adjust size as needed */
+    height: 24px;
+    margin-right: 10px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    vertical-align: middle;
+    /* Align icon with text */
+    background-color: #505050;
+    /* Placeholder bg */
+    border: 1px solid #606060;
+    border-radius: 3px;
+}
+
+.loot-item-name {
+    font-size: 0.95em;
+    color: #dddddd;
+}
+
+#loot-take-button {
+    /* Use existing button styles or define specific ones */
+    /* Example using flat button style: */
+    background-color: #4CAF50;
+    /* Greenish */
+    color: white;
+    border: 1px solid #3a9a3d;
+    padding: 12px 30px;
+    font-size: 1.1em;
+    border-radius: 5px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 1px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+#loot-take-button:hover {
+    background-color: #5cd65f;
+    border-color: #4CAF50;
+}
+
+
+/* --- Ensure rest of style.css is present --- */
+
+
+/* --- Utility --- */
+.hidden {
+    display: none !important;
+}
+
+/* --- Dark Mode Scrollbars (Optional, Webkit specific) --- */
+::-webkit-scrollbar {
+    width: 9px;
+    height: 9px;
+}
+
+::-webkit-scrollbar-track {
+    background: #303030;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #555;
+    border-radius: 4px;
+    border: 1px solid #303030;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #666;
+}
+
+::-webkit-scrollbar-corner {
+    background: #303030;
+}
+
+/* NEW Game Screen Grid Layout */
+#game-screen:not(.hidden) {
+    display: grid;
+    /* Columns: Left area, Right Column */
+    grid-template-columns: 2.6fr 1.4fr;
+    /* Rows: Orbs (fixed), Stats (auto), Main (flexible), Log (fixed) */
+    grid-template-rows: 35px auto 1fr 150px;
+    /* Added 35px row for orbs */
+    grid-template-areas:
+        "rounds rounds"
+        /* <<<< New top row spanning both columns */
+        "stats  right"
+        "main   right"
+        "log    right";
+    padding: 20px;
+    /* Adjusted padding */
+    gap: 15px 25px;
+    /* Row gap (15px), Column gap (25px) */
+    overflow: hidden;
+    background-color: #252525;
+}
+
+/* Round Indicator Area (Very Top) */
+#round-indicator-area {
+    grid-area: rounds;
+    /* Assign to the new grid area */
+    display: flex;
+    justify-content: center;
+    /* Center orbs horizontally */
+    align-items: center;
+    padding-bottom: 5px;
+    /* Small space below orbs */
+    /* Optional border for visual separation */
+    /* border-bottom: 1px solid #3a3a3a; */
+}
+
+/* Individual Round Orb Style */
+.round-orb {
+    width: 18px;
+    /* Orb size */
+    height: 18px;
+    border-radius: 50%;
+    /* Make it circular */
+    margin: 0 5px;
+    /* Spacing between orbs */
+    background-color: #404040;
+    /* Default dim color */
+    border: 1px solid #303030;
+    /* Dark border */
+    transition: all 0.2s ease-in-out;
+    /* Smooth transition for highlight */
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4);
+    /* Subtle inner shadow */
+}
+
+/* Style for the CURRENT round's orb */
+.round-orb.current-round {
+    background-color: #a0a0a0;
+    /* Brighter background */
+    border-color: #ffffff;
+    /* White border */
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.5), inset 0 1px 1px rgba(0, 0, 0, 0.2);
+    /* Outer glow + inner */
+    transform: scale(1.1);
+    /* Slightly larger */
+}
