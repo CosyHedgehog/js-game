@@ -1,5 +1,5 @@
 const ITEMS = {
-    // Weapons
+    // Weapons - Progressive scaling from +1 to +8 attack
     'wooden_sword': {
         id: 'wooden_sword', name: 'Wooden Sword', type: 'weapon', slot: 'weapon', hands: 1,
         stats: { attack: 1 }, speed: 2.0, value: 5,
@@ -7,24 +7,39 @@ const ITEMS = {
     },
     'rusty_sword': {
         id: 'rusty_sword', name: 'Rusty Sword', type: 'weapon', slot: 'weapon', hands: 1,
-        stats: { attack: 3 }, speed: 2.5, value: 15,
-        description: 'An old, somewhat effective sword.\nAttack: +3\nSpeed: 2.5s\n1-Handed'
+        stats: { attack: 2 }, speed: 2.0, value: 15,
+        description: 'An old, somewhat effective sword.\nAttack: +2\nSpeed: 2.0s\n1-Handed'
+    },
+    'iron_sword': {
+        id: 'iron_sword', name: 'Iron Sword', type: 'weapon', slot: 'weapon', hands: 1,
+        stats: { attack: 3 }, speed: 1.8, value: 25,
+        description: 'A reliable iron sword.\nAttack: +3\nSpeed: 1.8s\n1-Handed'
+    },
+    'steel_sword': {
+        id: 'steel_sword', name: 'Steel Sword', type: 'weapon', slot: 'weapon', hands: 1,
+        stats: { attack: 4 }, speed: 1.8, value: 40,
+        description: 'A well-crafted steel sword.\nAttack: +4\nSpeed: 1.8s\n1-Handed'
     },
     'iron_greatsword': {
         id: 'iron_greatsword', name: 'Iron Greatsword', type: 'weapon', slot: 'weapon', hands: 2,
-        stats: { attack: 6 }, speed: 3.5, value: 40,
-        description: 'A heavy two-handed sword.\nAttack: +6\nSpeed: 3.5s\n2-Handed'
+        stats: { attack: 6 }, speed: 2.5, value: 45,
+        description: 'A heavy two-handed sword.\nAttack: +6\nSpeed: 2.5s\n2-Handed'
     },
-    'sharp_dagger': {
-        id: 'sharp_dagger', name: 'Sharp Dagger', type: 'weapon', slot: 'weapon', hands: 1,
-        stats: { attack: 2 }, speed: 1.0, value: 20,
-        description: 'A quick dagger.\nAttack: +2\nSpeed: 1.0s\n1-Handed'
+    'steel_greatsword': {
+        id: 'steel_greatsword', name: 'Steel Greatsword', type: 'weapon', slot: 'weapon', hands: 2,
+        stats: { attack: 8 }, speed: 2.5, value: 65,
+        description: 'A mighty two-handed sword.\nAttack: +8\nSpeed: 2.5s\n2-Handed'
+    },
+    'quick_dagger': {
+        id: 'quick_dagger', name: 'Quick Dagger', type: 'weapon', slot: 'weapon', hands: 1,
+        stats: { attack: 2 }, speed: 1.0, value: 30,
+        description: 'A swift striking dagger.\nAttack: +2\nSpeed: 1.0s\n1-Handed'
     },
 
-    // Armor
+    // Armor - Progressive scaling from +1 to +4 defense per slot
     'leather_helm': {
         id: 'leather_helm', name: 'Leather Helm', type: 'armor', slot: 'helm',
-        stats: { defense: 1 }, value: 8,
+        stats: { defense: 1 }, value: 10,
         description: 'Basic head protection.\nDefense: +1'
     },
     'iron_helm': {
@@ -32,25 +47,40 @@ const ITEMS = {
         stats: { defense: 2 }, value: 25,
         description: 'Sturdy metal helmet.\nDefense: +2'
     },
+    'steel_helm': {
+        id: 'steel_helm', name: 'Steel Helm', type: 'armor', slot: 'helm',
+        stats: { defense: 3 }, value: 45,
+        description: 'Superior head protection.\nDefense: +3'
+    },
     'leather_armor': {
         id: 'leather_armor', name: 'Leather Armor', type: 'armor', slot: 'body',
         stats: { defense: 2 }, value: 15,
         description: 'Simple body armor.\nDefense: +2'
     },
-    'chainmail': {
-        id: 'chainmail', name: 'Chainmail', type: 'armor', slot: 'body',
-        stats: { defense: 4 }, value: 50,
-        description: 'Good protection made of linked rings.\nDefense: +4'
+    'iron_armor': {
+        id: 'iron_armor', name: 'Iron Armor', type: 'armor', slot: 'body',
+        stats: { defense: 3 }, value: 35,
+        description: 'Solid iron protection.\nDefense: +3'
     },
-    'cloth_pants': {
-        id: 'cloth_pants', name: 'Cloth Pants', type: 'armor', slot: 'legs',
-        stats: { defense: 0 }, value: 2,
-        description: 'Simple trousers.\nDefense: +0'
+    'steel_armor': {
+        id: 'steel_armor', name: 'Steel Armor', type: 'armor', slot: 'body',
+        stats: { defense: 4 }, value: 60,
+        description: 'Superior body protection.\nDefense: +4'
     },
-    'leather_pants': {
-        id: 'leather_pants', name: 'Leather Pants', type: 'armor', slot: 'legs',
+    'leather_legs': {
+        id: 'leather_legs', name: 'Leather Legs', type: 'armor', slot: 'legs',
         stats: { defense: 1 }, value: 10,
-        description: 'Tough leg protection.\nDefense: +1'
+        description: 'Basic leg protection.\nDefense: +1'
+    },
+    'iron_legs': {
+        id: 'iron_legs', name: 'Iron Legs', type: 'armor', slot: 'legs',
+        stats: { defense: 2 }, value: 30,
+        description: 'Sturdy leg protection.\nDefense: +2'
+    },
+    'steel_legs': {
+        id: 'steel_legs', name: 'Steel Legs', type: 'armor', slot: 'legs',
+        stats: { defense: 3 }, value: 50,
+        description: 'Superior leg protection.\nDefense: +3'
     },
     'wooden_shield': {
         id: 'wooden_shield', name: 'Wooden Shield', type: 'armor', slot: 'shield',
@@ -59,75 +89,120 @@ const ITEMS = {
     },
     'iron_shield': {
         id: 'iron_shield', name: 'Iron Shield', type: 'armor', slot: 'shield',
-        stats: { defense: 3 }, value: 35,
-        description: 'A solid metal shield.\nDefense: +3'
+        stats: { defense: 2 }, value: 35,
+        description: 'A solid metal shield.\nDefense: +2'
     },
-
+    'steel_shield': {
+        id: 'steel_shield', name: 'Steel Shield', type: 'armor', slot: 'shield',
+        stats: { defense: 3 }, value: 55,
+        description: 'A superior shield.\nDefense: +3'
+    },
 
     // Consumables
     'bread': {
         id: 'bread', name: 'Bread', type: 'consumable', useAction: 'Eat',
-        healAmount: 3, value: 3,
-        description: 'A crusty loaf of bread.\nHeals 3 HP.'
-    },
-    'fish': {
-        id: 'fish', name: 'Fish', type: 'consumable', useAction: 'Eat',
         healAmount: 5, value: 5,
-        description: 'A cooked fish.\nHeals 5 HP.'
+        description: 'A crusty loaf of bread.\nHeals 5 HP.'
+    },
+    'cooked_meat': {
+        id: 'cooked_meat', name: 'Cooked Meat', type: 'consumable', useAction: 'Eat',
+        healAmount: 8, value: 8,
+        description: 'A piece of cooked meat.\nHeals 8 HP.'
     },
     'health_potion': {
         id: 'health_potion', name: 'Health Potion', type: 'consumable', useAction: 'Drink',
-        healAmount: 15, value: 20, isPotion: true, // isPotion flag prevents combat delay
+        healAmount: 15, value: 20, isPotion: true,
         description: 'A bubbling red potion.\nHeals 15 HP.\nNo combat delay.'
+    },
+    'greater_health_potion': {
+        id: 'greater_health_potion', name: 'Greater Health Potion', type: 'consumable', useAction: 'Drink',
+        healAmount: 25, value: 35, isPotion: true,
+        description: 'A large healing potion.\nHeals 25 HP.\nNo combat delay.'
     },
 };
 
 const MONSTERS = {
+    // Early Game (Rounds 1-10)
     'rat': {
-        name: 'Giant Rat', health: 8, attack: 2, defense: 0, speed: 1.5, goldDrop: [2, 5],
+        name: 'Giant Rat', health: 12, attack: 2, defense: 0, speed: 1.5, goldDrop: [3, 6],
         lootTable: [
-            { itemId: 'bread', chance: 1 },
-            { itemId: 'fish', chance: 1 },
+            { itemId: 'bread', chance: 0.5 },
+            { itemId: 'wooden_sword', chance: 0.1 },
+            { itemId: 'leather_helm', chance: 0.1 },
         ]
     },
-    'goblin': {
-        name: 'Goblin', health: 15, attack: 4, defense: 1, speed: 2.0, goldDrop: [5, 10],
+    'bandit': {
+        name: 'Bandit', health: 15, attack: 3, defense: 1, speed: 1.8, goldDrop: [5, 8],
         lootTable: [
-            { itemId: 'rusty_sword', chance: 1 },
-            { itemId: 'leather_helm', chance: 1 },
-            { itemId: 'bread', chance: 0.15 },
+            { itemId: 'rusty_sword', chance: 0.15 },
+            { itemId: 'wooden_shield', chance: 0.15 },
+            { itemId: 'bread', chance: 0.3 },
         ]
     },
-    'skeleton': {
-        name: 'Skeleton', health: 20, attack: 5, defense: 2, speed: 2.5, goldDrop: [8, 15],
+    'wolf': {
+        name: 'Dire Wolf', health: 14, attack: 4, defense: 0, speed: 1.2, goldDrop: [4, 7],
         lootTable: [
-            { itemId: 'iron_shield', chance: 1 },
-            { itemId: 'rusty_sword', chance: 1 },
+            { itemId: 'cooked_meat', chance: 0.4 },
+            { itemId: 'leather_legs', chance: 0.15 },
         ]
     },
-    // Mini-Bosses
-    'orc_warrior': {
-        name: 'Orc Warrior', health: 40, attack: 7, defense: 3, speed: 3.0, goldDrop: [20, 35],
+
+    // Mid Game (Rounds 11-20)
+    'goblin_warrior': {
+        name: 'Goblin Warrior', health: 20, attack: 5, defense: 2, speed: 1.8, goldDrop: [8, 12],
         lootTable: [
-            { itemId: 'iron_greatsword', chance: 0.1 },
-            { itemId: 'chainmail', chance: 0.08 },
-            { itemId: 'iron_helm', chance: 0.1 },
+            { itemId: 'iron_sword', chance: 0.12 },
+            { itemId: 'iron_shield', chance: 0.12 },
             { itemId: 'health_potion', chance: 0.2 },
         ]
     },
-    'troll': {
-        name: 'Cave Troll', health: 60, attack: 9, defense: 2, speed: 3.5, goldDrop: [30, 50],
+    'skeleton': {
+        name: 'Skeleton Warrior', health: 18, attack: 6, defense: 1, speed: 2.0, goldDrop: [7, 11],
         lootTable: [
-            { itemId: 'iron_greatsword', chance: 0.05 }, // Lower chance for greatsword
-            { itemId: 'iron_shield', chance: 0.1 },
-            { itemId: 'chainmail', chance: 0.1 },
-            { itemId: 'health_potion', chance: 0.3 },
+            { itemId: 'iron_helm', chance: 0.12 },
+            { itemId: 'iron_legs', chance: 0.12 },
+            { itemId: 'health_potion', chance: 0.15 },
         ]
     },
-    // Boss
+    'armored_zombie': {
+        name: 'Armored Zombie', health: 25, attack: 4, defense: 3, speed: 2.5, goldDrop: [9, 13],
+        lootTable: [
+            { itemId: 'iron_armor', chance: 0.12 },
+            { itemId: 'iron_shield', chance: 0.12 },
+            { itemId: 'health_potion', chance: 0.2 },
+        ]
+    },
+
+    // Late Game (Rounds 21-29)
+    'orc_warrior': {
+        name: 'Orc Warrior', health: 35, attack: 7, defense: 3, speed: 2.2, goldDrop: [15, 20],
+        lootTable: [
+            { itemId: 'steel_sword', chance: 0.1 },
+            { itemId: 'steel_shield', chance: 0.1 },
+            { itemId: 'greater_health_potion', chance: 0.25 },
+        ]
+    },
+    'troll': {
+        name: 'Cave Troll', health: 45, attack: 8, defense: 2, speed: 2.8, goldDrop: [18, 25],
+        lootTable: [
+            { itemId: 'steel_greatsword', chance: 0.08 },
+            { itemId: 'steel_armor', chance: 0.08 },
+            { itemId: 'greater_health_potion', chance: 0.3 },
+        ]
+    },
+    'dark_knight': {
+        name: 'Dark Knight', health: 40, attack: 7, defense: 4, speed: 2.0, goldDrop: [20, 28],
+        lootTable: [
+            { itemId: 'steel_helm', chance: 0.1 },
+            { itemId: 'steel_legs', chance: 0.1 },
+            { itemId: 'greater_health_potion', chance: 0.25 },
+        ]
+    },
+
+    // Final Boss (Round 30)
     'dragon': {
-        name: 'Red Dragon', health: 150, attack: 12, defense: 5, speed: 2.5, goldDrop: [100, 150],
-        lootTable: [] // Boss doesn't drop items, just win condition
+        name: 'Ancient Dragon', health: 120, attack: 12, defense: 6, speed: 2.5, goldDrop: [100, 150],
+        lootTable: [] // Boss doesn't drop items, just victory
     }
 };
 
@@ -139,18 +214,26 @@ const ENCOUNTER_PROBABILITY = [
     { type: 'mini-boss', weight: 15 },
 ];
 
-// Define which monsters are common and which are mini-bosses
-const COMMON_MONSTERS = ['rat', 'goblin', 'skeleton'];
-const MINI_BOSSES = ['orc_warrior', 'troll'];
+// Define which monsters appear in which stages
+const COMMON_MONSTERS = ['rat', 'bandit', 'wolf', 'goblin_warrior', 'skeleton', 'armored_zombie'];
+const MINI_BOSSES = ['orc_warrior', 'troll', 'dark_knight'];
 const FINAL_BOSS = 'dragon';
 
 // Shop settings
 const SHOP_NUM_ITEMS = 3;
 const SHOP_REROLL_COST = 10;
-// Item pool for shops (can adjust rarity later)
+
+// Item pool for shops (with progressive tiers)
 const SHOP_ITEM_POOL = [
-    'rusty_sword', 'sharp_dagger', 'iron_greatsword', // Weapons
-    'leather_helm', 'iron_helm', 'leather_armor', 'chainmail', // Body/Helm
-    'leather_pants', 'wooden_shield', 'iron_shield', // Legs/Shield
-    'bread', 'fish', 'health_potion' // Consumables
+    // Early game items (always available)
+    'wooden_sword', 'rusty_sword', 'leather_helm', 'leather_armor', 'leather_legs', 'wooden_shield',
+    'bread', 'cooked_meat', 'health_potion',
+    
+    // Mid game items (less common)
+    'iron_sword', 'quick_dagger', 'iron_helm', 'iron_armor', 'iron_legs', 'iron_shield',
+    'health_potion',
+    
+    // Late game items (rare)
+    'steel_sword', 'steel_greatsword', 'steel_helm', 'steel_armor', 'steel_legs', 'steel_shield',
+    'greater_health_potion'
 ];
