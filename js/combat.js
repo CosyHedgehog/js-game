@@ -78,16 +78,17 @@ class Combat {
 
     playerAttack() {
         const playerAttackRoll = rollDamage(this.player.getAttack());
-        const enemyDefenseRoll = rollDamage(this.enemy.defense || 0); // Roll defense randomly
+        const enemyDefenseRoll = rollDamage(this.enemy.defense || 0);
+        const actualBlocked = Math.min(playerAttackRoll, enemyDefenseRoll); // Only block up to the attack amount
         const damageDealt = Math.max(0, playerAttackRoll - enemyDefenseRoll);
         
         this.enemy.health = Math.max(0, this.enemy.health - damageDealt);
         
-        // Update log message to be clearer about full blocks
-        if (damageDealt === 0 && enemyDefenseRoll > 0) {
-            this.game.addLog(`You attack ${this.enemy.name} but they block all ${enemyDefenseRoll} damage!`);
+        // Update log message to show actual amount blocked
+        if (damageDealt === 0 && actualBlocked > 0) {
+            this.game.addLog(`You attack ${this.enemy.name} but they block all ${actualBlocked} damage!`);
         } else {
-            this.game.addLog(`You attack ${this.enemy.name} for ${damageDealt} damage. (${playerAttackRoll} - ${enemyDefenseRoll} blocked)`);
+            this.game.addLog(`You attack ${this.enemy.name} for ${damageDealt} damage. (${playerAttackRoll} - ${actualBlocked} blocked)`);
         }
         
         this.ui.updateCombatantHealth(
@@ -95,36 +96,36 @@ class Combat {
             this.enemy.health, 
             this.enemy.maxHealth, 
             damageDealt, 
-            enemyDefenseRoll, 
+            actualBlocked, // Pass actual blocked amount instead of defense roll
             false, 
-            damageDealt === 0 && enemyDefenseRoll > 0
+            damageDealt === 0 && actualBlocked > 0
         );
         this.ui.updatePlayerStats();
     }
 
     enemyAttack() {
         const enemyAttackRoll = rollDamage(this.enemy.attack);
-        const playerDefenseRoll = rollDamage(this.player.getDefense()); // Roll defense randomly
+        const playerDefenseRoll = rollDamage(this.player.getDefense());
+        const actualBlocked = Math.min(enemyAttackRoll, playerDefenseRoll); // Only block up to the attack amount
         const damageDealt = Math.max(0, enemyAttackRoll - playerDefenseRoll);
         
         this.player.health = Math.max(0, this.player.health - damageDealt);
         
-        // Update log message to be clearer about full blocks
-        if (damageDealt === 0 && playerDefenseRoll > 0) {
-            this.game.addLog(`${this.enemy.name} attacks but you block all ${playerDefenseRoll} damage!`);
+        // Update log message to show actual amount blocked
+        if (damageDealt === 0 && actualBlocked > 0) {
+            this.game.addLog(`${this.enemy.name} attacks but you block all ${actualBlocked} damage!`);
         } else {
-            this.game.addLog(`${this.enemy.name} attacks you for ${damageDealt} damage. (${enemyAttackRoll} - ${playerDefenseRoll} blocked)`);
+            this.game.addLog(`${this.enemy.name} attacks you for ${damageDealt} damage. (${enemyAttackRoll} - ${actualBlocked} blocked)`);
         }
         
-        // Pass the same parameters as in playerAttack for consistency
         this.ui.updateCombatantHealth(
             'player', 
             this.player.health, 
             this.player.maxHealth, 
             damageDealt, 
-            playerDefenseRoll, 
+            actualBlocked, // Pass actual blocked amount instead of defense roll
             false, 
-            damageDealt === 0 && playerDefenseRoll > 0
+            damageDealt === 0 && actualBlocked > 0
         );
         this.ui.updatePlayerStats();
     }
