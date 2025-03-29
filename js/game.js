@@ -147,12 +147,12 @@ class Game {
         this.currentChoices = [];
         const choice1 = this.getRandomEncounter();
         const choice2 = this.getRandomEncounter();
-        const choice3 = this.getRandomEncounter(); // Add third choice
+        const choice3 = this.getRandomEncounter();
 
         // Ensure choices are described clearly
         this.currentChoices.push({ text: this.getEncounterText(choice1), encounter: choice1 });
         this.currentChoices.push({ text: this.getEncounterText(choice2), encounter: choice2 });
-        this.currentChoices.push({ text: this.getEncounterText(choice3), encounter: choice3 }); // Add third choice
+        this.currentChoices.push({ text: this.getEncounterText(choice3), encounter: choice3 });
 
         this.ui.renderChoices(this.currentChoices);
     }
@@ -206,10 +206,54 @@ class Game {
 
     selectChoice(index) {
         if (this.state !== 'choosing' || index < 0 || index >= this.currentChoices.length) {
-            return; // Ignore clicks if not in choosing state or invalid index
+            return;
         }
+        
+        // Instead of starting encounter immediately, show confirmation
+        const selectedChoice = this.currentChoices[index];
+        this.ui.showEncounterConfirmation(selectedChoice, index);
+    }
+
+    // Add new method to handle final confirmation
+    confirmChoice(index) {
         const selectedChoice = this.currentChoices[index];
         this.startEncounter(selectedChoice.encounter);
+    }
+
+    // Add new method to get encounter details
+    getEncounterDetails(encounter) {
+        switch (encounter.type) {
+            case 'monster':
+            case 'mini-boss':
+            case 'boss': {
+                const monster = MONSTERS[encounter.monsterId];
+                if (!monster) return "Error: Monster data not found.";
+                return `${monster.name}\n` +
+                       `Health: ${monster.health}\n` +
+                       `Attack: ${monster.attack}\n` +
+                       `Defense: ${monster.defense}\n` +
+                       `Attack Speed: ${monster.speed}s\n` +
+                       `Gold Drop: ${monster.goldDrop[0]}-${monster.goldDrop[1]}\n\n` +
+                       `This will start a combat encounter. Are you ready to fight?`;
+            }
+            case 'rest':
+                return `Rest at this site to recover 50% of your maximum health (${Math.floor(this.player.maxHealth * 0.5)} HP).\n\n` +
+                       `Do you want to rest here?`;
+            case 'shop':
+                return "Visit a merchant to buy and sell items.\n" +
+                       "You can also reroll the shop's inventory once for 5 gold.\n\n" +
+                       `Current gold: ${this.player.gold}\n\n` +
+                       "Enter shop?";
+            case 'fishing':
+                return "Try your luck fishing!\n" +
+                       "You might catch 1-5 fish of varying sizes:\n" +
+                       "- Small Fish (Common) - Heals 2 HP\n" +
+                       "- Medium Fish (Uncommon) - Heals 5 HP\n" +
+                       "- Large Fish (Rare) - Heals 8 HP\n\n" +
+                       "Go fishing?";
+            default:
+                return "Unknown encounter type.";
+        }
     }
 
     startEncounter(encounter) {

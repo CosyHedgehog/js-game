@@ -13,17 +13,13 @@ body {
 }
 
 #game-container {
-    width: 1200px;
-    height: 800px;
-    background-color: #252525;
-    /* Slightly lighter container */
-    border: 1px solid #3a3a3a;
-    /* Dim border */
-    position: relative;
+    width: 100vw;
+    height: 100vh;
     display: flex;
-    box-sizing: border-box;
-    border-radius: 6px;
-    overflow: hidden;
+    justify-content: center;
+    align-items: center;
+    background: #1a1a1a;
+    overflow: hidden; /* Prevent scrollbars */
 }
 
 /* --- Screen Visibility --- */
@@ -44,16 +40,20 @@ body {
 /* --- NEW Game Screen Grid Layout --- */
 #game-screen:not(.hidden) {
     display: grid;
-    grid-template-columns: 3fr 1.2fr;
-    grid-template-rows: 40px 1fr 180px;
     grid-template-areas:
-        "rounds rounds"
-        "main   right"
-        "log    right";
-    padding: 30px;
-    gap: 25px 30px;
-    overflow: hidden;
-    background-color: #252525;
+        "main right"
+        "log log"
+        "rounds rounds";
+    grid-template-columns: 1fr 300px;
+    grid-template-rows: 1fr 80px 30px;
+    gap: 10px;
+    padding: 10px;
+    width: 75vw;
+    height: 90vh;
+    box-sizing: border-box;
+    background: #2a2a2a;
+    border-radius: 8px;
+    overflow: hidden; /* Prevent internal scrolling */
 }
 
 /* --- Grid Area Assignments --- */
@@ -103,20 +103,19 @@ body {
     grid-area: main;
     display: flex;
     flex-direction: column;
-    height: 100%; /* Take full height of grid area */
-    box-sizing: border-box;
-    overflow: hidden; /* Hide overflow on container */
+    gap: 10px;
+    height: 100%;
+    overflow: hidden;
 }
 
 /* Output Log Area (Bottom Left) */
 #output-log-area {
     grid-area: log;
-    height: 180px;
-    background-color: #313131;
-    border: 1px solid #444;
+    background: rgba(0, 0, 0, 0.2);
     border-radius: 5px;
-    padding: 10px 12px;
-    overflow-y: scroll;
+    padding: 10px;
+    height: 80px; /* Fixed height */
+    overflow-y: auto;
 }
 
 #output-log {
@@ -142,23 +141,18 @@ body {
     grid-area: right;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 10px;
     height: 100%;
+    width: 300px;
 }
 
 /* Inventory Area (Inside Right Column) */
 #inventory-area {
-    background-color: #313131;
-    border: 1px solid #444;
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.2);
     border-radius: 5px;
-    padding: 15px;
-    position: relative;
-    box-sizing: border-box;
-    flex: 1; /* Take remaining space */
-    height: 100%;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
 }
 
 #inventory-area h3 {
@@ -809,61 +803,53 @@ button:disabled {
 /* NEW Game Screen Grid Layout */
 #game-screen:not(.hidden) {
     display: grid;
-    grid-template-columns: 3fr 1.2fr;
-    grid-template-rows: 40px 1fr 180px;
     grid-template-areas:
-        "rounds rounds"
-        "main   right"
-        "log    right";
-    padding: 30px;
-    gap: 25px 30px;
-    overflow: hidden;
-    background-color: #252525;
+        "main right"
+        "log log"
+        "rounds rounds";
+    grid-template-columns: 1fr 300px;
+    grid-template-rows: 1fr 80px 30px;
+    gap: 10px;
+    padding: 10px;
+    width: 75vw;
+    height: 90vh;
+    box-sizing: border-box;
+    background: #2a2a2a;
+    border-radius: 8px;
+    overflow: hidden; /* Prevent internal scrolling */
 }
 
 /* Round Indicator Area (Very Top) */
 #round-indicator-area {
     grid-area: rounds;
-    /* Assign to the new grid area */
     display: flex;
     justify-content: center;
-    /* Center orbs horizontally */
     align-items: center;
-    padding-bottom: 5px;
-    /* Small space below orbs */
-    /* Optional border for visual separation */
-    /* border-bottom: 1px solid #3a3a3a; */
+    gap: 4px;
+    padding: 5px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    height: 30px;
 }
 
 /* Individual Round Orb Style */
 .round-orb {
-    width: 22px;
-    /* Orb size */
-    height: 22px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
-    /* Make it circular */
-    margin: 0 6px;
-    /* Spacing between orbs */
-    background-color: #404040;
-    /* Default dim color */
-    border: 1px solid #303030;
-    /* Dark border */
-    transition: all 0.2s ease-in-out;
-    /* Smooth transition for highlight */
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4);
-    /* Subtle inner shadow */
+    background: rgba(255, 255, 255, 0.2);
+    transition: all 0.2s ease;
+}
+
+.round-orb.current-round {
+    background: #4CAF50;
+    box-shadow: 0 0 5px #4CAF50;
 }
 
 /* Style for the CURRENT round's orb */
 .round-orb.current-round {
-    background-color: #a0a0a0;
-    /* Brighter background */
-    border-color: #ffffff;
-    /* White border */
-    box-shadow: 0 0 6px rgba(255, 255, 255, 0.5), inset 0 1px 1px rgba(0, 0, 0, 0.2);
-    /* Outer glow + inner */
-    transform: scale(1.1);
-    /* Slightly larger */
+    background: #fff;
+    box-shadow: 0 0 5px #fff;
 }
 
 /* Update/Add these styles */
@@ -1198,4 +1184,55 @@ button:disabled {
 #combat-run-button:active {
     background-color: #700000;
     transform: translateY(1px);
+}
+
+/* Add these new styles */
+.encounter-confirmation {
+    background: #2a2a2a;
+    border: 1px solid #444;
+    border-radius: 5px;
+    padding: 15px;
+    margin-top: 15px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.encounter-details {
+    white-space: pre-wrap;
+    margin-bottom: 15px;
+    color: #ddd;
+    font-size: 0.95em;
+    line-height: 1.4;
+}
+
+.confirmation-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.confirm-button {
+    background-color: #4a6b4a !important;
+    border-color: #3a5a3a !important;
+}
+
+.confirm-button:hover {
+    background-color: #557755 !important;
+    border-color: #456945 !important;
+}
+
+.cancel-button {
+    background-color: #6b4040 !important;
+    border-color: #5a3a3a !important;
+}
+
+.cancel-button:hover {
+    background-color: #774444 !important;
+    border-color: #663333 !important;
+}
+
+/* Update the choice buttons when selected */
+.choice-button.selected {
+    border: 2px solid #4a6b4a !important;
+    box-shadow: 0 0 10px rgba(74, 107, 74, 0.3) !important;
 }

@@ -347,16 +347,64 @@ class UI {
     renderChoices(choices) {
         this.clearMainArea();
         this.choicesArea.classList.remove('hidden');
-        this.choicesArea.innerHTML = ''; // Clear previous choices
+        this.choicesArea.innerHTML = '';
 
         choices.forEach((choice, index) => {
             const button = document.createElement('button');
             button.textContent = choice.text;
+            button.classList.add('choice-button');
             button.addEventListener('click', () => {
-                this.game.selectChoice(index); // Tell the game which choice was made
+                // Remove selected class from all buttons
+                this.choicesArea.querySelectorAll('.choice-button').forEach(btn => {
+                    btn.classList.remove('selected');
+                });
+                // Add selected class to clicked button
+                button.classList.add('selected');
+                this.game.selectChoice(index);
             });
             this.choicesArea.appendChild(button);
         });
+    }
+
+    showEncounterConfirmation(choice, index) {
+        // Remove any existing confirmation box
+        const existingConfirmation = this.choicesArea.querySelector('.encounter-confirmation');
+        if (existingConfirmation) {
+            existingConfirmation.remove();
+        }
+
+        const confirmationBox = document.createElement('div');
+        confirmationBox.classList.add('encounter-confirmation');
+
+        const details = document.createElement('div');
+        details.classList.add('encounter-details');
+        details.textContent = this.game.getEncounterDetails(choice.encounter);
+        confirmationBox.appendChild(details);
+
+        const buttonsContainer = document.createElement('div');
+        buttonsContainer.classList.add('confirmation-buttons');
+
+        const confirmButton = document.createElement('button');
+        confirmButton.textContent = 'Confirm';
+        confirmButton.classList.add('confirm-button');
+        confirmButton.onclick = () => this.game.confirmChoice(index);
+
+        const cancelButton = document.createElement('button');
+        cancelButton.textContent = 'Cancel';
+        cancelButton.classList.add('cancel-button');
+        cancelButton.onclick = () => {
+            confirmationBox.remove();
+            // Remove selected state from all buttons
+            this.choicesArea.querySelectorAll('.choice-button').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+        };
+
+        buttonsContainer.appendChild(confirmButton);
+        buttonsContainer.appendChild(cancelButton);
+        confirmationBox.appendChild(buttonsContainer);
+
+        this.choicesArea.appendChild(confirmationBox);
     }
 
     // --- UI State Changes ---
