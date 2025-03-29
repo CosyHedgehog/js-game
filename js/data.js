@@ -177,7 +177,7 @@ const ITEMS = {
 const MONSTERS = {
     // Early Game (Rounds 1-10)
     'rat': {
-        name: 'Giant Rat', health: 12, attack: 2, defense: 0, speed: 1.5, goldDrop: [1, 2],
+        name: 'Giant Rat', health: 12, attack: 2, defense: 0, speed: 1.5, goldDrop: [2, 4],
         lootTable: [
             { itemId: 'bread', chance: 0.5 },
             { itemId: 'wooden_sword', chance: 0.1 },
@@ -185,7 +185,7 @@ const MONSTERS = {
         ]
     },
     'bandit': {
-        name: 'Bandit', health: 15, attack: 3, defense: 1, speed: 1.8, goldDrop: [1, 3],
+        name: 'Bandit', health: 15, attack: 3, defense: 1, speed: 1.8, goldDrop: [3, 6],
         lootTable: [
             { itemId: 'rusty_sword', chance: 0.15 },
             { itemId: 'wooden_shield', chance: 0.15 },
@@ -193,7 +193,7 @@ const MONSTERS = {
         ]
     },
     'wolf': {
-        name: 'Dire Wolf', health: 14, attack: 4, defense: 0, speed: 1.2, goldDrop: [1, 2],
+        name: 'Dire Wolf', health: 14, attack: 4, defense: 0, speed: 1.2, goldDrop: [2, 5],
         lootTable: [
             { itemId: 'cooked_meat', chance: 0.4 },
             { itemId: 'leather_legs', chance: 0.15 },
@@ -202,7 +202,7 @@ const MONSTERS = {
 
     // Mid Game (Rounds 11-20)
     'goblin_warrior': {
-        name: 'Goblin Warrior', health: 20, attack: 5, defense: 2, speed: 1.8, goldDrop: [2, 4],
+        name: 'Goblin Warrior', health: 20, attack: 5, defense: 2, speed: 1.8, goldDrop: [4, 8],
         lootTable: [
             { itemId: 'iron_sword', chance: 0.12 },
             { itemId: 'iron_shield', chance: 0.12 },
@@ -210,7 +210,7 @@ const MONSTERS = {
         ]
     },
     'skeleton': {
-        name: 'Skeleton Warrior', health: 18, attack: 6, defense: 1, speed: 2.0, goldDrop: [2, 3],
+        name: 'Skeleton Warrior', health: 18, attack: 6, defense: 1, speed: 2.0, goldDrop: [4, 7],
         lootTable: [
             { itemId: 'iron_helm', chance: 0.12 },
             { itemId: 'iron_legs', chance: 0.12 },
@@ -218,7 +218,7 @@ const MONSTERS = {
         ]
     },
     'armored_zombie': {
-        name: 'Armored Zombie', health: 25, attack: 4, defense: 3, speed: 2.5, goldDrop: [2, 4],
+        name: 'Armored Zombie', health: 25, attack: 4, defense: 3, speed: 2.5, goldDrop: [4, 8],
         lootTable: [
             { itemId: 'iron_armor', chance: 0.12 },
             { itemId: 'iron_shield', chance: 0.12 },
@@ -228,7 +228,7 @@ const MONSTERS = {
 
     // Late Game (Rounds 21-29)
     'orc_warrior': {
-        name: 'Orc Warrior', health: 35, attack: 7, defense: 3, speed: 2.2, goldDrop: [3, 5],
+        name: 'Orc Warrior', health: 35, attack: 7, defense: 3, speed: 2.2, goldDrop: [6, 10],
         lootTable: [
             { itemId: 'steel_sword', chance: 0.1 },
             { itemId: 'steel_shield', chance: 0.1 },
@@ -236,7 +236,7 @@ const MONSTERS = {
         ]
     },
     'troll': {
-        name: 'Cave Troll', health: 45, attack: 8, defense: 2, speed: 2.8, goldDrop: [4, 6],
+        name: 'Cave Troll', health: 45, attack: 8, defense: 2, speed: 2.8, goldDrop: [8, 12],
         lootTable: [
             { itemId: 'steel_greatsword', chance: 0.08 },
             { itemId: 'steel_armor', chance: 0.08 },
@@ -244,7 +244,7 @@ const MONSTERS = {
         ]
     },
     'dark_knight': {
-        name: 'Dark Knight', health: 40, attack: 7, defense: 4, speed: 2.0, goldDrop: [4, 7],
+        name: 'Dark Knight', health: 40, attack: 7, defense: 4, speed: 2.0, goldDrop: [8, 14],
         lootTable: [
             { itemId: 'steel_helm', chance: 0.1 },
             { itemId: 'steel_legs', chance: 0.1 },
@@ -255,7 +255,7 @@ const MONSTERS = {
 
     // Final Boss (Round 30)
     'dragon': {
-        name: 'Ancient Dragon', health: 120, attack: 12, defense: 6, speed: 2.5, goldDrop: [20, 30],
+        name: 'Ancient Dragon', health: 120, attack: 12, defense: 6, speed: 2.5, goldDrop: [40, 60],
         lootTable: [] // Boss doesn't drop items, just victory
     }
 };
@@ -282,7 +282,7 @@ const FINAL_BOSS = 'dragon';
 
 // Shop settings
 const SHOP_NUM_ITEMS = 3;
-const SHOP_REROLL_COST = 5;
+const SHOP_REROLL_COST = 3;
 
 // Item pool for shops (with progressive tiers)
 const SHOP_ITEM_POOL = [

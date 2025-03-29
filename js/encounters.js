@@ -45,16 +45,16 @@ function handleShopEncounter(game, ui) {
 
 function generateShopItems(count) {
     const items = [];
-    const availableItems = [...SHOP_ITEM_POOL]; // Copy pool
+    const availableItems = [...SHOP_ITEM_POOL];
     for (let i = 0; i < count; i++) {
-        if (availableItems.length === 0) break; // No more unique items to pick
+        if (availableItems.length === 0) break;
 
         const randomIndex = getRandomInt(0, availableItems.length - 1);
-        const itemId = availableItems.splice(randomIndex, 1)[0]; // Pick and remove
+        const itemId = availableItems.splice(randomIndex, 1)[0];
         const itemData = createItem(itemId);
         if (itemData) {
-            // Determine buy price (e.g., double the value, or more complex logic)
-            itemData.buyPrice = itemData.value * 2 + getRandomInt(0, itemData.value);
+            // Reduce shop prices: 1.5x value instead of 2x, with smaller random addition
+            itemData.buyPrice = Math.ceil(itemData.value * 1.3 + getRandomInt(0, Math.floor(itemData.value * 0.2)));
             items.push(itemData);
         }
     }
