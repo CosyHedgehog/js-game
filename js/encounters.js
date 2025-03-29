@@ -111,3 +111,34 @@ function handleRerollShop(game, ui) {
         game.addLog(`Not enough gold to reroll (costs ${SHOP_REROLL_COST})!`);
     }
 }
+
+function handleFishingEncounter(game, ui) {
+    game.state = 'fishing';
+    game.addLog("You found a good fishing spot!");
+
+    // Determine number of fish caught (1-5)
+    const fishCaught = getRandomInt(1, 5);
+    game.addLog(`You caught ${fishCaught} fish!`);
+
+    // Generate fish based on rarity
+    const caughtItems = [];
+    for (let i = 0; i < fishCaught; i++) {
+        const roll = Math.random();
+        let cumulative = 0;
+        
+        for (const fish of FISHING_LOOT_TABLE) {
+            cumulative += fish.chance;
+            if (roll < cumulative) {
+                const fishItem = createItem(fish.itemId);
+                if (fishItem) {
+                    fishItem.selected = true;
+                    caughtItems.push(fishItem);
+                }
+                break;
+            }
+        }
+    }
+
+    // Enter loot state with caught fish
+    game.enterLootState(0, caughtItems); // No gold, just fish
+}

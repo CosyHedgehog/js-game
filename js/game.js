@@ -190,6 +190,8 @@ class Game {
                 return 'Visit Shop';
             case 'mini-boss':
                 return `Fight Mini-Boss: ${MONSTERS[encounter.monsterId]?.name || 'Mini-Boss'}`;
+            case 'fishing':
+                return 'Go Fishing (1-5 Fish)';
             default:
                 return 'Unknown Encounter';
         }
@@ -218,20 +220,21 @@ class Game {
         switch (encounter.type) {
             case 'monster':
             case 'mini-boss':
-            case 'boss': // Handle boss fight same as monster fight initially
+            case 'boss':
                 handleMonsterEncounter(this, this.ui, encounter.monsterId);
                 break;
             case 'rest':
                 handleRestEncounter(this, this.ui);
-                // State set to 'rest' inside handler
                 break;
             case 'shop':
                 handleShopEncounter(this, this.ui);
-                // State set to 'shop' inside handler
+                break;
+            case 'fishing':
+                handleFishingEncounter(this, this.ui);
                 break;
             default:
                 this.addLog("Unknown encounter type selected.");
-                this.proceedToNextRound(); // Move on if something weird happens
+                this.proceedToNextRound();
         }
     }
 

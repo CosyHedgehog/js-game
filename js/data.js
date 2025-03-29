@@ -119,6 +119,23 @@ const ITEMS = {
         healAmount: 25, value: 12, isPotion: true,
         description: 'A large healing potion.\nHeals 25 HP.\nNo combat delay.'
     },
+
+    // Fish Items
+    'small_fish': {
+        id: 'small_fish', name: 'Small Fish', type: 'consumable', useAction: 'Eat',
+        healAmount: 2, value: 1,
+        description: 'A tiny fish.\nHeals 2 HP.'
+    },
+    'medium_fish': {
+        id: 'medium_fish', name: 'Medium Fish', type: 'consumable', useAction: 'Eat',
+        healAmount: 5, value: 2,
+        description: 'A decent-sized fish.\nHeals 5 HP.'
+    },
+    'large_fish': {
+        id: 'large_fish', name: 'Large Fish', type: 'consumable', useAction: 'Eat',
+        healAmount: 8, value: 4,
+        description: 'An impressive fish.\nHeals 8 HP.'
+    },
 };
 
 const MONSTERS = {
@@ -208,10 +225,11 @@ const MONSTERS = {
 
 // Probabilities for encounters
 const ENCOUNTER_PROBABILITY = [
-    { type: 'monster', weight: 35 },
-    { type: 'rest', weight: 35 },
+    { type: 'monster', weight: 30 },
+    { type: 'rest', weight: 30 },
     { type: 'shop', weight: 15 },
     { type: 'mini-boss', weight: 15 },
+    { type: 'fishing', weight: 10 },
 ];
 
 // Define which monsters appear in which stages
@@ -236,4 +254,11 @@ const SHOP_ITEM_POOL = [
     // Late game items (rare)
     'steel_sword', 'steel_greatsword', 'steel_helm', 'steel_armor', 'steel_legs', 'steel_shield',
     'greater_health_potion'
+];
+
+// Add fishing loot table
+const FISHING_LOOT_TABLE = [
+    { itemId: 'small_fish', chance: 0.6 },    // Common
+    { itemId: 'medium_fish', chance: 0.3 },   // Uncommon
+    { itemId: 'large_fish', chance: 0.1 }     // Rare
 ];
