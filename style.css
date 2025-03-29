@@ -66,6 +66,8 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     margin: 0;
     margin-bottom: 8px;
+    flex-shrink: 0;
+    padding: 10px;
 }
 
 .stat-item {
@@ -926,16 +928,12 @@ button:disabled {
 
 /* Content wrapper for scrollable area */
 #main-content {
-    flex: 1;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center; /* Center vertically */
-    gap: 15px;
-    padding: 15px;
-    box-sizing: border-box;
-    min-height: 100%; /* Take full height of parent */
-    background-color: transparent; /* Remove background color */
+    gap: 10px;
+    padding: 10px;
+    overflow-y: auto;
+    height: calc(100% - 120px); /* Adjust based on stats panel height */
 }
 
 /* Ensure combat, shop, rest, and loot areas are centered */
@@ -1438,4 +1436,11 @@ html {
     color: #fff;
     font-size: 1.1em;
     text-align: center; /* Center align both headers */
+}
+
+/* Add this to style the disabled shop buttons */
+.shop-item-button:disabled {
+    background-color: #666;
+    cursor: not-allowed;
+    opacity: 0.6;
 }

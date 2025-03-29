@@ -668,7 +668,7 @@ class UI {
         
         // Add items using similar structure to loot items
         items.forEach((item, index) => {
-            if (!item) return; // Skip if item was already bought
+            if (!item) return;
 
             const itemDiv = document.createElement('div');
             itemDiv.classList.add('shop-item');
@@ -680,7 +680,7 @@ class UI {
                     <span class="shop-item-name">${item.name}</span>
                     <span class="shop-item-price">${item.buyPrice} G</span>
                 </div>
-                <button class="shop-item-button">Buy</button>
+                <button class="shop-item-button" ${this.game.player.gold < item.buyPrice ? 'disabled' : ''}>Buy</button>
             `;
             
             // Add tooltip functionality

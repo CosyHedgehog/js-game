@@ -136,6 +136,17 @@ const ITEMS = {
         healAmount: 8, value: 4,
         description: 'An impressive fish.\nHeals 8 HP.'
     },
+
+    // Add new ring item
+    'dragon_ring': {
+        id: 'dragon_ring', 
+        name: 'Dragon Ring', 
+        type: 'armor', 
+        slot: 'ring',
+        stats: { attack: 2, defense: 2 }, 
+        value: 25,
+        description: 'A powerful ring imbued with dragon magic.\nAttack: +2\nDefense: +2'
+    },
 };
 
 const MONSTERS = {
@@ -213,6 +224,7 @@ const MONSTERS = {
             { itemId: 'steel_helm', chance: 0.1 },
             { itemId: 'steel_legs', chance: 0.1 },
             { itemId: 'greater_health_potion', chance: 0.25 },
+            { itemId: 'dragon_ring', chance: 0.05 }
         ]
     },
 
