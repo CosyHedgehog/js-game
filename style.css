@@ -510,8 +510,7 @@ button:disabled {
 }
 
 #shop-area {
-    width: 100%;
-    height: 100%;
+    width: 90%;
     max-width: 600px;
     background-color: #313131;
     border: 1px solid #444;
@@ -521,34 +520,123 @@ button:disabled {
     display: flex;
     flex-direction: column;
     align-items: center;
+    min-height: 300px;
+    height: 300px;
+    box-sizing: border-box;
+    justify-content: space-between;
 }
 
-#shop-items {
-    margin: 15px 0;
+#shop-area h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #aaaaaa;
+    font-size: 1.2em;
     width: 100%;
-    max-height: 300px;
-    overflow-y: auto;
-    padding-right: 10px;
-    background-color: #2a2a2a;
-    border: 1px solid #404040;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.shop-items-container {
+    flex: 1;
+    width: 100%;
+    background-color: #2f2f2f;
     border-radius: 4px;
-    padding: 15px;
-    width: 90%;
+    border: 1px solid #404040;
+    overflow-y: auto;
+    min-height: 150px;
+    margin-bottom: 15px;
 }
 
 .shop-item {
-    background-color: #404040;
-    border: 1px solid #4a4a4a;
-    padding: 12px 20px;
-    margin-bottom: 10px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    border-radius: 3px;
+    justify-content: space-between;
+    padding: 10px 12px;
+    border-bottom: 1px solid #404040;
+    gap: 10px;
+    min-height: 45px;
+    box-sizing: border-box;
 }
 
-.shop-item span {
+.shop-item:last-child {
+    border-bottom: none;
+}
+
+.shop-item-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+}
+
+.shop-item-icon {
+    color: #888;
+    font-size: 0.9em;
+}
+
+.shop-item-name {
     color: #cccccc;
+    flex: 1;
+}
+
+.shop-item-price {
+    color: #ffd700;
+    font-weight: bold;
+}
+
+.shop-item-button {
+    background-color: #407540;
+    color: #ffffff;
+    border: 1px solid #285028;
+    padding: 8px 15px;
+    font-size: 0.95em;
+    border-radius: 4px;
+    min-width: 60px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 1px rgba(0, 0, 0, 0.2);
+    transition: all 0.15s ease;
+}
+
+.shop-item-button:hover {
+    background-color: #4e8a4e;
+    border-color: #356835;
+}
+
+.shop-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    width: 100%;
+    margin-top: auto;
+    flex-shrink: 0;
+}
+
+.shop-reroll-button, .shop-leave-button {
+    padding: 12px 30px;
+    font-size: 1.1em;
+    border-radius: 5px;
+    min-width: 120px;
+}
+
+.shop-reroll-button {
+    background-color: #505050;
+    border-color: #3a3a3a;
+    color: #ffffff;
+}
+
+.shop-reroll-button:hover:not(:disabled) {
+    background-color: #5a5a5a;
+    border-color: #454545;
+}
+
+.shop-leave-button {
+    background-color: #6b4040;
+    border-color: #5a3a3a;
+    color: #ffffff;
+}
+
+.shop-leave-button:hover {
+    background-color: #774444;
+    border-color: #663333;
 }
 
 /* --- Add these styles to style.css --- */

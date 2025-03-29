@@ -58,25 +58,28 @@ function handleBuyItem(game, ui, itemIndex) {
     const item = game.currentShopItems[itemIndex];
     if (!item) return; // Item might have been bought already
 
-    // Check inventory space first
+    // Check gold first
+    if (game.player.gold < item.buyPrice) {
+        game.addLog(`You can't afford ${item.name} (${item.buyPrice} gold).`);
+        return;
+    }
+
+    // Only check inventory space if they can afford it
     const freeSlot = game.player.findFreeInventorySlot();
     if (freeSlot === -1) {
         game.addLog("Your inventory is full!");
         return;
     }
 
-    if (game.player.gold >= item.buyPrice) {
-        game.player.spendGold(item.buyPrice);
-        game.player.addItem(item); // Add a *copy*
-        game.addLog(`You bought ${item.name} for ${item.buyPrice} gold.`);
-        // Remove from shop display (or mark as sold) - simple removal here
-        game.currentShopItems.splice(itemIndex, 1);
-        ui.showShopUI(game.currentShopItems, game.shopCanReroll); // Refresh shop UI
-        ui.renderInventory();
-        ui.updatePlayerStats();
-    } else {
-        game.addLog("Not enough gold!");
-    }
+    // If we get here, they can afford it and have space
+    game.player.spendGold(item.buyPrice);
+    game.player.addItem(item); // Add a *copy*
+    game.addLog(`You bought ${item.name} for ${item.buyPrice} gold.`);
+    // Remove from shop display (or mark as sold) - simple removal here
+    game.currentShopItems.splice(itemIndex, 1);
+    ui.showShopUI(game.currentShopItems, game.shopCanReroll); // Refresh shop UI
+    ui.renderInventory();
+    ui.updatePlayerStats();
 }
 
 function handleSellItem(game, ui, inventoryIndex) {
