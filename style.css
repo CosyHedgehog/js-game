@@ -42,52 +42,42 @@ body {
 
 /* --- NEW Game Screen Grid Layout --- */
 #game-screen:not(.hidden) {
+    width: 100%;
+    height: 100%;
     display: grid;
-    grid-template-areas:
-        "main right"
-        "log right"
-        "rounds rounds";
-    grid-template-columns: 1fr 350px;
-    grid-template-rows: 1fr 80px 30px;
-    gap: 10px;
-    padding: 10px;
-    width: 95vw; /* Reduce from 100vw to prevent scrolling */
-    height: 95vh; /* Reduce from 100vh to prevent scrolling */
+    grid-template-columns: 1fr 300px; /* Main content + right sidebar */
+    grid-template-rows: auto 1fr; /* Stats + main content */
+    gap: 16px;
+    padding: 16px;
     box-sizing: border-box;
-    background: #1a1a1a;
-    border-radius: 8px;
-    overflow: hidden;
 }
 
 /* --- Grid Area Assignments --- */
 
 /* Player Stats (Top Left) */
 #player-stats-area {
-    flex: 0 0 40px; /* Fixed height of 40px, don't grow or shrink */
+    grid-column: 1 / -1; /* Span all columns */
     display: flex;
-    justify-content: center;
-    gap: 25px;
-    background-color: #232323;
-    border: 1px solid #404040;
-    border-radius: 4px;
-    padding: 0 15px;
-    margin-bottom: 15px;
-    width: 100%;
-    box-sizing: border-box;
-    align-items: center; /* Center items vertically */
-    color: #cccccc;
+    align-items: center;
+    gap: 24px;
+    background-color: #2a2a2a;
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .stat-item {
     display: flex;
     align-items: center;
-    gap: 6px;
-    font-size: 0.95em;
+    gap: 8px;
+    background-color: #333;
+    padding: 6px 12px;
+    border-radius: 4px;
 }
 
 .stat-label {
-    color: #aaaaaa;
-    font-weight: normal;
+    color: #aaa;
+    font-size: 0.9em;
 }
 
 .stat-item span:not(.stat-label) {
@@ -103,13 +93,14 @@ body {
 
 /* Main Content Area (Middle Left) */
 #main-area {
-    grid-area: main;
+    background-color: #2a2a2a;
+    border-radius: 8px;
+    padding: 16px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    height: 90%;
-    overflow: hidden;
-    background-color: #1a1a1a;
+    gap: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    overflow-y: auto;
 }
 
 /* Output Log Area (Bottom Left) */
@@ -152,53 +143,29 @@ body {
 
 /* Right Column Container (Spans Right Side) */
 #right-column {
-    grid-area: right;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 16px;
     height: 100%;
-    width: 350px;
-    background-color: #232323;
-    border-radius: 5px;
-    padding: 10px;
 }
 
 /* Inventory Area (Inside Right Column) */
 #inventory-area {
-    position: relative;
+    background-color: #2a2a2a;
+    border-radius: 8px;
+    padding: 16px;
     flex: 1;
-    overflow-y: auto;
-    padding: 10px;
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 5px;
-    background-color: #282828;
-    border: 1px solid #404040;
-}
-
-#inventory-area h3 {
-    margin-top: 0;
-    margin-bottom: 12px;
-    color: #aaaaaa;
-    border-bottom: 1px solid #444;
-    padding-bottom: 8px;
-    font-size: 0.9em;
-    font-weight: normal;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    flex-shrink: 0;
-    /* Prevent header shrinking */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 #inventory-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(4, 1fr);
-    gap: 8px; /* Slightly reduce gap */
-    width: auto;
-    box-sizing: border-box;
-    flex-grow: 1;
-    /* Grid fills remaining space */
-    padding: 5px; /* Add small padding */
+    gap: 8px;
+    padding: 8px;
+    background-color: #222;
+    border-radius: 4px;
+    margin-top: 12px;
 }
 
 #inventory-grid .inventory-slot {
@@ -211,66 +178,33 @@ body {
 
 /* Equipment Area (Inside Right Column) */
 #equipment-area {
-    background-color: #282828;
-    border: 1px solid #404040; /* Changed from blue-ish to grey */
-    border-radius: 5px;
-    padding: 15px;
-    position: relative;
-    box-sizing: border-box;
-    text-align: center;
-    flex-shrink: 0;
-    /* Don't shrink disproportionately */
-    color: #cccccc; /* More neutral text color */
-}
-
-#equipment-area h3 {
-    margin-top: 0;
-    margin-bottom: 12px;
-    color: #aaaaaa;
-    border-bottom: 1px solid #444;
-    padding-bottom: 8px;
-    font-size: 0.9em;
-    font-weight: normal;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    background-color: #2a2a2a;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .equip-row {
     display: flex;
     justify-content: center;
-    gap: 12px;
-    margin-bottom: 12px;
+    gap: 8px;
+    margin-top: 12px;
 }
-
-.equip-row:last-child {
-    margin-bottom: 0;
-}
-
 
 /* --- Slot Styling (Inventory & Equipment) --- */
 .inventory-slot,
 .equip-slot {
-    /* Base background for both */
-    background-color: #2c3e50;
-    border: 1px solid #34495e;
-    /* Default border */
-    color: #ecf0f1;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    position: relative;
-    box-sizing: border-box;
+    aspect-ratio: 1;
+    border: 2px solid #444;
     border-radius: 4px;
-    transition: all 0.15s ease;
-    /* Smooth transitions */
-    font-size: 0.85em;
-    min-height: 60px;
-    /* Ensure min size */
-    min-width: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 4px;
+    font-size: 0.9em;
+    background-color: #333;
+    transition: all 0.2s ease;
 }
 
 .equip-slot {
@@ -291,7 +225,6 @@ body {
     width: 90px; /* Reduced from 100px */
 }
 
-
 /* Style for EMPTY slots */
 .inventory-slot.slot-empty,
 .equip-slot.slot-empty {
@@ -307,7 +240,6 @@ body {
     font-size: 1.5em;
     /* Keep placeholder idea */
 }
-
 
 /* Style for FILLED slots */
 .inventory-slot.slot-filled,
@@ -346,14 +278,10 @@ body {
 }
 
 #choices-area {
-    width: 100%;
-    max-width: 1000px; /* Increased to accommodate horizontal layout */
-    display: flex;
-    flex-direction: row; /* Changed from column to row */
-    justify-content: center;
-    gap: 15px; /* Space between buttons */
-    padding: 10px 0;
-    align-items: center;
+    background-color: #333;
+    border-radius: 6px;
+    padding: 16px;
+    margin-top: 8px;
 }
 
 /* --- Buttons (Keep Flat Style) --- */
@@ -488,7 +416,6 @@ button:disabled {
     color: #ffffff;
 }
 
-
 /* --- Tooltips & Context Menus (Keep previous style) --- */
 .tooltip {
     position: fixed;
@@ -521,13 +448,10 @@ button:disabled {
 
 /* --- Combat/Shop/Rest Specific --- */
 #combat-area {
-    width: 90%;
-    max-width: 600px;
-    background-color: #282828;
-    border: 1px solid #404040;
-    border-radius: 5px;
-    padding: 20px;
-    margin: 10px 0;
+    background-color: #333;
+    border-radius: 6px;
+    padding: 16px;
+    margin-top: 8px;
 }
 
 #combat-area p {
@@ -540,13 +464,10 @@ button:disabled {
 }
 
 #shop-area {
-    width: 90%;
-    max-width: 600px;
-    background-color: #282828;
-    border: 1px solid #404040;
-    border-radius: 5px;
-    padding: 20px;
-    margin: 10px 0;
+    background-color: #333;
+    border-radius: 6px;
+    padding: 16px;
+    margin-top: 8px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -675,13 +596,10 @@ button:disabled {
 /* --- Add these styles to style.css --- */
 
 #loot-area {
-    width: 90%;
-    max-width: 600px;
-    background-color: #282828;
-    border: 1px solid #404040;
-    border-radius: 5px;
-    padding: 20px;
-    margin: 10px 0;
+    background-color: #333;
+    border-radius: 6px;
+    padding: 16px;
+    margin-top: 8px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -811,7 +729,6 @@ button:disabled {
 
 /* --- Ensure rest of style.css is present --- */
 
-
 /* --- Utility --- */
 .hidden {
     display: none !important;
@@ -842,20 +759,11 @@ button:disabled {
 /* NEW Game Screen Grid Layout */
 #game-screen:not(.hidden) {
     display: grid;
-    grid-template-areas:
-        "main right"
-        "log right"
-        "rounds rounds";
-    grid-template-columns: 1fr 350px;
-    grid-template-rows: 1fr 80px 30px;
-    gap: 10px;
-    padding: 10px;
-    width: 95vw; /* Reduce from 100vw to prevent scrolling */
-    height: 95vh; /* Reduce from 100vh to prevent scrolling */
+    grid-template-columns: 1fr 300px; /* Main content + right sidebar */
+    grid-template-rows: auto 1fr; /* Stats + main content */
+    gap: 16px;
+    padding: 16px;
     box-sizing: border-box;
-    background: #1a1a1a;
-    border-radius: 8px;
-    overflow: hidden;
 }
 
 /* Round Indicator Area (Very Top) */
@@ -918,7 +826,6 @@ button:disabled {
     border-radius: 4px;
     border: 1px solid #404040;
 }
-
 
 #loot-take-all-button, #loot-continue-button {
     padding: 12px 30px;
@@ -1415,4 +1322,22 @@ html {
 
 #toggle-log-button:hover {
     background: #404040;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    #game-screen:not(.hidden) {
+        grid-template-columns: 1fr 250px;
+    }
+}
+
+@media (max-width: 900px) {
+    #game-screen:not(.hidden) {
+        grid-template-columns: 1fr 200px;
+    }
+    
+    .stat-item {
+        padding: 4px 8px;
+        font-size: 0.9em;
+    }
 }
