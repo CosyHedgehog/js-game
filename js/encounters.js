@@ -44,20 +44,72 @@ function handleShopEncounter(game, ui) {
 }
 
 function generateShopItems(count) {
+    // Generate a random number of items between 3 and 8
+    const numItems = getRandomInt(3, 8);
     const items = [];
-    const availableItems = [...SHOP_ITEM_POOL];
-    for (let i = 0; i < count; i++) {
-        if (availableItems.length === 0) break;
 
-        const randomIndex = getRandomInt(0, availableItems.length - 1);
-        const itemId = availableItems.splice(randomIndex, 1)[0];
+    // Define item tiers with weights
+    const itemTiers = {
+        early: {
+            items: [
+                'wooden_sword', 'rusty_sword', 'leather_helm', 'leather_armor', 
+                'leather_legs', 'wooden_shield', 'bread', 'cooked_meat', 
+                'health_potion', 'fishing_rod'
+            ],
+            weight: 70  // 70% chance for early game items
+        },
+        mid: {
+            items: [
+                'iron_sword', 'quick_dagger', 'iron_helm', 'iron_armor', 
+                'iron_legs', 'iron_shield', 'health_potion'
+            ],
+            weight: 25  // 25% chance for mid game items
+        },
+        late: {
+            items: [
+                'steel_sword', 'steel_greatsword', 'steel_helm', 'steel_armor', 
+                'steel_legs', 'steel_shield', 'greater_health_potion'
+            ],
+            weight: 5   // 5% chance for late game items
+        }
+    };
+
+    const availableItems = new Set(); // Use Set to prevent duplicates
+
+    while (availableItems.size < numItems) {
+        // Roll for tier first
+        const roll = Math.random() * 100;
+        let selectedTier;
+        let cumWeight = 0;
+
+        for (const [tier, data] of Object.entries(itemTiers)) {
+            cumWeight += data.weight;
+            if (roll < cumWeight) {
+                selectedTier = data;
+                break;
+            }
+        }
+
+        // Select random item from the chosen tier
+        const tierItems = selectedTier.items;
+        const randomItem = tierItems[getRandomInt(0, tierItems.length - 1)];
+        
+        // Only add if not already selected
+        if (!availableItems.has(randomItem)) {
+            availableItems.add(randomItem);
+        }
+    }
+
+    // Convert selected items to actual item objects
+    for (const itemId of availableItems) {
         const itemData = createItem(itemId);
         if (itemData) {
-            // Reduce shop prices: 1.5x value instead of 2x, with smaller random addition
+            // Reduce shop prices: 1.3x value + small random addition
             itemData.buyPrice = Math.ceil(itemData.value * 1.3 + getRandomInt(0, Math.floor(itemData.value * 0.2)));
             items.push(itemData);
         }
     }
+
     return items;
 }
 
