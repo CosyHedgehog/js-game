@@ -10,8 +10,8 @@ class Combat {
         this.game = game; // Reference to the main game logic
         this.ui = ui;     // Reference to the UI manager
         this.intervalId = null;
-        this.tickRate = 500; // milliseconds (0.5 seconds)
-        this.timeScale = this.tickRate / 1000; // 0.5
+        this.tickRate = 100; // Changed from 500 to 100 milliseconds (0.1 seconds)
+        this.timeScale = this.tickRate / 1000; // Now 0.1
         this.isPlayerTurn = false; // Used if simultaneous attacks aren't desired
         this.isEnemyTurn = false;
 

@@ -541,7 +541,7 @@ class UI {
         this.combatEnemyTimer.textContent = enemyTime.toFixed(1);
         
         // Update timer bars
-        const playerMaxTime = this.game.player.getAttackSpeed();
+        const playerMaxTime = this.game.player.getAttackSpeed() || this.game.player.defaultAttackSpeed; // Add fallback
         const enemyMaxTime = this.game.currentCombat.enemy.speed;
         
         const playerTimerBar = document.querySelector('.player-timer');

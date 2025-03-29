@@ -16,7 +16,7 @@ class Player {
 
         this.attackTimer = 0;
         this.pendingActionDelay = 0; // Delay added by actions like eating
-        this.defaultAttackSpeed = 0.5;
+        this.defaultAttackSpeed = 2.0; // Changed from 0.5 to 2.0 seconds for better balance
     }
 
     getAttack() {
@@ -28,7 +28,7 @@ class Player {
     }
 
     getAttackSpeed() {
-        return this.equipment.weapon?.speed ?? this.defaultAttackSpeed; // Default 2s if no weapon
+        return this.equipment.weapon?.speed ?? this.defaultAttackSpeed;
     }
 
     getDefense() {
