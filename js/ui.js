@@ -683,61 +683,87 @@ class UI {
 
     showShopUI(items, canReroll) {
         this.clearMainArea();
-        this.shopArea.classList.remove('hidden');
+        const shopArea = document.getElementById('shop-area');
+        shopArea.classList.remove('hidden');
 
-        // Update shop HTML structure to match loot screen style
-        this.shopArea.innerHTML = `
+        // Create shop content with updated structure
+        let shopContent = `
             <h3>Shop</h3>
-            <div id="shop-items" class="shop-items-container">
-                <!-- Items will be added here -->
+            <div class="shop-content">
+                <div class="shop-items-container">
+        `;
+
+        if (items && items.length > 0) {
+            items.forEach((item, index) => {
+                shopContent += `
+                    <div class="shop-item" data-index="${index}">
+                        <div class="shop-item-info">
+                            <div class="shop-item-name">${item.name}</div>
+                            <div class="shop-item-price">${item.buyPrice} gold</div>
+                        </div>
+                        <button class="shop-item-button" data-index="${index}" 
+                                ${this.game.player.gold < item.buyPrice ? 'disabled' : ''}>
+                            Buy
+                        </button>
+                    </div>
+                `;
+            });
+        } else {
+            shopContent += '<p class="shop-empty-message">No items available.</p>';
+        }
+
+        shopContent += `
+                </div>
+                <div class="item-description"></div>
             </div>
             <div class="shop-buttons">
-                <button id="shop-reroll-button" class="shop-reroll-button">Reroll (${SHOP_REROLL_COST} Gold)</button>
-                <button id="shop-leave-button" class="shop-leave-button">Leave Shop</button>
+                <button id="shop-reroll-button" ${!canReroll || this.game.player.gold < SHOP_REROLL_COST ? 'disabled' : ''}>
+                    Reroll (${SHOP_REROLL_COST} Gold)
+                </button>
+                <button id="shop-leave-button">Leave Shop</button>
             </div>
         `;
 
-        const shopItemsContainer = this.shopArea.querySelector('#shop-items');
+        shopArea.innerHTML = shopContent;
+
+        // Add event listeners
+        const rerollButton = document.getElementById('shop-reroll-button');
+        const leaveButton = document.getElementById('shop-leave-button');
         
-        // Add items using similar structure to loot items
-        items.forEach((item, index) => {
-            if (!item) return;
+        if (rerollButton) {
+            rerollButton.onclick = () => this.game.handleRerollShop();
+        }
+        if (leaveButton) {
+            leaveButton.onclick = () => {
+                this.clearMainArea();
+                this.game.proceedToNextRound();
+            }
+        }
 
-            const itemDiv = document.createElement('div');
-            itemDiv.classList.add('shop-item');
-            itemDiv.dataset.index = index;
-            
-            itemDiv.innerHTML = `
-                <div class="shop-item-info">
-                    <span class="shop-item-icon">I</span>
-                    <span class="shop-item-name">${item.name}</span>
-                    <span class="shop-item-price">${item.buyPrice} G</span>
-                </div>
-                <button class="shop-item-button" ${this.game.player.gold < item.buyPrice ? 'disabled' : ''}>Buy</button>
-            `;
-            
-            // Add tooltip functionality
-            const nameSpan = itemDiv.querySelector('.shop-item-name');
-            nameSpan.addEventListener('mouseenter', (e) => this.showTooltip(item.description, this.itemTooltip, e));
-            nameSpan.addEventListener('mouseleave', () => this.hideTooltip(this.itemTooltip));
-
-            // Add buy button listener
-            const buyButton = itemDiv.querySelector('.shop-item-button');
-            buyButton.onclick = () => handleBuyItem(this.game, this, index);
-
-            shopItemsContainer.appendChild(itemDiv);
+        // Add click listeners to buy buttons
+        const buyButtons = document.querySelectorAll('.shop-item-button');
+        buyButtons.forEach(button => {
+            button.onclick = () => {
+                const index = parseInt(button.dataset.index);
+                handleBuyItem(this.game, this, index);  // Call the function from encounters.js
+            };
         });
 
-        // Re-attach button listeners
-        const rerollButton = this.shopArea.querySelector('#shop-reroll-button');
-        const leaveButton = this.shopArea.querySelector('#shop-leave-button');
-        
-        rerollButton.disabled = !canReroll;
-        rerollButton.onclick = () => handleRerollShop(this.game, this);
-        leaveButton.onclick = () => {
-            this.game.addLog("You leave the shop.");
-            this.game.proceedToNextRound();
-        };
+        // Add click listeners to shop items for descriptions
+        const shopItems = document.querySelectorAll('.shop-item');
+        shopItems.forEach((shopItem, index) => {
+            shopItem.addEventListener('click', () => {
+                // Remove selected class from all items
+                shopItems.forEach(item => item.classList.remove('selected'));
+                // Add selected class to clicked item
+                shopItem.classList.add('selected');
+                // Update description
+                const descriptionArea = document.querySelector('.item-description');
+                if (descriptionArea && items[index]) {
+                    descriptionArea.textContent = items[index].description || 'No description available.';
+                }
+            });
+        });
     }
 
 
