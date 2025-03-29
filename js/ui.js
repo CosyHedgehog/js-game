@@ -492,6 +492,11 @@ class UI {
         if (wanderingMerchantArea) {
             wanderingMerchantArea.remove();
         }
+
+        const startingPackArea = document.getElementById('starting-pack-area');
+        if (startingPackArea) {
+            startingPackArea.remove();
+        }
         
 
         this.choicesArea.innerHTML = '';
@@ -1964,5 +1969,46 @@ class UI {
         // Update UI
         this.game.ui.renderInventory();
         this.game.ui.updatePlayerStats();
+    }
+
+    // Add new method
+    showStartingPackSelection() {
+        this.clearMainArea();
+        const mainContent = document.getElementById('main-content');
+        
+        const container = document.createElement('div');
+        container.id = 'starting-pack-area';
+        container.className = 'starting-pack-selection';
+        
+        container.innerHTML = `
+            <h3>Choose Your Starting Equipment</h3>
+            
+            <div class="pack-option" id="warrior-pack">
+                <h4>Warrior Pack</h4>
+                <p>A defensive focused loadout:</p>
+                <ul>
+                    <li>Wooden Sword</li>
+                    <li>Leather Helm</li>
+                    <li>Leather Legs</li>
+                    <li>2x Bread</li>
+                </ul>
+                <button onclick="game.selectStartingPack('warrior')">Choose Warrior</button>
+            </div>
+            
+            <div class="pack-option" id="fisher-pack">
+                <h4>Fisher Pack</h4>
+                <p>A survival focused loadout:</p>
+                <ul>
+                    <li>Wooden Sword</li>
+                    <li>Leather Helm</li>
+                    <li>Fishing Rod</li>
+                    <li>2x Small Fish</li>
+                </ul>
+                <button onclick="game.selectStartingPack('fisher')">Choose Fisher</button>
+            </div>
+        `;
+        
+        mainContent.appendChild(container);
+        this.switchScreen('game-screen'); // Switch to game screen to show the selection
     }
 }

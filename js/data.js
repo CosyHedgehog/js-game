@@ -172,6 +172,15 @@ const ITEMS = {
         value: 25,
         description: 'A powerful ring imbued with dragon magic.\nAttack: +2\nDefense: +2'
     },
+
+    // Add fishing rod item
+    'fishing_rod': {
+        id: 'fishing_rod', 
+        name: 'Fishing Rod', 
+        type: 'tool',
+        value: 3,
+        description: 'A simple fishing rod.\nRequired for fishing.'
+    },
 };
 
 const MONSTERS = {
@@ -288,7 +297,7 @@ const SHOP_REROLL_COST = 3;
 const SHOP_ITEM_POOL = [
     // Early game items (always available)
     'wooden_sword', 'rusty_sword', 'leather_helm', 'leather_armor', 'leather_legs', 'wooden_shield',
-    'bread', 'cooked_meat', 'health_potion',
+    'bread', 'cooked_meat', 'health_potion', 'fishing_rod',
     
     // Mid game items (less common)
     'iron_sword', 'quick_dagger', 'iron_helm', 'iron_armor', 'iron_legs', 'iron_shield',

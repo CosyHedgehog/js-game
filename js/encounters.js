@@ -122,10 +122,19 @@ function handleRerollShop(game, ui) {
 }
 
 function handleFishingEncounter(game, ui) {
-    game.state = 'fishing';
-    game.addLog("You found a good fishing spot!");
+    // Check if player has fishing rod
+    const hasFishingRod = game.player.inventory.some(item => item && item.id === 'fishing_rod');
+    
+    if (!hasFishingRod) {
+        game.addLog("You need a Fishing Rod to fish here!");
+        game.proceedToNextRound();
+        return;
+    }
 
-    // Determine number of fish caught (1-5)
+    game.state = 'fishing';
+    game.addLog("You found a good fishing spot and cast your line!");
+
+    // Rest of the fishing logic remains the same
     const fishCaught = getRandomInt(1, 5);
     game.addLog(`You caught ${fishCaught} fish!`);
 

@@ -2003,3 +2003,48 @@ html {
     background: #5a5a5a;
     border-color: #ffd700;
 }
+
+.starting-pack-selection {
+    padding: 20px;
+    text-align: center;
+}
+
+.pack-option {
+    background: #2a2a2a;
+    border: 1px solid #444;
+    border-radius: 8px;
+    margin: 20px auto;
+    padding: 20px;
+    max-width: 300px;
+}
+
+.pack-option h4 {
+    color: #ffd700;
+    margin: 0 0 10px 0;
+}
+
+.pack-option ul {
+    list-style: none;
+    padding: 0;
+    text-align: left;
+    margin: 15px 0;
+}
+
+.pack-option li {
+    padding: 5px 0;
+    color: #ccc;
+}
+
+.pack-option button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background: #4a4a4a;
+    border: 1px solid #666;
+    color: #fff;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.pack-option button:hover {
+    background: #5a5a5a;
+}
