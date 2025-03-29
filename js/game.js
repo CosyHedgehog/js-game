@@ -38,13 +38,20 @@ class Game {
         this.addLog(`--- Round ${this.currentRound} ---`);
 
         this.state = 'choosing';
-
         this.ui.clearMainArea();
-        if (this.currentRound >= this.maxRounds) {
+
+        // Special rounds handling
+        if (this.currentRound === 10 || this.currentRound === 20) {
+            // Mini-boss rounds
+            this.generateMiniBossEncounter();
+        } else if (this.currentRound === 30) {
+            // Final boss round
             this.generateBossEncounter();
         } else {
+            // Normal rounds
             this.generateChoices();
         }
+
         this.ui.updatePlayerStats();
         this.ui.renderEquipment();
         this.ui.renderInventory();
@@ -211,9 +218,11 @@ class Game {
 
     generateBossEncounter() {
         this.addLog("The air grows heavy... The Final Boss appears!");
-        this.currentChoices = []; // No choices for the boss round
-        const bossEncounter = { type: 'boss', monsterId: FINAL_BOSS };
-        this.startEncounter(bossEncounter);
+        this.currentChoices = [{
+            text: `Fight ${MONSTERS[FINAL_BOSS].name} (Final Boss)`,
+            encounter: { type: 'boss', monsterId: FINAL_BOSS }
+        }];
+        this.ui.renderChoices(this.currentChoices);
     }
 
     selectChoice(index) {
@@ -579,8 +588,23 @@ class Game {
         this.ui.renderAll();
         this.addLog("Game started with your chosen equipment.");
         this.ui.switchScreen('game-screen');
-        
+        this.currentRound = 19;
         this.proceedToNextRound();
+    }
+
+    // Add new method for mini-boss encounters
+    generateMiniBossEncounter() {
+        // Select a random mini-boss
+        const miniBossIndex = getRandomInt(0, MINI_BOSSES.length - 1);
+        const miniBossId = MINI_BOSSES[miniBossIndex];
+        
+        this.currentChoices = [{
+            text: `Fight ${MONSTERS[miniBossId].name} (Mini-Boss)`,
+            encounter: { type: 'mini-boss', monsterId: miniBossId }
+        }];
+        
+        this.addLog(`A powerful enemy approaches...`);
+        this.ui.renderChoices(this.currentChoices);
     }
 
 }
