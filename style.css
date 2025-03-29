@@ -564,15 +564,42 @@ button:disabled {
     display: flex;
     flex-direction: column;
     align-items: center;
+    min-height: 300px; /* Reduced from 400px */
+    height: 300px; /* Reduced from 400px */
+    box-sizing: border-box;
+    justify-content: space-between;
 }
 
+/* Title styling - reduce margins */
 #loot-area h3 {
     margin-top: 0;
-    margin-bottom: 15px;
+    margin-bottom: 10px; /* Reduced from 15px */
     color: #aaaaaa;
     font-size: 1.2em;
     width: 100%;
     text-align: center;
+    flex-shrink: 0;
+}
+
+/* Container for all loot items - reduce minimum height */
+.loot-items-container {
+    flex: 1;
+    width: 100%;
+    background-color: #2f2f2f;
+    border-radius: 4px;
+    border: 1px solid #404040;
+    overflow-y: auto;
+    min-height: 150px; /* Reduced from 200px */
+}
+
+/* Bottom buttons container - reduce padding */
+.loot-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    width: 100%;
+    margin-top: auto;
+    flex-shrink: 0;
 }
 
 /* Make gold container match item container style */
@@ -593,16 +620,6 @@ button:disabled {
     font-weight: bold;
 }
 
-.loot-items-container {
-    margin-bottom: 15px;
-    max-height: 200px;
-    overflow-y: auto;
-    width: 80%;
-    background-color: #2f2f2f;
-    border-radius: 4px;
-    border: 1px solid #404040;
-}
-
 .loot-item {
     display: flex;
     align-items: center;
@@ -610,6 +627,8 @@ button:disabled {
     padding: 10px 12px;
     border-bottom: 1px solid #404040;
     gap: 10px;
+    min-height: 45px; /* Add minimum height for each item */
+    box-sizing: border-box;
 }
 
 .loot-item:last-child {
@@ -617,15 +636,6 @@ button:disabled {
 }
 
 /* Center the buttons container */
-.loot-buttons {
-    display: flex;
-    gap: 10px;
-    margin-top: 15px;
-    justify-content: center;
-    width: 100%;
-}
-
-/* Make buttons consistent */
 .loot-gold-button, 
 .loot-item-button {
     background-color: #505050;
@@ -793,11 +803,6 @@ button:disabled {
     border: 1px solid #404040;
 }
 
-.loot-buttons {
-    display: flex;
-    gap: 10px;
-    margin-top: 15px;
-}
 
 #loot-take-all-button, #loot-continue-button {
     padding: 12px 30px;
