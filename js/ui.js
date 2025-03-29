@@ -976,4 +976,18 @@ class UI {
                 break;
         }
     }
+
+    confirmChoice(index) {
+        const selectedChoice = this.currentChoices[index];
+        const choicesArea = document.getElementById('choices-area');
+        
+        // Add starting animation
+        choicesArea.classList.add('encounter-starting');
+        
+        // Wait for animation to complete before starting encounter
+        setTimeout(() => {
+            choicesArea.classList.remove('encounter-starting');
+            this.startEncounter(selectedChoice.encounter);
+        }, 500); // Match this with the animation duration
+    }
 }
