@@ -60,16 +60,18 @@ body {
 
 /* Player Stats (Top Left) */
 #player-stats-area {
+    flex: 0 0 40px; /* Fixed height of 40px, don't grow or shrink */
     display: flex;
     justify-content: center;
     gap: 25px;
     background-color: #313131;
     border: 1px solid #444;
     border-radius: 4px;
-    padding: 8px 15px;
+    padding: 0 15px;
     margin-bottom: 15px;
     width: 100%;
     box-sizing: border-box;
+    align-items: center; /* Center items vertically */
 }
 
 .stat-item {
@@ -101,10 +103,9 @@ body {
     grid-area: main;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 15px;
-    padding: 0;
-    overflow-y: auto;
+    height: 100%; /* Take full height of grid area */
+    box-sizing: border-box;
+    overflow: hidden; /* Hide overflow on container */
 }
 
 /* Output Log Area (Bottom Left) */
@@ -321,18 +322,12 @@ body {
 }
 
 #choices-area {
-    width: 90%;
+    width: 100%;
     max-width: 600px;
     display: flex;
     flex-direction: column;
     gap: 15px;
     padding: 15px 0;
-}
-
-#choices-area button {
-    width: 100%;
-    padding: 15px 20px;
-    font-size: 1.1em;
 }
 
 /* --- Buttons (Keep Flat Style) --- */
@@ -344,6 +339,9 @@ button {
 }
 
 #choices-area button {
+    width: 100%;
+    padding: 15px 20px;
+    font-size: 1.1em;
     background-color: #505050;
     color: #ffffff;
     border: 1px solid #3a3a3a;
@@ -351,9 +349,6 @@ button {
     font-size: 1.2em;
     font-weight: bold;
     min-width: 320px;
-    /* Keep minimum width */
-    max-width: 80%;
-    /* Prevent buttons getting excessively wide */
     text-align: center;
     border-radius: 5px;
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 1px rgba(0, 0, 0, 0.2);
@@ -515,7 +510,8 @@ button:disabled {
 }
 
 #shop-area {
-    width: 90%;
+    width: 100%;
+    height: 100%;
     max-width: 600px;
     background-color: #313131;
     border: 1px solid #444;
@@ -863,4 +859,42 @@ button:disabled {
 #player-stats-area p {
     margin: 0px 0; /* Slightly reduce margins */
     font-size: 0.95em; /* Slightly smaller font */
+}
+
+/* Content wrapper for scrollable area */
+#main-content {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; /* Center vertically */
+    gap: 15px;
+    padding: 15px;
+    min-height: 100%; /* Ensure it takes full height */
+    box-sizing: border-box;
+}
+
+/* Ensure combat, shop, rest, and loot areas are centered */
+#combat-area, #shop-area, #rest-area, #loot-area {
+    width: 90%;
+    max-width: 600px;
+    background-color: #313131;
+    border: 1px solid #444;
+    border-radius: 5px;
+    padding: 20px;
+    margin: 0; /* Remove margin and let flex handle spacing */
+    align-self: center; /* Ensure horizontal centering */
+}
+
+/* Ensure choices area is centered */
+#choices-area {
+    width: 90%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 0;
+    margin: 0; /* Remove margin and let flex handle spacing */
+    align-self: center; /* Ensure horizontal centering */
 }
