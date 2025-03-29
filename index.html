@@ -15,6 +15,7 @@
       <div id="game-screen" class="screen hidden">
         <div id="main-area">
           <div id="player-stats-area">
+            <button id="toggle-log-button">Show Log</button>
             <div class="stat-item">
               <span class="stat-label">Health:</span>
               <span id="stat-health"></span>/<span id="stat-max-health"></span>
@@ -37,6 +38,13 @@
             </div>
           </div>
           <div id="main-content">
+            <div id="output-log-area" class="hidden">
+                <div class="log-header">
+                    <h3>Combat Log</h3>
+                    <button id="close-log-button">×</button>
+                </div>
+                <ul id="output-log"></ul>
+            </div>
             <div id="choices-area">
             </div>
             <div id="combat-area" class="hidden">
@@ -128,10 +136,6 @@
             <div id="equip-tooltip" class="tooltip hidden"></div>
           </div>
         </div>
-        <div id="output-log-area">
-          <ul id="output-log"></ul>
-        </div>
-        <!-- <div id="round-indicator-area"></div> -->
       </div>
       <div id="end-screen" class="screen hidden">
         <h2 id="end-message"></h2>

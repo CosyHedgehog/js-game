@@ -98,6 +98,18 @@ class UI {
         } else {
             console.error("UI Error: Loot Take Button not found during constructor.");
         }
+
+        // Add new button references
+        this.toggleLogButton = document.getElementById('toggle-log-button');
+        this.closeLogButton = document.getElementById('close-log-button');
+
+        // Add click handlers for the log toggle buttons
+        if (this.toggleLogButton) {
+            this.toggleLogButton.onclick = () => this.showLog();
+        }
+        if (this.closeLogButton) {
+            this.closeLogButton.onclick = () => this.hideLog();
+        }
     }
 
     // --- Make sure cacheDynamicElements exists ---
@@ -456,6 +468,7 @@ class UI {
         // Reset innerHTML for other areas if needed, or just hide them
         // ... (reset combat area structure, shop, rest if needed) ...
         this.cacheDynamicElements(); // Re-cache anything dynamic inside cleared areas
+        this.outputLogArea.classList.add('hidden');
     }
 
     cacheDynamicElements() {
@@ -912,5 +925,41 @@ class UI {
         // Add to container and remove after animation
         container.appendChild(splat);
         setTimeout(() => splat.remove(), 2000);
+    }
+
+    showLog() {
+        // Hide all other content areas first
+        this.choicesArea.classList.add('hidden');
+        this.combatArea.classList.add('hidden');
+        this.shopArea.classList.add('hidden');
+        this.restArea.classList.add('hidden');
+        this.lootArea.classList.add('hidden');
+
+        // Show the log area
+        this.outputLogArea.classList.remove('hidden');
+        this.renderLog(); // Refresh the log content
+    }
+
+    hideLog() {
+        this.outputLogArea.classList.add('hidden');
+        
+        // Show the appropriate content area based on game state
+        switch (this.game.state) {
+            case 'choosing':
+                this.choicesArea.classList.remove('hidden');
+                break;
+            case 'combat':
+                this.combatArea.classList.remove('hidden');
+                break;
+            case 'shop':
+                this.shopArea.classList.remove('hidden');
+                break;
+            case 'rest':
+                this.restArea.classList.remove('hidden');
+                break;
+            case 'looting':
+                this.lootArea.classList.remove('hidden');
+                break;
+        }
     }
 }

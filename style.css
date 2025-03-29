@@ -114,36 +114,40 @@ body {
 
 /* Output Log Area (Bottom Left) */
 #output-log-area {
-    grid-area: log;
-    background-color: #282828;
-    border: 1px solid #404040;
-    border-radius: 5px;
-    padding: 10px;
-    height: 250px; /* Increased from 200px */
-    width: 95%; /* Increased from 90% */
-    max-width: 900px; /* Increased from 800px */
+    position: relative;
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid #34495e;
+    margin: 10px;
+    height: calc(100% - 20px);
+    width: 90%;
     overflow-y: auto;
-    margin: 0 auto;
-    border-bottom: 2px solid #404040; /* Added bottom border */
 }
 
-#output-log {
-    list-style: none;
-    padding: 0;
+.log-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 10px;
+    background: #2c3e50;
+    border-bottom: 1px solid #34495e;
+}
+
+.log-header h3 {
     margin: 0;
-    font-size: 0.9em;
+    color: white;
 }
 
-#output-log li {
-    margin-bottom: 5px;
-    border-bottom: 1px solid #404040;
-    padding-bottom: 5px;
-    line-height: 1.3;
-    color: #ecf0f1;
+#close-log-button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0 5px;
 }
 
-#output-log li:last-child {
-    border-bottom: none;
+#close-log-button:hover {
+    color: #e74c3c;
 }
 
 /* Right Column Container (Spans Right Side) */
@@ -1396,4 +1400,19 @@ html {
 .round-orb.current-round {
     background-color: #3498db;
     border-color: #2980b9;
+}
+
+/* Add these new styles */
+#toggle-log-button {
+    margin-bottom: 10px;
+    width: 50px;
+    padding: 5px;
+    background: #2c3e50;
+    color: white;
+    border: 1px solid #34495e;
+    cursor: pointer;
+}
+
+#toggle-log-button:hover {
+    background: #34495e;
 }

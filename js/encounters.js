@@ -15,7 +15,8 @@ function handleMonsterEncounter(game, ui, monsterId) {
 function handleRestEncounter(game, ui) {
     game.state = 'rest';
     game.addLog("You found a quiet spot to rest.");
-    const healAmount = Math.floor(game.player.maxHealth * 0.5); // Heal 50% of max HP
+    const healPercent = 0.2 + Math.random() * 0.3; // Random between 20-50%
+    const healAmount = Math.floor(game.player.maxHealth * healPercent);
     const actualHealed = game.player.heal(healAmount);
     if (actualHealed > 0) {
         game.addLog(`You healed for ${actualHealed} HP.`);
