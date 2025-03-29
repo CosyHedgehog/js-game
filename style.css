@@ -45,8 +45,8 @@ body {
     width: 100%;
     height: 100%;
     display: grid;
-    grid-template-columns: 1fr 300px; /* Main content + right sidebar */
-    grid-template-rows: auto 1fr; /* Stats + main content */
+    grid-template-columns: 1fr 300px;
+    grid-template-rows: auto 1fr; /* First row auto for stats, second row 1fr for content */
     gap: 16px;
     padding: 16px;
     box-sizing: border-box;
@@ -56,7 +56,7 @@ body {
 
 /* Player Stats (Top Left) */
 #player-stats-area {
-    grid-column: 1 / -1; /* Span all columns */
+    grid-column: 1 / -1;
     display: flex;
     align-items: center;
     gap: 24px;
@@ -64,6 +64,7 @@ body {
     padding: 12px 20px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    margin: 0; /* Remove any margin */
 }
 
 .stat-item {
@@ -101,6 +102,8 @@ body {
     gap: 16px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     overflow-y: auto;
+    margin-top: 0; /* Remove any top margin */
+    height: calc(100vh - 100px); /* Adjust height to account for stats area and padding */
 }
 
 /* Output Log Area (Bottom Left) */
@@ -282,6 +285,10 @@ body {
     border-radius: 6px;
     padding: 16px;
     margin-top: 8px;
+    width: 90%;
+    max-width: 600px;
+    margin: auto; /* Center in available space */
+    align-self: center;
 }
 
 /* --- Buttons (Keep Flat Style) --- */
@@ -452,6 +459,10 @@ button:disabled {
     border-radius: 6px;
     padding: 16px;
     margin-top: 8px;
+    width: 90%;
+    max-width: 600px;
+    margin: auto; /* Center in available space */
+    align-self: center;
 }
 
 #combat-area p {
@@ -475,6 +486,10 @@ button:disabled {
     height: 300px;
     box-sizing: border-box;
     justify-content: space-between;
+    width: 90%;
+    max-width: 600px;
+    margin: auto; /* Center in available space */
+    align-self: center;
 }
 
 #shop-area h3 {
@@ -607,6 +622,10 @@ button:disabled {
     height: 300px; /* Reduced from 400px */
     box-sizing: border-box;
     justify-content: space-between;
+    width: 90%;
+    max-width: 600px;
+    margin: auto; /* Center in available space */
+    align-self: center;
 }
 
 /* Title styling - reduce margins */
@@ -909,41 +928,23 @@ button:disabled {
 /* Content wrapper for scrollable area */
 #main-content {
     flex: 1;
-    overflow-y: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center; /* Center vertically */
     gap: 15px;
     padding: 15px;
-    /* min-height: 100%; Ensure it takes full height */
     box-sizing: border-box;
-    max-height: calc(100vh - 200px); /* Prevent overflow */
-    background-color: #1a1a1a;
+    min-height: 100%; /* Take full height of parent */
+    background-color: transparent; /* Remove background color */
 }
 
 /* Ensure combat, shop, rest, and loot areas are centered */
 #combat-area, #shop-area, #rest-area, #loot-area {
     width: 90%;
     max-width: 600px;
-    background-color: #282828;
-    border: 1px solid #404040;
-    border-radius: 5px;
-    padding: 20px;
-    margin: 0; /* Remove margin and let flex handle spacing */
-    align-self: center; /* Ensure horizontal centering */
-}
-
-/* Ensure choices area is centered */
-#choices-area {
-    width: 90%;
-    max-width: 600px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    padding: 0;
-    margin: 0; /* Remove margin and let flex handle spacing */
-    align-self: center; /* Ensure horizontal centering */
+    margin: auto; /* Center in available space */
+    align-self: center;
 }
 
 /* Add new styles for shop buttons container */
