@@ -347,7 +347,7 @@ body {
 
 #choices-area {
     width: 100%;
-    max-width: 900px; /* Increased to accommodate horizontal layout */
+    max-width: 1000px; /* Increased to accommodate horizontal layout */
     display: flex;
     flex-direction: row; /* Changed from column to row */
     justify-content: center;
@@ -1243,8 +1243,8 @@ button:disabled {
     padding: 15px;
     margin: 15px auto;
     text-align: center;
-    width: 90%;
-    max-width: 450px; /* Reduced from previous size */
+    width: 100%;
+    max-width: 600px; /* Reduced from previous size */
     height: 220px; /* Reduced height */
     display: flex;
     flex-direction: column;

@@ -229,10 +229,7 @@ class Game {
                 const monster = MONSTERS[encounter.monsterId];
                 if (!monster) return "Error: Monster data not found.";
                 return `${monster.name}\n` +
-                       `Health: ${monster.health}\n` +
-                       `Attack: ${monster.attack}\n` +
-                       `Defense: ${monster.defense}\n` +
-                       `Attack Speed: ${monster.speed}s\n` +
+                       `Health: ${monster.health} // Attack: ${monster.attack} // Defense: ${monster.defense} // Attack Speed: ${monster.speed}s // ` +
                        `Gold Drop: ${monster.goldDrop[0]}-${monster.goldDrop[1]}\n\n` +
                        `This will start a combat encounter. Are you ready to fight?`;
             }
