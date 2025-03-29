@@ -66,8 +66,16 @@ class Combat {
         const blocked = enemyDefense > playerAttackRoll ? playerAttackRoll : enemyDefense;
         
         this.enemy.health = Math.max(0, this.enemy.health - damageDealt);
-        this.game.addLog(`You attack ${this.enemy.name} for ${damageDealt} damage. (${playerAttackRoll} - ${blocked} blocked)`);
-        this.ui.updateCombatantHealth('enemy', this.enemy.health, this.enemy.maxHealth, damageDealt, blocked);
+        
+        // Update log message to be clearer about full blocks
+        if (damageDealt === 0 && blocked > 0) {
+            this.game.addLog(`You attack ${this.enemy.name} but they block all ${blocked} damage!`);
+        } else {
+            this.game.addLog(`You attack ${this.enemy.name} for ${damageDealt} damage. (${playerAttackRoll} - ${blocked} blocked)`);
+        }
+        
+        // Pass a special flag for full blocks
+        this.ui.updateCombatantHealth('enemy', this.enemy.health, this.enemy.maxHealth, damageDealt, blocked, false, damageDealt === 0 && blocked > 0);
     }
 
     enemyAttack() {

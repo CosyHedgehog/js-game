@@ -502,7 +502,7 @@ class UI {
         this.combatArea.classList.add('hidden');
     }
 
-    updateCombatantHealth(who, current, max, damage = 0, blocked = 0, isHeal = false) {
+    updateCombatantHealth(who, current, max, damage = 0, blocked = 0, isHeal = false, fullBlock = false) {
         const percentage = (current / max) * 100;
         if (who === 'player') {
             this.combatPlayerHp.textContent = `${current}/${max}`;
@@ -514,9 +514,9 @@ class UI {
             void healthBar.offsetWidth; // Force reflow
             healthBar.classList.add('damage-taken');
 
-            // Create damage splat if damage was dealt
-            if (damage > 0) {
-                this.createDamageSplat('player', damage, isHeal ? 'heal' : 'damage', blocked);
+            // Create damage splat if damage was dealt or fully blocked
+            if (damage > 0 || fullBlock) {
+                this.createDamageSplat('player', damage, isHeal ? 'heal' : 'damage', blocked, fullBlock);
             }
         } else if (who === 'enemy') {
             this.combatEnemyHp.textContent = `${current}/${max}`;
@@ -528,9 +528,9 @@ class UI {
             void healthBar.offsetWidth; // Force reflow
             healthBar.classList.add('damage-taken');
 
-            // Create damage splat if damage was dealt
-            if (damage > 0) {
-                this.createDamageSplat('enemy', damage, isHeal ? 'heal' : 'damage', blocked);
+            // Create damage splat if damage was dealt or fully blocked
+            if (damage > 0 || fullBlock) {
+                this.createDamageSplat('enemy', damage, isHeal ? 'heal' : 'damage', blocked, fullBlock);
             }
         }
     }
@@ -794,7 +794,7 @@ class UI {
         }
     }
 
-    createDamageSplat(who, amount, type = 'damage', blocked = 0) {
+    createDamageSplat(who, amount, type = 'damage', blocked = 0, fullBlock = false) {
         const combatant = document.querySelector(who === 'player' ? '.player-side' : '.enemy-side');
         if (!combatant) return;
 
@@ -817,7 +817,9 @@ class UI {
 
         // Set text content based on type and blocked amount
         if (type === 'damage') {
-            if (blocked > 0) {
+            if (fullBlock) {
+                splat.innerHTML = `<span style="color: #aaaaaa">BLOCKED ${blocked}</span>`;
+            } else if (blocked > 0) {
                 splat.innerHTML = `${amount}<span style="color: #aaaaaa"> (${blocked} blocked)</span>`;
             } else {
                 splat.textContent = amount;
