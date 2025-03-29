@@ -412,11 +412,21 @@ class UI {
 
         const details = document.createElement('div');
         details.classList.add('encounter-details');
-        const detailsText = this.game.getEncounterDetails(choice.encounter)
-            .split('\n')
-            .map(line => line.trim())
-            .join('\n');
-        details.textContent = detailsText;
+        
+        // Check if this is a fishing encounter and handle requirements
+        let buttonDisabled = false;
+        let requirementHTML = '';
+        
+        if (choice.encounter.type === 'fishing') {
+            const hasFishingRod = this.game.player.inventory.some(item => item && item.id === 'fishing_rod');
+            if (!hasFishingRod) {
+                requirementHTML = '<div style="color: #ff4444; margin-bottom: 10px;">Requires: Fishing Rod</div>';
+                buttonDisabled = true;
+            }
+        }
+        
+        // Use innerHTML instead of textContent to allow HTML formatting
+        details.innerHTML = requirementHTML + this.game.getEncounterDetails(choice.encounter);
         confirmationBox.appendChild(details);
 
         const buttonsContainer = document.createElement('div');
@@ -447,6 +457,12 @@ class UI {
 
         confirmButton.classList.add('confirm-button');
         confirmButton.onclick = () => this.game.confirmChoice(index);
+        
+        // Disable button if requirements not met
+        if (buttonDisabled) {
+            confirmButton.disabled = true;
+        }
+        
         buttonsContainer.appendChild(confirmButton);
         confirmationBox.appendChild(buttonsContainer);
 
