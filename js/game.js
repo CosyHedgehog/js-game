@@ -49,19 +49,12 @@ class Game {
 
     // Ensure proceedToNextRound correctly sets state and clears UI
     proceedToNextRound() {
-        // Removed the check against running in 'looting' state, as collectLoot explicitly calls this now.
-        // if (this.state === 'combat' /*|| this.state === 'looting'*/) {
-        //     console.warn("Attempted to proceedToNextRound while in combat state.");
-        //     return;
-        // }
-
         this.currentRound++;
         this.addLog(`--- Round ${this.currentRound} ---`);
 
         this.state = 'choosing';
 
         this.ui.clearMainArea();
-        this.ui.renderRoundIndicator();
         if (this.currentRound >= this.maxRounds) {
             this.generateBossEncounter();
         } else {

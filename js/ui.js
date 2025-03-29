@@ -173,8 +173,6 @@ class UI {
         this.renderEquipment();
         this.updatePlayerStats();
         this.renderLog();
-        this.renderRoundIndicator();
-        // Don't render choices here, that's done when needed by game logic
     }
 
     renderInventory() {
@@ -876,31 +874,6 @@ class UI {
         this.endMessage.textContent = win ? "Congratulations! You defeated the Dragon!" : "Game Over. You have fallen.";
     }
 
-    renderRoundIndicator() {
-        if (!this.roundIndicatorArea) {
-            console.error("UI Error: roundIndicatorArea not found.");
-            return;
-        }
-        if (!this.game) {
-            console.error("UI Error: game object not available for round indicator.");
-            return;
-        }
-
-        this.roundIndicatorArea.innerHTML = ''; // Clear previous orbs
-
-        for (let i = 1; i <= this.game.maxRounds; i++) {
-            const orb = document.createElement('div');
-            orb.classList.add('round-orb');
-            orb.dataset.round = i; // Optional: store round number
-
-            // Highlight the current round
-            if (i === this.game.currentRound) {
-                orb.classList.add('current-round');
-            }
-
-            this.roundIndicatorArea.appendChild(orb);
-        }
-    }
 
     createDamageSplat(who, amount, type = 'damage', blocked = 0, fullBlock = false) {
         const combatant = document.querySelector(who === 'player' ? '.player-side' : '.enemy-side');
@@ -954,6 +927,7 @@ class UI {
         this.shopArea.classList.add('hidden');
         this.restArea.classList.add('hidden');
         this.lootArea.classList.add('hidden');
+        
 
         // Show the log area
         this.outputLogArea.classList.remove('hidden');
