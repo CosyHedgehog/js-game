@@ -716,15 +716,14 @@ class UI {
         // Verify Essential Elements
         const slotElement = event.target.closest('.inventory-slot');
         if (!this.inventoryArea || !slotElement) {
-            // Simplified error handling from before
             console.error("UI Error: Cannot show context menu - slot or inventory area missing.");
-            this.hideContextMenu(); // Ensure any old menu is hidden
+            this.hideContextMenu();
             return;
         }
 
         // Show Context Menu
-        this.hideContextMenu(); // Hide any previous *context menu* instance
-        this.itemContextMenu.innerHTML = ''; // Clear old options
+        this.hideContextMenu();
+        this.itemContextMenu.innerHTML = '';
 
         // --- Add Action Buttons ---
         // Equip
@@ -765,34 +764,32 @@ class UI {
         this.itemContextMenu.appendChild(cancelButton);
         // --- End Adding Buttons ---
 
-        // --- Positioning Logic (Keep as before) ---
-        const inventoryArea = this.inventoryArea;
+        // --- Updated Positioning Logic ---
         const slotRect = slotElement.getBoundingClientRect();
-        const inventoryRect = inventoryArea.getBoundingClientRect();
-        let top = slotRect.bottom - inventoryRect.top + inventoryArea.scrollTop + 5;
-        let left = slotRect.left - inventoryRect.left + inventoryArea.scrollLeft + 5;
+        const inventoryRect = this.inventoryArea.getBoundingClientRect();
 
-        // Apply initial position *before* making visible for measurement
-        this.itemContextMenu.style.top = `${top}px`;
-        this.itemContextMenu.style.left = `${left}px`;
+        // Calculate position relative to the clicked slot
+        let top = slotRect.top - inventoryRect.top + slotRect.height + 5;
+        let left = slotRect.left - inventoryRect.left + (slotRect.width / 2);
 
-        // Make visible *before* boundary check measurement
+        // Make menu visible to get its dimensions
         this.itemContextMenu.classList.remove('hidden');
-
-        // Boundary Check
         const menuRect = this.itemContextMenu.getBoundingClientRect();
-        if (left + menuRect.width > inventoryArea.clientWidth + inventoryArea.scrollLeft) {
-            left = inventoryArea.clientWidth + inventoryArea.scrollLeft - menuRect.width - 5;
-            left = Math.max(5 + inventoryArea.scrollLeft, left);
+
+        // Adjust position if menu would go outside inventory area
+        if (left + (menuRect.width / 2) > inventoryRect.width) {
+            left = slotRect.left - inventoryRect.left - menuRect.width + slotRect.width;
         }
-        if (top + menuRect.height > inventoryArea.clientHeight + inventoryArea.scrollTop) {
-            top = slotRect.top - inventoryRect.top + inventoryArea.scrollTop - menuRect.height - 5;
-            top = Math.max(5 + inventoryArea.scrollTop, top);
+        if (left - (menuRect.width / 2) < 0) {
+            left = menuRect.width / 2;
         }
-        // Re-apply final position
-        this.itemContextMenu.style.top = `${top}px`;
+        if (top + menuRect.height > inventoryRect.height) {
+            top = slotRect.top - inventoryRect.top - menuRect.height - 5;
+        }
+
+        // Apply final position
         this.itemContextMenu.style.left = `${left}px`;
-        // --- End Positioning Logic ---
+        this.itemContextMenu.style.top = `${top}px`;
     }
 
     hideContextMenu() {
