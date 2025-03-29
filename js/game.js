@@ -359,7 +359,13 @@ class Game {
             
             // Update UI after successful gold collection
             this.ui.updatePlayerStats();
-            this.ui.showLootUI(this.pendingLoot);
+            
+            // Check if this was the last thing to loot
+            if (this.isAllLootCollected()) {
+                this.continueLoot();
+            } else {
+                this.ui.showLootUI(this.pendingLoot);
+            }
         } else if (type === 'item' && this.pendingLoot.items[index]) {
             const item = this.pendingLoot.items[index];
             
@@ -372,7 +378,7 @@ class Game {
             const freeSlot = this.player.findFreeInventorySlot();
             if (freeSlot === -1) {
                 this.addLog("Inventory is full!");
-                return; // Return without updating UI or marking as looted
+                return;
             }
             
             // Try to add the item
@@ -380,14 +386,15 @@ class Game {
                 item.looted = true;
                 this.addLog(`Picked up ${item.name}.`);
                 
-                // Update UI only after successful pickup
+                // Update UI
                 this.ui.updatePlayerStats();
                 this.ui.renderInventory();
-                this.ui.showLootUI(this.pendingLoot);
                 
-                // Check if all loot has been collected
+                // Check if this was the last thing to loot
                 if (this.isAllLootCollected()) {
                     this.continueLoot();
+                } else {
+                    this.ui.showLootUI(this.pendingLoot);
                 }
             } else {
                 this.addLog("Failed to pick up item - inventory might be full!");
@@ -395,7 +402,7 @@ class Game {
         }
     }
 
-    // Add this helper method to check if all loot has been collected
+    // Update the isAllLootCollected method to be more robust
     isAllLootCollected() {
         if (!this.pendingLoot) return true;
         
@@ -404,10 +411,11 @@ class Game {
         
         // Check if there are any unlooted items
         if (this.pendingLoot.items && this.pendingLoot.items.length > 0) {
-            return this.pendingLoot.items.every(item => item.looted);
+            const hasUnlootedItems = this.pendingLoot.items.some(item => !item.looted);
+            return !hasUnlootedItems; // Return true if all items are looted
         }
         
-        return true;
+        return true; // No gold and no items (or all items looted)
     }
 
     continueLoot() {
