@@ -372,7 +372,7 @@ class Game {
             const freeSlot = this.player.findFreeInventorySlot();
             if (freeSlot === -1) {
                 this.addLog("Inventory is full!");
-                return; // Return without updating UI
+                return; // Return without updating UI or marking as looted
             }
             
             // Try to add the item

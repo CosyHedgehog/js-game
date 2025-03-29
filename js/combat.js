@@ -102,7 +102,6 @@ class Combat {
         let playerWon = false;
 
         if (this.enemy.health <= 0) {
-            this.game.addLog(`You defeated the ${this.enemy.name}!`);
             combatEnded = true;
             playerWon = true;
         } else if (this.player.health <= 0) {

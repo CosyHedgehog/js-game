@@ -410,6 +410,7 @@ class UI {
             });
         }
         if (loot.items) {
+            // Only show unlooted items
             allLootItems = allLootItems.concat(loot.items.filter(item => !item.looted));
         }
 
@@ -462,7 +463,6 @@ class UI {
                         );
                         this.game.handleIndividualLoot('item', itemIndex);
                     }
-                    itemDiv.remove();
                 };
 
                 lootItemsContainer.appendChild(itemDiv);
