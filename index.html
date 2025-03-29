@@ -37,10 +37,37 @@
             <div id="choices-area">
             </div>
             <div id="combat-area" class="hidden">
-              <p>Player HP: <span id="combat-player-hp"></span></p>
-              <p>Enemy HP: <span id="combat-enemy-hp"></span></p>
-              <p>Player Next Atk: <span id="combat-player-timer"></span>s</p>
-              <p>Enemy Next Atk: <span id="combat-enemy-timer"></span>s</p>
+              <div class="combat-container">
+                <div class="combatant player-side">
+                  <div class="combatant-name">You</div>
+                  <div class="health-bar-container">
+                    <div class="health-bar player-health"></div>
+                    <div class="health-text">
+                      <span id="combat-player-hp"></span>
+                    </div>
+                  </div>
+                  <div class="attack-timer">
+                    <div class="timer-bar player-timer"></div>
+                    <div class="timer-text">Next Attack: <span id="combat-player-timer"></span>s</div>
+                  </div>
+                </div>
+                
+                <div class="combat-vs">VS</div>
+                
+                <div class="combatant enemy-side">
+                  <div class="combatant-name" id="combat-enemy-name"></div>
+                  <div class="health-bar-container">
+                    <div class="health-bar enemy-health"></div>
+                    <div class="health-text">
+                      <span id="combat-enemy-hp"></span>
+                    </div>
+                  </div>
+                  <div class="attack-timer">
+                    <div class="timer-bar enemy-timer"></div>
+                    <div class="timer-text">Next Attack: <span id="combat-enemy-timer"></span>s</div>
+                  </div>
+                </div>
+              </div>
             </div>
             <div id="shop-area" class="hidden">
               <h3>Shop</h3>

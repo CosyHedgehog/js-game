@@ -3,7 +3,7 @@ class Player {
         this.gold = 0;
         this.maxHealth = 20;
         this.health = 20;
-        this.baseAttack = 100; // Base stats, can be increased by effects later
+        this.baseAttack = 1; // Base stats, can be increased by effects later
         this.baseDefense = 0;
         this.inventory = new Array(12).fill(null); // 12 slots
         this.equipment = {

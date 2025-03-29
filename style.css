@@ -1017,3 +1017,107 @@ button:disabled {
     width: 100%;
     margin-top: 15px;
 }
+
+/* Add these new styles */
+.combat-container {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin: 20px;
+}
+
+.combatant {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 15px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.combatant-name {
+    font-size: 1.2em;
+    font-weight: bold;
+    text-align: center;
+    color: #fff;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.combat-vs {
+    font-size: 2em;
+    font-weight: bold;
+    color: #ffd700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.health-bar-container {
+    height: 25px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.health-bar {
+    height: 100%;
+    width: 100%;
+    transition: width 0.3s ease-out;
+    position: absolute;
+}
+
+.player-health {
+    background: linear-gradient(to right, #2ecc71, #27ae60);
+}
+
+.enemy-health {
+    background: linear-gradient(to right, #e74c3c, #c0392b);
+}
+
+.health-text {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    line-height: 25px;
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    font-weight: bold;
+}
+
+.attack-timer {
+    height: 20px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.timer-bar {
+    height: 100%;
+    background: linear-gradient(to right, #f1c40f, #f39c12);
+    transition: width 0.1s linear;
+}
+
+.timer-text {
+    text-align: center;
+    font-size: 0.9em;
+    margin-top: 5px;
+    color: #ddd;
+}
+
+/* Add some effects for when damage is taken */
+@keyframes damage-flash {
+    0% { filter: brightness(1); }
+    50% { filter: brightness(1.5); }
+    100% { filter: brightness(1); }
+}
+
+.damage-taken {
+    animation: damage-flash 0.3s ease-out;
+}

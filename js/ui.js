@@ -486,8 +486,15 @@ class UI {
     showCombatUI(player, enemy) {
         this.clearMainArea();
         this.combatArea.classList.remove('hidden');
+        
+        // Set enemy name
+        document.getElementById('combat-enemy-name').textContent = enemy.name;
+        
+        // Initialize health displays
         this.updateCombatantHealth('player', player.health, player.maxHealth);
         this.updateCombatantHealth('enemy', enemy.health, enemy.maxHealth);
+        
+        // Initialize timer displays
         this.updateCombatTimers(player.attackTimer, enemy.attackTimer);
     }
 
@@ -496,17 +503,43 @@ class UI {
     }
 
     updateCombatantHealth(who, current, max) {
+        const percentage = (current / max) * 100;
         if (who === 'player') {
             this.combatPlayerHp.textContent = `${current}/${max}`;
+            const healthBar = document.querySelector('.player-health');
+            healthBar.style.width = `${percentage}%`;
+            
+            // Add damage flash effect
+            healthBar.classList.remove('damage-taken');
+            void healthBar.offsetWidth; // Force reflow
+            healthBar.classList.add('damage-taken');
         } else if (who === 'enemy') {
             this.combatEnemyHp.textContent = `${current}/${max}`;
+            const healthBar = document.querySelector('.enemy-health');
+            healthBar.style.width = `${percentage}%`;
+            
+            // Add damage flash effect
+            healthBar.classList.remove('damage-taken');
+            void healthBar.offsetWidth; // Force reflow
+            healthBar.classList.add('damage-taken');
         }
     }
+
     updateCombatTimers(playerTime, enemyTime) {
+        // Update text
         this.combatPlayerTimer.textContent = playerTime.toFixed(1);
         this.combatEnemyTimer.textContent = enemyTime.toFixed(1);
+        
+        // Update timer bars
+        const playerMaxTime = this.game.player.getAttackSpeed();
+        const enemyMaxTime = this.game.currentCombat.enemy.speed;
+        
+        const playerTimerBar = document.querySelector('.player-timer');
+        const enemyTimerBar = document.querySelector('.enemy-timer');
+        
+        playerTimerBar.style.width = `${(playerTime / playerMaxTime) * 100}%`;
+        enemyTimerBar.style.width = `${(enemyTime / enemyMaxTime) * 100}%`;
     }
-
 
     showShopUI(items, canReroll) {
         this.clearMainArea();
