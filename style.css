@@ -1263,24 +1263,32 @@ button:disabled {
 }
 
 .confirm-button {
-    background-color: #27ae60;
-    color: white;
-    border: none;
-    padding: 10px 30px;
+    padding: 10px 20px;
+    font-size: 1.1em;
     border-radius: 5px;
-    font-size: 14px;
     cursor: pointer;
     transition: all 0.2s ease;
-    font-family: 'Courier New', monospace;
-    text-transform: uppercase;
-    font-weight: bold;
-    letter-spacing: 1px;
+    border: none;
+    color: white;
+    width: 200px; /* Set fixed width */
+}
+
+/* Specific difficulty colors */
+.confirm-button.difficulty-easy {
+    background-color: #4CAF50 !important; /* Green */
+}
+
+.confirm-button.difficulty-medium {
+    background-color: #FF9800 !important; /* Orange */
+}
+
+.confirm-button.difficulty-hard {
+    background-color: #f44336 !important; /* Red */
 }
 
 .confirm-button:hover {
-    background-color: #2ecc71;
+    filter: brightness(1.1);
     transform: scale(1.05);
-    box-shadow: 0 0 10px rgba(46, 204, 113, 0.5);
 }
 
 /* Update choice button styling to match theme */

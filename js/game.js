@@ -284,18 +284,20 @@ class Game {
 
     // --- Player Action Handlers ---
 
-    handleEquipItem(inventoryIndex) {
-        if (this.state === 'combat') {
-            this.addLog("Cannot equip items during combat!");
-            this.ui.hideContextMenu();
-            return;
-        }
-        const result = this.player.equipItem(inventoryIndex);
+    handleEquipItem(index) {
+        const result = this.player.equipItem(index);
         if (result.success) {
             this.addLog(`Equipped ${result.item.name}.`);
             if (result.unequipped) {
                 this.addLog(`Unequipped ${result.unequipped.name}.`);
             }
+            
+            // If in combat and equipping a weapon, reset attack timer
+            if (this.state === 'combat' && this.currentCombat && result.item.type === 'weapon') {
+                this.player.attackTimer = this.player.getAttackSpeed();
+                this.currentCombat.ui.updateCombatTimers(this.player.attackTimer, this.currentCombat.enemy.attackTimer);
+            }
+            
             this.ui.renderInventory();
             this.ui.renderEquipment();
             this.ui.updatePlayerStats();
@@ -306,10 +308,6 @@ class Game {
     }
 
     handleUnequipItem(slotName) {
-        if (this.state === 'combat') {
-            this.addLog("Cannot unequip items during combat!");
-            return;
-        }
         const result = this.player.unequipItem(slotName);
         if (result.success) {
             this.addLog(`Unequipped ${result.item.name}.`);

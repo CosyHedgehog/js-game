@@ -325,6 +325,10 @@ class UI {
         this.statAttack.textContent = player.getAttack();
         this.statDefense.textContent = player.getDefense();
         this.statGold.textContent = player.gold;
+        // Add round display
+        if (this.statRound) {
+            this.statRound.textContent = `${this.game.currentRound}/${this.game.maxRounds}`;
+        }
     }
 
     renderLog() {
@@ -382,7 +386,6 @@ class UI {
 
         const details = document.createElement('div');
         details.classList.add('encounter-details');
-        // Format the encounter details text
         const detailsText = this.game.getEncounterDetails(choice.encounter)
             .split('\n')
             .map(line => line.trim())
@@ -396,8 +399,22 @@ class UI {
         const confirmButton = document.createElement('button');
         confirmButton.textContent = 'Start Encounter';
         confirmButton.classList.add('confirm-button');
-        confirmButton.onclick = () => this.game.confirmChoice(index);
 
+        // Add difficulty coloring for combat encounters
+        if (choice.encounter.type === 'monster' || choice.encounter.type === 'mini-boss' || choice.encounter.type === 'boss') {
+            const monster = MONSTERS[choice.encounter.monsterId];
+            const playerAttack = this.game.player.getAttack();
+            
+            if (monster.defense >= playerAttack) {
+                confirmButton.classList.add('difficulty-hard');
+            } else if (monster.defense >= playerAttack - 2) {
+                confirmButton.classList.add('difficulty-medium');
+            } else {
+                confirmButton.classList.add('difficulty-easy');
+            }
+        }
+
+        confirmButton.onclick = () => this.game.confirmChoice(index);
         buttonsContainer.appendChild(confirmButton);
         confirmationBox.appendChild(buttonsContainer);
 
