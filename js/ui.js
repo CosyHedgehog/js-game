@@ -378,30 +378,23 @@ class UI {
 
         const details = document.createElement('div');
         details.classList.add('encounter-details');
-        details.textContent = this.game.getEncounterDetails(choice.encounter);
+        // Format the encounter details text
+        const detailsText = this.game.getEncounterDetails(choice.encounter)
+            .split('\n')
+            .map(line => line.trim())
+            .join('\n');
+        details.textContent = detailsText;
         confirmationBox.appendChild(details);
 
         const buttonsContainer = document.createElement('div');
         buttonsContainer.classList.add('confirmation-buttons');
 
         const confirmButton = document.createElement('button');
-        confirmButton.textContent = 'Confirm';
+        confirmButton.textContent = 'Start Encounter';
         confirmButton.classList.add('confirm-button');
         confirmButton.onclick = () => this.game.confirmChoice(index);
 
-        const cancelButton = document.createElement('button');
-        cancelButton.textContent = 'Cancel';
-        cancelButton.classList.add('cancel-button');
-        cancelButton.onclick = () => {
-            confirmationBox.remove();
-            // Remove selected state from all buttons
-            this.choicesArea.querySelectorAll('.choice-button').forEach(btn => {
-                btn.classList.remove('selected');
-            });
-        };
-
         buttonsContainer.appendChild(confirmButton);
-        buttonsContainer.appendChild(cancelButton);
         confirmationBox.appendChild(buttonsContainer);
 
         this.choicesArea.appendChild(confirmationBox);
