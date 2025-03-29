@@ -2030,7 +2030,7 @@ class UI {
                 <h4>Warrior Pack</h4>
                 <p>A defensive focused loadout:</p>
                 <ul>
-                    <li>Wooden Sword</li>
+                    <li>Rusty Sword</li>
                     <li>Leather Helm</li>
                     <li>Leather Legs</li>
                     <li>2x Bread</li>
@@ -2045,7 +2045,7 @@ class UI {
                     <li>Wooden Sword</li>
                     <li>Leather Helm</li>
                     <li>Fishing Rod</li>
-                    <li>2x Small Fish</li>
+                    <li>2x Large Fish</li>
                 </ul>
                 <button onclick="game.selectStartingPack('fisher')">Choose Fisher</button>
             </div>

@@ -101,8 +101,8 @@ const ITEMS = {
     // Consumables - Divided by ~2-3 (keeping food very cheap)
     'bread': {
         id: 'bread', name: 'Bread', type: 'consumable', useAction: 'Eat',
-        healAmount: 5, value: 2,
-        description: 'A crusty loaf of bread.\nHeals 5 HP.'
+        healAmount: 3, value: 2,
+        description: 'A crusty loaf of bread.\nHeals 3 HP.'
     },
     'cooked_meat': {
         id: 'cooked_meat', name: 'Cooked Meat', type: 'consumable', useAction: 'Eat',
@@ -271,17 +271,17 @@ const MONSTERS = {
 
 // Probabilities for encounters
 const ENCOUNTER_PROBABILITY = [
-    { type: 'monster', weight: 25 },
+    { type: 'monster', weight: 30 },
     { type: 'rest', weight: 25 },
-    { type: 'shop', weight: 15 },
-    { type: 'mini-boss', weight: 15 },
-    { type: 'fishing', weight: 8 },
-    { type: 'blacksmith', weight: 8 },
-    { type: 'sharpen', weight: 4 },
-    { type: 'armourer', weight: 4 },
-    { type: 'shrine', weight: 4 },
-    { type: 'wandering_merchant', weight: 4 },
-    { type: 'alchemist', weight: 4 }
+    { type: 'shop', weight: 5 },
+    { type: 'mini-boss', weight: 5 },
+    { type: 'fishing', weight: 10 },
+    { type: 'blacksmith', weight: 5 },
+    { type: 'sharpen', weight: 5 },
+    { type: 'armourer', weight: 5 },
+    { type: 'shrine', weight: 5 },
+    { type: 'wandering_merchant', weight: 5 },
+    { type: 'alchemist', weight: 5 }
 ];
 
 // Define which monsters appear in which stages
