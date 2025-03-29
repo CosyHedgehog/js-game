@@ -49,6 +49,8 @@ class UI {
         this.statDefense = document.getElementById('stat-defense');
         this.statGold = document.getElementById('stat-gold');
 
+        this.statRound = document.getElementById('stat-round');
+
         // Combat Specific UI (Initial caching, might need re-caching if innerHTML changes)
         this.combatPlayerHp = document.getElementById('combat-player-hp');
         this.combatEnemyHp = document.getElementById('combat-enemy-hp');
@@ -121,6 +123,8 @@ class UI {
         this.statAttack = document.getElementById('stat-attack');
         this.statDefense = document.getElementById('stat-defense');
         this.statGold = document.getElementById('stat-gold');
+
+        this.statRound = document.getElementById('stat-round');
 
         // CRITICAL: Ensure inventory area itself is cached if it wasn't in constructor
         if (!this.inventoryArea) {
