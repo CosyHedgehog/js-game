@@ -14,17 +14,25 @@ function handleMonsterEncounter(game, ui, monsterId) {
 
 function handleRestEncounter(game, ui) {
     game.state = 'rest';
-    game.addLog("You found a quiet spot to rest.");
-    const healPercent = 0.2 + Math.random() * 0.3; // Random between 20-50%
+    
+    // Calculate and apply healing (without including the +1 max HP)
+    const healPercent = 0.2 + Math.random() * 0.5; // Random between 20-70%
     const healAmount = Math.floor(game.player.maxHealth * healPercent);
     const actualHealed = game.player.heal(healAmount);
-    if (actualHealed > 0) {
-        game.addLog(`You healed for ${actualHealed} HP.`);
-    } else {
-        game.addLog("Your health is already full.");
-    }
-    ui.showRestUI();
-    ui.updatePlayerStats(); // Update stats display
+    
+    // Increase max HP by 1 (but don't heal this amount)
+    game.player.maxHealth += 1;
+    
+    // Create detailed message
+    let message = `You rest and recover ${actualHealed} HP.`;
+    message += `\nYour maximum HP increases by 1 (now ${game.player.maxHealth}).`;
+    
+    game.addLog(message);
+    
+    // Update UI stats immediately before showing rest UI
+    ui.updatePlayerStats();
+    
+    ui.showRestUI(message);
 }
 
 function handleShopEncounter(game, ui) {

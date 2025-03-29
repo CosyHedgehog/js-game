@@ -241,7 +241,8 @@ class Game {
                        `This will start a combat encounter. Are you ready to fight?`;
             }
             case 'rest':
-                return `Rest at this site to recover 20-70% of your maximum health (${Math.floor(this.player.maxHealth * 0.5)} HP).\n\n` +
+                return `Rest at this site to recover 20-70% of your maximum health (${Math.floor(this.player.maxHealth * 0.2)}-${Math.floor(this.player.maxHealth * 0.7)} HP).\n` +
+                       `Your maximum HP will also increase by 1.\n\n` +
                        `Do you want to rest here?`;
             case 'shop':
                 return "Visit a merchant to buy and sell items.\n" +

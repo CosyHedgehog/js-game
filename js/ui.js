@@ -736,11 +736,17 @@ class UI {
     }
 
 
-    showRestUI() {
-        this.clearMainArea();
-        this.restArea.classList.remove('hidden');
-        // Ensure continue button listener is attached
-        document.getElementById('rest-continue-button').onclick = () => {
+    showRestUI(message) {
+        const restArea = document.getElementById('rest-area');
+        restArea.classList.remove('hidden');
+        restArea.innerHTML = `
+            <p>${message}</p>
+            <button id="rest-continue-button">Continue</button>
+        `;
+        
+        const continueButton = document.getElementById('rest-continue-button');
+        continueButton.onclick = () => {
+            restArea.classList.add('hidden');
             this.game.proceedToNextRound();
         };
     }
