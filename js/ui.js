@@ -399,64 +399,74 @@ class UI {
             return;
         }
 
+        // Convert gold into a loot item format for consistent display
+        let allLootItems = [];
+        if (loot.gold > 0) {
+            allLootItems.push({
+                name: `${loot.gold} Gold`,
+                description: "Precious golden coins",
+                type: "gold",
+                amount: loot.gold
+            });
+        }
+        if (loot.items) {
+            allLootItems = allLootItems.concat(loot.items.filter(item => !item.looted));
+        }
+
         this.lootArea.innerHTML = `
             <h3>Loot Found!</h3>
-            ${loot.gold > 0 ? `
-                <div id="loot-gold" class="loot-gold-container">
-                    <span>Gold: ${loot.gold}</span>
-                    <button class="loot-gold-button">Take</button>
-                </div>
-            ` : ''}
-            ${(loot.items && loot.items.length > 0) ? `
-                <div id="loot-items" class="loot-items-container">
-                    <!-- Items will be added here -->
-                </div>
-            ` : ''}
+            <div id="loot-items" class="loot-items-container">
+                <!-- Items will be added here -->
+            </div>
             <div class="loot-buttons">
-                ${(loot.gold > 0 || (loot.items && loot.items.length > 0)) ? 
+                ${allLootItems.length > 0 ? 
                     '<button id="loot-take-all-button">Take All</button>' : ''
                 }
                 <button id="loot-continue-button">Continue</button>
             </div>
         `;
 
-        // Add gold button listener if there's gold
-        if (loot.gold > 0) {
-            const goldButton = this.lootArea.querySelector('.loot-gold-button');
-            if (goldButton) {
-                goldButton.onclick = () => this.game.handleIndividualLoot('gold');
-            }
-        }
+        // Display all loot items (including gold) in a consistent format
+        const lootItemsContainer = this.lootArea.querySelector('#loot-items');
+        if (lootItemsContainer) {
+            allLootItems.forEach((item, index) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.classList.add('loot-item');
+                itemDiv.dataset.index = index;
+                itemDiv.dataset.type = item.type || 'item';
+                
+                itemDiv.innerHTML = `
+                    <div class="loot-item-info">
+                        <span class="loot-item-icon">${item.spritePath ? '' : 'I'}</span>
+                        <span class="loot-item-name">${item.name}</span>
+                    </div>
+                    <button class="loot-item-button">Take</button>
+                `;
+                
+                // Add tooltip functionality
+                const nameSpan = itemDiv.querySelector('.loot-item-name');
+                nameSpan.addEventListener('mouseenter', (e) => this.showTooltip(item.description, this.itemTooltip, e));
+                nameSpan.addEventListener('mouseleave', () => this.hideTooltip(this.itemTooltip));
 
-        // Display Items
-        if (loot.items && loot.items.length > 0) {
-            const lootItemsContainer = this.lootArea.querySelector('#loot-items');
-            if (lootItemsContainer) {
-                loot.items.forEach((item, index) => {
-                    if (!item.looted) { // Only show unlooted items
-                        const itemDiv = document.createElement('div');
-                        itemDiv.classList.add('loot-item');
-                        itemDiv.innerHTML = `
-                            <div class="loot-item-info">
-                                <span class="loot-item-icon">${item.spritePath ? '' : 'I'}</span>
-                                <span class="loot-item-name">${item.name}</span>
-                            </div>
-                            <button class="loot-item-button">Take</button>
-                        `;
-                        
-                        // Add tooltip functionality
-                        const nameSpan = itemDiv.querySelector('.loot-item-name');
-                        nameSpan.addEventListener('mouseenter', (e) => this.showTooltip(item.description, this.itemTooltip, e));
-                        nameSpan.addEventListener('mouseleave', () => this.hideTooltip(this.itemTooltip));
-
-                        // Add take button listener
-                        const takeButton = itemDiv.querySelector('.loot-item-button');
-                        takeButton.onclick = () => this.game.handleIndividualLoot('item', index);
-
-                        lootItemsContainer.appendChild(itemDiv);
+                // Add take button listener
+                const takeButton = itemDiv.querySelector('.loot-item-button');
+                takeButton.onclick = () => {
+                    if (item.type === 'gold') {
+                        this.game.handleIndividualLoot('gold');
+                    } else {
+                        // Find the actual index in the original items array
+                        const itemIndex = loot.items.findIndex((lootItem, idx) => 
+                            !lootItem.looted && 
+                            lootItem.name === item.name && 
+                            lootItem.description === item.description
+                        );
+                        this.game.handleIndividualLoot('item', itemIndex);
                     }
-                });
-            }
+                    itemDiv.remove();
+                };
+
+                lootItemsContainer.appendChild(itemDiv);
+            });
         }
 
         // Add button listeners

@@ -86,23 +86,23 @@ const MONSTERS = {
     'rat': {
         name: 'Giant Rat', health: 8, attack: 2, defense: 0, speed: 1.5, goldDrop: [2, 5],
         lootTable: [
-            { itemId: 'bread', chance: 0.50 },
-            { itemId: 'fish', chance: 0.50 },
+            { itemId: 'bread', chance: 1 },
+            { itemId: 'fish', chance: 1 },
         ]
     },
     'goblin': {
         name: 'Goblin', health: 15, attack: 4, defense: 1, speed: 2.0, goldDrop: [5, 10],
         lootTable: [
-            { itemId: 'rusty_sword', chance: 0.05 },
-            { itemId: 'leather_helm', chance: 0.05 },
+            { itemId: 'rusty_sword', chance: 1 },
+            { itemId: 'leather_helm', chance: 1 },
             { itemId: 'bread', chance: 0.15 },
         ]
     },
     'skeleton': {
         name: 'Skeleton', health: 20, attack: 5, defense: 2, speed: 2.5, goldDrop: [8, 15],
         lootTable: [
-            { itemId: 'iron_shield', chance: 0.03 },
-            { itemId: 'rusty_sword', chance: 0.07 },
+            { itemId: 'iron_shield', chance: 1 },
+            { itemId: 'rusty_sword', chance: 1 },
         ]
     },
     // Mini-Bosses

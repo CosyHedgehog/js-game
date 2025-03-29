@@ -5,17 +5,13 @@ class Game {
         this.player = null;
         this.currentRound = 0;
         this.maxRounds = 30;
-        // Add 'looting' state
         this.state = 'start_screen'; // Possible states: start_screen, choosing, combat, shop, rest, looting, game_over, win
         this.logMessages = [];
         this.currentChoices = [];
         this.currentCombat = null;
         this.currentShopItems = [];
         this.shopCanReroll = false;
-
-        // --- NEW: Properties for Loot ---
         this.pendingLoot = null; // Will hold { gold: number, items: [] }
-        // --- End Loot Properties ---
 
         if (this.ui) { this.ui.game = this; }
     }
@@ -59,19 +55,18 @@ class Game {
         this.currentRound++;
         this.addLog(`--- Round ${this.currentRound} ---`);
 
-        // *** CRITICAL: Set state BEFORE generating UI ***
         this.state = 'choosing';
 
-        this.ui.clearMainArea(); // Clear relevant UI sections (should hide loot)
+        this.ui.clearMainArea();
         this.ui.renderRoundIndicator();
         if (this.currentRound >= this.maxRounds) {
             this.generateBossEncounter();
         } else {
-            this.generateChoices(); // This should update the UI via this.ui.renderChoices
+            this.generateChoices();
         }
         this.ui.updatePlayerStats();
         this.ui.renderEquipment();
-        this.ui.renderInventory(); // Re-render inventory in case max health etc changed? Optional.
+        this.ui.renderInventory();
     }
 
     enterLootState(gold, items) {
