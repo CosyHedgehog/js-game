@@ -702,9 +702,10 @@ class UI {
         const shopArea = document.getElementById('shop-area');
         shopArea.classList.remove('hidden');
 
-        // Create shop content with updated structure
+        // Create shop content with updated structure and selling info
         let shopContent = `
             <h3>Shop</h3>
+            <p class="shop-info">Right-click inventory items to sell them.</p>
             <div class="shop-content">
                 <div class="shop-items-container">
         `;

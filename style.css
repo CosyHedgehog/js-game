@@ -2061,3 +2061,10 @@ html {
 .pack-option button:hover {
     background: #5a5a5a;
 }
+
+.shop-info {
+    color: #aaaaaa;
+    font-style: italic;
+    margin: 5px 0 15px 0;
+    text-align: center;
+}
