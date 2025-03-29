@@ -63,18 +63,21 @@ class Combat {
         const playerAttackRoll = rollDamage(this.player.getAttack());
         const enemyDefense = this.enemy.defense || 0;
         const damageDealt = Math.max(0, playerAttackRoll - enemyDefense);
+        const blocked = enemyDefense > playerAttackRoll ? playerAttackRoll : enemyDefense;
+        
         this.enemy.health = Math.max(0, this.enemy.health - damageDealt);
-        this.game.addLog(`You attack ${this.enemy.name} for ${damageDealt} damage. (${playerAttackRoll} - ${enemyDefense})`);
-        this.ui.updateCombatantHealth('enemy', this.enemy.health, this.enemy.maxHealth);
+        this.game.addLog(`You attack ${this.enemy.name} for ${damageDealt} damage. (${playerAttackRoll} - ${blocked} blocked)`);
+        this.ui.updateCombatantHealth('enemy', this.enemy.health, this.enemy.maxHealth, damageDealt, blocked);
     }
 
     enemyAttack() {
         const enemyAttackRoll = rollDamage(this.enemy.attack);
         const playerDefense = this.player.getDefense();
-        const damageResult = this.player.takeDamage(enemyAttackRoll); // Use player's method
-        this.game.addLog(`${this.enemy.name} attacks you for ${damageResult.actualDamage} damage. (${enemyAttackRoll} - ${playerDefense})`);
-        this.ui.updateCombatantHealth('player', this.player.health, this.player.maxHealth);
-        this.ui.updatePlayerStats(); // Update sidebar stats as well
+        const damageResult = this.player.takeDamage(enemyAttackRoll);
+        
+        this.game.addLog(`${this.enemy.name} attacks you for ${damageResult.actualDamage} damage. (${enemyAttackRoll} - ${playerDefense} blocked)`);
+        this.ui.updateCombatantHealth('player', this.player.health, this.player.maxHealth, damageResult.actualDamage, playerDefense);
+        this.ui.updatePlayerStats();
     }
 
     // Call this when player uses an item during combat
@@ -82,18 +85,18 @@ class Combat {
         if (useResult.success) {
             this.game.addLog(useResult.message);
             if (useResult.actionDelay > 0) {
-                this.player.pendingActionDelay += useResult.actionDelay; // Add delay to next attack
+                this.player.pendingActionDelay += useResult.actionDelay;
                 this.game.addLog(`Your next attack is delayed by ${useResult.actionDelay}s!`);
             }
             // Update health display immediately if healed
             if (useResult.item?.healAmount) {
-                this.ui.updateCombatantHealth('player', this.player.health, this.player.maxHealth);
+                this.ui.updateCombatantHealth('player', this.player.health, this.player.maxHealth, useResult.healedAmount, 0, true);
                 this.ui.updatePlayerStats();
             }
-            this.ui.renderInventory(); // Re-render inv since item was consumed
-            this.ui.hideContextMenu(); // Hide menu after use
+            this.ui.renderInventory();
+            this.ui.hideContextMenu();
         } else {
-            this.game.addLog(useResult.message); // Log failure (e.g., health full)
+            this.game.addLog(useResult.message);
         }
     }
 

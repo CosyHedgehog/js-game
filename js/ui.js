@@ -502,7 +502,7 @@ class UI {
         this.combatArea.classList.add('hidden');
     }
 
-    updateCombatantHealth(who, current, max) {
+    updateCombatantHealth(who, current, max, damage = 0, blocked = 0, isHeal = false) {
         const percentage = (current / max) * 100;
         if (who === 'player') {
             this.combatPlayerHp.textContent = `${current}/${max}`;
@@ -513,6 +513,11 @@ class UI {
             healthBar.classList.remove('damage-taken');
             void healthBar.offsetWidth; // Force reflow
             healthBar.classList.add('damage-taken');
+
+            // Create damage splat if damage was dealt
+            if (damage > 0) {
+                this.createDamageSplat('player', damage, isHeal ? 'heal' : 'damage', blocked);
+            }
         } else if (who === 'enemy') {
             this.combatEnemyHp.textContent = `${current}/${max}`;
             const healthBar = document.querySelector('.enemy-health');
@@ -522,6 +527,11 @@ class UI {
             healthBar.classList.remove('damage-taken');
             void healthBar.offsetWidth; // Force reflow
             healthBar.classList.add('damage-taken');
+
+            // Create damage splat if damage was dealt
+            if (damage > 0) {
+                this.createDamageSplat('enemy', damage, isHeal ? 'heal' : 'damage', blocked);
+            }
         }
     }
 
@@ -782,5 +792,42 @@ class UI {
 
             this.roundIndicatorArea.appendChild(orb);
         }
+    }
+
+    createDamageSplat(who, amount, type = 'damage', blocked = 0) {
+        const combatant = document.querySelector(who === 'player' ? '.player-side' : '.enemy-side');
+        if (!combatant) return;
+
+        // Create container if it doesn't exist
+        let container = combatant.querySelector('.damage-splat-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.className = 'damage-splat-container';
+            combatant.appendChild(container);
+        }
+
+        // Create the damage splat element
+        const splat = document.createElement('div');
+        splat.className = `damage-splat ${type}`;
+        
+        // Position randomly within the container
+        const x = Math.random() * 60 - 30; // Random x position between -30 and 30
+        splat.style.left = `calc(50% + ${x}px)`;
+        splat.style.top = '50%';
+
+        // Set text content based on type and blocked amount
+        if (type === 'damage') {
+            if (blocked > 0) {
+                splat.innerHTML = `${amount}<span style="color: #aaaaaa"> (${blocked} blocked)</span>`;
+            } else {
+                splat.textContent = amount;
+            }
+        } else if (type === 'heal') {
+            splat.textContent = '+' + amount;
+        }
+
+        // Add to container and remove after animation
+        container.appendChild(splat);
+        setTimeout(() => splat.remove(), 1000);
     }
 }
