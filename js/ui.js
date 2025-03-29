@@ -1,11 +1,8 @@
-// js/ui.js
-
 class UI {
     constructor(game) {
         this.game = game; // Reference to the game logic
         this.roundIndicatorArea = document.getElementById('round-indicator-area');
-        // --- Cache DOM Elements ---
-
+        
         // Cache Loot Area elements
         this.lootArea = document.getElementById('loot-area');
         this.lootGold = document.getElementById('loot-gold');

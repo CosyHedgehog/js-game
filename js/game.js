@@ -1,5 +1,3 @@
-// js/game.js
-
 class Game {
     constructor(ui) {
         this.lastDefeatedEnemyName = null;

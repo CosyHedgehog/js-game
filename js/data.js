@@ -1,5 +1,3 @@
-// js/data.js
-
 const ITEMS = {
     // Weapons
     'wooden_sword': {

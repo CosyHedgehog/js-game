@@ -1,5 +1,3 @@
-// js/encounters.js
-
 function handleMonsterEncounter(game, ui, monsterId) {
     const monsterData = MONSTERS[monsterId];
     if (!monsterData) {

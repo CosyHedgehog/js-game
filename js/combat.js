@@ -1,5 +1,3 @@
-// js/combat.js
-
 class Combat {
     constructor(player, enemy, game, ui) {
         this.player = player;

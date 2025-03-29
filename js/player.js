@@ -1,5 +1,3 @@
-// js/player.js
-
 class Player {
     constructor() {
         this.gold = 0;
@@ -16,7 +14,6 @@ class Player {
             shield: null
         };
 
-        // For combat timing
         this.attackTimer = 0;
         this.pendingActionDelay = 0; // Delay added by actions like eating
         this.defaultAttackSpeed = 0.5;
@@ -31,10 +28,8 @@ class Player {
     }
 
     getAttackSpeed() {
-        // Base speed could be a stat later, default to weapon speed or a fallback
         return this.equipment.weapon?.speed ?? this.defaultAttackSpeed; // Default 2s if no weapon
     }
-
 
     getDefense() {
         let totalDefense = this.baseDefense;
@@ -150,7 +145,6 @@ class Player {
         return { success: true, item: itemToEquip, unequipped: unequippedItem };
     }
 
-    // Unequips item from a specific equipment slot
     unequipItem(slot) {
         if (!this.equipment[slot]) {
             return { success: false, message: "No item equipped in that slot." };
@@ -168,7 +162,6 @@ class Player {
 
         return { success: true, item: itemToUnequip };
     }
-
 
     useItem(index) {
         if (index < 0 || index >= this.inventory.length || !this.inventory[index]) {
