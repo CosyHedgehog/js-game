@@ -2022,13 +2022,20 @@ html {
     text-align: center;
 }
 
+.pack-options-container {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin: 20px auto;
+    max-width: 800px;
+}
+
 .pack-option {
     background: #2a2a2a;
     border: 1px solid #444;
     border-radius: 8px;
-    margin: 20px auto;
     padding: 20px;
-    max-width: 300px;
+    width: 300px;
 }
 
 .pack-option h4 {
@@ -2044,8 +2051,20 @@ html {
 }
 
 .pack-option li {
-    padding: 5px 0;
+    padding: 8px 12px;
     color: #ccc;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.pack-option li:hover {
+    background-color: #3a3a3a;
+}
+
+.pack-option li.selected {
+    background-color: #3a3a3a;
+    border: 1px solid #666;
 }
 
 .pack-option button {
@@ -2060,6 +2079,19 @@ html {
 
 .pack-option button:hover {
     background: #5a5a5a;
+}
+
+.pack-item-description {
+    background: #2a2a2a;
+    border: 1px solid #444;
+    border-radius: 8px;
+    margin: 20px auto;
+    padding: 15px;
+    max-width: 600px;
+    min-height: 60px;
+    color: #ccc;
+    text-align: left;
+    white-space: pre-line;
 }
 
 .shop-info {

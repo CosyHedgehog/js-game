@@ -545,6 +545,8 @@ class Game {
                 this.player.addItem(createItem('fishing_rod'));
                 this.player.addItem(createItem('large_fish'));
                 this.player.addItem(createItem('large_fish'));
+                this.player.addItem(createItem('large_fish'));
+                this.player.addItem(createItem('large_fish'));
                 this.ui.clearMainArea();
                 break;
         }
