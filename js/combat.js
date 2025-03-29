@@ -20,17 +20,32 @@ class Combat {
         this.player.pendingActionDelay = 0;
         this.player.attackTimerPaused = false;
 
-        // Add run button listener when combat starts
+        // Update run button text with damage range
         const runButton = document.getElementById('combat-run-button');
         if (runButton) {
+            const minDamage = Math.floor(this.enemy.attack * 1); // 1x damage
+            const maxDamage = Math.floor(this.enemy.attack * 3); // 3x damage
+            runButton.textContent = `Run (${minDamage}-${maxDamage} damage)`;
             runButton.onclick = () => this.handleRun();
         }
     }
 
     start() {
         this.game.addLog(`Combat started: Player vs ${this.enemy.name}!`);
+        
+        // Reset any previous escape animations
+        const playerSide = document.querySelector('.player-side');
+        if (playerSide) {
+            playerSide.classList.remove('player-escape-animation');
+            // Reset the element by forcing a reflow
+            void playerSide.offsetWidth;
+            // Reset any transforms that might have been applied
+            playerSide.style.transform = 'none';
+            playerSide.style.opacity = '1';
+        }
+        
         this.ui.showCombatUI(this.player, this.enemy);
-        this.player.attackTimer = this.player.getAttackSpeed(); // Initial delay before first attack
+        this.player.attackTimer = this.player.getAttackSpeed();
         this.enemy.attackTimer = this.enemy.speed;
 
         this.intervalId = setInterval(() => this.tick(), this.tickRate);
@@ -176,15 +191,68 @@ class Combat {
     }
 
     handleRun() {
-        // Deal 5 damage to player for running
-        const runDamage = 5;
+        // Stop combat immediately
+        clearInterval(this.intervalId);
+        this.intervalId = null;
+
+        // Calculate run damage as 1-3x the enemy's attack
+        const multiplier = 1 + Math.random() * 2;
+        const runDamage = Math.floor(this.enemy.attack * multiplier);
         const damageResult = this.player.takeDamage(runDamage);
         
-        this.game.addLog(`You flee from the ${this.enemy.name}, taking ${damageResult.actualDamage} damage in the process!`);
+        // Update health display one last time
         this.ui.updateCombatantHealth('player', this.player.health, this.player.maxHealth, damageResult.actualDamage);
         
-        // End combat without victory
-        this.endCombat(false, true); // Pass true as second parameter to indicate running
+        // Add escape animation to player side
+        const playerSide = document.querySelector('.player-side');
+        if (playerSide) {
+            playerSide.classList.add('player-escape-animation');
+        }
+
+        // Hide combat area after animation starts
+        setTimeout(() => {
+            const combatArea = document.querySelector('#combat-area');
+            if (combatArea) {
+                combatArea.classList.add('hidden');
+            }
+        }, 750);
+
+        // Create backdrop
+        const backdrop = document.createElement('div');
+        backdrop.className = 'escape-backdrop';
+        document.body.appendChild(backdrop);
+
+        // Create escape message box
+        const messageContainer = document.createElement('div');
+        messageContainer.className = 'escape-message-container';
+        
+        const content = `
+            <h3>${this.player.health <= 0 ? 'Failed to Escape!' : 'Escape Successful!'}</h3>
+            <p>You fled from the ${this.enemy.name}...</p>
+            <p>But took <span style="color: #ff4444">${damageResult.actualDamage} damage</span> in the process!</p>
+            <p style="color: #888">(${multiplier.toFixed(1)}x enemy attack)</p>
+            ${this.player.health <= 0 ? 
+                `<p style="color: #ff4444">Unfortunately, you didn't survive the escape attempt...</p>` : 
+                ''}
+            <button id="escape-continue">Continue</button>
+        `;
+        
+        messageContainer.innerHTML = content;
+        document.body.appendChild(messageContainer);
+
+        // Handle continue button
+        const continueButton = document.getElementById('escape-continue');
+        continueButton.onclick = () => {
+            messageContainer.remove();
+            backdrop.remove();
+            if (this.player.health <= 0) {
+                this.game.addLog(`You were defeated while trying to escape from the ${this.enemy.name}...`);
+                this.game.endGame(false);
+            } else {
+                this.game.addLog(`You successfully fled from the ${this.enemy.name}!`);
+                this.endCombat(false, true);
+            }
+        };
     }
 
     endCombat(playerWon, ranAway = false) {
