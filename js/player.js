@@ -113,36 +113,21 @@ class Player {
             return { success: false, message: "Cannot equip shield with a 2-handed weapon." };
         }
 
-
-        // Unequip current item in that slot (if any)
+        // Get current equipped item in that slot
         const currentItem = this.equipment[slot];
-        let unequippedItem = null;
+
+        // If we're replacing an item of the same type, we don't need an extra inventory slot
         if (currentItem) {
-            const freeSlotIndex = this.findFreeInventorySlot();
-            if (freeSlotIndex === -1 && index !== freeSlotIndex) { // Make sure we don't need the slot we are equipping *from* if it's the only free one
-                // Check if the item we are equipping *from* is the only free slot needed
-                let needsCurrentSlot = true;
-                for (let i = 0; i < this.inventory.length; ++i) {
-                    if (i !== index && this.inventory[i] === null) {
-                        needsCurrentSlot = false;
-                        break;
-                    }
-                }
-                if (needsCurrentSlot) {
-                    return { success: false, message: "Inventory full, cannot unequip current item." };
-                }
-            }
-            // If we got here, either there's another free slot, or the slot we're equipping from is free
-            this.inventory[index] = currentItem; // Put old item back first
-            unequippedItem = currentItem;
+            // Just swap the items
+            this.inventory[index] = currentItem;
+            this.equipment[slot] = itemToEquip;
+            return { success: true, item: itemToEquip, unequipped: currentItem };
         } else {
-            this.inventory[index] = null; // Clear the inventory slot
+            // We're equipping to an empty slot, just move the item from inventory to equipment
+            this.inventory[index] = null;
+            this.equipment[slot] = itemToEquip;
+            return { success: true, item: itemToEquip };
         }
-
-        // Equip the new item
-        this.equipment[slot] = itemToEquip;
-
-        return { success: true, item: itemToEquip, unequipped: unequippedItem };
     }
 
     unequipItem(slot) {

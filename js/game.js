@@ -20,7 +20,7 @@ class Game {
         this.player = new Player();
         // Starting items
         this.player.addItem(createItem('wooden_sword'));
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < 11; i++) {
             this.player.addItem(createItem('bread'));
         }
 
@@ -94,72 +94,52 @@ class Game {
         this.ui.updateLootItemVisual(itemIndex, item.selected);
     }
     collectLoot() {
-        if (this.state !== 'looting' || !this.pendingLoot) {
-            console.error("collectLoot called incorrectly.");
+        if (!this.pendingLoot) return;
+
+        // Count how many unlooted items we have
+        const unLootedItems = this.pendingLoot.items ? 
+            this.pendingLoot.items.filter(item => !item.looted).length : 0;
+
+        // Check if we have enough inventory space
+        const freeSlots = this.player.inventory.filter(slot => slot === null).length;
+        
+        if (unLootedItems > freeSlots) {
+            this.addLog(`Not enough inventory space! You need ${unLootedItems} free slots.`);
             return;
         }
-        console.log("collectLoot: Processing loot."); // Debug Log
 
-        // Get the name stored by endCombat
-        const defeatedName = this.lastDefeatedEnemyName;
-        this.lastDefeatedEnemyName = null; // Clear the temporary storage
-
-        let goldTaken = 0;
-        let itemsConsidered = 0;
-        let itemsTaken = 0;
-        let itemsLeft = 0;
-
-        // Grant Gold
+        // If we have space, proceed with collecting all loot
         if (this.pendingLoot.gold > 0) {
             this.player.addGold(this.pendingLoot.gold);
-            goldTaken = this.pendingLoot.gold;
+            this.addLog(`Collected ${this.pendingLoot.gold} gold.`);
+            this.pendingLoot.gold = 0;
         }
 
-        // Grant SELECTED Items
+        let allItemsCollected = true;
         if (this.pendingLoot.items) {
             this.pendingLoot.items.forEach(item => {
-                itemsConsidered++;
-                if (item.selected) {
+                if (!item.looted) {
                     if (this.player.addItem(item)) {
-                        itemsTaken++;
+                        item.looted = true;
+                        this.addLog(`Picked up ${item.name}.`);
                     } else {
-                        itemsLeft++;
+                        this.addLog(`Failed to pick up ${item.name} - inventory might be full!`);
+                        allItemsCollected = false;
                     }
-                } else {
-                    itemsLeft++;
                 }
             });
         }
 
-        // --- Summary Logging ---
-        let logMsg = "Finished looting.";
-        // ... (rest of logging logic) ...
-        this.addLog(logMsg);
-        // --- End Summary Logging ---
-
-        // Clear pending loot BEFORE proceeding
-        this.pendingLoot = null;
-
-        // Update UI state AFTER clearing loot, BEFORE changing game state
-        console.log("collectLoot: Updating stats and inventory UI."); // Debug Log
+        // Update UI
         this.ui.updatePlayerStats();
         this.ui.renderInventory();
 
-        // --- Determine Next Step ---
-        const isBossDefeated = defeatedName && MONSTERS[FINAL_BOSS] && defeatedName === MONSTERS[FINAL_BOSS].name;
-        console.log(`collectLoot: Checking proceed. Defeated='${defeatedName}', IsBoss=${isBossDefeated}`); // Debug Log
-
-        if (isBossDefeated) {
-            console.log("collectLoot: Boss defeated, calling endGame(true)."); // Debug Log
-            this.ui.renderRoundIndicator();
-            // Game state is handled within endGame
-            this.endGame(true);
+        // Only continue if all items were successfully collected
+        if (allItemsCollected) {
+            this.continueLoot();
         } else {
-            console.log("collectLoot: Not boss, calling proceedToNextRound()."); // Debug Log
-            // proceedToNextRound will set state to 'choosing' and update UI choices
-            this.proceedToNextRound();
+            this.ui.showLootUI(this.pendingLoot);
         }
-        // --- End Determine Next Step ---
     }
 
     generateChoices() {
@@ -376,27 +356,42 @@ class Game {
             this.player.addGold(this.pendingLoot.gold);
             this.addLog(`Collected ${this.pendingLoot.gold} gold.`);
             this.pendingLoot.gold = 0;
-        } else if (type === 'item' && this.pendingLoot.items[index] && !this.pendingLoot.items[index].looted) {
+            
+            // Update UI after successful gold collection
+            this.ui.updatePlayerStats();
+            this.ui.showLootUI(this.pendingLoot);
+        } else if (type === 'item' && this.pendingLoot.items[index]) {
             const item = this.pendingLoot.items[index];
+            
+            // First check if item is already looted
+            if (item.looted) {
+                return; // Item already taken, do nothing
+            }
+
+            // Check inventory space
+            const freeSlot = this.player.findFreeInventorySlot();
+            if (freeSlot === -1) {
+                this.addLog("Inventory is full!");
+                return; // Return without updating UI
+            }
+            
+            // Try to add the item
             if (this.player.addItem(item)) {
                 item.looted = true;
                 this.addLog(`Picked up ${item.name}.`);
+                
+                // Update UI only after successful pickup
+                this.ui.updatePlayerStats();
+                this.ui.renderInventory();
+                this.ui.showLootUI(this.pendingLoot);
+                
+                // Check if all loot has been collected
+                if (this.isAllLootCollected()) {
+                    this.continueLoot();
+                }
             } else {
-                this.addLog("Inventory is full!");
-                return;
+                this.addLog("Failed to pick up item - inventory might be full!");
             }
-        }
-
-        // Update UI
-        this.ui.updatePlayerStats();
-        this.ui.renderInventory();
-
-        // Check if all loot has been collected
-        const isAllLooted = this.isAllLootCollected();
-        if (isAllLooted) {
-            this.continueLoot(); // Proceed to next round if everything is looted
-        } else {
-            this.ui.showLootUI(this.pendingLoot); // Otherwise, update the loot UI
         }
     }
 
