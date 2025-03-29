@@ -115,8 +115,8 @@ body {
 /* Output Log Area (Bottom Left) */
 #output-log-area {
     position: relative;
-    background: rgba(0, 0, 0, 0.8);
-    border: 1px solid #34495e;
+    background: #282828;
+    border: 1px solid #404040;
     margin: 10px;
     height: calc(100% - 20px);
     width: 90%;
@@ -128,8 +128,8 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 5px 10px;
-    background: #2c3e50;
-    border-bottom: 1px solid #34495e;
+    background: #323232;
+    border-bottom: 1px solid #404040;
 }
 
 .log-header h3 {
@@ -147,7 +147,7 @@ body {
 }
 
 #close-log-button:hover {
-    color: #e74c3c;
+    color: #ff4444;
 }
 
 /* Right Column Container (Spans Right Side) */
@@ -1404,15 +1404,15 @@ html {
 
 /* Add these new styles */
 #toggle-log-button {
-    margin-bottom: 10px;
-    width: 50px;
-    padding: 5px;
-    background: #2c3e50;
+    margin-right: 10px;
+    padding: 5px 10px;
+    background: #323232;
     color: white;
-    border: 1px solid #34495e;
+    border: 1px solid #404040;
     cursor: pointer;
+    border-radius: 3px;
 }
 
 #toggle-log-button:hover {
-    background: #34495e;
+    background: #404040;
 }

@@ -928,6 +928,12 @@ class UI {
     }
 
     showLog() {
+        // If log is already visible, hide it instead
+        if (!this.outputLogArea.classList.contains('hidden')) {
+            this.hideLog();
+            return;
+        }
+
         // Hide all other content areas first
         this.choicesArea.classList.add('hidden');
         this.combatArea.classList.add('hidden');
@@ -937,11 +943,19 @@ class UI {
 
         // Show the log area
         this.outputLogArea.classList.remove('hidden');
+        // Update button text
+        if (this.toggleLogButton) {
+            this.toggleLogButton.textContent = 'Hide Log';
+        }
         this.renderLog(); // Refresh the log content
     }
 
     hideLog() {
         this.outputLogArea.classList.add('hidden');
+        // Reset button text
+        if (this.toggleLogButton) {
+            this.toggleLogButton.textContent = 'Show Log';
+        }
         
         // Show the appropriate content area based on game state
         switch (this.game.state) {
