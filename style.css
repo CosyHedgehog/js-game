@@ -1859,3 +1859,45 @@ html {
 #shrine-confirm-button:hover {
     background-color: #5a5a5a;
 }
+
+#alchemist-area {
+    padding: 20px;
+    text-align: center;
+}
+
+.potion-description {
+    margin: 20px auto;
+    padding: 15px;
+    background: #2a2a2a;
+    border: 1px solid #404040;
+    border-radius: 5px;
+    color: #ecf0f1;
+    font-size: 0.9em;
+    min-height: 80px;
+    max-width: 400px;
+    white-space: pre-line;
+    text-align: left;
+}
+
+.shop-item {
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.shop-item.selected {
+    background-color: #3a3a3a;
+    border-color: #505050;
+}
+
+/* Ensure the buy button still looks clickable */
+.shop-item .shop-item-button {
+    cursor: pointer;
+    z-index: 1;
+}
+
+.shop-empty-message {
+    padding: 20px;
+    text-align: center;
+    color: #888;
+    font-style: italic;
+}

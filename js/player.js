@@ -18,10 +18,14 @@ class Player {
         this.attackTimer = 0;
         this.pendingActionDelay = 0; // Delay added by actions like eating
         this.defaultAttackSpeed = 2.0; // Changed from 0.5 to 2.0 seconds for better balance
+
+        this.tempAttack = 0;
+        this.tempDefense = 0;
+        this.tempSpeedReduction = 0;
     }
 
     getAttack() {
-        let totalAttack = this.baseAttack;
+        let totalAttack = this.baseAttack + this.tempAttack;
         if (this.equipment.weapon && this.equipment.weapon.stats?.attack) {
             totalAttack += this.equipment.weapon.stats.attack;
         }
@@ -29,11 +33,12 @@ class Player {
     }
 
     getAttackSpeed() {
-        return this.equipment.weapon?.speed ?? this.defaultAttackSpeed;
+        const baseSpeed = this.equipment.weapon?.speed ?? this.defaultAttackSpeed;
+        return Math.max(0.5, baseSpeed - this.tempSpeedReduction); // Minimum 0.5s attack speed
     }
 
     getDefense() {
-        let totalDefense = this.baseDefense;
+        let totalDefense = this.baseDefense + this.tempDefense;
         for (const slot in this.equipment) {
             if (this.equipment[slot] && this.equipment[slot].stats?.defense) {
                 totalDefense += this.equipment[slot].stats.defense;
@@ -169,6 +174,28 @@ class Player {
             }
         }
 
+        if (item.type === 'consumable') {
+            if (item.stats) {
+                if (item.stats.tempAttack) this.tempAttack += item.stats.tempAttack;
+                if (item.stats.tempDefense) this.tempDefense += item.stats.tempDefense;
+                if (item.stats.tempSpeed) this.tempSpeedReduction += item.stats.tempSpeed;
+                
+                let buffMessage = `Used ${item.name}.`;
+                if (item.stats.tempAttack) buffMessage += ` Attack +${item.stats.tempAttack}`;
+                if (item.stats.tempDefense) buffMessage += ` Defense +${item.stats.tempDefense}`;
+                if (item.stats.tempSpeed) buffMessage += ` Speed +${item.stats.tempSpeed}s`;
+                
+                this.inventory[index] = null;
+                return { success: true, message: buffMessage, item: item, actionDelay: item.isPotion ? 0 : 2.0 };
+            }
+        }
+
         return { success: false, message: "This item cannot be used like that." };
+    }
+
+    resetCombatBuffs() {
+        this.tempAttack = 0;
+        this.tempDefense = 0;
+        this.tempSpeedReduction = 0;
     }
 }

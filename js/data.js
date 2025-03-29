@@ -119,6 +119,31 @@ const ITEMS = {
         healAmount: 25, value: 12, isPotion: true,
         description: 'A large healing potion.\nHeals 25 HP.\nNo combat delay.'
     },
+    'attack_potion': {
+        id: 'attack_potion', name: 'Attack Potion', type: 'consumable', useAction: 'Drink',
+        stats: { tempAttack: 1 }, value: 10, isPotion: true,
+        description: 'A bubbling red potion.\nGrants +1 Attack for combat.\nNo combat delay.'
+    },
+    'greater_attack_potion': {
+        id: 'greater_attack_potion', name: 'Greater Attack Potion', type: 'consumable', useAction: 'Drink',
+        stats: { tempAttack: 2 }, value: 20, isPotion: true,
+        description: 'A swirling crimson potion.\nGrants +2 Attack for combat.\nNo combat delay.'
+    },
+    'defense_potion': {
+        id: 'defense_potion', name: 'Defense Potion', type: 'consumable', useAction: 'Drink',
+        stats: { tempDefense: 1 }, value: 10, isPotion: true,
+        description: 'A blue protective potion.\nGrants +1 Defense for combat.\nNo combat delay.'
+    },
+    'greater_defense_potion': {
+        id: 'greater_defense_potion', name: 'Greater Defense Potion', type: 'consumable', useAction: 'Drink',
+        stats: { tempDefense: 2 }, value: 20, isPotion: true,
+        description: 'A deep azure potion.\nGrants +2 Defense for combat.\nNo combat delay.'
+    },
+    'speed_potion': {
+        id: 'speed_potion', name: 'Speed Potion', type: 'consumable', useAction: 'Drink',
+        stats: { tempSpeed: 0.2 }, value: 15, isPotion: true,
+        description: 'A fizzing yellow potion.\nReduces attack time by 0.2s for combat.\nNo combat delay.'
+    },
 
     // Fish Items
     'small_fish': {
@@ -245,7 +270,8 @@ const ENCOUNTER_PROBABILITY = [
     { type: 'blacksmith', weight: 8 },
     { type: 'sharpen', weight: 4 },
     { type: 'armourer', weight: 4 },
-    { type: 'shrine', weight: 100 }
+    { type: 'shrine', weight: 4 },
+    { type: 'alchemist', weight: 100 }
 ];
 
 // Define which monsters appear in which stages
@@ -277,4 +303,15 @@ const FISHING_LOOT_TABLE = [
     { itemId: 'small_fish', chance: 0.6 },    // Common
     { itemId: 'medium_fish', chance: 0.3 },   // Uncommon
     { itemId: 'large_fish', chance: 0.1 }     // Rare
+];
+
+// Add new constant for Alchemist's inventory
+const ALCHEMIST_ITEMS = [
+    'health_potion',
+    'greater_health_potion',
+    'attack_potion',
+    'greater_attack_potion',
+    'defense_potion',
+    'greater_defense_potion',
+    'speed_potion'
 ];

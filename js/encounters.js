@@ -167,3 +167,51 @@ function handleShrineEncounter(game, ui) {
     game.addLog("You discover a mysterious shrine pulsing with ancient magic.");
     ui.showShrineUI();
 }
+
+function handleAlchemistEncounter(game, ui) {
+    game.state = 'alchemist';
+    game.addLog("You find an Alchemist's shop, filled with mysterious potions.");
+    
+    // Define potion tiers and their spawn chances
+    const potionTiers = {
+        common: {
+            items: ['health_potion', 'attack_potion', 'defense_potion'],
+            chance: 0.8 // 80% chance for common potions
+        },
+        rare: {
+            items: ['greater_health_potion', 'greater_attack_potion', 'greater_defense_potion'],
+            chance: 0.4 // 40% chance for greater potions
+        },
+        special: {
+            items: ['speed_potion'],
+            chance: 0.3 // 30% chance for speed potion
+        }
+    };
+
+    // Generate available stock
+    const availableItems = [];
+    
+    // Check each tier and item
+    Object.entries(potionTiers).forEach(([tier, { items, chance }]) => {
+        items.forEach(itemId => {
+            if (Math.random() < chance) {
+                const item = createItem(itemId);
+                if (item) {
+                    // Alchemist charges more than regular shops
+                    item.buyPrice = Math.ceil(item.value * 2.5);
+                    availableItems.push(item);
+                }
+            }
+        });
+    });
+
+    // Ensure at least one common potion is always available
+    if (availableItems.length === 0) {
+        const basicPotion = createItem('health_potion');
+        basicPotion.buyPrice = Math.ceil(basicPotion.value * 2.5);
+        availableItems.push(basicPotion);
+    }
+    
+    game.currentShopItems = availableItems;
+    ui.showAlchemistUI(availableItems);
+}

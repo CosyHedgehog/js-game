@@ -195,6 +195,8 @@ class Game {
                 return "Visit Armourer";
             case 'shrine':
                 return "Approach Mystic Shrine";
+            case 'alchemist':
+                return "Visit Alchemist";
             default:
                 return 'Unknown Encounter';
         }
@@ -271,6 +273,14 @@ class Game {
                        "- Divine Favor (30 gold): Powerful permanent upgrade\n\n" +
                        `Current gold: ${this.player.gold}\n\n` +
                        "Approach the shrine?";
+            case 'alchemist':
+                return "Visit the Alchemist to buy powerful potions:\n" +
+                       "- Health Potions: Restore HP instantly\n" +
+                       "- Attack Potions: Boost damage for combat\n" +
+                       "- Defense Potions: Increase defense for combat\n" +
+                       "- Speed Potions: Attack faster for combat\n\n" +
+                       `Current gold: ${this.player.gold}\n\n` +
+                       "Enter the Alchemist's shop?";
             default:
                 return "Unknown encounter type.";
         }
@@ -307,6 +317,9 @@ class Game {
                 break;
             case 'shrine':
                 handleShrineEncounter(this, this.ui);
+                break;
+            case 'alchemist':
+                handleAlchemistEncounter(this, this.ui);
                 break;
             default:
                 this.addLog("Unknown encounter type selected.");

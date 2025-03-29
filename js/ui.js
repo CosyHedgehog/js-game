@@ -1589,4 +1589,119 @@ class UI {
             this.game.proceedToNextRound();
         };
     }
+
+    showAlchemistUI(items) {
+        const mainContent = document.getElementById('main-content');
+        const alchemistArea = document.createElement('div');
+        alchemistArea.id = 'alchemist-area';
+        alchemistArea.innerHTML = `
+            <h3>Alchemist's Shop</h3>
+            <div class="shop-items-container">
+                ${items.map((item, index) => `
+                    <div class="shop-item" data-item-id="${item.id}">
+                        <div class="shop-item-info">
+                            <span class="shop-item-name">${item.name}</span>
+                            <span class="shop-item-price">${item.buyPrice} gold</span>
+                        </div>
+                        <button class="shop-item-button" ${this.game.player.gold < item.buyPrice ? 'disabled' : ''}>
+                            Buy
+                        </button>
+                    </div>
+                `).join('')}
+                ${items.length === 0 ? '<div class="shop-empty-message">No more potions available!</div>' : ''}
+            </div>
+            <div id="potion-description" class="potion-description">
+                Click a potion to see its description
+            </div>
+            <div class="shop-buttons">
+                <button id="alchemist-leave-button" class="shop-leave-button">Leave Shop</button>
+            </div>
+        `;
+
+        // Clear existing alchemist area if it exists
+        const existingArea = document.getElementById('alchemist-area');
+        if (existingArea) {
+            existingArea.remove();
+        }
+
+        mainContent.appendChild(alchemistArea);
+        this.setupAlchemistEventListeners(items);
+    }
+
+    setupAlchemistEventListeners(items) {
+        // Add click listeners for potion descriptions
+        const potionItems = document.querySelectorAll('.shop-item');
+        const descriptionBox = document.getElementById('potion-description');
+        
+        potionItems.forEach(item => {
+            const itemId = item.getAttribute('data-item-id');
+            const itemData = ITEMS[itemId];
+            
+            item.addEventListener('click', () => {
+                if (itemData) {
+                    descriptionBox.textContent = itemData.description;
+                    // Highlight the selected item
+                    potionItems.forEach(i => i.classList.remove('selected'));
+                    item.classList.add('selected');
+                }
+            });
+        });
+
+        // Add buy button listeners
+        const buyButtons = document.querySelectorAll('.shop-item-button');
+        buyButtons.forEach((button, index) => {
+            button.onclick = (e) => {
+                e.stopPropagation(); // Prevent triggering the description
+                this.handleAlchemistBuy(index);
+            };
+        });
+
+        // Add leave button listener
+        const leaveButton = document.getElementById('alchemist-leave-button');
+        if (leaveButton) {
+            leaveButton.onclick = () => this.handleAlchemistLeave();
+        }
+    }
+
+    handleAlchemistBuy(itemIndex) {
+        if (!this.game || !this.game.currentShopItems || itemIndex >= this.game.currentShopItems.length) return;
+
+        const item = this.game.currentShopItems[itemIndex];
+        if (!item) return;
+
+        // Check if player can afford it
+        if (this.game.player.gold < item.buyPrice) {
+            this.game.addLog(`You can't afford ${item.name} (${item.buyPrice} gold).`);
+            return;
+        }
+
+        // Check inventory space
+        const freeSlot = this.game.player.findFreeInventorySlot();
+        if (freeSlot === -1) {
+            this.game.addLog("Your inventory is full!");
+            return;
+        }
+
+        // Buy the item
+        this.game.player.spendGold(item.buyPrice);
+        this.game.player.addItem(item);
+        this.game.addLog(`You bought ${item.name} for ${item.buyPrice} gold.`);
+
+        // Remove the item from the shop's inventory
+        this.game.currentShopItems.splice(itemIndex, 1);
+
+        // Update UI
+        this.updatePlayerStats();
+        this.renderInventory();
+        
+        // Refresh the alchemist shop display
+        this.showAlchemistUI(this.game.currentShopItems);
+    }
+
+    handleAlchemistLeave() {
+        if (this.game) {
+            this.clearMainArea();
+            this.game.proceedToNextRound();
+        }
+    }
 }
