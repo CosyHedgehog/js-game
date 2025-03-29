@@ -161,3 +161,9 @@ function handleArmourerEncounter(game, ui) {
     game.addLog("You find an Armourer's tools. You can use them to reinforce a piece of armor.");
     ui.showArmourerUI();
 }
+
+function handleShrineEncounter(game, ui) {
+    game.state = 'shrine';
+    game.addLog("You discover a mysterious shrine pulsing with ancient magic.");
+    ui.showShrineUI();
+}

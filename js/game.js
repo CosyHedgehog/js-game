@@ -193,6 +193,8 @@ class Game {
                 return "Use Sharpening Stone";
             case 'armourer':
                 return "Visit Armourer";
+            case 'shrine':
+                return "Approach Mystic Shrine";
             default:
                 return 'Unknown Encounter';
         }
@@ -261,6 +263,14 @@ class Game {
                 return "You find an Armourer's tools that can enhance armor.\n" +
                        "Select one piece of armor to permanently increase its defense by 1.\n\n" +
                        "Use the Armourer's tools?";
+            case 'shrine':
+                return "A mysterious shrine pulses with ancient magic.\n" +
+                       "Offer gold to receive random beneficial effects:\n" +
+                       "- Minor Blessing (5 gold): Small stat boost\n" +
+                       "- Major Blessing (15 gold): Significant enhancement\n" +
+                       "- Divine Favor (30 gold): Powerful permanent upgrade\n\n" +
+                       `Current gold: ${this.player.gold}\n\n` +
+                       "Approach the shrine?";
             default:
                 return "Unknown encounter type.";
         }
@@ -294,6 +304,9 @@ class Game {
                 break;
             case 'armourer':
                 handleArmourerEncounter(this, this.ui);
+                break;
+            case 'shrine':
+                handleShrineEncounter(this, this.ui);
                 break;
             default:
                 this.addLog("Unknown encounter type selected.");

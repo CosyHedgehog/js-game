@@ -1493,4 +1493,100 @@ class UI {
         this.clearMainArea();
         this.game.proceedToNextRound();
     }
+
+    showShrineUI() {
+        this.clearMainArea();
+        
+        const mainContent = document.getElementById('main-content');
+        
+        const shrineArea = document.createElement('div');
+        shrineArea.id = 'shrine-area';
+        shrineArea.innerHTML = `
+            <h3>Mystic Shrine</h3>
+            <p>The shrine hums with mysterious energy. What offering will you make?</p>
+            <div class="shrine-options">
+                <button id="minor-blessing" ${this.game.player.gold < 5 ? 'disabled' : ''}>
+                    Minor Blessing (5 gold)
+                    <div class="blessing-desc">Random effect: +1 Attack, +1 Defense, or +5 Max HP</div>
+                </button>
+                <button id="major-blessing" ${this.game.player.gold < 15 ? 'disabled' : ''}>
+                    Major Blessing (15 gold)
+                    <div class="blessing-desc">Random effect: +2 Attack, +2 Defense, or +10 Max HP</div>
+                </button>
+                <button id="divine-favor" ${this.game.player.gold < 30 ? 'disabled' : ''}>
+                    Divine Favor (30 gold)
+                    <div class="blessing-desc">Random effect: +3 Attack, +3 Defense, or +20 Max HP</div>
+                </button>
+            </div>
+            <button id="shrine-leave-button">Leave Shrine</button>
+        `;
+        
+        mainContent.appendChild(shrineArea);
+        
+        // Add event listeners
+        document.getElementById('minor-blessing').onclick = () => this.handleBlessing('minor');
+        document.getElementById('major-blessing').onclick = () => this.handleBlessing('major');
+        document.getElementById('divine-favor').onclick = () => this.handleBlessing('divine');
+        document.getElementById('shrine-leave-button').onclick = () => {
+            this.game.addLog("You leave the shrine without making an offering.");
+            this.game.proceedToNextRound();
+        };
+    }
+
+    handleBlessing(type) {
+        const costs = { minor: 5, major: 15, divine: 30 };
+        const cost = costs[type];
+        
+        if (this.game.player.gold < cost) {
+            this.game.addLog("You don't have enough gold for this blessing!");
+            return;
+        }
+        
+        this.game.player.spendGold(cost);
+        
+        // Random effect (attack, defense, or max health)
+        const effect = Math.floor(Math.random() * 3);
+        const amounts = {
+            minor: [1, 1, 5],
+            major: [2, 2, 10],
+            divine: [3, 3, 20]
+        };
+        
+        const [atkAmt, defAmt, hpAmt] = amounts[type];
+        
+        let blessingMessage = '';
+        switch(effect) {
+            case 0: // Attack boost
+                this.game.player.baseAttack += atkAmt;
+                blessingMessage = `The shrine grants you power! Base Attack +${atkAmt}`;
+                break;
+            case 1: // Defense boost
+                this.game.player.baseDefense += defAmt;
+                blessingMessage = `The shrine fortifies you! Base Defense +${defAmt}`;
+                break;
+            case 2: // Max HP boost
+                this.game.player.maxHealth += hpAmt;
+                this.game.player.health += hpAmt;
+                blessingMessage = `The shrine empowers your vitality! Maximum Health +${hpAmt}`;
+                break;
+        }
+        
+        this.game.addLog(blessingMessage);
+        this.updatePlayerStats();
+        
+        // Show confirmation box
+        const shrineArea = document.getElementById('shrine-area');
+        shrineArea.innerHTML = `
+            <h3>Blessing Received!</h3>
+            <p>${blessingMessage}</p>
+            <p>You spent ${cost} gold for this blessing.</p>
+            <button id="shrine-confirm-button">Continue</button>
+        `;
+        
+        // Add event listener to the confirm button
+        document.getElementById('shrine-confirm-button').onclick = () => {
+            this.clearMainArea(); // Clear the shrine area
+            this.game.proceedToNextRound();
+        };
+    }
 }

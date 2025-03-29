@@ -244,7 +244,8 @@ const ENCOUNTER_PROBABILITY = [
     { type: 'fishing', weight: 8 },
     { type: 'blacksmith', weight: 8 },
     { type: 'sharpen', weight: 4 },
-    { type: 'armourer', weight: 4 }
+    { type: 'armourer', weight: 4 },
+    { type: 'shrine', weight: 100 }
 ];
 
 // Define which monsters appear in which stages
