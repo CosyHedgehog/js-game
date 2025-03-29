@@ -171,10 +171,12 @@ class Game {
         this.currentChoices = [];
         const choice1 = this.getRandomEncounter();
         const choice2 = this.getRandomEncounter();
+        const choice3 = this.getRandomEncounter(); // Add third choice
 
         // Ensure choices are described clearly
         this.currentChoices.push({ text: this.getEncounterText(choice1), encounter: choice1 });
         this.currentChoices.push({ text: this.getEncounterText(choice2), encounter: choice2 });
+        this.currentChoices.push({ text: this.getEncounterText(choice3), encounter: choice3 }); // Add third choice
 
         this.ui.renderChoices(this.currentChoices);
     }

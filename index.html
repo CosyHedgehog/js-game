@@ -14,18 +14,25 @@
       </div>
       <div id="game-screen" class="screen hidden">
         <div id="round-indicator-area"></div>
-        <div id="player-stats-area">
-          <h3>Stats</h3>
-          <p>
-            Health: <span id="stat-health"></span>/<span
-              id="stat-max-health"
-            ></span>
-          </p>
-          <p>Attack: <span id="stat-attack"></span></p>
-          <p>Defense: <span id="stat-defense"></span></p>
-          <p>Gold: <span id="stat-gold"></span></p>
-        </div>
         <div id="main-area">
+          <div id="player-stats-area">
+            <div class="stat-item">
+              <span class="stat-label">HP:</span>
+              <span id="stat-health"></span>/<span id="stat-max-health"></span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">ATK:</span>
+              <span id="stat-attack"></span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">DEF:</span>
+              <span id="stat-defense"></span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">GOLD:</span>
+              <span id="stat-gold"></span>
+            </div>
+          </div>
           <div id="choices-area">
           </div>
           <div id="combat-area" class="hidden">
@@ -86,8 +93,7 @@
           </div>
         </div>
         <div id="output-log-area">
-          <ul id="output-log">
-          </ul>
+          <ul id="output-log"></ul>
         </div>
       </div>
       <div id="end-screen" class="screen hidden">
