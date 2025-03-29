@@ -197,6 +197,8 @@ class Game {
                 return "Approach Mystic Shrine";
             case 'alchemist':
                 return "Visit Alchemist";
+            case 'wandering_merchant':
+                return "Meet Wandering Merchant";
             default:
                 return 'Unknown Encounter';
         }
@@ -281,6 +283,13 @@ class Game {
                        "- Speed Potions: Attack faster for combat\n\n" +
                        `Current gold: ${this.player.gold}\n\n` +
                        "Enter the Alchemist's shop?";
+            case 'wandering_merchant':
+                return "A mysterious merchant offers unique services:\n" +
+                       "- Combine items into powerful artifacts\n" +
+                       "- Enhance weapons with magical power\n" +
+                       "- Transform shields into weapons\n\n" +
+                       `Current gold: ${this.player.gold}\n\n` +
+                       "Meet the merchant?";
             default:
                 return "Unknown encounter type.";
         }
@@ -320,6 +329,9 @@ class Game {
                 break;
             case 'alchemist':
                 handleAlchemistEncounter(this, this.ui);
+                break;
+            case 'wandering_merchant':
+                handleWanderingMerchantEncounter(this, this.ui);
                 break;
             default:
                 this.addLog("Unknown encounter type selected.");

@@ -1704,4 +1704,243 @@ class UI {
             this.game.proceedToNextRound();
         }
     }
+
+    showWanderingMerchantUI(offers) {
+        const mainContent = document.getElementById('main-content');
+        const merchantArea = document.createElement('div');
+        merchantArea.id = 'wandering-merchant-area';
+        
+        let html = `
+            <h3>Wandering Merchant</h3>
+            <div class="merchant-offers">
+        `;
+
+        if (offers.length === 0) {
+            html += `
+                <div class="merchant-no-offers">
+                    The merchant examines your inventory but finds nothing of interest.
+                </div>
+            `;
+        } else {
+            offers.forEach((offer, index) => {
+                html += `
+                    <div class="merchant-offer" data-offer-index="${index}">
+                        <div class="offer-name">${offer.name}</div>
+                        <div class="offer-price">${offer.price} gold</div>
+                        <div class="offer-description">
+                            ${this.getOfferDescription(offer)}
+                        </div>
+                        <button class="offer-button" ${this.game.player.gold < offer.price ? 'disabled' : ''}>
+                            Accept Offer
+                        </button>
+                    </div>
+                `;
+            });
+        }
+
+        html += `
+            </div>
+            <div class="merchant-buttons">
+                <button id="merchant-leave-button">Leave Merchant</button>
+            </div>
+        `;
+
+        merchantArea.innerHTML = html;
+        
+        // Clear existing merchant area if it exists
+        const existingArea = document.getElementById('wandering-merchant-area');
+        if (existingArea) {
+            existingArea.remove();
+        }
+
+        mainContent.appendChild(merchantArea);
+        this.setupMerchantEventListeners(offers);
+    }
+
+    getOfferDescription(offer) {
+        switch (offer.type) {
+            case 'combine':
+                return `Combine ${offer.requires.map(id => ITEMS[id].name).join(' and ')} into a ${offer.result.name}`;
+            case 'enhance':
+                return `Enchant a weapon to increase its attack power by ${offer.effect.stats.attack}`;
+            case 'transform':
+                return `Transform a shield into a weapon, converting defense into attack power`;
+            default:
+                return '';
+        }
+    }
+
+    setupMerchantEventListeners(offers) {
+        // Add event listeners for offer buttons
+        const offerButtons = document.querySelectorAll('.offer-button');
+        offerButtons.forEach((button, index) => {
+            button.onclick = () => this.handleMerchantOffer(offers[index]);
+        });
+
+        // Add leave button listener
+        const leaveButton = document.getElementById('merchant-leave-button');
+        if (leaveButton) {
+            leaveButton.onclick = () => {
+                this.clearMainArea();
+                this.game.proceedToNextRound();
+            };
+        }
+    }
+
+    handleMerchantOffer(offer) {
+        // Check if player can afford the offer
+        if (!this.game.player.spendGold(offer.price)) {
+            this.game.addLog(`You cannot afford this offer (costs ${offer.price} gold).`);
+            return;
+        }
+
+        switch (offer.type) {
+            case 'combine': {
+                // Find and remove required items
+                const items = offer.requires.map(itemId => {
+                    const index = this.game.player.inventory.findIndex(item => item && item.id === itemId);
+                    if (index === -1) return null;
+                    return this.game.player.removeItem(index);
+                });
+
+                if (items.some(item => !item)) {
+                    this.game.addLog("Error: Required items not found!");
+                    return;
+                }
+
+                // Create and add new item
+                const newItem = createItem(offer.result.id) || offer.result;
+                if (this.game.player.addItem(newItem)) {
+                    this.game.addLog(`Combined ${items.map(i => i.name).join(' and ')} into ${newItem.name}!`);
+                }
+                break;
+            }
+
+            case 'enhance': {
+                // Show weapon selection menu
+                const weaponOptions = this.game.player.inventory
+                    .map((item, index) => item && item.type === 'weapon' ? { item, index } : null)
+                    .filter(Boolean);
+
+                if (weaponOptions.length === 0) {
+                    this.game.addLog("You don't have any weapons to enhance!");
+                    // Refund the gold since no weapons available
+                    this.game.player.addGold(offer.price);
+                    return;
+                }
+
+                // Clear existing merchant area content
+                const merchantArea = document.getElementById('wandering-merchant-area');
+                if (merchantArea) {
+                    merchantArea.innerHTML = `
+                        <h3>Select a Weapon to Enhance</h3>
+                        <div class="merchant-selection-menu">
+                            ${weaponOptions.map(({ item, index }) => `
+                                <div class="merchant-item-option" data-index="${index}">
+                                    ${item.name} (Attack: ${item.stats.attack || 0})
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+
+                    // Add selection handlers
+                    merchantArea.querySelectorAll('.merchant-item-option').forEach(option => {
+                        option.onclick = () => {
+                            const index = parseInt(option.dataset.index);
+                            const weapon = this.game.player.inventory[index];
+                            
+                            // Enhance the weapon
+                            weapon.stats.attack = (weapon.stats.attack || 0) + offer.effect.stats.attack;
+                            weapon.name = `${offer.effect.namePrefix} ${weapon.name.replace(offer.effect.namePrefix, '')}`;
+                            
+                            // Update description
+                            weapon.description = weapon.description.replace(
+                                /Attack: \+\d+/, 
+                                `Attack: +${weapon.stats.attack}`
+                            );
+                            
+                            // Show confirmation message
+                            merchantArea.innerHTML = `
+                                <h3>Weapon Enhanced!</h3>
+                                <p>${weapon.name} has been enhanced.</p>
+                                <p>New Attack Power: +${weapon.stats.attack}</p>
+                                <button id="merchant-continue-button" class="confirm-button">Continue</button>
+                            `;
+
+                            // Add continue button handler
+                            const continueButton = document.getElementById('merchant-continue-button');
+                            if (continueButton) {
+                                continueButton.onclick = () => {
+                                    this.clearMainArea();
+                                    this.game.proceedToNextRound();
+                                };
+                            }
+
+                            // Update UI
+                            this.renderInventory();
+                            this.updatePlayerStats();
+                        };
+                    });
+                }
+                break;
+            }
+
+            case 'transform': {
+                // Show shield selection menu
+                const shieldOptions = this.game.player.inventory
+                    .map((item, index) => item && item.type === 'armor' && item.slot === 'shield' ? { item, index } : null)
+                    .filter(Boolean);
+
+                const menu = document.createElement('div');
+                menu.className = 'merchant-selection-menu';
+                menu.innerHTML = `
+                    <h4>Select a shield to transform:</h4>
+                    ${shieldOptions.map(({ item, index }) => `
+                        <div class="merchant-item-option" data-index="${index}">
+                            ${item.name} (Defense: ${item.stats.defense})
+                        </div>
+                    `).join('')}
+                `;
+
+                // Add selection handlers
+                menu.querySelectorAll('.merchant-item-option').forEach(option => {
+                    option.onclick = () => {
+                        const index = parseInt(option.dataset.index);
+                        const shield = this.game.player.inventory[index];
+                        
+                        // Transform shield into weapon
+                        const newWeapon = {
+                            id: `transformed_${shield.id}`,
+                            name: `${offer.result.namePrefix} ${shield.name}`,
+                            type: 'weapon',
+                            slot: 'weapon',
+                            hands: offer.result.hands,
+                            stats: {
+                                attack: Math.ceil(shield.stats.defense * offer.result.statsMultiplier)
+                            },
+                            speed: 2.0,
+                            value: shield.value * 1.5,
+                            description: `A shield transformed into a weapon.\nAttack: +${Math.ceil(shield.stats.defense * offer.result.statsMultiplier)}\nSpeed: 2.0s\n1-Handed`
+                        };
+
+                        // Remove shield and add new weapon
+                        this.game.player.removeItem(index);
+                        this.game.player.addItem(newWeapon);
+                        
+                        this.game.addLog(`Transformed ${shield.name} into ${newWeapon.name}!`);
+                        menu.remove();
+                        this.showWanderingMerchantUI([]); // Refresh UI
+                    };
+                });
+
+                const merchantArea = document.getElementById('wandering-merchant-area');
+                merchantArea.appendChild(menu);
+                break;
+            }
+        }
+
+        // Update UI
+        this.game.ui.renderInventory();
+        this.game.ui.updatePlayerStats();
+    }
 }

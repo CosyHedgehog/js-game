@@ -271,7 +271,8 @@ const ENCOUNTER_PROBABILITY = [
     { type: 'sharpen', weight: 4 },
     { type: 'armourer', weight: 4 },
     { type: 'shrine', weight: 4 },
-    { type: 'alchemist', weight: 100 }
+    { type: 'wandering_merchant', weight: 4 },
+    { type: 'alchemist', weight: 4 }
 ];
 
 // Define which monsters appear in which stages
@@ -314,4 +315,46 @@ const ALCHEMIST_ITEMS = [
     'defense_potion',
     'greater_defense_potion',
     'speed_potion'
+];
+
+// Add new constant for Wandering Merchant's special offers
+const MERCHANT_SPECIAL_OFFERS = [
+    {
+        type: 'combine',
+        name: 'Ring of Power',
+        requires: ['attack_potion', 'dragon_ring'],
+        result: {
+            id: 'enhanced_dragon_ring',
+            name: 'Enhanced Dragon Ring',
+            type: 'armor',
+            slot: 'ring',
+            stats: { attack: 3, defense: 3 },
+            value: 40,
+            description: 'A dragon ring enhanced with magical power.\nAttack: +3\nDefense: +3'
+        },
+        price: 25
+    },
+    {
+        type: 'enhance',
+        name: 'Weapon Enchanting',
+        requires: ['weapon'],
+        effect: {
+            stats: { attack: 2 },
+            namePrefix: 'Enchanted',
+        },
+        price: 20
+    },
+    {
+        type: 'transform',
+        name: 'Shield to Weapon',
+        requires: ['shield'],
+        result: {
+            type: 'weapon',
+            slot: 'weapon',
+            hands: 1,
+            statsMultiplier: 1.5,
+            namePrefix: 'Spiked',
+        },
+        price: 15
+    }
 ];

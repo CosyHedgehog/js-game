@@ -1901,3 +1901,105 @@ html {
     color: #888;
     font-style: italic;
 }
+
+#wandering-merchant-area {
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 8px;
+    color: #fff;
+}
+
+.merchant-offers {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.merchant-offer {
+    background: rgba(40, 40, 40, 0.9);
+    padding: 15px;
+    border-radius: 6px;
+    border: 1px solid #666;
+}
+
+.offer-name {
+    font-size: 1.2em;
+    color: #ffd700;
+    margin-bottom: 5px;
+}
+
+.offer-price {
+    color: #90EE90;
+    font-size: 0.9em;
+    margin-bottom: 10px;
+}
+
+.offer-description {
+    margin-bottom: 15px;
+    color: #ccc;
+}
+
+.offer-button {
+    background: #4a4a4a;
+    color: #fff;
+    border: 1px solid #666;
+    padding: 8px 15px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.offer-button:hover:not(:disabled) {
+    background: #5a5a5a;
+    border-color: #ffd700;
+}
+
+.offer-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.merchant-no-offers {
+    text-align: center;
+    padding: 20px;
+    color: #888;
+    font-style: italic;
+}
+
+.merchant-selection-menu {
+    background: rgba(0, 0, 0, 0.8);
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 6px;
+    border: 1px solid #666;
+}
+
+.merchant-item-option {
+    background: rgba(40, 40, 40, 0.9);
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.merchant-item-option:hover {
+    background: rgba(60, 60, 60, 0.9);
+    border-color: #ffd700;
+}
+
+#merchant-continue-button {
+    margin-top: 15px;
+    padding: 8px 16px;
+    background: #4a4a4a;
+    color: #fff;
+    border: 1px solid #666;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+#merchant-continue-button:hover {
+    background: #5a5a5a;
+    border-color: #ffd700;
+}

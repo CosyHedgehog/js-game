@@ -215,3 +215,41 @@ function handleAlchemistEncounter(game, ui) {
     game.currentShopItems = availableItems;
     ui.showAlchemistUI(availableItems);
 }
+
+function handleWanderingMerchantEncounter(game, ui) {
+    game.state = 'wandering_merchant';
+    game.addLog("You encounter a mysterious wandering merchant with unique offerings.");
+    
+    // Generate available offers based on player's inventory
+    const availableOffers = [];
+    
+    MERCHANT_SPECIAL_OFFERS.forEach(offer => {
+        if (offer.type === 'combine') {
+            // Check if player has required items
+            const hasItems = offer.requires.every(itemId => 
+                game.player.inventory.some(item => item && item.id === itemId)
+            );
+            if (hasItems) {
+                availableOffers.push(offer);
+            }
+        } else if (offer.type === 'enhance') {
+            // Check if player has any weapons
+            const hasWeapon = game.player.inventory.some(item => 
+                item && item.type === 'weapon'
+            );
+            if (hasWeapon) {
+                availableOffers.push(offer);
+            }
+        } else if (offer.type === 'transform') {
+            // Check if player has any shields
+            const hasShield = game.player.inventory.some(item => 
+                item && item.type === 'armor' && item.slot === 'shield'
+            );
+            if (hasShield) {
+                availableOffers.push(offer);
+            }
+        }
+    });
+
+    ui.showWanderingMerchantUI(availableOffers);
+}
