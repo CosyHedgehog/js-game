@@ -615,27 +615,31 @@ button:disabled {
 .loot-item {
     display: flex;
     align-items: center;
-    padding: 5px 0;
+    justify-content: space-between;
+    padding: 8px 10px;
     border-bottom: 1px dashed #444;
+    gap: 10px;
 }
 
 .loot-item:last-child {
     border-bottom: none;
 }
 
+.loot-item-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+}
+
 .loot-item-icon {
-    display: inline-block;
+    flex-shrink: 0;
     width: 24px;
-    /* Adjust size as needed */
     height: 24px;
-    margin-right: 10px;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
-    vertical-align: middle;
-    /* Align icon with text */
     background-color: #505050;
-    /* Placeholder bg */
     border: 1px solid #606060;
     border-radius: 3px;
 }
@@ -643,6 +647,13 @@ button:disabled {
 .loot-item-name {
     font-size: 0.95em;
     color: #dddddd;
+    flex: 1;
+}
+
+.loot-item-button {
+    flex-shrink: 0;
+    min-width: 60px;
+    text-align: center;
 }
 
 #loot-take-button {
@@ -764,4 +775,88 @@ button:disabled {
     /* Outer glow + inner */
     transform: scale(1.1);
     /* Slightly larger */
+}
+
+/* Update/Add these styles */
+.loot-gold-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 15px;
+    padding: 12px;
+    background-color: #2f2f2f;
+    border-radius: 4px;
+    border: 1px solid #404040;
+    width: 80%;
+}
+
+.loot-items-container {
+    margin-bottom: 20px;
+    max-height: 150px;
+    overflow-y: auto;
+    width: 80%;
+    padding: 10px;
+    background-color: #2f2f2f;
+    border-radius: 4px;
+    border: 1px solid #404040;
+}
+
+.loot-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+#loot-take-all-button, #loot-continue-button {
+    padding: 12px 30px;
+    font-size: 1.1em;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+/* Update the loot button styles */
+.loot-gold-button, .loot-item-button {
+    background-color: #505050;
+    color: #ffffff;
+    border: 1px solid #3a3a3a;
+    padding: 8px 15px;
+    font-size: 0.95em;
+    border-radius: 4px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 1px rgba(0, 0, 0, 0.2);
+    transition: all 0.15s ease;
+}
+
+.loot-gold-button:hover, .loot-item-button:hover {
+    background-color: #5a5a5a;
+    border-color: #454545;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+#loot-take-all-button, #loot-continue-button {
+    background-color: #505050;
+    color: #ffffff;
+    border: 1px solid #3a3a3a;
+    padding: 12px 30px;
+    font-size: 1.1em;
+    border-radius: 5px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 1px rgba(0, 0, 0, 0.2);
+    transition: all 0.15s ease;
+}
+
+#loot-take-all-button:hover, #loot-continue-button:hover {
+    background-color: #5a5a5a;
+    border-color: #454545;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+#loot-take-all-button {
+    background-color: #4a6b4a;
+    border-color: #3a5a3a;
+}
+
+#loot-take-all-button:hover {
+    background-color: #557755;
+    border-color: #456945;
 }

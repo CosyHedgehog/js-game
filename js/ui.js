@@ -395,52 +395,87 @@ class UI {
     }
 
     showLootUI(loot) {
-        this.clearMainArea(); // Hide other main area sections
+        this.clearMainArea();
 
-        if (!this.lootArea || !this.lootGold || !this.lootItemsContainer || !this.lootTakeButton) {
-            console.error("UI Error: Cannot show loot UI, elements missing.");
+        if (!this.lootArea) {
+            console.error("UI Error: Cannot show loot UI, lootArea element missing.");
             return;
         }
 
-        // Display Gold
-        this.lootGold.textContent = loot.gold || 0;
-
-        // Display Items
-        this.lootItemsContainer.innerHTML = ''; // Clear previous items
-        if (loot.items && loot.items.length > 0) {
-            loot.items.forEach(item => {
-                const itemDiv = document.createElement('div');
-                itemDiv.classList.add('loot-item'); // Add class for styling
-
-                const itemIcon = document.createElement('span');
-                itemIcon.classList.add('loot-item-icon');
-                // Set background image if using sprites
-                if (item.spritePath) {
-                    itemIcon.style.backgroundImage = `url('${item.spritePath}')`;
-                } else {
-                    itemIcon.textContent = 'I'; // Placeholder if no sprite
+        this.lootArea.innerHTML = `
+            <h3>Loot Found!</h3>
+            ${loot.gold > 0 ? `
+                <div id="loot-gold" class="loot-gold-container">
+                    <span>Gold: ${loot.gold}</span>
+                    <button class="loot-gold-button">Take</button>
+                </div>
+            ` : ''}
+            ${(loot.items && loot.items.length > 0) ? `
+                <div id="loot-items" class="loot-items-container">
+                    <!-- Items will be added here -->
+                </div>
+            ` : ''}
+            <div class="loot-buttons">
+                ${(loot.gold > 0 || (loot.items && loot.items.length > 0)) ? 
+                    '<button id="loot-take-all-button">Take All</button>' : ''
                 }
+                <button id="loot-continue-button">Continue</button>
+            </div>
+        `;
 
-                const itemName = document.createElement('span');
-                itemName.classList.add('loot-item-name');
-                itemName.textContent = item.name;
-
-                itemDiv.appendChild(itemIcon);
-                itemDiv.appendChild(itemName);
-                this.lootItemsContainer.appendChild(itemDiv);
-            });
-        } else {
-            const noItemsP = document.createElement('p');
-            noItemsP.textContent = "No items found.";
-            this.lootItemsContainer.appendChild(noItemsP);
+        // Add gold button listener if there's gold
+        if (loot.gold > 0) {
+            const goldButton = this.lootArea.querySelector('.loot-gold-button');
+            if (goldButton) {
+                goldButton.onclick = () => this.game.handleIndividualLoot('gold');
+            }
         }
 
-        // Ensure button listener is attached (might be redundant if cached well, but safe)
-        this.lootTakeButton.onclick = () => this.game.collectLoot();
+        // Display Items
+        if (loot.items && loot.items.length > 0) {
+            const lootItemsContainer = this.lootArea.querySelector('#loot-items');
+            if (lootItemsContainer) {
+                loot.items.forEach((item, index) => {
+                    if (!item.looted) { // Only show unlooted items
+                        const itemDiv = document.createElement('div');
+                        itemDiv.classList.add('loot-item');
+                        itemDiv.innerHTML = `
+                            <div class="loot-item-info">
+                                <span class="loot-item-icon">${item.spritePath ? '' : 'I'}</span>
+                                <span class="loot-item-name">${item.name}</span>
+                            </div>
+                            <button class="loot-item-button">Take</button>
+                        `;
+                        
+                        // Add tooltip functionality
+                        const nameSpan = itemDiv.querySelector('.loot-item-name');
+                        nameSpan.addEventListener('mouseenter', (e) => this.showTooltip(item.description, this.itemTooltip, e));
+                        nameSpan.addEventListener('mouseleave', () => this.hideTooltip(this.itemTooltip));
 
-        // Make loot area visible
+                        // Add take button listener
+                        const takeButton = itemDiv.querySelector('.loot-item-button');
+                        takeButton.onclick = () => this.game.handleIndividualLoot('item', index);
+
+                        lootItemsContainer.appendChild(itemDiv);
+                    }
+                });
+            }
+        }
+
+        // Add button listeners
+        const takeAllButton = this.lootArea.querySelector('#loot-take-all-button');
+        if (takeAllButton) {
+            takeAllButton.onclick = () => this.game.collectLoot();
+        }
+
+        const continueButton = this.lootArea.querySelector('#loot-continue-button');
+        if (continueButton) {
+            continueButton.onclick = () => this.game.continueLoot();
+        }
+
         this.lootArea.classList.remove('hidden');
     }
+
     showCombatUI(player, enemy) {
         this.clearMainArea();
         this.combatArea.classList.remove('hidden');

@@ -88,8 +88,8 @@ const MONSTERS = {
     'rat': {
         name: 'Giant Rat', health: 8, attack: 2, defense: 0, speed: 1.5, goldDrop: [2, 5],
         lootTable: [
-            { itemId: 'bread', chance: 0.1 }, // 10% chance
-            { itemId: 'fish', chance: 0.05 }, // 5% chance
+            { itemId: 'bread', chance: 0.50 },
+            { itemId: 'fish', chance: 0.50 },
         ]
     },
     'goblin': {

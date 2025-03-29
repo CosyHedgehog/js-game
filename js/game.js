@@ -374,4 +374,68 @@ class Game {
         }
     }
 
+    handleIndividualLoot(type, index) {
+        if (!this.pendingLoot) return;
+
+        if (type === 'gold' && this.pendingLoot.gold > 0) {
+            this.player.addGold(this.pendingLoot.gold);
+            this.addLog(`Collected ${this.pendingLoot.gold} gold.`);
+            this.pendingLoot.gold = 0;
+        } else if (type === 'item' && this.pendingLoot.items[index] && !this.pendingLoot.items[index].looted) {
+            const item = this.pendingLoot.items[index];
+            if (this.player.addItem(item)) {
+                item.looted = true;
+                this.addLog(`Picked up ${item.name}.`);
+            } else {
+                this.addLog("Inventory is full!");
+                return;
+            }
+        }
+
+        // Update UI
+        this.ui.updatePlayerStats();
+        this.ui.renderInventory();
+
+        // Check if all loot has been collected
+        const isAllLooted = this.isAllLootCollected();
+        if (isAllLooted) {
+            this.continueLoot(); // Proceed to next round if everything is looted
+        } else {
+            this.ui.showLootUI(this.pendingLoot); // Otherwise, update the loot UI
+        }
+    }
+
+    // Add this helper method to check if all loot has been collected
+    isAllLootCollected() {
+        if (!this.pendingLoot) return true;
+        
+        // Check if there's any gold left
+        if (this.pendingLoot.gold > 0) return false;
+        
+        // Check if there are any unlooted items
+        if (this.pendingLoot.items && this.pendingLoot.items.length > 0) {
+            return this.pendingLoot.items.every(item => item.looted);
+        }
+        
+        return true;
+    }
+
+    continueLoot() {
+        // Clear pending loot
+        this.pendingLoot = null;
+
+        // Get the name stored by endCombat
+        const defeatedName = this.lastDefeatedEnemyName;
+        this.lastDefeatedEnemyName = null;
+
+        // Check if it was the boss
+        const isBossDefeated = defeatedName && MONSTERS[FINAL_BOSS] && defeatedName === MONSTERS[FINAL_BOSS].name;
+
+        if (isBossDefeated) {
+            this.endGame(true);
+        } else {
+            this.proceedToNextRound();
+        }
+    }
+
 }

@@ -5,7 +5,7 @@ class Player {
         this.gold = 0;
         this.maxHealth = 20;
         this.health = 20;
-        this.baseAttack = 10; // Base stats, can be increased by effects later
+        this.baseAttack = 100; // Base stats, can be increased by effects later
         this.baseDefense = 0;
         this.inventory = new Array(12).fill(null); // 12 slots
         this.equipment = {
@@ -19,6 +19,7 @@ class Player {
         // For combat timing
         this.attackTimer = 0;
         this.pendingActionDelay = 0; // Delay added by actions like eating
+        this.defaultAttackSpeed = 0.5;
     }
 
     getAttack() {
@@ -31,7 +32,7 @@ class Player {
 
     getAttackSpeed() {
         // Base speed could be a stat later, default to weapon speed or a fallback
-        return this.equipment.weapon?.speed ?? 2.0; // Default 2s if no weapon
+        return this.equipment.weapon?.speed ?? this.defaultAttackSpeed; // Default 2s if no weapon
     }
 
 
