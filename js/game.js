@@ -125,14 +125,34 @@ class Game {
 
     generateChoices() {
         this.currentChoices = [];
-        const choice1 = this.getRandomEncounter();
-        const choice2 = this.getRandomEncounter();
-        const choice3 = this.getRandomEncounter();
+        
+        // Determine number of choices (2-4)
+        const roll = Math.random() * 100;
+        let numChoices;
+        if (roll < 30) {
+            numChoices = 2;
+        } else if (roll < 85) {
+            numChoices = 3;
+        } else { // 15% chance for 4 choices
+            numChoices = 4;
+        }
 
-        // Ensure choices are described clearly
-        this.currentChoices.push({ text: this.getEncounterText(choice1), encounter: choice1 });
-        this.currentChoices.push({ text: this.getEncounterText(choice2), encounter: choice2 });
-        this.currentChoices.push({ text: this.getEncounterText(choice3), encounter: choice3 });
+        // Generate unique encounters
+        const usedEncounters = new Set();
+        while (this.currentChoices.length < numChoices) {
+            const encounter = this.getRandomEncounter();
+            
+            // Create a unique key for the encounter to prevent duplicates
+            const encounterKey = encounter.type + (encounter.monsterId || '');
+            
+            if (!usedEncounters.has(encounterKey)) {
+                usedEncounters.add(encounterKey);
+                this.currentChoices.push({ 
+                    text: this.getEncounterText(encounter), 
+                    encounter: encounter 
+                });
+            }
+        }
 
         this.ui.renderChoices(this.currentChoices);
     }
@@ -527,6 +547,7 @@ class Game {
 
     // Add new method to handle pack selection
     selectStartingPack(packId) {
+        this.state = 'starting_pack';
         switch(packId) {
             case 'warrior':
                 // Warrior pack: More armor focused

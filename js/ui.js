@@ -1008,7 +1008,13 @@ class UI {
         this.shopArea.classList.add('hidden');
         this.restArea.classList.add('hidden');
         this.lootArea.classList.add('hidden');
-        
+        // this.blacksmithArea.classList.add('hidden');
+        // this.sharpenArea.classList.add('hidden');
+        // this.armourerArea.classList.add('hidden');
+        // this.alchemistArea.classList.add('hidden');
+        // this.shrineArea.classList.add('hidden');
+        // this.wanderingMerchantArea.classList.add('hidden');
+        // this.startingPackArea.classList.add('hidden');
 
         // Show the log area
         this.outputLogArea.classList.remove('hidden');
@@ -1042,6 +1048,27 @@ class UI {
                 break;
             case 'looting':
                 this.lootArea.classList.remove('hidden');
+                break;
+            case 'blacksmith':
+                this.blacksmithArea.classList.remove('hidden');
+                break;
+            case 'sharpen':
+                this.sharpenArea.classList.remove('hidden');
+                break;
+            case 'armourer':
+                this.armourerArea.classList.remove('hidden');
+                break;
+            case 'shrine':
+                this.shrineArea.classList.remove('hidden');
+                break;
+            case 'wandering_merchant':
+                this.wanderingMerchantArea.classList.remove('hidden');
+                break;
+            case 'alchemist':
+                this.alchemistArea.classList.remove('hidden');
+                break;
+            case 'starting_pack':
+                this.fishingArea.classList.remove('hidden');
                 break;
         }
     }
