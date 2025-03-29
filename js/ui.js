@@ -475,6 +475,11 @@ class UI {
             sharpenArea.remove();
         }
 
+        const armourerArea = document.getElementById('armourer-area');
+        if (armourerArea) {
+            armourerArea.remove();
+        }
+
         this.choicesArea.innerHTML = '';
         this.cacheDynamicElements();
         this.outputLogArea.classList.add('hidden');
@@ -1388,6 +1393,129 @@ class UI {
         this.renderInventory();
         
         // Proceed to next round
+        this.clearMainArea();
+        this.game.proceedToNextRound();
+    }
+
+    showArmourerUI() {
+        this.clearMainArea();
+        
+        const mainContent = document.getElementById('main-content');
+        
+        const armourerArea = document.createElement('div');
+        armourerArea.id = 'armourer-area';
+        
+        const slotContainer = document.createElement('div');
+        slotContainer.className = 'armourer-container';
+        
+        const armorSlot = document.createElement('div');
+        armorSlot.className = 'armourer-slot';
+        armorSlot.innerHTML = `
+            <div class="armourer-slot-label">Select Armor</div>
+            <div class="armourer-slot-content">Click to choose</div>
+        `;
+        armorSlot.onclick = () => this.showArmourerItemSelection();
+        
+        const previewArea = document.createElement('div');
+        previewArea.id = 'armourer-preview';
+        previewArea.textContent = 'Select armor to preview enhancement';
+        
+        const enhanceButton = document.createElement('button');
+        enhanceButton.id = 'armourer-button';
+        enhanceButton.textContent = 'Enhance Armor (+1 Defense)';
+        enhanceButton.disabled = true;
+        enhanceButton.onclick = () => this.handleArmourEnhancement();
+        
+        const leaveButton = document.createElement('button');
+        leaveButton.id = 'armourer-leave-button';
+        leaveButton.textContent = 'Leave';
+        leaveButton.onclick = () => {
+            this.game.addLog("You leave without using the Armourer's tools.");
+            this.game.proceedToNextRound();
+        };
+        
+        slotContainer.appendChild(armorSlot);
+        armourerArea.appendChild(slotContainer);
+        armourerArea.appendChild(previewArea);
+        armourerArea.appendChild(enhanceButton);
+        armourerArea.appendChild(leaveButton);
+        
+        mainContent.appendChild(armourerArea);
+    }
+
+    showArmourerItemSelection() {
+        const armors = this.game.player.inventory.filter((item) => {
+            return item && item.type === 'armor';
+        });
+        
+        const menu = document.createElement('div');
+        menu.classList.add('armourer-selection-menu');
+        
+        if (armors.length === 0) {
+            const noItemsMsg = document.createElement('div');
+            noItemsMsg.textContent = 'No armor in inventory';
+            noItemsMsg.style.padding = '10px';
+            menu.appendChild(noItemsMsg);
+        } else {
+            armors.forEach(item => {
+                const itemButton = document.createElement('button');
+                itemButton.classList.add('armourer-item-option');
+                itemButton.textContent = `${item.name} (${this.getItemStats(item)})`;
+                const inventoryIndex = this.game.player.inventory.indexOf(item);
+                itemButton.onclick = () => this.selectArmourItem(item, inventoryIndex);
+                menu.appendChild(itemButton);
+            });
+        }
+        
+        const slot = document.querySelector('.armourer-slot');
+        const rect = slot.getBoundingClientRect();
+        menu.style.position = 'absolute';
+        menu.style.left = `${rect.left}px`;
+        menu.style.top = `${rect.bottom + 5}px`;
+        
+        document.querySelectorAll('.armourer-selection-menu').forEach(m => m.remove());
+        document.body.appendChild(menu);
+        
+        const closeMenu = (e) => {
+            if (!menu.contains(e.target) && !slot.contains(e.target)) {
+                menu.remove();
+                document.removeEventListener('click', closeMenu);
+            }
+        };
+        document.addEventListener('click', closeMenu);
+    }
+
+    selectArmourItem(item, inventoryIndex) {
+        const slot = document.querySelector('.armourer-slot');
+        slot.dataset.itemIndex = inventoryIndex;
+        slot.querySelector('.armourer-slot-content').textContent = item.name;
+        
+        const previewArea = document.getElementById('armourer-preview');
+        const newDefense = (item.stats.defense || 0) + 1;
+        previewArea.textContent = `${item.name} → Defense: ${item.stats.defense} → ${newDefense}`;
+        
+        document.getElementById('armourer-button').disabled = false;
+        
+        document.querySelector('.armourer-selection-menu')?.remove();
+    }
+
+    handleArmourEnhancement() {
+        const slot = document.querySelector('.armourer-slot');
+        const itemIndex = parseInt(slot.dataset.itemIndex);
+        const item = this.game.player.inventory[itemIndex];
+        
+        if (!item || item.type !== 'armor') {
+            this.game.addLog("Invalid item selected.");
+            return;
+        }
+        
+        item.stats.defense += 1;
+        item.name = `Reinforced ${item.name}`;
+        item.description = item.description.replace(/Defense: \+\d+/, `Defense: +${item.stats.defense}`);
+        
+        this.game.addLog(`Enhanced ${item.name}! Defense increased by 1.`);
+        this.renderInventory();
+        
         this.clearMainArea();
         this.game.proceedToNextRound();
     }

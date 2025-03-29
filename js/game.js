@@ -198,6 +198,8 @@ class Game {
                 return "Visit Blacksmith";
             case 'sharpen':
                 return "Use Sharpening Stone";
+            case 'armourer':
+                return "Visit Armourer";
             default:
                 return 'Unknown Encounter';
         }
@@ -262,6 +264,10 @@ class Game {
                 return "You find a sharpening stone that can enhance a weapon.\n" +
                        "Select one weapon to permanently increase its attack power by 1.\n\n" +
                        "Use the sharpening stone?";
+            case 'armourer':
+                return "You find an Armourer's tools that can enhance armor.\n" +
+                       "Select one piece of armor to permanently increase its defense by 1.\n\n" +
+                       "Use the Armourer's tools?";
             default:
                 return "Unknown encounter type.";
         }
@@ -292,6 +298,9 @@ class Game {
                 break;
             case 'sharpen':
                 handleSharpenEncounter(this, this.ui);
+                break;
+            case 'armourer':
+                handleArmourerEncounter(this, this.ui);
                 break;
             default:
                 this.addLog("Unknown encounter type selected.");

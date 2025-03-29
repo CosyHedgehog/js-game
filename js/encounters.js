@@ -155,3 +155,9 @@ function handleSharpenEncounter(game, ui) {
     game.addLog("You find a sharpening stone. You can use it to enhance a weapon's attack power.");
     ui.showSharpenUI();
 }
+
+function handleArmourerEncounter(game, ui) {
+    game.state = 'armourer';
+    game.addLog("You find an Armourer's tools. You can use them to reinforce a piece of armor.");
+    ui.showArmourerUI();
+}
