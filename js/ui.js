@@ -478,6 +478,22 @@ class UI {
             armourerArea.remove();
         }
 
+        const alchemistArea = document.getElementById('alchemist-area');
+        if (alchemistArea) {
+            alchemistArea.remove();
+        }
+
+        const shrineArea = document.getElementById('shrine-area');
+        if (shrineArea) {
+            shrineArea.remove();
+        }
+
+        const wanderingMerchantArea = document.getElementById('wandering-merchant-area');
+        if (wanderingMerchantArea) {
+            wanderingMerchantArea.remove();
+        }
+        
+
         this.choicesArea.innerHTML = '';
         this.cacheDynamicElements();
         this.outputLogArea.classList.add('hidden');
