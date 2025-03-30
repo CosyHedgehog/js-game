@@ -283,7 +283,7 @@ const ENCOUNTER_PROBABILITY = [
     { type: 'armourer', weight: 5 },
     { type: 'shrine', weight: 5 },
     { type: 'wandering_merchant', weight: 5 },
-    { type: 'alchemist', weight: 100 },
+    { type: 'alchemist', weight: 5 },
     { type: 'treasure', weight: 5 },
     { type: 'trap', weight: 5 }
 ];
