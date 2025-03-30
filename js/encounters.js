@@ -430,3 +430,17 @@ function handleSkipTrap() {
     game.proceedToNextRound();
 }
 
+// --- NEW: Treasure Chest Encounter --- 
+function handleTreasureChestEncounter(game, ui) {
+    game.state = 'looting'; // Set state immediately
+    game.addLog("You find a treasure chest!");
+    
+    // Calculate random gold (1-15)
+    const goldFound = getRandomInt(1, 15);
+    
+    game.addLog(`You open it and find ${goldFound} gold!`);
+    
+    // Enter the loot state with only gold
+    game.enterLootState(goldFound, []); 
+}
+

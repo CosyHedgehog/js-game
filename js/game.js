@@ -207,7 +207,8 @@ class Game {
                 return "Visit Alchemist";
             case 'trap':
                 return "Disarm Trap";
-
+            case 'treasure_chest':
+                return "Treasure Chest";
             default:
                 return 'Unknown Encounter';
         }
@@ -292,6 +293,9 @@ class Game {
                     + "\n\nYou could try to disarm it (30% chance) for a potential reward."
                     + "\nFailure will result in 1-3 damage."
                     + "\n\nInvestigate the trap?";
+            case 'treasure_chest':
+                return "You find a sturdy-looking treasure chest.\n\n" +
+                       "Open it?";
             default:
                 return "Unknown encounter type.";
         }
@@ -332,7 +336,9 @@ class Game {
             case 'trap':
                 handleTrapEncounter(this, this.ui);
                 break;
-
+            case 'treasure_chest':
+                handleTreasureChestEncounter(this, this.ui);
+                break;
             default:
                 this.addLog("Unknown encounter type selected.");
                 this.proceedToNextRound();
