@@ -325,7 +325,7 @@ function handleAlchemistEncounter(game, ui) {
             chance: 0.4 // 40% chance for greater potions
         },
         special: {
-            items: ['speed_potion'],
+            items: ['speed_potion', 'greater_speed_potion'],
             chance: 0.3 // 30% chance for speed potion
         }
     };
@@ -340,7 +340,7 @@ function handleAlchemistEncounter(game, ui) {
                 const item = createItem(itemId);
                 if (item) {
                     // Alchemist charges more than regular shops
-                    item.buyPrice = Math.ceil(item.value * 2.5);
+                    item.buyPrice = Math.ceil(item.value);
                     availableItems.push(item);
                 }
             }
@@ -350,7 +350,7 @@ function handleAlchemistEncounter(game, ui) {
     // Ensure at least one common potion is always available
     if (availableItems.length === 0) {
         const basicPotion = createItem('health_potion');
-        basicPotion.buyPrice = Math.ceil(basicPotion.value * 2.5);
+        basicPotion.buyPrice = Math.ceil(basicPotion.value);
         availableItems.push(basicPotion);
     }
     

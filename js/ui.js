@@ -49,6 +49,7 @@ class UI {
         this.statMaxHealth = document.getElementById('stat-max-health');
         this.statAttack = document.getElementById('stat-attack');
         this.statDefense = document.getElementById('stat-defense');
+        this.statSpeed = document.getElementById('stat-speed'); // Add this line
         this.statGold = document.getElementById('stat-gold');
 
         this.statRound = document.getElementById('stat-round');
@@ -429,6 +430,14 @@ class UI {
         }
         this.statDefense.textContent = defenseText;
         
+        // Speed Display
+        let speedValue = player.getAttackSpeed();
+        let speedText = `${speedValue.toFixed(1)}s`; // Format to one decimal place and add 's'
+        if (player.tempSpeedReduction > 0) {
+            speedText += ` (-${player.tempSpeedReduction.toFixed(1)}s)`; // Show reduction
+        }
+        this.statSpeed.textContent = speedText;
+
         this.statGold.textContent = player.gold;
         // Add round display
         if (this.statRound) {
