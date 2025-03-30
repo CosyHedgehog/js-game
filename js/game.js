@@ -276,7 +276,6 @@ class Game {
             case 'blacksmith':
                 return "Visit the Blacksmith to combine two similar items into a stronger version.\n" +
                        "You can combine weapons or armor pieces of the same type.\n\n" +
-                       "Requires: Blacksmith Hammer\n\n" +
                        "Enter the forge?";
             case 'sharpen':
                 return "You find a sharpening stone that can enhance a weapon.\n" +
@@ -285,7 +284,6 @@ class Game {
             case 'armourer':
                 return "You find an Armourer's tools that can enhance armor.\n" +
                        "Select one piece of armor to permanently increase its defense by 1.\n\n" +
-                       "Requires: Blacksmith Hammer\n\n" +
                        "Use the Armourer's tools?";
             case 'alchemist':
                 return "Visit the Alchemist to buy powerful potions:\n" +
@@ -580,6 +578,8 @@ class Game {
                 this.player.addItem(createItem('bread'));
                 this.player.addItem(createItem('small_fish'));
                 this.player.addItem(createItem('leather_helm'));
+                this.player.addItem(createItem('leather_helm'));
+            
                 this.ui.clearMainArea();
                 break;
         }
