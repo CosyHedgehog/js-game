@@ -2144,3 +2144,59 @@ html {
 #trap-continue-button {
     margin-top: 10px;
 }
+
+/* --- Loot Screen Description Box Styles --- */
+.loot-display-area {
+    display: flex;
+    gap: 15px; /* Space between list and description */
+    width: 100%; /* Take full width within loot-area */
+    margin-bottom: 15px; /* Space before buttons */
+    flex: 1; /* Allow this area to grow */
+    min-height: 0; /* Prevent flex item from overflowing */
+}
+
+/* Adjust loot items container width */
+#loot-area .loot-items-container {
+    flex: 1; /* Take up remaining space */
+    width: auto; /* Let flexbox handle width */
+    margin-bottom: 0; /* Remove margin if set previously */
+    max-height: none; /* Remove max-height, let flex handle it */
+    min-height: 100px; /* Minimum height */
+}
+
+/* Style for the loot description box (copied from .item-description) */
+#loot-item-description {
+    flex-basis: 200px; /* Fixed width for description */
+    flex-shrink: 0;
+    background: #2a2a2a;
+    border: 1px solid #404040;
+    border-radius: 4px;
+    padding: 12px;
+    min-height: 60px;
+    color: #ccc;
+    white-space: pre-line;
+    overflow-y: auto; /* Add scroll if needed */
+}
+
+/* Style for selected loot item */
+.loot-item.selected {
+    background-color: #3a3a3a; /* Similar to shop selection */
+    border-color: #505050;
+}
+
+/* Add hover effect for loot items */
+.loot-item:hover {
+    background-color: #333; /* Slightly lighter background on hover */
+}
+
+/* Ensure loot items are clickable */
+.loot-item {
+    cursor: pointer;
+}
+
+/* Optional: Style for empty loot message */
+.loot-empty-message {
+    color: #888;
+    text-align: center;
+    padding: 20px;
+}
