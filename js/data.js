@@ -1,14 +1,14 @@
 const ITEMS = {
     // Weapons - Divided by ~3
-    'wooden_sword': {
-        id: 'wooden_sword', name: 'Wooden Sword', type: 'weapon', slot: 'weapon', hands: 1,
-        stats: { attack: 1 }, speed: 2.0, value: 3,
-        description: 'A simple sword made of wood.\nAttack: +1\nSpeed: 2.0s\n1-Handed'
-    },
     'rusty_sword': {
         id: 'rusty_sword', name: 'Rusty Sword', type: 'weapon', slot: 'weapon', hands: 1,
-        stats: { attack: 2 }, speed: 2.0, value: 5,
+        stats: { attack: 1 }, speed: 2.0, value: 3,
         description: 'An old, somewhat effective sword.\nAttack: +2\nSpeed: 2.0s\n1-Handed'
+    },
+    'wooden_sword': {
+        id: 'wooden_sword', name: 'Wooden Sword', type: 'weapon', slot: 'weapon', hands: 1,
+        stats: { attack: 2 }, speed: 2.0, value: 5,
+        description: 'A simple sword made of wood.\nAttack: +1\nSpeed: 2.0s\n1-Handed'
     },
     'iron_sword': {
         id: 'iron_sword', name: 'Iron Sword', type: 'weapon', slot: 'weapon', hands: 1,

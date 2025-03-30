@@ -1822,7 +1822,7 @@ class UI {
                     <h4>Warrior Pack</h4>
                     <p>A defensive focused loadout:</p>
                     <ul>
-                        <li data-item-id="rusty_sword">Rusty Sword</li>
+                        <li data-item-id="wooden_sword">Wooden Sword</li>
                         <li data-item-id="leather_helm">Leather Helm</li>
                         <li data-item-id="leather_legs">Leather Legs</li>
                         <li data-item-id="bread">Bread (2)</li>
@@ -1834,7 +1834,7 @@ class UI {
                     <h4>Fisher Pack</h4>
                     <p>A survival focused loadout:</p>
                     <ul>
-                        <li data-item-id="wooden_sword">Wooden Sword</li>
+                        <li data-item-id="rusty_sword">Rusty Sword</li>
                         <li data-item-id="leather_helm">Leather Helm</li>
                         <li data-item-id="fishing_rod">Fishing Rod</li>
                         <li data-item-id="large_fish">Large Fish (4)</li>
@@ -1846,7 +1846,7 @@ class UI {
                     <h4>Blacksmith Pack</h4>
                     <p>A crafting focused loadout:</p>
                     <ul>
-                        <li data-item-id="wooden_sword">Wooden Sword</li>
+                        <li data-item-id="rusty_sword">Rusty Sword</li>
                         <li data-item-id="blacksmith_hammer">Blacksmith Hammer</li>
                         <li data-item-id="bread">Bread</li>
                         <li data-item-id="small_fish">Small Fish</li>
