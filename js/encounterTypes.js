@@ -1,30 +1,8 @@
 // Centralized encounter definitions
 const ENCOUNTERS = {
-    monster: {
-        getText: (data) => `Fight ${MONSTERS[data.monsterId]?.name || 'Monster'}`,
-        getDetails: (data, game) => {
-            const monster = MONSTERS[data.monsterId];
-            if (!monster) return "Error: Monster data not found.";
-            return `${monster.name}\n` +
-                   `Health: ${monster.health} // Attack: ${monster.attack} // Defense: ${monster.defense} // Attack Speed: ${monster.speed}s // ` +
-                   `Gold Drop: ${monster.goldDrop[0]}-${monster.goldDrop[1]}\n\n` +
-                   `This will start a combat encounter. Are you ready to fight?`;
-        },
-        handle: (game, ui, data) => {
-            const monsterData = MONSTERS[data.monsterId];
-            if (!monsterData) {
-                console.error("Monster data not found:", data.monsterId);
-                game.addLog("Error: Encountered an unknown creature.");
-                game.proceedToNextRound();
-                return;
-            }
-            game.addLog(`You encounter a ${monsterData.name}!`);
-            game.currentCombat = new Combat(game.player, monsterData, game, ui);
-            game.state = 'combat';
-            game.currentCombat.start();
-        }
-    },
-
+    monster: createMonsterEncounter('monster'),
+    'mini-boss': createMonsterEncounter('mini-boss'),
+    boss: createMonsterEncounter('boss'),
     rest: {
         getText: () => 'Rest Site',
         getDetails: (data, game) => 
@@ -46,21 +24,16 @@ const ENCOUNTERS = {
         }
     },
 
-    shop: {
-        getText: () => 'Shop',
-        getDetails: (data, game) => 
-            "Visit a merchant to buy and sell items.\n" +
-            "You can also reroll the shop's inventory once for 5 gold.\n\n" +
-            `Current gold: ${game.player.gold}\n\n` +
-            "Enter shop?",
-        handle: (game, ui) => {
-            game.state = 'shop';
-            game.addLog("You arrive at a small shop.");
-            game.currentShopItems = generateShopItems(SHOP_NUM_ITEMS);
-            game.shopCanReroll = true;
-            ui.showShopUI(game.currentShopItems, game.shopCanReroll);
-        }
-    },
+    shop: createShopEncounter({
+        name: 'Shop',
+        description: "Visit a merchant to buy and sell items.\nYou can also reroll the shop's inventory once for 5 gold.",
+        prompt: "Enter shop?",
+        state: 'shop',
+        entryMessage: "You arrive at a small shop.",
+        generateItems: () => generateShopItems(SHOP_NUM_ITEMS),
+        canReroll: true,
+        showUI: (ui, items) => ui.showShopUI(items, true)
+    }),
 
     fishing: {
         getText: () => 'Go Fishing!',
@@ -163,58 +136,15 @@ const ENCOUNTERS = {
         }
     },
 
-    alchemist: {
-        getText: () => "Visit Alchemist",
-        getDetails: (data, game) => 
-            "Visit the Alchemist to buy powerful potions:\n" +
-            "- Health Potions: Restore HP instantly\n" +
-            "- Attack Potions: Boost damage for combat\n" +
-            "- Defense Potions: Increase defense for combat\n" +
-            "- Speed Potions: Attack faster for combat\n\n" +
-            `Current gold: ${game.player.gold}\n\n` +
-            "Enter the Alchemist's shop?",
-        handle: (game, ui) => {
-            game.state = 'alchemist';
-            game.addLog("You find an Alchemist's shop, filled with mysterious potions.");
-            
-            const potionTiers = {
-                common: {
-                    items: ['health_potion', 'attack_potion', 'defense_potion'],
-                    chance: 0.8
-                },
-                rare: {
-                    items: ['greater_health_potion', 'greater_attack_potion', 'greater_defense_potion'],
-                    chance: 0.4
-                },
-                special: {
-                    items: ['speed_potion'],
-                    chance: 0.3
-                }
-            };
-
-            const availableItems = [];
-            Object.entries(potionTiers).forEach(([tier, { items, chance }]) => {
-                items.forEach(itemId => {
-                    if (Math.random() < chance) {
-                        const item = createItem(itemId);
-                        if (item) {
-                            item.buyPrice = Math.ceil(item.value * 2.5);
-                            availableItems.push(item);
-                        }
-                    }
-                });
-            });
-
-            if (availableItems.length === 0) {
-                const basicPotion = createItem('health_potion');
-                basicPotion.buyPrice = Math.ceil(basicPotion.value * 2.5);
-                availableItems.push(basicPotion);
-            }
-            
-            game.currentShopItems = availableItems;
-            ui.showAlchemistUI(availableItems);
-        }
-    },
+    alchemist: createShopEncounter({
+        name: 'Visit Alchemist',
+        description: "Visit the Alchemist to buy powerful potions:\n- Health Potions: Restore HP instantly\n- Attack Potions: Boost damage for combat\n- Defense Potions: Increase defense for combat\n- Speed Potions: Attack faster for combat",
+        prompt: "Enter the Alchemist's shop?",
+        state: 'alchemist',
+        entryMessage: "You find an Alchemist's shop, filled with mysterious potions.",
+        generateItems: () => generateAlchemistItems(),
+        showUI: (ui, items) => ui.showAlchemistUI(items)
+    }),
 
     wandering_merchant: {
         getText: () => "Meet Wandering Merchant",
@@ -229,42 +159,6 @@ const ENCOUNTERS = {
             game.state = 'wandering_merchant';
             game.addLog("You encounter a mysterious wandering merchant with unique offerings.");
             ui.showWanderingMerchantUI(MERCHANT_SPECIAL_OFFERS);
-        }
-    },
-
-    boss: {
-        getText: (data) => `Fight ${MONSTERS[data.monsterId].name} (Final Boss)`,
-        getDetails: (data, game) => {
-            const monster = MONSTERS[data.monsterId];
-            return `${monster.name} (BOSS)\n` +
-                   `Health: ${monster.health} // Attack: ${monster.attack} // Defense: ${monster.defense} // Attack Speed: ${monster.speed}s // ` +
-                   `Gold Drop: ${monster.goldDrop[0]}-${monster.goldDrop[1]}\n\n` +
-                   `This is the final battle. Are you ready?`;
-        },
-        handle: (game, ui, data) => {
-            const monsterData = MONSTERS[data.monsterId];
-            game.addLog(`The ${monsterData.name} towers before you!`);
-            game.currentCombat = new Combat(game.player, monsterData, game, ui);
-            game.state = 'combat';
-            game.currentCombat.start();
-        }
-    },
-
-    'mini-boss': {
-        getText: (data) => `Fight ${MONSTERS[data.monsterId].name} (Mini-Boss)`,
-        getDetails: (data, game) => {
-            const monster = MONSTERS[data.monsterId];
-            return `${monster.name} (MINI-BOSS)\n` +
-                   `Health: ${monster.health} // Attack: ${monster.attack} // Defense: ${monster.defense} // Attack Speed: ${monster.speed}s // ` +
-                   `Gold Drop: ${monster.goldDrop[0]}-${monster.goldDrop[1]}\n\n` +
-                   `A powerful enemy stands before you. Ready to fight?`;
-        },
-        handle: (game, ui, data) => {
-            const monsterData = MONSTERS[data.monsterId];
-            game.addLog(`A powerful ${monsterData.name} appears!`);
-            game.currentCombat = new Combat(game.player, monsterData, game, ui);
-            game.state = 'combat';
-            game.currentCombat.start();
         }
     },
 
@@ -348,4 +242,95 @@ function createEncounter(options) {
         getDetails: options.getDetails || (() => options.description),
         handle: options.handle
     };
+}
+
+function createMonsterEncounter(type) {
+    return {
+        getText: (data) => {
+            const suffix = type === 'monster' ? '' : ` (${type === 'boss' ? 'Final Boss' : 'Mini-Boss'})`;
+            return `Fight ${MONSTERS[data.monsterId]?.name}${suffix}`;
+        },
+        getDetails: (data, game) => {
+            const monster = MONSTERS[data.monsterId];
+            const title = type === 'monster' ? '' : ` (${type.toUpperCase()})`;
+            return `${monster.name}${title}\n` +
+                   `Health: ${monster.health} // Attack: ${monster.attack} // Defense: ${monster.defense} // Attack Speed: ${monster.speed}s // ` +
+                   `Gold Drop: ${monster.goldDrop[0]}-${monster.goldDrop[1]}\n\n` +
+                   type === 'boss' ? 'This is the final battle. Are you ready?' :
+                   type === 'mini-boss' ? 'A powerful enemy stands before you. Ready to fight?' :
+                   'This will start a combat encounter. Are you ready to fight?';
+        },
+        handle: (game, ui, data) => {
+            const monsterData = MONSTERS[data.monsterId];
+            if (!monsterData) {
+                console.error("Monster data not found:", data.monsterId);
+                game.addLog("Error: Encountered an unknown creature.");
+                game.proceedToNextRound();
+                return;
+            }
+            const prefix = type === 'boss' ? 'The ' : 
+                          type === 'mini-boss' ? 'A powerful ' : '';
+            game.addLog(`${prefix}${monsterData.name}${type === 'boss' ? ' towers before you!' : ' appears!'}`);
+            game.currentCombat = new Combat(game.player, monsterData, game, ui);
+            game.state = 'combat';
+            game.currentCombat.start();
+        }
+    };
+}
+
+function createShopEncounter(options) {
+    return {
+        getText: () => options.name,
+        getDetails: (data, game) => 
+            `${options.description}\n\n` +
+            `Current gold: ${game.player.gold}\n\n` +
+            `${options.prompt}`,
+        handle: (game, ui) => {
+            game.state = options.state;
+            game.addLog(options.entryMessage);
+            game.currentShopItems = options.generateItems();
+            if (options.canReroll !== undefined) {
+                game.shopCanReroll = options.canReroll;
+            }
+            options.showUI(ui, game.currentShopItems);
+        }
+    };
+}
+
+function generateAlchemistItems() {
+    const potionTiers = {
+        common: {
+            items: ['health_potion', 'attack_potion', 'defense_potion'],
+            chance: 0.8
+        },
+        rare: {
+            items: ['greater_health_potion', 'greater_attack_potion', 'greater_defense_potion'],
+            chance: 0.4
+        },
+        special: {
+            items: ['speed_potion'],
+            chance: 0.3
+        }
+    };
+
+    const availableItems = [];
+    Object.entries(potionTiers).forEach(([tier, { items, chance }]) => {
+        items.forEach(itemId => {
+            if (Math.random() < chance) {
+                const item = createItem(itemId);
+                if (item) {
+                    item.buyPrice = Math.ceil(item.value * 2.5);
+                    availableItems.push(item);
+                }
+            }
+        });
+    });
+
+    if (availableItems.length === 0) {
+        const basicPotion = createItem('health_potion');
+        basicPotion.buyPrice = Math.ceil(basicPotion.value * 2.5);
+        availableItems.push(basicPotion);
+    }
+    
+    return availableItems;
 }
