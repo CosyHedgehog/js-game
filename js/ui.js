@@ -2245,32 +2245,28 @@ class UI {
         const sharpenArea = document.getElementById('sharpen-area');
         if (sharpenArea) {
             sharpenArea.classList.add('upgrade-success-flash');
-            setTimeout(() => sharpenArea.classList.remove('upgrade-success-flash'), 500); 
+            setTimeout(() => {
+                sharpenArea.classList.remove('upgrade-success-flash');
+                // Reset button and preview
+                const sharpenButton = document.getElementById('sharpen-button');
+                if (sharpenButton) sharpenButton.disabled = true;
+                const previewArea = document.getElementById('sharpen-preview');
+                if (previewArea) previewArea.textContent = 'Select a weapon to preview enhancement';
+
+                // Item consumed: Reset the slot directly
+                slot.innerHTML = `
+                    <div class="sharpen-slot-label">Weapon Slot</div>
+                    <div class="sharpen-slot-content">Drop weapon here</div>
+                `;
+                slot.style.cursor = 'default';
+                slot.onclick = null;
+                delete slot.dataset.itemData;
+                delete slot.dataset.originalIndex;
+                this.renderInventory(); // Re-render inventory to show the new item
+                this.clearMainArea();
+                this.game.proceedToNextRound();
+                }, 500); 
         }
-
-        // Item consumed: Reset the slot directly
-        slot.innerHTML = `
-            <div class="sharpen-slot-label">Weapon Slot</div>
-            <div class="sharpen-slot-content">Drop weapon here</div>
-        `;
-        slot.style.cursor = 'default';
-        slot.onclick = null;
-        delete slot.dataset.itemData;
-        delete slot.dataset.originalIndex;
-
-        // Reset button and preview
-        const sharpenButton = document.getElementById('sharpen-button');
-        if (sharpenButton) sharpenButton.disabled = true;
-        const previewArea = document.getElementById('sharpen-preview');
-        if (previewArea) previewArea.textContent = 'Select a weapon to preview enhancement';
-
-        this.renderInventory(); // Re-render inventory to show the new item
-        
-        // Proceed to next round after a short delay to show flash
-        setTimeout(() => {
-            this.clearMainArea();
-            this.game.proceedToNextRound();
-        }, 500); // Match animation duration
     }
     // --- End Restore handleSharpenItem ---
 
