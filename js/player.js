@@ -1,6 +1,6 @@
 class Player {
     constructor() {
-        this.gold = 150;
+        this.gold = 0;
         this.maxHealth = 20;
         this.health = 10;
         this.baseAttack = 1; // Base stats, can be increased by effects later
