@@ -602,6 +602,10 @@ class Game {
                 this.player.addItem(createItem('small_fish'));
                 this.player.addItem(createItem('leather_helm'));
                 this.player.addItem(createItem('leather_helm'));
+                this.player.addItem(createItem('attack_potion'));
+                this.player.addItem(createItem('defense_potion'));
+                this.player.addItem(createItem('health_potion'));
+                this.player.addItem(createItem('speed_potion'));
             
                 this.ui.clearMainArea();
                 break;

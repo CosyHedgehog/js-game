@@ -250,12 +250,14 @@ class Combat {
                 this.game.endGame(false);
             } else {
                 this.game.addLog(`You successfully fled from the ${this.enemy.name}!`);
+                this.player.resetCombatBuffs(); // Reset buffs before ending combat
                 this.endCombat(false, true);
             }
         };
     }
 
     endCombat(playerWon, ranAway = false) {
+        this.player.resetCombatBuffs(); // Reset buffs as soon as combat ends
         clearInterval(this.intervalId);
         this.intervalId = null;
         this.ui.hideCombatUI();

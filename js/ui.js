@@ -414,8 +414,21 @@ class UI {
         const player = this.game.player;
         this.statHealth.textContent = player.health;
         this.statMaxHealth.textContent = player.maxHealth;
-        this.statAttack.textContent = player.getAttack();
-        this.statDefense.textContent = player.getDefense();
+        
+        // Attack Display
+        let attackText = player.getAttack();
+        if (player.tempAttack > 0) {
+            attackText += ` (+${player.tempAttack})`; // Add temporary buff display
+        }
+        this.statAttack.textContent = attackText;
+
+        // Defense Display
+        let defenseText = player.getDefense();
+        if (player.tempDefense > 0) {
+            defenseText += ` (+${player.tempDefense})`; // Add temporary buff display
+        }
+        this.statDefense.textContent = defenseText;
+        
         this.statGold.textContent = player.gold;
         // Add round display
         if (this.statRound) {
