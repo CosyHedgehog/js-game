@@ -1168,6 +1168,20 @@ class UI {
         
         const menu = document.createElement('div');
         menu.classList.add('forge-selection-menu');
+
+        // Add a "Clear Slot" button if an item is currently selected in this slot
+        const currentSlot = document.getElementById(`forge-slot-${slotNum}`);
+        if (currentSlot.dataset.itemIndex) {
+            const clearButton = document.createElement('button');
+            clearButton.textContent = 'Clear Slot';
+            clearButton.classList.add('forge-clear-option'); // Optional: Add class for styling
+            clearButton.onclick = () => this.clearForgeSlot(slotNum);
+            menu.appendChild(clearButton);
+            
+            // Add a separator
+            const separator = document.createElement('hr');
+            menu.appendChild(separator);
+        }
         
         if (items.length === 0) {
             const noItemsMsg = document.createElement('div');
@@ -1867,6 +1881,25 @@ class UI {
         }
         if (skipButton) {
             skipButton.addEventListener('click', handleSkipTrap);
+        }
+    }
+
+    clearForgeSlot(slotNum) {
+        const slot = document.getElementById(`forge-slot-${slotNum}`);
+        if (slot) {
+            const content = slot.querySelector('.forge-slot-content');
+            content.textContent = 'Click to select item'; // Reset text
+            
+            // Clear stored data
+            delete slot.dataset.itemIndex;
+            delete slot.dataset.itemType;
+            delete slot.dataset.itemSlot;
+            
+            // Close any open selection menus
+            document.querySelector('.forge-selection-menu')?.remove();
+            
+            // Update the forge button state
+            this.updateForgeButton();
         }
     }
 }
