@@ -1650,40 +1650,59 @@ class UI {
                  // --- End ---
 
                 const sourceIndex = parseInt(sourceIndexStr, 10);
-                const item = this.game.player.inventory[sourceIndex]; // Get item fresh
+                const itemToDrop = this.game.player.inventory[sourceIndex]; // Get item fresh
 
-                if (item && item.type === 'armor') { // Check item existence
-                    // REMOVED: this.selectArmourItem(item, sourceIndex);
-                    // --- Inline selectArmourItem logic --- 
-                    this.clearArmourerSlot(); // Clear current slot first
-                    const slot = armourerArea.querySelector('.armourer-slot');
-                    const content = slot.querySelector('.armourer-slot-content');
-                    // content.textContent = item.name; // CHANGED BELOW
-                    // Add item name and clear button
-                    content.innerHTML = `
-                        ${item.name} 
-                        <button class="clear-craft-slot-button" data-slot-num="armour"> (x)</button>
+                if (itemToDrop && itemToDrop.type === 'armor') { // Check item existence and type
+                    
+                    // --- Return item if slot is already occupied --- 
+                    if (armourerSlot.dataset.itemData) {
+                        console.log(`Armourer slot occupied, clearing first...`);
+                        this.clearArmourerSlot(); // Attempt to return existing item
+                    }
+                    // -------------------------------------------------
+
+                    // --- Remove NEW item from inventory --- 
+                    const currentInventoryItem = this.game.player.inventory[sourceIndex]; 
+                    if (!currentInventoryItem || currentInventoryItem.id !== itemToDrop.id) {
+                         console.warn(`Item at index ${sourceIndex} changed or removed unexpectedly.`);
+                         this.game.addLog("Action interrupted. Please try dragging the item again.");
+                         this.renderInventory(); 
+                         return;
+                    }
+                    const removedItem = this.game.player.removeItem(sourceIndex);
+                    // ------------------------------------
+
+                    // --- Store removed item data in the slot --- 
+                    armourerSlot.dataset.itemData = JSON.stringify(removedItem);
+                    armourerSlot.dataset.originalIndex = sourceIndex; // Store original index too
+                    // -------------------------------------------
+
+                    // --- Display item name and add click listener --- 
+                    armourerSlot.innerHTML = `
+                        <div class="armourer-slot-label">Armor Slot</div>
+                        <div class="armourer-slot-content">${removedItem.name}</div>
                     `;
-                    // Add listener to the new clear button
-                    content.querySelector('.clear-craft-slot-button').onclick = (e) => {
-                        e.stopPropagation(); 
-                        this.clearArmourerSlot();
+                    armourerSlot.style.cursor = 'pointer';
+                    armourerSlot.onclick = () => {
+                        if (armourerSlot.dataset.itemData) { 
+                            this.clearArmourerSlot();
+                        }
                     };
-
-                    slot.dataset.itemIndex = sourceIndex;
-                    content.textContent = item.name;
+                    // ---------------------------------------------
         
-        const previewArea = document.getElementById('armourer-preview');
-        const newDefense = (item.stats.defense || 0) + 1;
-        previewArea.textContent = `${item.name} → Defense: ${item.stats.defense} → ${newDefense}`;
-        
+                    // Update preview
+                    const previewArea = document.getElementById('armourer-preview');
+                    const newDefense = (removedItem.stats.defense || 0) + 1;
+                    previewArea.textContent = `${removedItem.name} → Defense: ${(removedItem.stats.defense || 0)} → ${newDefense}`; // Use removedItem stats
+                    
                     // Enable enhance button only if player has hammer
-        const hasHammer = this.game.player.inventory.some(i => i && i.id === 'blacksmith_hammer');
-        document.getElementById('armourer-button').disabled = !hasHammer;
-        
-                    // Mark inventory item as in-use
-                    this.updateInventoryInUseStyles();
-                    // -------------------------------------
+                    const hasHammer = this.game.player.inventory.some(i => i && i.id === 'blacksmith_hammer');
+                    document.getElementById('armourer-button').disabled = !hasHammer;
+                    
+                    // Re-render inventory
+                    this.renderInventory(); 
+                    // NO NEED for updateInventoryInUseStyles here, done by renderInventory/clear/enhance
+
                 } else {
                     this.game.addLog("You can only enhance armor.");
                 }
@@ -2332,17 +2351,17 @@ class UI {
     // --- Restore clearArmourerSlot ---
     clearArmourerSlot() {
         console.log("Clearing armourer slot");
-        // --- MODIFIED: Get element by ID directly ---
-        const slotElement = document.getElementById('armourer-slot');
-        // const slotElement = this.armourerSlot; // Old way
+        // const slotElement = document.getElementById('armourer-slot'); // Old way using non-existent ID
+        const slotElement = document.querySelector('#armourer-area .armourer-slot'); // Use querySelector
 
         if (!slotElement) {
-            console.error("Armourer slot element not found using ID armourer-slot!"); // Updated error message
+            // console.error("Armourer slot element not found using ID armourer-slot!"); 
+            console.error("Armourer slot element not found using querySelector!"); // Updated error message
             this.game.addLog("Error: UI element missing for armourer slot.");
             return;
         }
 
-        // --- NEW: Retrieve item data and add back to inventory ---
+        // --- Retrieve item data and add back to inventory ---
         const itemDataString = slotElement.dataset.itemData;
         if (itemDataString) {
             try {
@@ -2355,10 +2374,8 @@ class UI {
             } catch (error) {
                 console.error("Error parsing item data from armourer slot:", error);
                 this.game.addLog("Error clearing slot. Item data corrupted?");
-                return;
+                // Don't return item if parse failed, but still clear visually
             }
-        } else {
-            console.warn("No item data found in armourer slot to return.");
         }
         // ---------------------------------------------------------
 
@@ -2367,18 +2384,28 @@ class UI {
             <div class="armourer-slot-label">Armor Slot</div>
             <div class="armourer-slot-content">Drop armor here</div>
         `;
+        slotElement.style.cursor = 'default'; // Reset cursor
+        slotElement.onclick = null; // Remove click listener
         delete slotElement.dataset.itemData;
+        delete slotElement.dataset.originalIndex; // Clear original index too
 
         // Reset and disable the button
-        // Ensure armourerButton is cached correctly before accessing
-        if (this.armourerButton) { 
-            this.armourerButton.disabled = true;
-            this.armourerButton.textContent = 'Enhance Armor';
+        const enhanceButton = document.getElementById('armourer-button');
+        if (enhanceButton) { 
+            enhanceButton.disabled = true;
+            enhanceButton.textContent = 'Enhance Armor (+1 Defense)';
         } else {
-            console.error("Armourer button reference is missing in UI cache!");
+            console.error("Armourer button element not found!");
+        }
+
+        // Reset preview text
+        const previewArea = document.getElementById('armourer-preview');
+        if (previewArea) {
+            previewArea.textContent = 'Select armor to preview enhancement';
         }
 
         this.renderInventory(); // Update inventory display
+        // NO NEED for updateInventoryInUseStyles here
     }
     // --- End Restore clearArmourerSlot ---
 
@@ -2391,15 +2418,30 @@ class UI {
             return; // Prevent enhancing without the hammer
         }
 
-        const slot = document.querySelector('.armourer-slot');
-        const itemIndex = parseInt(slot.dataset.itemIndex);
-        const item = this.game.player.inventory[itemIndex];
+        const slot = document.querySelector('#armourer-area .armourer-slot'); // More specific selector
         
+        // Get item from data attribute
+        const itemDataString = slot?.dataset.itemData;
+        if (!itemDataString) {
+            this.game.addLog("No item placed on the station.");
+            return;
+        }
+
+        let item;
+        try {
+            item = JSON.parse(itemDataString);
+        } catch (error) {
+            console.error("Error parsing item data in handleArmourEnhancement:", error);
+            this.game.addLog("Error: Could not retrieve item data for enhancement.");
+            return;
+        }
+
         if (!item || item.type !== 'armor') {
-            this.game.addLog("Invalid item selected.");
+            this.game.addLog("Invalid item type for enhancement."); // Should not happen if drop worked
             return;
         }
         
+        // Enhance the item data
         item.stats.defense = (item.stats.defense || 0) + 1; // Ensure defense exists
         // Update name only if not already sharpened/reinforced
         if (!item.name.startsWith("Sharpened ") && !item.name.startsWith("Reinforced ")) {
@@ -2407,11 +2449,35 @@ class UI {
         }
         item.description = item.description.replace(/Defense: \+\d+/, `Defense: +${item.stats.defense}`);
         item.value = Math.floor(item.value * 1.2); // Increase value
-
+        
+        // Add the *enhanced* item back to inventory
+        if (!this.game.player.addItem(item)) {
+            this.game.addLog(`Inventory full! Could not add enhanced ${item.name}.`);
+            // Don't clear the slot if we couldn't add the new item
+            return;
+        }
         
         this.game.addLog(`Enhanced ${item.name}! Defense increased by 1.`);
-        this.renderInventory();
-        
+
+        // Item consumed: Reset the slot directly
+        slot.innerHTML = `
+            <div class="armourer-slot-label">Armor Slot</div>
+            <div class="armourer-slot-content">Drop armor here</div>
+        `;
+        slot.style.cursor = 'default';
+        slot.onclick = null;
+        delete slot.dataset.itemData;
+        delete slot.dataset.originalIndex;
+
+        // Reset button and preview
+        const enhanceButton = document.getElementById('armourer-button');
+        if (enhanceButton) enhanceButton.disabled = true;
+        const previewArea = document.getElementById('armourer-preview');
+        if (previewArea) previewArea.textContent = 'Select armor to preview enhancement';
+
+        this.renderInventory(); // Re-render inventory to show the new item
+
+        // Proceed to next round after enhancement
         this.clearMainArea();
         this.game.proceedToNextRound();
     }
