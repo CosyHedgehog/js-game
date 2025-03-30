@@ -1342,6 +1342,8 @@ class UI {
                 };
                 // --- End click listener logic ---
 
+                slot.classList.add('crafting-slot-filled'); // Add visual class
+
                 // Update the forge button state
                 this.updateForgeButton();
 
@@ -1546,7 +1548,7 @@ class UI {
                     // ---------------------------------------------
         
                     // Update preview
-                    // const previewArea = document.getElementById('sharpen-preview'); // Use variable from outer scope
+                    const previewArea = document.getElementById('sharpen-preview');
                     const newAttack = (removedItem.stats.attack || 0) + 1;
                     previewArea.textContent = `${removedItem.name} → Attack: ${(removedItem.stats.attack || 0)} → ${newAttack}`; // Use removedItem stats
                     
@@ -1557,6 +1559,10 @@ class UI {
                     this.renderInventory(); 
                     // NO NEED for updateInventoryInUseStyles here, done by renderInventory/clear/enhance
 
+                    sharpenSlot.classList.add('crafting-slot-filled'); // Add visual class
+
+                    // Update preview
+                    // const previewArea = document.getElementById('sharpen-preview'); // Use variable from outer scope
                 } else {
                     this.game.addLog("You can only enhance armor.");
                 }
@@ -1921,6 +1927,8 @@ class UI {
         delete slotElement.dataset.itemData;
         delete slotElement.dataset.originalIndex;
 
+        slotElement.classList.remove('crafting-slot-filled'); // Remove visual class
+
         this.updateForgeButton(); // Update button state
         this.renderInventory(); // Update inventory visuals
         this.updateInventoryInUseStyles(); // Update styles for inventory items
@@ -2109,6 +2117,7 @@ class UI {
             slot.onclick = null;
             delete slot.dataset.itemData;
             delete slot.dataset.originalIndex;
+            slot.classList.remove('crafting-slot-filled'); // Remove filled style
         });
         // --- End Slot Reset ---
         
@@ -2117,6 +2126,13 @@ class UI {
         this.updateForgeButton(); // Update button state (will disable it)
         this.renderInventory(); // Render inventory (shows new item, removes old styles)
         this.updateInventoryInUseStyles(); // Update inventory styles
+
+        // Add flash effect
+        const blacksmithArea = document.getElementById('blacksmith-area');
+        if (blacksmithArea) {
+            blacksmithArea.classList.add('upgrade-success-flash');
+            setTimeout(() => blacksmithArea.classList.remove('upgrade-success-flash'), 500); // Duration matches animation
+        }
     }
     // --- End Restore handleForgeItems ---
 
@@ -2159,6 +2175,8 @@ class UI {
         slotElement.onclick = null; // Remove click listener
         delete slotElement.dataset.itemData;
         delete slotElement.dataset.originalIndex; // Clear original index too
+
+        slotElement.classList.remove('crafting-slot-filled'); // Remove visual class
 
         // Reset and disable the button
         const sharpenButton = document.getElementById('sharpen-button');
@@ -2222,6 +2240,13 @@ class UI {
         }
         
         this.game.addLog(`Sharpened ${item.name}! Attack power increased by 1.`);
+
+        // Add flash effect
+        const sharpenArea = document.getElementById('sharpen-area');
+        if (sharpenArea) {
+            sharpenArea.classList.add('upgrade-success-flash');
+            setTimeout(() => sharpenArea.classList.remove('upgrade-success-flash'), 500); 
+        }
 
         // Item consumed: Reset the slot directly
         slot.innerHTML = `
@@ -2421,6 +2446,8 @@ class UI {
         delete slotElement.dataset.itemData;
         delete slotElement.dataset.originalIndex; // Clear original index too
 
+        slotElement.classList.remove('crafting-slot-filled'); // Remove visual class
+
         // Reset and disable the button
         const enhanceButton = document.getElementById('armourer-button');
         if (enhanceButton) { 
@@ -2490,6 +2517,13 @@ class UI {
         }
         
         this.game.addLog(`Enhanced ${item.name}! Defense increased by 1.`);
+
+        // Add flash effect
+        const armourerArea = document.getElementById('armourer-area');
+        if (armourerArea) {
+            armourerArea.classList.add('upgrade-success-flash');
+            setTimeout(() => armourerArea.classList.remove('upgrade-success-flash'), 500);
+        }
 
         // Item consumed: Reset the slot directly
         slot.innerHTML = `
