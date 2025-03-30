@@ -99,35 +99,35 @@ class Starting {
         switch (packId) {
             case 'warrior':
                 // Warrior pack: More armor focused
-                this.game.player.addItem(createItem('wooden_sword')); // Use game.player
-                this.game.player.addItem(createItem('leather_armor'));
-                this.game.player.addItem(createItem('leather_legs'));
-                this.game.player.addItem(createItem('bread'));
-                this.game.player.addItem(createItem('bread'));
-                this.game.player.addItem(createItem('bread'));
+                this.game.player.addItem(this.game.createItem('wooden_sword')); // Use game.player
+                this.game.player.addItem(this.game.createItem('leather_armor'));
+                this.game.player.addItem(this.game.createItem('leather_legs'));
+                this.game.player.addItem(this.game.createItem('bread'));
+                this.game.player.addItem(this.game.createItem('bread'));
+                this.game.player.addItem(this.game.createItem('bread'));
                 break; // Removed clearMainArea, handled by proceeding
 
             case 'fisher':
                 // Fisher pack: Includes fishing rod
-                this.game.player.addItem(createItem('rusty_sword')); // Use game.player
-                this.game.player.addItem(createItem('leather_helm'));
-                this.game.player.addItem(createItem('fishing_rod'));
-                this.game.player.addItem(createItem('large_fish'));
-                this.game.player.addItem(createItem('large_fish'));
-                this.game.player.addItem(createItem('medium_fish'));
-                this.game.player.addItem(createItem('medium_fish'));
-                this.game.player.addItem(createItem('small_fish'));
+                this.game.player.addItem(this.game.createItem('rusty_sword')); // Use game.player
+                this.game.player.addItem(this.game.createItem('leather_helm'));
+                this.game.player.addItem(this.game.createItem('fishing_rod'));
+                this.game.player.addItem(this.game.createItem('large_fish'));
+                this.game.player.addItem(this.game.createItem('large_fish'));
+                this.game.player.addItem(this.game.createItem('medium_fish'));
+                this.game.player.addItem(this.game.createItem('medium_fish'));
+                this.game.player.addItem(this.game.createItem('small_fish'));
                 break; // Removed clearMainArea
 
             case 'blacksmith':
                 // Blacksmith pack: Includes hammer and some basic resources
-                this.game.player.addItem(createItem('rusty_sword')); // Use game.player
-                this.game.player.addItem(createItem('leather_armor'));
-                this.game.player.addItem(createItem('blacksmith_hammer'));
-                this.game.player.addItem(createItem('bread'));
-                this.game.player.addItem(createItem('bread'));
-                this.game.player.addItem(createItem('small_fish'));
-                this.game.player.addItem(createItem('small_fish'));
+                this.game.player.addItem(this.game.createItem('rusty_sword')); // Use game.player
+                this.game.player.addItem(this.game.createItem('leather_armor'));
+                this.game.player.addItem(this.game.createItem('blacksmith_hammer'));
+                this.game.player.addItem(this.game.createItem('bread'));
+                this.game.player.addItem(this.game.createItem('bread'));
+                this.game.player.addItem(this.game.createItem('small_fish'));
+                this.game.player.addItem(this.game.createItem('small_fish'));
                 break; // Removed clearMainArea
         }
         

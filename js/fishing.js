@@ -16,7 +16,7 @@ class Fishing {
         this.game.addLog("You found a good fishing spot and cast your line!");
 
         // Rest of the fishing logic remains the same
-        const fishCaught = getRandomInt(1, 5);
+        const fishCaught = this.game.getRandomInt(1, 5);
         this.game.addLog(`You caught ${fishCaught} fish!`);
 
         // Generate fish based on rarity
@@ -28,7 +28,7 @@ class Fishing {
             for (const fish of FISHING_LOOT_TABLE) {
                 cumulative += fish.chance;
                 if (roll < cumulative) {
-                    const fishItem = createItem(fish.itemId);
+                    const fishItem = this.game.createItem(fish.itemId);
                     if (fishItem) {
                         fishItem.selected = true;
                         caughtItems.push(fishItem);

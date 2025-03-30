@@ -92,8 +92,8 @@ class Combat {
     }
 
     playerAttack() {
-        const playerAttackRoll = rollDamage(this.player.getAttack());
-        const enemyDefenseRoll = rollDamage(this.enemy.defense || 0);
+        const playerAttackRoll = this.game.rollDamage(this.player.getAttack());
+        const enemyDefenseRoll = this.game.rollDamage(this.enemy.defense || 0);
         const actualBlocked = Math.min(playerAttackRoll, enemyDefenseRoll); // Only block up to the attack amount
         const damageDealt = Math.max(0, playerAttackRoll - enemyDefenseRoll);
         
@@ -119,8 +119,8 @@ class Combat {
     }
 
     enemyAttack() {
-        const enemyAttackRoll = rollDamage(this.enemy.attack);
-        const playerDefenseRoll = rollDamage(this.player.getDefense());
+        const enemyAttackRoll = this.game.rollDamage(this.enemy.attack);
+        const playerDefenseRoll = this.game.rollDamage(this.player.getDefense());
         const actualBlocked = Math.min(enemyAttackRoll, playerDefenseRoll); // Only block up to the attack amount
         const damageDealt = Math.max(0, enemyAttackRoll - playerDefenseRoll);
         
@@ -266,12 +266,12 @@ class Combat {
             this.game.addLog(`You defeated the ${this.enemy.name}!`);
 
             // Calculate Loot
-            const goldDropped = getRandomInt(this.enemy.goldDrop[0], this.enemy.goldDrop[1]);
+            const goldDropped = this.game.getRandomInt(this.enemy.goldDrop[0], this.enemy.goldDrop[1]);
             const droppedItems = [];
             if (this.enemy.lootTable && this.enemy.lootTable.length > 0) {
                 this.enemy.lootTable.forEach(loot => {
                     if (Math.random() < loot.chance) {
-                        const item = createItem(loot.itemId);
+                        const item = this.game.createItem(loot.itemId);
                         if (item) {
                             item.selected = true;
                             droppedItems.push(item);

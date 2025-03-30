@@ -154,9 +154,9 @@ class Game {
         while (usedEncounters.size < numChoices) {
             const encounter = this.getRandomEncounter();
             if (encounter.type === 'monster') {
-                encounter.monsterId = COMMON_MONSTERS[getRandomInt(0, COMMON_MONSTERS.length - 1)];
+                encounter.monsterId = COMMON_MONSTERS[this.getRandomInt(0, COMMON_MONSTERS.length - 1)];
             } else if (encounter.type === 'mini-boss') {
-                encounter.monsterId = MINI_BOSSES[getRandomInt(0, MINI_BOSSES.length - 1)];
+                encounter.monsterId = MINI_BOSSES[this.getRandomInt(0, MINI_BOSSES.length - 1)];
             }
             // Create a unique key for the encounter to prevent duplicates
             const encounterKey = encounter.type + (encounter.monsterId || '');
@@ -570,7 +570,7 @@ class Game {
     // Add new method for mini-boss encounters
     generateMiniBossEncounter() {
         // Select a random mini-boss
-        const miniBossIndex = getRandomInt(0, MINI_BOSSES.length - 1);
+        const miniBossIndex = this.getRandomInt(0, MINI_BOSSES.length - 1);
         const miniBossId = MINI_BOSSES[miniBossIndex];
         
         this.currentChoices = [{
@@ -580,6 +580,28 @@ class Game {
         
         this.addLog(`A powerful enemy approaches...`);
         this.ui.renderChoices(this.currentChoices);
+    }
+
+
+    getRandomInt(min, max) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+    
+    rollDamage(maxAttack) {
+        if (maxAttack <= 0) return 0;
+        return this.getRandomInt(1, maxAttack);
+    }
+    
+    createItem(itemId) {
+        const template = ITEMS[itemId];
+        if (!template) {
+            console.error(`Item template not found for ID: ${itemId}`);
+            return null;
+        }
+        // Simple deep copy for plain objects; use structuredClone for more complex objects if needed
+        return JSON.parse(JSON.stringify(template));
     }
 
 }

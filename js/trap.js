@@ -49,7 +49,7 @@ class Trap {
 
                     const goldReward = Math.floor(Math.random() * 6) + 1;
                     const weaponRewardId = TRAP_WEAPON_LOOT[Math.floor(Math.random() * TRAP_WEAPON_LOOT.length)];
-                    const weaponItem = createItem(weaponRewardId);
+                    const weaponItem = this.game.createItem(weaponRewardId);
 
                     const weaponData = ITEMS[weaponRewardId];
                     const successMsg = `Success! You disarmed the trap. Found ${goldReward} gold and a ${weaponData.name}.`;

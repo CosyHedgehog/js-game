@@ -207,7 +207,7 @@ class Shop {
     }
 
     generateShopItems(count) {
-        const numItems = getRandomInt(3, 8);
+        const numItems = this.game.getRandomInt(3, 8);
         const items = [];
     
         const itemTiers = {
@@ -252,7 +252,7 @@ class Shop {
     
             // Select random item from the chosen tier
             const tierItems = selectedTier.items;
-            const randomItem = tierItems[getRandomInt(0, tierItems.length - 1)];
+            const randomItem = tierItems[this.game.getRandomInt(0, tierItems.length - 1)];
             
             // Only add if not already selected
             if (!availableItems.has(randomItem)) {
@@ -262,10 +262,10 @@ class Shop {
     
         // Convert selected items to actual item objects
         for (const itemId of availableItems) {
-            const itemData = createItem(itemId);
+            const itemData = this.game.createItem(itemId);
             if (itemData) {
                 // Reduce shop prices: 1.3x value + small random addition
-                itemData.buyPrice = Math.ceil(itemData.value * 1.3 + getRandomInt(0, Math.floor(itemData.value * 0.2)));
+                itemData.buyPrice = Math.ceil(itemData.value * 1.3 + this.game.getRandomInt(0, Math.floor(itemData.value * 0.2)));
                 items.push(itemData);
             }
         }

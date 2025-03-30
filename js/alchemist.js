@@ -30,7 +30,7 @@ class Alchemist {
         Object.entries(potionTiers).forEach(([tier, { items, chance }]) => {
             items.forEach(itemId => {
                 if (Math.random() < chance) {
-                    const item = createItem(itemId);
+                    const item = this.game.createItem(itemId);
                     if (item) {
                         // Alchemist charges more than regular shops
                         item.buyPrice = Math.ceil(item.value);
@@ -41,7 +41,7 @@ class Alchemist {
         });
 
         if (availableItems.length === 0) {
-            const basicPotion = createItem('health_potion');
+            const basicPotion = this.game.createItem('health_potion');
             basicPotion.buyPrice = Math.ceil(basicPotion.value);
             availableItems.push(basicPotion);
         }
