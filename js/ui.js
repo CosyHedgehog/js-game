@@ -2266,9 +2266,11 @@ class UI {
 
         this.renderInventory(); // Re-render inventory to show the new item
         
-        // Proceed to next round
-        this.clearMainArea();
-        this.game.proceedToNextRound();
+        // Proceed to next round after a short delay to show flash
+        setTimeout(() => {
+            this.clearMainArea();
+            this.game.proceedToNextRound();
+        }, 500); // Match animation duration
     }
     // --- End Restore handleSharpenItem ---
 
