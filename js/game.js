@@ -167,28 +167,53 @@ class Game {
     getRandomEncounter() {
         const totalWeight = ENCOUNTER_PROBABILITY.reduce((sum, enc) => sum + enc.weight, 0);
         let randomRoll = Math.random() * totalWeight;
-        
+        let chosenEncounter = null;
+
         for (const encounter of ENCOUNTER_PROBABILITY) {
             if (randomRoll < encounter.weight) {
-                const encounterData = { type: encounter.type };
-                
-                // Add specific data for certain encounter types
-                if (encounter.type === 'monster') {
-                    encounterData.monsterId = COMMON_MONSTERS[getRandomInt(0, COMMON_MONSTERS.length - 1)];
-                } else if (encounter.type === 'mini-boss') {
-                    encounterData.monsterId = MINI_BOSSES[getRandomInt(0, MINI_BOSSES.length - 1)];
-                }
-                
-                return encounterData;
+                chosenEncounter = { type: encounter.type };
+                break;
             }
             randomRoll -= encounter.weight;
         }
-        return { type: 'monster', monsterId: COMMON_MONSTERS[0] }; // Fallback
+
+        // Add specific details (e.g., which monster)
+        if (chosenEncounter.type === 'monster') {
+            chosenEncounter.monsterId = COMMON_MONSTERS[getRandomInt(0, COMMON_MONSTERS.length - 1)];
+        } else if (chosenEncounter.type === 'mini-boss') {
+            chosenEncounter.monsterId = MINI_BOSSES[getRandomInt(0, MINI_BOSSES.length - 1)];
+        }
+
+        return chosenEncounter;
     }
 
     getEncounterText(encounter) {
-        const encounterType = ENCOUNTERS[encounter.type];
-        return encounterType ? encounterType.getText(encounter) : 'Unknown Encounter';
+        switch (encounter.type) {
+            case 'monster':
+                return `Fight ${MONSTERS[encounter.monsterId]?.name || 'Monster'}`;
+            case 'rest':
+                return 'Rest Site';
+            case 'shop':
+                return 'Shop';
+            case 'mini-boss':
+                return `Fight ${MONSTERS[encounter.monsterId]?.name}`;
+            case 'fishing':
+                return 'Go Fishing!';
+            case 'blacksmith':
+                return "Visit Blacksmith";
+            case 'sharpen':
+                return "Use Sharpening Stone";
+            case 'armourer':
+                return "Visit Armourer";
+            case 'shrine':
+                return "Approach Mystic Shrine";
+            case 'alchemist':
+                return "Visit Alchemist";
+            case 'wandering_merchant':
+                return "Meet Wandering Merchant";
+            default:
+                return 'Unknown Encounter';
+        }
     }
 
     generateBossEncounter() {
@@ -218,20 +243,114 @@ class Game {
 
     // Add new method to get encounter details
     getEncounterDetails(encounter) {
-        const encounterType = ENCOUNTERS[encounter.type];
-        return encounterType ? encounterType.getDetails(encounter, this) : 'Unknown encounter type.';
+        switch (encounter.type) {
+            case 'monster':
+            case 'mini-boss':
+            case 'boss': {
+                const monster = MONSTERS[encounter.monsterId];
+                if (!monster) return "Error: Monster data not found.";
+                return `${monster.name}\n` +
+                       `Health: ${monster.health} // Attack: ${monster.attack} // Defense: ${monster.defense} // Attack Speed: ${monster.speed}s // ` +
+                       `Gold Drop: ${monster.goldDrop[0]}-${monster.goldDrop[1]}\n\n` +
+                       `This will start a combat encounter. Are you ready to fight?`;
+            }
+            case 'rest':
+                return `Rest at this site to recover 20-70% of your maximum health (${Math.floor(this.player.maxHealth * 0.2)}-${Math.floor(this.player.maxHealth * 0.7)} HP).\n` +
+                       `Your maximum HP will also increase by 1.\n\n` +
+                       `Do you want to rest here?`;
+            case 'shop':
+                return "Visit a merchant to buy and sell items.\n" +
+                       "You can also reroll the shop's inventory once for 5 gold.\n\n" +
+                       `Current gold: ${this.player.gold}\n\n` +
+                       "Enter shop?";
+            case 'fishing':
+                return "Try your luck fishing!\n" +
+                       "You might catch 1-5 fish of varying sizes:\n" +
+                       "- Small Fish (Common) - Heals 2 HP\n" +
+                       "- Medium Fish (Uncommon) - Heals 5 HP\n" +
+                       "- Large Fish (Rare) - Heals 8 HP\n\n" +
+                       "Go fishing?";
+            case 'blacksmith':
+                return "Visit the Blacksmith to combine two similar items into a stronger version.\n" +
+                       "You can combine weapons or armor pieces of the same type.\n\n" +
+                       "Enter the forge?";
+            case 'sharpen':
+                return "You find a sharpening stone that can enhance a weapon.\n" +
+                       "Select one weapon to permanently increase its attack power by 1.\n\n" +
+                       "Use the sharpening stone?";
+            case 'armourer':
+                return "You find an Armourer's tools that can enhance armor.\n" +
+                       "Select one piece of armor to permanently increase its defense by 1.\n\n" +
+                       "Use the Armourer's tools?";
+            case 'shrine':
+                return "A mysterious shrine pulses with ancient magic.\n" +
+                       "Offer gold to receive random beneficial effects:\n" +
+                       "- Minor Blessing (5 gold): Small stat boost\n" +
+                       "- Major Blessing (15 gold): Significant enhancement\n" +
+                       "- Divine Favor (30 gold): Powerful permanent upgrade\n\n" +
+                       `Current gold: ${this.player.gold}\n\n` +
+                       "Approach the shrine?";
+            case 'alchemist':
+                return "Visit the Alchemist to buy powerful potions:\n" +
+                       "- Health Potions: Restore HP instantly\n" +
+                       "- Attack Potions: Boost damage for combat\n" +
+                       "- Defense Potions: Increase defense for combat\n" +
+                       "- Speed Potions: Attack faster for combat\n\n" +
+                       `Current gold: ${this.player.gold}\n\n` +
+                       "Enter the Alchemist's shop?";
+            case 'wandering_merchant':
+                return "A mysterious merchant offers unique services:\n" +
+                       "- Combine items into powerful artifacts\n" +
+                       "- Enhance weapons with magical power\n" +
+                       "- Transform shields into weapons\n\n" +
+                       `Current gold: ${this.player.gold}\n\n` +
+                       "Meet the merchant?";
+            default:
+                return "Unknown encounter type.";
+        }
     }
 
     startEncounter(encounter) {
+        // Clear choices UI
         this.ui.choicesArea.innerHTML = '';
         this.ui.choicesArea.classList.add('hidden');
 
-        const encounterType = ENCOUNTERS[encounter.type];
-        if (encounterType) {
-            encounterType.handle(this, this.ui, encounter);
-        } else {
-            this.addLog("Unknown encounter type selected.");
-            this.proceedToNextRound();
+        switch (encounter.type) {
+            case 'monster':
+            case 'mini-boss':
+            case 'boss':
+                handleMonsterEncounter(this, this.ui, encounter.monsterId);
+                break;
+            case 'rest':
+                handleRestEncounter(this, this.ui);
+                break;
+            case 'shop':
+                handleShopEncounter(this, this.ui);
+                break;
+            case 'fishing':
+                handleFishingEncounter(this, this.ui);
+                break;
+            case 'blacksmith':
+                handleBlacksmithEncounter(this, this.ui);
+                break;
+            case 'sharpen':
+                handleSharpenEncounter(this, this.ui);
+                break;
+            case 'armourer':
+                handleArmourerEncounter(this, this.ui);
+                break;
+            case 'shrine':
+                handleShrineEncounter(this, this.ui);
+                break;
+            case 'alchemist':
+                handleAlchemistEncounter(this, this.ui);
+                break;
+            case 'wandering_merchant':
+                handleWanderingMerchantEncounter(this, this.ui);
+                break;
+            default:
+                this.addLog("Unknown encounter type selected.");
+                this.proceedToNextRound();
         }
     }
 
