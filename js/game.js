@@ -153,6 +153,13 @@ class Game {
             i++;
             // const encounter = this.getRandomEncounter();
             
+
+            if (encounter.type === 'monster') {
+                encounter.monsterId = COMMON_MONSTERS[getRandomInt(0, COMMON_MONSTERS.length - 1)];
+            } else if (encounter.type === 'mini-boss') {
+                encounter.monsterId = MINI_BOSSES[getRandomInt(0, MINI_BOSSES.length - 1)];
+            }
+
             // Create a unique key for the encounter to prevent duplicates
             const encounterKey = encounter.type + (encounter.monsterId || '');
             
@@ -181,12 +188,6 @@ class Game {
             randomRoll -= encounter.weight;
         }
 
-        // Add specific details (e.g., which monster)
-        if (chosenEncounter.type === 'monster') {
-            chosenEncounter.monsterId = COMMON_MONSTERS[getRandomInt(0, COMMON_MONSTERS.length - 1)];
-        } else if (chosenEncounter.type === 'mini-boss') {
-            chosenEncounter.monsterId = MINI_BOSSES[getRandomInt(0, MINI_BOSSES.length - 1)];
-        }
 
         return chosenEncounter;
     }
