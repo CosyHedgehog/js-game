@@ -563,10 +563,17 @@ button:disabled {
 }
 
 .shop-item-button:disabled {
-    background: #444;
-    border-color: #333;
+    background-color: #666;
     cursor: not-allowed;
-    opacity: 0.7;
+    opacity: 0.6;
+}
+
+/* NEW: Prevent hover effect on disabled/bought buttons */
+.shop-item-button:disabled:hover {
+    background-color: #666; /* Keep the same background color on hover */
+    border-color: #666; /* Keep the border color the same as well */
+    filter: none; /* Remove any brightness/filter effects */
+    transform: none; /* Prevent scaling */
 }
 
 .item-description {
@@ -1478,6 +1485,14 @@ html {
     opacity: 0.6;
 }
 
+/* NEW: Prevent hover effect on disabled/bought buttons */
+.shop-item-button:disabled:hover {
+    background-color: #666; /* Keep the same background color on hover */
+    border-color: #666; /* Keep the border color the same as well */
+    filter: none; /* Remove any brightness/filter effects */
+    transform: none; /* Prevent scaling */
+}
+
 #blacksmith-area {
     padding: 20px;
     text-align: center;
@@ -1787,38 +1802,6 @@ html {
     background: #444;
 }
 
-#shrine-area {
-    text-align: center;
-    padding: 20px;
-}
-
-.shrine-options {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin: 20px 0;
-}
-
-.shrine-options button {
-    padding: 15px;
-    background-color: #2c3e50;
-    color: #ecf0f1;
-    border: 1px solid #34495e;
-    border-radius: 3px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    position: relative;
-}
-
-.shrine-options button:hover:not(:disabled) {
-    background-color: #34495e;
-    border-color: #3498db;
-}
-
-.shrine-options button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
 
 .blessing-desc {
     font-size: 0.8em;
@@ -1826,52 +1809,6 @@ html {
     margin-top: 5px;
 }
 
-#shrine-leave-button {
-    padding: 8px 15px;
-    font-size: 0.9em;
-    background-color: #2c3e50;
-    color: #ecf0f1;
-    border: 1px solid #34495e;
-    border-radius: 3px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    margin-top: 20px;
-}
-
-#shrine-leave-button:hover {
-    background-color: #34495e;
-    border-color: #3498db;
-}
-
-#shrine-area h3 {
-    color: #ffd700;
-    text-align: center;
-    margin-bottom: 1rem;
-}
-
-#shrine-area p {
-    color: #fff;
-    text-align: center;
-    margin: 0.5rem 0;
-    font-size: 1.1em;
-}
-
-#shrine-confirm-button {
-    display: block;
-    margin: 1.5rem auto;
-    padding: 0.5rem 2rem;
-    font-size: 1em;
-    background-color: #4a4a4a;
-    color: #fff;
-    border: 1px solid #666;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-#shrine-confirm-button:hover {
-    background-color: #5a5a5a;
-}
 
 #alchemist-area {
     padding: 20px;
@@ -1913,108 +1850,6 @@ html {
     text-align: center;
     color: #888;
     font-style: italic;
-}
-
-#wandering-merchant-area {
-    padding: 20px;
-    background: rgba(0, 0, 0, 0.8);
-    border-radius: 8px;
-    color: #fff;
-}
-
-.merchant-offers {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin: 20px 0;
-}
-
-.merchant-offer {
-    background: rgba(40, 40, 40, 0.9);
-    padding: 15px;
-    border-radius: 6px;
-    border: 1px solid #666;
-}
-
-.offer-name {
-    font-size: 1.2em;
-    color: #ffd700;
-    margin-bottom: 5px;
-}
-
-.offer-price {
-    color: #90EE90;
-    font-size: 0.9em;
-    margin-bottom: 10px;
-}
-
-.offer-description {
-    margin-bottom: 15px;
-    color: #ccc;
-}
-
-.offer-button {
-    background: #4a4a4a;
-    color: #fff;
-    border: 1px solid #666;
-    padding: 8px 15px;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.offer-button:hover:not(:disabled) {
-    background: #5a5a5a;
-    border-color: #ffd700;
-}
-
-.offer-button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-.merchant-no-offers {
-    text-align: center;
-    padding: 20px;
-    color: #888;
-    font-style: italic;
-}
-
-.merchant-selection-menu {
-    background: rgba(0, 0, 0, 0.8);
-    padding: 15px;
-    margin: 10px 0;
-    border-radius: 6px;
-    border: 1px solid #666;
-}
-
-.merchant-item-option {
-    background: rgba(40, 40, 40, 0.9);
-    padding: 10px;
-    margin: 5px 0;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.merchant-item-option:hover {
-    background: rgba(60, 60, 60, 0.9);
-    border-color: #ffd700;
-}
-
-#merchant-continue-button {
-    margin-top: 15px;
-    padding: 8px 16px;
-    background: #4a4a4a;
-    color: #fff;
-    border: 1px solid #666;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-#merchant-continue-button:hover {
-    background: #5a5a5a;
-    border-color: #ffd700;
 }
 
 .starting-pack-selection {

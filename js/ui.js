@@ -369,14 +369,19 @@ class UI {
 
         const buttonsContainer = document.createElement('div');
         buttonsContainer.style.display = 'flex';
+        buttonsContainer.style.flexWrap = 'wrap'; // Allow wrapping
         buttonsContainer.style.justifyContent = 'center';
         buttonsContainer.style.gap = '15px';
         buttonsContainer.style.width = '100%';
+        buttonsContainer.style.padding = '10px'; // Add some padding
 
         choices.forEach((choice, index) => {
             const button = document.createElement('button');
             button.textContent = choice.text;
             button.classList.add('choice-button');
+            button.style.flex = '0 1 auto'; // Allow buttons to shrink but not grow
+            button.style.minWidth = '200px'; // Minimum width for buttons
+            button.style.maxWidth = '300px'; // Maximum width for buttons
             
             // Automatically select the first option
             if (index === 0) {
@@ -417,10 +422,17 @@ class UI {
         let buttonDisabled = false;
         let requirementHTML = '';
         
+        const hasFishingRod = this.game.player.inventory.some(item => item && item.id === 'fishing_rod');
+        const hasHammer = this.game.player.inventory.some(item => item && item.id === 'blacksmith_hammer');
+
         if (choice.encounter.type === 'fishing') {
-            const hasFishingRod = this.game.player.inventory.some(item => item && item.id === 'fishing_rod');
             if (!hasFishingRod) {
                 requirementHTML = '<div style="color: #ff4444; margin-bottom: 10px;">Requires: Fishing Rod</div>';
+                buttonDisabled = true;
+            }
+        } else if (choice.encounter.type === 'blacksmith' || choice.encounter.type === 'armourer') {
+            if (!hasHammer) {
+                requirementHTML = '<div style="color: #ff4444; margin-bottom: 10px;">Requires: Blacksmith Hammer</div>';
                 buttonDisabled = true;
             }
         }
@@ -497,16 +509,6 @@ class UI {
         const alchemistArea = document.getElementById('alchemist-area');
         if (alchemistArea) {
             alchemistArea.remove();
-        }
-
-        const shrineArea = document.getElementById('shrine-area');
-        if (shrineArea) {
-            shrineArea.remove();
-        }
-
-        const wanderingMerchantArea = document.getElementById('wandering-merchant-area');
-        if (wanderingMerchantArea) {
-            wanderingMerchantArea.remove();
         }
 
         const startingPackArea = document.getElementById('starting-pack-area');
@@ -723,15 +725,17 @@ class UI {
 
         if (items && items.length > 0) {
             items.forEach((item, index) => {
+                const isBought = item.bought === true;
+                const canAfford = this.game.player.gold >= item.buyPrice;
                 shopContent += `
-                    <div class="shop-item" data-index="${index}">
+                    <div class="shop-item ${isBought ? 'item-bought' : ''}" data-index="${index}">
                         <div class="shop-item-info">
                             <div class="shop-item-name">${item.name}</div>
                             <div class="shop-item-price">${item.buyPrice} gold</div>
                         </div>
                         <button class="shop-item-button" data-index="${index}" 
-                                ${this.game.player.gold < item.buyPrice ? 'disabled' : ''}>
-                            Buy
+                                ${isBought || !canAfford ? 'disabled' : ''}>
+                            ${isBought ? 'Bought' : 'Buy'}
                         </button>
                     </div>
                 `;
@@ -1037,8 +1041,7 @@ class UI {
         // this.sharpenArea.classList.add('hidden');
         // this.armourerArea.classList.add('hidden');
         // this.alchemistArea.classList.add('hidden');
-        // this.shrineArea.classList.add('hidden');
-        // this.wanderingMerchantArea.classList.add('hidden');
+
         // this.startingPackArea.classList.add('hidden');
 
         // Show the log area
@@ -1083,17 +1086,11 @@ class UI {
             case 'armourer':
                 this.armourerArea.classList.remove('hidden');
                 break;
-            case 'shrine':
-                this.shrineArea.classList.remove('hidden');
-                break;
-            case 'wandering_merchant':
-                this.wanderingMerchantArea.classList.remove('hidden');
-                break;
             case 'alchemist':
                 this.alchemistArea.classList.remove('hidden');
                 break;
             case 'starting_pack':
-                this.fishingArea.classList.remove('hidden');
+                this.startingPackArea.classList.remove('hidden');
                 break;
         }
     }
@@ -1115,11 +1112,16 @@ class UI {
     showBlacksmithUI() {
         this.clearMainArea();
         
+        // Check for hammer
+        const hasHammer = this.game.player.inventory.some(item => item && item.id === 'blacksmith_hammer');
+        let hammerWarning = hasHammer ? '' : '<p style="color: #ff4444; font-weight: bold;">Requires: Blacksmith Hammer</p>';
+
         // Create blacksmith area HTML
         const blacksmithArea = document.createElement('div');
         blacksmithArea.id = 'blacksmith-area';
         blacksmithArea.innerHTML = `
             <h3>Blacksmith's Forge</h3>
+            ${hammerWarning}
             <p>Select two items of the same type to combine their power.</p>
             <div class="forge-container">
                 <div class="forge-slot" id="forge-slot-1">
@@ -1276,6 +1278,9 @@ class UI {
         const item1Index = slot1.dataset.itemIndex;
         const item2Index = slot2.dataset.itemIndex;
 
+        // Check for hammer as well
+        const hasHammer = this.game.player.inventory.some(item => item && item.id === 'blacksmith_hammer');
+
         if (item1Index && item2Index) {
             const item1 = this.game.player.inventory[item1Index];
             const item2 = this.game.player.inventory[item2Index];
@@ -1283,7 +1288,8 @@ class UI {
             const canForge = item1 && item2 && 
                             item1.type === item2.type && 
                             item1.slot === item2.slot &&
-                            item1Index !== item2Index;
+                            item1Index !== item2Index &&
+                            hasHammer;
 
             forgeButton.disabled = !canForge;
 
@@ -1323,6 +1329,13 @@ class UI {
     }
 
     handleForgeItems() {
+        // Add check for blacksmith hammer before forging
+        const hasHammer = this.game.player.inventory.some(item => item && item.id === 'blacksmith_hammer');
+        if (!hasHammer) {
+            this.game.addLog("You need a Blacksmith Hammer to forge items!");
+            return; // Prevent forging without the hammer
+        }
+
         const slot1 = document.getElementById('forge-slot-1');
         const slot2 = document.getElementById('forge-slot-2');
         
@@ -1508,9 +1521,17 @@ class UI {
         this.clearMainArea();
         
         const mainContent = document.getElementById('main-content');
+
+        // Check for hammer
+        const hasHammer = this.game.player.inventory.some(item => item && item.id === 'blacksmith_hammer');
+        let hammerWarning = hasHammer ? '' : '<p style="color: #ff4444; font-weight: bold;">Requires: Blacksmith Hammer</p>';
         
         const armourerArea = document.createElement('div');
         armourerArea.id = 'armourer-area';
+        armourerArea.innerHTML = `
+            <h3>Armourer Station</h3>
+            ${hammerWarning}
+        `;
         
         const slotContainer = document.createElement('div');
         slotContainer.className = 'armourer-container';
@@ -1601,12 +1622,21 @@ class UI {
         const newDefense = (item.stats.defense || 0) + 1;
         previewArea.textContent = `${item.name} → Defense: ${item.stats.defense} → ${newDefense}`;
         
-        document.getElementById('armourer-button').disabled = false;
+        // Enable sharpen button only if player has hammer
+        const hasHammer = this.game.player.inventory.some(i => i && i.id === 'blacksmith_hammer');
+        document.getElementById('armourer-button').disabled = !hasHammer;
         
         document.querySelector('.armourer-selection-menu')?.remove();
     }
 
     handleArmourEnhancement() {
+        // Add check for blacksmith hammer before enhancing
+        const hasHammer = this.game.player.inventory.some(item => item && item.id === 'blacksmith_hammer');
+        if (!hasHammer) {
+            this.game.addLog("You need a Blacksmith Hammer to enhance armor!");
+            return; // Prevent enhancing without the hammer
+        }
+
         const slot = document.querySelector('.armourer-slot');
         const itemIndex = parseInt(slot.dataset.itemIndex);
         const item = this.game.player.inventory[itemIndex];
@@ -1627,102 +1657,6 @@ class UI {
         this.game.proceedToNextRound();
     }
 
-    showShrineUI() {
-        this.clearMainArea();
-        
-        const mainContent = document.getElementById('main-content');
-        
-        const shrineArea = document.createElement('div');
-        shrineArea.id = 'shrine-area';
-        shrineArea.innerHTML = `
-            <h3>Mystic Shrine</h3>
-            <p>The shrine hums with mysterious energy. What offering will you make?</p>
-            <div class="shrine-options">
-                <button id="minor-blessing" ${this.game.player.gold < 5 ? 'disabled' : ''}>
-                    Minor Blessing (5 gold)
-                    <div class="blessing-desc">Random effect: +1 Attack, +1 Defense, or +5 Max HP</div>
-                </button>
-                <button id="major-blessing" ${this.game.player.gold < 15 ? 'disabled' : ''}>
-                    Major Blessing (15 gold)
-                    <div class="blessing-desc">Random effect: +2 Attack, +2 Defense, or +10 Max HP</div>
-                </button>
-                <button id="divine-favor" ${this.game.player.gold < 30 ? 'disabled' : ''}>
-                    Divine Favor (30 gold)
-                    <div class="blessing-desc">Random effect: +3 Attack, +3 Defense, or +20 Max HP</div>
-                </button>
-            </div>
-            <button id="shrine-leave-button">Leave Shrine</button>
-        `;
-        
-        mainContent.appendChild(shrineArea);
-        
-        // Add event listeners
-        document.getElementById('minor-blessing').onclick = () => this.handleBlessing('minor');
-        document.getElementById('major-blessing').onclick = () => this.handleBlessing('major');
-        document.getElementById('divine-favor').onclick = () => this.handleBlessing('divine');
-        document.getElementById('shrine-leave-button').onclick = () => {
-            this.game.addLog("You leave the shrine without making an offering.");
-            this.game.proceedToNextRound();
-        };
-    }
-
-    handleBlessing(type) {
-        const costs = { minor: 5, major: 15, divine: 30 };
-        const cost = costs[type];
-        
-        if (this.game.player.gold < cost) {
-            this.game.addLog("You don't have enough gold for this blessing!");
-            return;
-        }
-        
-        this.game.player.spendGold(cost);
-        
-        // Random effect (attack, defense, or max health)
-        const effect = Math.floor(Math.random() * 3);
-        const amounts = {
-            minor: [1, 1, 5],
-            major: [2, 2, 10],
-            divine: [3, 3, 20]
-        };
-        
-        const [atkAmt, defAmt, hpAmt] = amounts[type];
-        
-        let blessingMessage = '';
-        switch(effect) {
-            case 0: // Attack boost
-                this.game.player.baseAttack += atkAmt;
-                blessingMessage = `The shrine grants you power! Base Attack +${atkAmt}`;
-                break;
-            case 1: // Defense boost
-                this.game.player.baseDefense += defAmt;
-                blessingMessage = `The shrine fortifies you! Base Defense +${defAmt}`;
-                break;
-            case 2: // Max HP boost
-                this.game.player.maxHealth += hpAmt;
-                this.game.player.health += hpAmt;
-                blessingMessage = `The shrine empowers your vitality! Maximum Health +${hpAmt}`;
-                break;
-        }
-        
-        this.game.addLog(blessingMessage);
-        this.updatePlayerStats();
-        
-        // Show confirmation box
-        const shrineArea = document.getElementById('shrine-area');
-        shrineArea.innerHTML = `
-            <h3>Blessing Received!</h3>
-            <p>${blessingMessage}</p>
-            <p>You spent ${cost} gold for this blessing.</p>
-            <button id="shrine-confirm-button">Continue</button>
-        `;
-        
-        // Add event listener to the confirm button
-        document.getElementById('shrine-confirm-button').onclick = () => {
-            this.clearMainArea(); // Clear the shrine area
-            this.game.proceedToNextRound();
-        };
-    }
-
     showAlchemistUI(items) {
         const mainContent = document.getElementById('main-content');
         const alchemistArea = document.createElement('div');
@@ -1730,17 +1664,20 @@ class UI {
         alchemistArea.innerHTML = `
             <h3>Alchemist's Shop</h3>
             <div class="shop-items-container">
-                ${items.map((item, index) => `
-                    <div class="shop-item" data-item-id="${item.id}">
+                ${items.map((item, index) => {
+                    const isBought = item.bought === true;
+                    const canAfford = this.game.player.gold >= item.buyPrice;
+                    return `
+                    <div class="shop-item ${isBought ? 'item-bought' : ''}" data-item-id="${item.id}">
                         <div class="shop-item-info">
                             <span class="shop-item-name">${item.name}</span>
                             <span class="shop-item-price">${item.buyPrice} gold</span>
                         </div>
-                        <button class="shop-item-button" ${this.game.player.gold < item.buyPrice ? 'disabled' : ''}>
-                            Buy
+                        <button class="shop-item-button" ${isBought || !canAfford ? 'disabled' : ''}>
+                            ${isBought ? 'Bought' : 'Buy'}
                         </button>
                     </div>
-                `).join('')}
+                `}).join('')}
                 ${items.length === 0 ? '<div class="shop-empty-message">No more potions available!</div>' : ''}
             </div>
             <div id="potion-description" class="potion-description">
@@ -1820,8 +1757,8 @@ class UI {
         this.game.player.addItem(item);
         this.game.addLog(`You bought ${item.name} for ${item.buyPrice} gold.`);
 
-        // Remove the item from the shop's inventory
-        this.game.currentShopItems.splice(itemIndex, 1);
+        // Mark the item as bought instead of removing it
+        this.game.currentShopItems[itemIndex].bought = true;
 
         // Update UI
         this.updatePlayerStats();
@@ -1836,58 +1773,6 @@ class UI {
             this.clearMainArea();
             this.game.proceedToNextRound();
         }
-    }
-
-    showWanderingMerchantUI(offers) {
-        const mainContent = document.getElementById('main-content');
-        const merchantArea = document.createElement('div');
-        merchantArea.id = 'wandering-merchant-area';
-        
-        let html = `
-            <h3>Wandering Merchant</h3>
-            <div class="merchant-offers">
-        `;
-
-        if (offers.length === 0) {
-            html += `
-                <div class="merchant-no-offers">
-                    The merchant examines your inventory but finds nothing of interest.
-                </div>
-            `;
-        } else {
-            offers.forEach((offer, index) => {
-                html += `
-                    <div class="merchant-offer" data-offer-index="${index}">
-                        <div class="offer-name">${offer.name}</div>
-                        <div class="offer-price">${offer.price} gold</div>
-                        <div class="offer-description">
-                            ${this.getOfferDescription(offer)}
-                        </div>
-                        <button class="offer-button" ${this.game.player.gold < offer.price ? 'disabled' : ''}>
-                            Accept Offer
-                        </button>
-                    </div>
-                `;
-            });
-        }
-
-        html += `
-            </div>
-            <div class="merchant-buttons">
-                <button id="merchant-leave-button">Leave Merchant</button>
-            </div>
-        `;
-
-        merchantArea.innerHTML = html;
-        
-        // Clear existing merchant area if it exists
-        const existingArea = document.getElementById('wandering-merchant-area');
-        if (existingArea) {
-            existingArea.remove();
-        }
-
-        mainContent.appendChild(merchantArea);
-        this.setupMerchantEventListeners(offers);
     }
 
     getOfferDescription(offer) {
@@ -1918,163 +1803,6 @@ class UI {
                 this.game.proceedToNextRound();
             };
         }
-    }
-
-    handleMerchantOffer(offer) {
-        // Check if player can afford the offer
-        if (!this.game.player.spendGold(offer.price)) {
-            this.game.addLog(`You cannot afford this offer (costs ${offer.price} gold).`);
-            return;
-        }
-
-        switch (offer.type) {
-            case 'combine': {
-                // Find and remove required items
-                const items = offer.requires.map(itemId => {
-                    const index = this.game.player.inventory.findIndex(item => item && item.id === itemId);
-                    if (index === -1) return null;
-                    return this.game.player.removeItem(index);
-                });
-
-                if (items.some(item => !item)) {
-                    this.game.addLog("Error: Required items not found!");
-                    return;
-                }
-
-                // Create and add new item
-                const newItem = createItem(offer.result.id) || offer.result;
-                if (this.game.player.addItem(newItem)) {
-                    this.game.addLog(`Combined ${items.map(i => i.name).join(' and ')} into ${newItem.name}!`);
-                }
-                break;
-            }
-
-            case 'enhance': {
-                // Show weapon selection menu
-                const weaponOptions = this.game.player.inventory
-                    .map((item, index) => item && item.type === 'weapon' ? { item, index } : null)
-                    .filter(Boolean);
-
-                if (weaponOptions.length === 0) {
-                    this.game.addLog("You don't have any weapons to enhance!");
-                    // Refund the gold since no weapons available
-                    this.game.player.addGold(offer.price);
-                    return;
-                }
-
-                // Clear existing merchant area content
-                const merchantArea = document.getElementById('wandering-merchant-area');
-                if (merchantArea) {
-                    merchantArea.innerHTML = `
-                        <h3>Select a Weapon to Enhance</h3>
-                        <div class="merchant-selection-menu">
-                            ${weaponOptions.map(({ item, index }) => `
-                                <div class="merchant-item-option" data-index="${index}">
-                                    ${item.name} (Attack: ${item.stats.attack || 0})
-                                </div>
-                            `).join('')}
-                        </div>
-                    `;
-
-                    // Add selection handlers
-                    merchantArea.querySelectorAll('.merchant-item-option').forEach(option => {
-                        option.onclick = () => {
-                            const index = parseInt(option.dataset.index);
-                            const weapon = this.game.player.inventory[index];
-                            
-                            // Enhance the weapon
-                            weapon.stats.attack = (weapon.stats.attack || 0) + offer.effect.stats.attack;
-                            weapon.name = `${offer.effect.namePrefix} ${weapon.name.replace(offer.effect.namePrefix, '')}`;
-                            
-                            // Update description
-                            weapon.description = weapon.description.replace(
-                                /Attack: \+\d+/, 
-                                `Attack: +${weapon.stats.attack}`
-                            );
-                            
-                            // Show confirmation message
-                            merchantArea.innerHTML = `
-                                <h3>Weapon Enhanced!</h3>
-                                <p>${weapon.name} has been enhanced.</p>
-                                <p>New Attack Power: +${weapon.stats.attack}</p>
-                                <button id="merchant-continue-button" class="confirm-button">Continue</button>
-                            `;
-
-                            // Add continue button handler
-                            const continueButton = document.getElementById('merchant-continue-button');
-                            if (continueButton) {
-                                continueButton.onclick = () => {
-                                    this.clearMainArea();
-                                    this.game.proceedToNextRound();
-                                };
-                            }
-
-                            // Update UI
-                            this.renderInventory();
-                            this.updatePlayerStats();
-                        };
-                    });
-                }
-                break;
-            }
-
-            case 'transform': {
-                // Show shield selection menu
-                const shieldOptions = this.game.player.inventory
-                    .map((item, index) => item && item.type === 'armor' && item.slot === 'shield' ? { item, index } : null)
-                    .filter(Boolean);
-
-                const menu = document.createElement('div');
-                menu.className = 'merchant-selection-menu';
-                menu.innerHTML = `
-                    <h4>Select a shield to transform:</h4>
-                    ${shieldOptions.map(({ item, index }) => `
-                        <div class="merchant-item-option" data-index="${index}">
-                            ${item.name} (Defense: ${item.stats.defense})
-                        </div>
-                    `).join('')}
-                `;
-
-                // Add selection handlers
-                menu.querySelectorAll('.merchant-item-option').forEach(option => {
-                    option.onclick = () => {
-                        const index = parseInt(option.dataset.index);
-                        const shield = this.game.player.inventory[index];
-                        
-                        // Transform shield into weapon
-                        const newWeapon = {
-                            id: `transformed_${shield.id}`,
-                            name: `${offer.result.namePrefix} ${shield.name}`,
-                            type: 'weapon',
-                            slot: 'weapon',
-                            hands: offer.result.hands,
-                            stats: {
-                                attack: Math.ceil(shield.stats.defense * offer.result.statsMultiplier)
-                            },
-                            speed: 2.0,
-                            value: shield.value * 1.5,
-                            description: `A shield transformed into a weapon.\nAttack: +${Math.ceil(shield.stats.defense * offer.result.statsMultiplier)}\nSpeed: 2.0s\n1-Handed`
-                        };
-
-                        // Remove shield and add new weapon
-                        this.game.player.removeItem(index);
-                        this.game.player.addItem(newWeapon);
-                        
-                        this.game.addLog(`Transformed ${shield.name} into ${newWeapon.name}!`);
-                        menu.remove();
-                        this.showWanderingMerchantUI([]); // Refresh UI
-                    };
-                });
-
-                const merchantArea = document.getElementById('wandering-merchant-area');
-                merchantArea.appendChild(menu);
-                break;
-            }
-        }
-
-        // Update UI
-        this.game.ui.renderInventory();
-        this.game.ui.updatePlayerStats();
     }
 
     // Add new method
@@ -2112,6 +1840,18 @@ class UI {
                         <li data-item-id="large_fish">Large Fish (4)</li>
                     </ul>
                     <button onclick="game.selectStartingPack('fisher')">Choose Fisher</button>
+                </div>
+
+                <div class="pack-option" id="blacksmith-pack">
+                    <h4>Blacksmith Pack</h4>
+                    <p>A crafting focused loadout:</p>
+                    <ul>
+                        <li data-item-id="wooden_sword">Wooden Sword</li>
+                        <li data-item-id="blacksmith_hammer">Blacksmith Hammer</li>
+                        <li data-item-id="bread">Bread</li>
+                        <li data-item-id="small_fish">Small Fish</li>
+                    </ul>
+                    <button onclick="game.selectStartingPack('blacksmith')">Choose Blacksmith</button>
                 </div>
             </div>
             <div class="pack-item-description">

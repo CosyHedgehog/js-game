@@ -54,7 +54,7 @@ function generateShopItems(count) {
             items: [
                 'wooden_sword', 'rusty_sword', 'leather_helm', 'leather_armor', 
                 'leather_legs', 'wooden_shield', 'bread', 'cooked_meat', 
-                'health_potion', 'fishing_rod'
+                'health_potion', 'fishing_rod', 'blacksmith_hammer'
             ],
             weight: 70  // 70% chance for early game items
         },
@@ -136,8 +136,8 @@ function handleBuyItem(game, ui, itemIndex) {
     game.player.spendGold(item.buyPrice);
     game.player.addItem(item); // Add a *copy*
     game.addLog(`You bought ${item.name} for ${item.buyPrice} gold.`);
-    // Remove from shop display (or mark as sold) - simple removal here
-    game.currentShopItems.splice(itemIndex, 1);
+    // Mark item as bought instead of removing it
+    game.currentShopItems[itemIndex].bought = true;
     ui.showShopUI(game.currentShopItems, game.shopCanReroll); // Refresh shop UI
     ui.renderInventory();
     ui.updatePlayerStats();
@@ -214,6 +214,15 @@ function handleFishingEncounter(game, ui) {
 }
 
 function handleBlacksmithEncounter(game, ui) {
+    // Check if player has blacksmith hammer
+    const hasHammer = game.player.inventory.some(item => item && item.id === 'blacksmith_hammer');
+    
+    if (!hasHammer) {
+        game.addLog("You need a Blacksmith Hammer to use the forge!");
+        game.proceedToNextRound();
+        return;
+    }
+
     game.state = 'blacksmith';
     game.addLog("You find a Blacksmith's forge. The smith offers to combine similar items.");
     ui.showBlacksmithUI();
@@ -226,15 +235,18 @@ function handleSharpenEncounter(game, ui) {
 }
 
 function handleArmourerEncounter(game, ui) {
+    // Check if player has blacksmith hammer
+    const hasHammer = game.player.inventory.some(item => item && item.id === 'blacksmith_hammer');
+    
+    if (!hasHammer) {
+        game.addLog("You need a Blacksmith Hammer to use the armoury!");
+        game.proceedToNextRound();
+        return;
+    }
+
     game.state = 'armourer';
     game.addLog("You find an Armourer's tools. You can use them to reinforce a piece of armor.");
     ui.showArmourerUI();
-}
-
-function handleShrineEncounter(game, ui) {
-    game.state = 'shrine';
-    game.addLog("You discover a mysterious shrine pulsing with ancient magic.");
-    ui.showShrineUI();
 }
 
 function handleAlchemistEncounter(game, ui) {
@@ -285,40 +297,3 @@ function handleAlchemistEncounter(game, ui) {
     ui.showAlchemistUI(availableItems);
 }
 
-function handleWanderingMerchantEncounter(game, ui) {
-    game.state = 'wandering_merchant';
-    game.addLog("You encounter a mysterious wandering merchant with unique offerings.");
-    
-    // Generate available offers based on player's inventory
-    const availableOffers = [];
-    
-    MERCHANT_SPECIAL_OFFERS.forEach(offer => {
-        if (offer.type === 'combine') {
-            // Check if player has required items
-            const hasItems = offer.requires.every(itemId => 
-                game.player.inventory.some(item => item && item.id === itemId)
-            );
-            if (hasItems) {
-                availableOffers.push(offer);
-            }
-        } else if (offer.type === 'enhance') {
-            // Check if player has any weapons
-            const hasWeapon = game.player.inventory.some(item => 
-                item && item.type === 'weapon'
-            );
-            if (hasWeapon) {
-                availableOffers.push(offer);
-            }
-        } else if (offer.type === 'transform') {
-            // Check if player has any shields
-            const hasShield = game.player.inventory.some(item => 
-                item && item.type === 'armor' && item.slot === 'shield'
-            );
-            if (hasShield) {
-                availableOffers.push(offer);
-            }
-        }
-    });
-
-    ui.showWanderingMerchantUI(availableOffers);
-}

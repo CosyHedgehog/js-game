@@ -178,8 +178,17 @@ const ITEMS = {
         id: 'fishing_rod', 
         name: 'Fishing Rod', 
         type: 'tool',
-        value: 3,
+        value: 2,
         description: 'A simple fishing rod.\nRequired for fishing.'
+    },
+
+    // Add Blacksmith Hammer item
+    'blacksmith_hammer': {
+        id: 'blacksmith_hammer',
+        name: 'Blacksmith Hammer',
+        type: 'tool',
+        value: 2,
+        description: 'A sturdy hammer.\nRequired for blacksmithing and armoury.'
     },
 };
 
@@ -271,7 +280,7 @@ const MONSTERS = {
 
 // Probabilities for encounters
 const ENCOUNTER_PROBABILITY = [
-    { type: 'monster', weight: 30 },
+    // { type: 'monster', weight: 30 },
     { type: 'rest', weight: 25 },
     { type: 'shop', weight: 5 },
     { type: 'mini-boss', weight: 5 },
@@ -279,8 +288,6 @@ const ENCOUNTER_PROBABILITY = [
     { type: 'blacksmith', weight: 5 },
     { type: 'sharpen', weight: 5 },
     { type: 'armourer', weight: 5 },
-    { type: 'shrine', weight: 5 },
-    { type: 'wandering_merchant', weight: 5 },
     { type: 'alchemist', weight: 5 }
 ];
 
@@ -324,46 +331,4 @@ const ALCHEMIST_ITEMS = [
     'defense_potion',
     'greater_defense_potion',
     'speed_potion'
-];
-
-// Add new constant for Wandering Merchant's special offers
-const MERCHANT_SPECIAL_OFFERS = [
-    {
-        type: 'combine',
-        name: 'Ring of Power',
-        requires: ['attack_potion', 'dragon_ring'],
-        result: {
-            id: 'enhanced_dragon_ring',
-            name: 'Enhanced Dragon Ring',
-            type: 'armor',
-            slot: 'ring',
-            stats: { attack: 3, defense: 3 },
-            value: 40,
-            description: 'A dragon ring enhanced with magical power.\nAttack: +3\nDefense: +3'
-        },
-        price: 25
-    },
-    {
-        type: 'enhance',
-        name: 'Weapon Enchanting',
-        requires: ['weapon'],
-        effect: {
-            stats: { attack: 2 },
-            namePrefix: 'Enchanted',
-        },
-        price: 20
-    },
-    {
-        type: 'transform',
-        name: 'Shield to Weapon',
-        requires: ['shield'],
-        result: {
-            type: 'weapon',
-            slot: 'weapon',
-            hands: 1,
-            statsMultiplier: 1.5,
-            namePrefix: 'Spiked',
-        },
-        price: 15
-    }
 ];

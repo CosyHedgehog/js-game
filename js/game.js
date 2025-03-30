@@ -146,8 +146,12 @@ class Game {
 
         // Generate unique encounters
         const usedEncounters = new Set();
-        while (this.currentChoices.length < numChoices) {
-            const encounter = this.getRandomEncounter();
+        // while (this.currentChoices.length < numChoices) {
+        var i= 0;
+        while (usedEncounters.size < ENCOUNTER_PROBABILITY.length) {
+            const encounter = ENCOUNTER_PROBABILITY[i];
+            i++;
+            // const encounter = this.getRandomEncounter();
             
             // Create a unique key for the encounter to prevent duplicates
             const encounterKey = encounter.type + (encounter.monsterId || '');
@@ -205,12 +209,9 @@ class Game {
                 return "Use Sharpening Stone";
             case 'armourer':
                 return "Visit Armourer";
-            case 'shrine':
-                return "Approach Mystic Shrine";
             case 'alchemist':
                 return "Visit Alchemist";
-            case 'wandering_merchant':
-                return "Meet Wandering Merchant";
+
             default:
                 return 'Unknown Encounter';
         }
@@ -273,6 +274,7 @@ class Game {
             case 'blacksmith':
                 return "Visit the Blacksmith to combine two similar items into a stronger version.\n" +
                        "You can combine weapons or armor pieces of the same type.\n\n" +
+                       "Requires: Blacksmith Hammer\n\n" +
                        "Enter the forge?";
             case 'sharpen':
                 return "You find a sharpening stone that can enhance a weapon.\n" +
@@ -281,15 +283,8 @@ class Game {
             case 'armourer':
                 return "You find an Armourer's tools that can enhance armor.\n" +
                        "Select one piece of armor to permanently increase its defense by 1.\n\n" +
+                       "Requires: Blacksmith Hammer\n\n" +
                        "Use the Armourer's tools?";
-            case 'shrine':
-                return "A mysterious shrine pulses with ancient magic.\n" +
-                       "Offer gold to receive random beneficial effects:\n" +
-                       "- Minor Blessing (5 gold): Small stat boost\n" +
-                       "- Major Blessing (15 gold): Significant enhancement\n" +
-                       "- Divine Favor (30 gold): Powerful permanent upgrade\n\n" +
-                       `Current gold: ${this.player.gold}\n\n` +
-                       "Approach the shrine?";
             case 'alchemist':
                 return "Visit the Alchemist to buy powerful potions:\n" +
                        "- Health Potions: Restore HP instantly\n" +
@@ -298,13 +293,6 @@ class Game {
                        "- Speed Potions: Attack faster for combat\n\n" +
                        `Current gold: ${this.player.gold}\n\n` +
                        "Enter the Alchemist's shop?";
-            case 'wandering_merchant':
-                return "A mysterious merchant offers unique services:\n" +
-                       "- Combine items into powerful artifacts\n" +
-                       "- Enhance weapons with magical power\n" +
-                       "- Transform shields into weapons\n\n" +
-                       `Current gold: ${this.player.gold}\n\n` +
-                       "Meet the merchant?";
             default:
                 return "Unknown encounter type.";
         }
@@ -339,14 +327,10 @@ class Game {
             case 'armourer':
                 handleArmourerEncounter(this, this.ui);
                 break;
-            case 'shrine':
-                handleShrineEncounter(this, this.ui);
-                break;
             case 'alchemist':
                 handleAlchemistEncounter(this, this.ui);
                 break;
-            case 'wandering_merchant':
-                handleWanderingMerchantEncounter(this, this.ui);
+
                 break;
             default:
                 this.addLog("Unknown encounter type selected.");
@@ -579,6 +563,16 @@ class Game {
                 this.player.addItem(createItem('large_fish'));
                 this.ui.clearMainArea();
                 break;
+
+            case 'blacksmith':
+                // Blacksmith pack: Includes hammer and some basic resources
+                this.player.addItem(createItem('wooden_sword'));
+                this.player.addItem(createItem('blacksmith_hammer'));
+                this.player.addItem(createItem('bread'));
+                this.player.addItem(createItem('small_fish'));
+                this.player.addItem(createItem('leather_helm'));
+                this.ui.clearMainArea();
+                break;
         }
 
         this.currentRound = 0;
@@ -588,7 +582,6 @@ class Game {
         this.ui.renderAll();
         this.addLog("Game started with your chosen equipment.");
         this.ui.switchScreen('game-screen');
-        this.currentRound = 19;
         this.proceedToNextRound();
     }
 
