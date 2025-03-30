@@ -1526,8 +1526,18 @@ html {
 }
 
 .forge-slot:hover {
-    border-color: #888;
-    background: #333;
+    background-color: #555;
+}
+
+/* Styles for drag-over feedback */
+.forge-slot.drag-over-valid {
+    border: 2px dashed #4CAF50; /* Green dashed border for valid drop */
+    background-color: rgba(76, 175, 80, 0.1); /* Light green background */
+}
+
+.forge-slot.drag-over-invalid {
+    border: 2px dashed #f44336; /* Red dashed border for invalid drop */
+    background-color: rgba(244, 67, 54, 0.1); /* Light red background */
 }
 
 .forge-slot-label {
@@ -1642,8 +1652,18 @@ html {
 }
 
 .sharpen-slot:hover {
-    border-color: #888;
-    background: #333;
+    background-color: #555;
+}
+
+/* Styles for drag-over feedback */
+.sharpen-slot.drag-over-valid {
+    border: 2px dashed #4CAF50;
+    background-color: rgba(76, 175, 80, 0.1);
+}
+
+.sharpen-slot.drag-over-invalid {
+    border: 2px dashed #f44336;
+    background-color: rgba(244, 67, 54, 0.1);
 }
 
 .sharpen-slot-label {
@@ -1750,13 +1770,24 @@ html {
 }
 
 .armourer-slot:hover {
-    border-color: #888;
-    background: #333;
+    background-color: #555;
+}
+
+/* Styles for drag-over feedback */
+.armourer-slot.drag-over-valid {
+    border: 2px dashed #4CAF50;
+    background-color: rgba(76, 175, 80, 0.1);
+}
+
+.armourer-slot.drag-over-invalid {
+    border: 2px dashed #f44336;
+    background-color: rgba(244, 67, 54, 0.1);
 }
 
 .armourer-slot-label {
-    font-weight: bold;
-    margin-bottom: 10px;
+    font-size: 0.8em;
+    color: #888;
+    margin-bottom: 5px;
 }
 
 .armourer-slot-content {
@@ -1810,13 +1841,11 @@ html {
     background: #444;
 }
 
-
 .blessing-desc {
     font-size: 0.8em;
     opacity: 0.8;
     margin-top: 5px;
 }
-
 
 #alchemist-area {
     padding: 20px;
@@ -2285,4 +2314,19 @@ html {
 #rest-continue-button:hover {
     background-color: #775555;
     border-color: #604040;
+}
+
+/* Style for items temporarily in crafting/enhancement slots */
+.inventory-slot.in-use {
+    opacity: 0.5;
+    cursor: not-allowed; 
+    border-color: #888; /* Dim the border */
+    box-shadow: none; /* Remove glow */
+}
+
+/* Prevent hover effect on in-use items */
+.inventory-slot.in-use:hover {
+    background-color: #4a4a4a; /* Keep background the same as non-hovered */
+    border-color: #888;
+    box-shadow: none;
 }

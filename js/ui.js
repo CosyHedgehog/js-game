@@ -2,6 +2,8 @@ class UI {
     constructor(game) {
         this.game = game; // Reference to the game logic
         this.roundIndicatorArea = document.getElementById('round-indicator-area');
+        this.draggedItemIndex = null; // NEW: Store index of dragged item
+        this.draggedItem = null;      // NEW: Store reference to dragged item
         
         // Cache Loot Area elements
         this.lootArea = document.getElementById('loot-area');
@@ -180,10 +182,12 @@ class UI {
             console.error("UI Error: inventoryGrid not found during renderInventory.");
             return;
         }
+        console.log("[Trace] Entering renderInventory()"); // Add Log
 
         this.inventoryGrid.innerHTML = ''; // Clear existing slots
 
         this.game.player.inventory.forEach((item, index) => {
+            console.log(`[Trace] renderInventory loop: index=${index}, item=`, item); // Log item being processed
             const slot = document.createElement('div');
             slot.classList.add('inventory-slot');
             slot.dataset.index = index; // Store index on the element
@@ -236,12 +240,19 @@ class UI {
 
                 // Make filled slots draggable
                 slot.draggable = true;
+                console.log(`[Trace] Attaching dragstart listener for index ${index}`); // Log dragstart attach
 
                 // 5. dragstart: What happens when dragging starts from this slot
                 slot.addEventListener('dragstart', (event) => {
                     // Store the index of the item being dragged
                     event.dataTransfer.setData('text/plain', index.toString());
                     event.dataTransfer.effectAllowed = 'move'; // Indicate it's a move operation
+
+                    // --- NEW: Store drag info ---
+                    this.draggedItemIndex = index;
+                    this.draggedItem = item; // Store the actual item object
+                    // --- End NEW ---
+
                     // Add visual feedback to the dragged item (slight delay helps visibility)
                     setTimeout(() => slot.classList.add('dragging'), 0);
                     // Immediately hide context menu/tooltips if drag starts
@@ -255,11 +266,18 @@ class UI {
                     slot.classList.remove('dragging'); // Remove dragging style from source
                     // Clean up any lingering drag-over styles from ALL slots
                     this.inventoryGrid.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+
+                    // --- NEW: Clear stored drag info ---
+                    this.draggedItemIndex = null;
+                    this.draggedItem = null;
+                    // --- End NEW ---
                 });
 
                 // Tooltip/Context Menu listeners (only for filled slots)
                 slot.addEventListener('mouseenter', (e) => this.showTooltip(item.description, this.itemTooltip, e));
                 slot.addEventListener('mouseleave', () => this.hideTooltip(this.itemTooltip));
+                
+                console.log(`[Trace] Attaching click listener for index ${index}`); // Log click attach
                 slot.addEventListener('click', (e) => {
                     // Prevent context menu if a drag operation might be starting (simple check)
                     if (slot.classList.contains('dragging')) return;
@@ -282,7 +300,47 @@ class UI {
             }
             this.inventoryGrid.appendChild(slot);
         });
+
+        // After rendering, re-apply in-use styles based on current crafting state
+        this.updateInventoryInUseStyles(); 
+        console.log("[Trace] Exiting renderInventory()"); // Add Log
     }
+
+    // --- NEW: Helper to apply/remove 'in-use' styles --- 
+    updateInventoryInUseStyles() {
+        console.log("[Trace] Entering updateInventoryInUseStyles()"); // Add Log
+        const inventorySlots = this.inventoryGrid.querySelectorAll('.inventory-slot');
+        const usedIndices = new Set();
+
+        // Check Blacksmith slots
+        const forgeSlot1 = document.getElementById('forge-slot-1');
+        const forgeSlot2 = document.getElementById('forge-slot-2');
+        if (forgeSlot1?.dataset.itemIndex) usedIndices.add(parseInt(forgeSlot1.dataset.itemIndex));
+        if (forgeSlot2?.dataset.itemIndex) usedIndices.add(parseInt(forgeSlot2.dataset.itemIndex));
+
+        // Check Sharpen slot
+        const sharpenSlot = document.querySelector('#sharpen-area .sharpen-slot'); // More specific selector
+        if (sharpenSlot?.dataset.itemIndex) usedIndices.add(parseInt(sharpenSlot.dataset.itemIndex));
+
+        // Check Armourer slot
+        const armourerSlot = document.querySelector('#armourer-area .armourer-slot'); // More specific selector
+        if (armourerSlot?.dataset.itemIndex) usedIndices.add(parseInt(armourerSlot.dataset.itemIndex));
+
+        // Apply/Remove styles
+        inventorySlots.forEach((slot, index) => {
+            if (usedIndices.has(index)) {
+                slot.classList.add('in-use');
+                slot.draggable = false;
+            } else {
+                slot.classList.remove('in-use');
+                // Draggability is set based on item presence during initial render
+                const item = this.game.player.inventory[index];
+                slot.draggable = !!item; 
+            }
+        });
+        console.log("[Trace] Exiting updateInventoryInUseStyles()"); // Add Log
+    }
+    // --- End Helper ---
 
     renderEquipment() {
         for (const slotName in this.equipSlots) {
@@ -1171,11 +1229,105 @@ class UI {
         };
 
         // Handle leave button
-        leaveButton.onclick = () => {
+        leaveButton.onclick = function() {
             this.game.addLog("You leave the Blacksmith's forge.");
+            this.resetCraftingSlots(); // Reset slots on leave
             this.game.proceedToNextRound();
-        };
+        }.bind(this); // Explicitly bind 'this'
+
+        // --- Add Drag and Drop Listeners ---
+        [forgeSlot1, forgeSlot2].forEach((slot, index) => {
+            const slotNum = index + 1;
+
+            slot.addEventListener('dragover', (event) => {
+                event.preventDefault(); // Allow drop
+                // --- MODIFIED: Use stored drag info ---
+                const sourceIndex = this.draggedItemIndex;
+                const item = this.draggedItem;
+                // --- End MODIFIED ---
+
+                if (sourceIndex === null || item === null) return; // No item being dragged
+
+                // Clear previous classes first
+                slot.classList.remove('drag-over-valid', 'drag-over-invalid');
+
+                if (this.isValidForgeItem(item, sourceIndex, slotNum)) {
+                    slot.classList.add('drag-over-valid');
+                } else {
+                    slot.classList.add('drag-over-invalid');
+                }
+            });
+
+            slot.addEventListener('dragenter', (event) => {
+                 event.preventDefault();
+                // Add visual cues based on validity in dragover
+            });
+
+            slot.addEventListener('dragleave', (event) => {
+                slot.classList.remove('drag-over-valid', 'drag-over-invalid');
+            });
+
+            slot.addEventListener('drop', (event) => {
+                event.preventDefault();
+                slot.classList.remove('drag-over-valid', 'drag-over-invalid');
+                
+                // --- Drop event still uses getData (reliable here) ---
+                const sourceIndexStr = event.dataTransfer.getData('text/plain');
+                if (sourceIndexStr === null || sourceIndexStr === undefined || sourceIndexStr === '') {
+                    console.warn("Blacksmith drop event received invalid sourceIndexStr:", sourceIndexStr);
+                    return; 
+                }
+                // --- End ---
+
+                const sourceIndex = parseInt(sourceIndexStr, 10);
+                const item = this.game.player.inventory[sourceIndex]; // Get item fresh using parsed index
+
+                if (item && this.isValidForgeItem(item, sourceIndex, slotNum)) { // Check item existence again
+                    this.selectForgeItem(item, sourceIndex, slotNum);
+                } else {
+                    this.game.addLog("Invalid item for this forge slot.");
+                }
+            });
+        });
+        // --- End Drag and Drop Listeners ---
     }
+
+    // --- NEW Helper: isValidForgeItem ---
+    isValidForgeItem(item, sourceIndex, targetSlotNum) {
+        if (!item || (item.type !== 'weapon' && item.type !== 'armor')) {
+            return false; // Must be weapon or armor
+        }
+        
+        // Get the other slot's selected item
+        const otherSlotNum = targetSlotNum === 1 ? 2 : 1;
+        const otherSlot = document.getElementById(`forge-slot-${otherSlotNum}`);
+        const otherSlotIndexStr = otherSlot?.dataset.itemIndex;
+
+        if (otherSlotIndexStr !== undefined) {
+            const otherSlotIndex = parseInt(otherSlotIndexStr, 10);
+            // Cannot drop the same item that's in the other slot
+            if (sourceIndex === otherSlotIndex) {
+                 return false;
+            }
+            // If other slot has item, check for compatibility
+            const otherItem = this.game.player.inventory[otherSlotIndex];
+            if (otherItem) {
+                if (item.type !== otherItem.type || item.slot !== otherItem.slot) {
+                     return false; // Must be same type and slot
+                }
+            }
+        }
+        
+        // Cannot drop onto a slot that already contains this exact item
+        const currentTargetSlot = document.getElementById(`forge-slot-${targetSlotNum}`);
+        const currentTargetIndexStr = currentTargetSlot?.dataset.itemIndex;
+        if (currentTargetIndexStr !== undefined && parseInt(currentTargetIndexStr, 10) === sourceIndex) {
+            return false;
+        }
+
+        return true; // Passes all checks
+    }
+    // --- End Helper ---
 
     showForgeItemSelection(slotNum) {
         // Get the other slot's selected item
@@ -1253,13 +1405,15 @@ class UI {
         document.body.appendChild(menu);
 
         // Click outside to close
-        const closeMenu = (e) => {
+        // Use a named function for easier removal
+        const closeForgeMenu = (e) => {
             if (!menu.contains(e.target) && !slot.contains(e.target)) {
                 menu.remove();
-                document.removeEventListener('click', closeMenu);
+                document.removeEventListener('click', closeForgeMenu, true); // Use capture phase for removal
             }
         };
-        document.addEventListener('click', closeMenu);
+        // Use capture phase for initial listener to catch clicks sooner
+        document.addEventListener('click', closeForgeMenu, true); 
     }
 
     getItemStats(item) {
@@ -1272,6 +1426,11 @@ class UI {
 
     selectForgeItem(item, inventoryIndex, slotNum) {
         const slot = document.getElementById(`forge-slot-${slotNum}`);
+        
+        // --- Clear previous item in this slot first ---
+        this.clearForgeSlot(slotNum); 
+        // --------------------------------------------
+
         const content = slot.querySelector('.forge-slot-content');
         content.textContent = `${item.name} (${this.getItemStats(item)})`;
         
@@ -1280,12 +1439,43 @@ class UI {
         slot.dataset.itemType = item.type;
         slot.dataset.itemSlot = item.slot;
 
+        // --- Mark inventory item as in-use ---
+        this.updateInventoryInUseStyles();
+        // -------------------------------------
+
         // Remove selection menu
         document.querySelector('.forge-selection-menu')?.remove();
 
         // Check if we can forge
         this.updateForgeButton();
     }
+
+    // --- NEW: Clear Forge Slot --- 
+    clearForgeSlot(slotNum) {
+        console.log(`[Trace] Entering clearForgeSlot(${slotNum})`); // Add Log
+        const slot = document.getElementById(`forge-slot-${slotNum}`);
+        if (!slot || !slot.dataset.itemIndex) return; // Nothing to clear
+
+        const inventoryIndex = parseInt(slot.dataset.itemIndex);
+
+        // Clear slot data and appearance
+        slot.querySelector('.forge-slot-content').textContent = 'Click to select item';
+        delete slot.dataset.itemIndex;
+        delete slot.dataset.itemType;
+        delete slot.dataset.itemSlot;
+
+        // --- Unmark inventory item --- 
+        const inventorySlot = this.inventoryGrid.querySelector(`.inventory-slot[data-index="${inventoryIndex}"]`);
+        if (inventorySlot) {
+            inventorySlot.classList.remove('in-use');
+            inventorySlot.draggable = true; // Make it draggable again
+        }
+        // ---------------------------
+
+        this.updateForgeButton(); // Update button state
+        document.querySelector('.forge-selection-menu')?.remove(); // Close menu if open
+    }
+    // --- End Clear Forge Slot ---
 
     updateForgeButton() {
         const slot1 = document.getElementById('forge-slot-1');
@@ -1371,22 +1561,30 @@ class UI {
             value: Math.floor((item1.value + item2.value) * 1.5) // Increase value of forged item
         };
         
-        // Remove original items
+        // Remove original items *from player data*
         this.game.player.inventory[item1Index] = null;
         this.game.player.inventory[item2Index] = null;
+        // -----------------------------------------
         
         // Add new item
         this.game.player.addItem(forgedItem);
+
+        // --- Clear forge slots BEFORE rendering inventory --- 
+        slot1.querySelector('.forge-slot-content').textContent = 'Click to select item';
+        slot2.querySelector('.forge-slot-content').textContent = 'Click to select item';
+        delete slot1.dataset.itemIndex; 
+        delete slot2.dataset.itemIndex;
+        // --- End Clearing --- 
         
         // Update UI
         this.game.addLog(`The Blacksmith combines your ${item1.name} and ${item2.name} into a ${forgedItem.name}!`);
-        this.game.ui.renderInventory();
+        this.game.ui.renderInventory(); // Now this will run updateInventoryInUseStyles with cleared forge slots
         
-        // Reset forge slots
-        slot1.querySelector('.forge-slot-content').textContent = 'Click to select item';
-        slot2.querySelector('.forge-slot-content').textContent = 'Click to select item';
-        delete slot1.dataset.itemIndex;
-        delete slot2.dataset.itemIndex;
+        // // Reset forge slots visually (MOVED EARLIER)
+        // slot1.querySelector('.forge-slot-content').textContent = 'Click to select item';
+        // slot2.querySelector('.forge-slot-content').textContent = 'Click to select item';
+        // delete slot1.dataset.itemIndex; // Ensure dataset is cleared too
+        // delete slot2.dataset.itemIndex;
         
         // Disable forge button
         const forgeButton = document.getElementById('forge-button');
@@ -1416,7 +1614,13 @@ class UI {
             <div class="sharpen-slot-label">Select Weapon</div>
             <div class="sharpen-slot-content">Click to choose</div>
         `;
-        weaponSlot.onclick = () => this.showSharpenItemSelection();
+        weaponSlot.onclick = () => {
+            if (weaponSlot.dataset.itemIndex) { // If an item is selected
+                this.clearSharpenSlot(); // Clear it
+            } else {
+                this.showSharpenItemSelection(); // Otherwise, show selection menu
+            }
+        };
         
         // Preview area
         const previewArea = document.createElement('div');
@@ -1434,10 +1638,12 @@ class UI {
         const leaveButton = document.createElement('button');
         leaveButton.id = 'sharpen-leave-button';
         leaveButton.textContent = 'Leave';
-        leaveButton.onclick = () => {
+        leaveButton.onclick = function() { // Use function and bind 'this'
             this.game.addLog("You leave without using the sharpening stone.");
+            console.log('Sharpen Leave Button this:', this); // Keep log for now
+            this.resetCraftingSlots(); // Reset slots on leave
             this.game.proceedToNextRound();
-        };
+        }.bind(this);
         
         slotContainer.appendChild(weaponSlot);
         sharpenArea.appendChild(slotContainer);
@@ -1447,6 +1653,64 @@ class UI {
         
         // Append to main-content instead of undefined mainArea
         mainContent.appendChild(sharpenArea);
+
+        // --- Add Drag and Drop Listeners ---
+        const sharpenSlot = sharpenArea.querySelector('.sharpen-slot'); 
+        if (sharpenSlot) {
+            sharpenSlot.addEventListener('dragover', (event) => {
+                event.preventDefault(); // Allow drop
+                // --- MODIFIED: Use stored drag info ---
+                const sourceIndex = this.draggedItemIndex;
+                const item = this.draggedItem;
+                // --- End MODIFIED ---
+
+                if (sourceIndex === null || item === null) return; // No item being dragged
+
+                // --- DEBUGGING (Updated) ---
+                console.log(`Drag Over Sharpen Slot: Stored Index = ${sourceIndex}, Item Type = ${item?.type}, Expected Class = ${item && item.type === 'weapon' ? 'drag-over-valid' : 'drag-over-invalid'}`);
+                // --- END DEBUGGING ---
+
+                // Ensure previous classes are removed before adding new one
+                sharpenSlot.classList.remove('drag-over-valid', 'drag-over-invalid');
+
+                if (item && item.type === 'weapon') {
+                    sharpenSlot.classList.add('drag-over-valid');
+                } else {
+                    sharpenSlot.classList.add('drag-over-invalid');
+                }
+            });
+
+            sharpenSlot.addEventListener('dragenter', (event) => {
+                event.preventDefault();
+            });
+
+            sharpenSlot.addEventListener('dragleave', (event) => {
+                sharpenSlot.classList.remove('drag-over-valid', 'drag-over-invalid');
+            });
+
+            sharpenSlot.addEventListener('drop', (event) => {
+                event.preventDefault();
+                sharpenSlot.classList.remove('drag-over-valid', 'drag-over-invalid');
+                
+                // --- Drop event still uses getData (reliable here) ---
+                const sourceIndexStr = event.dataTransfer.getData('text/plain');
+                if (sourceIndexStr === null || sourceIndexStr === undefined || sourceIndexStr === '') {
+                     console.warn("Sharpen drop event received invalid sourceIndexStr:", sourceIndexStr);
+                     return; 
+                }
+                // --- End ---
+
+                const sourceIndex = parseInt(sourceIndexStr, 10);
+                const item = this.game.player.inventory[sourceIndex]; // Get item fresh
+
+                if (item && item.type === 'weapon') { // Check item existence
+                    this.selectSharpenItem(item, sourceIndex);
+                } else {
+                    this.game.addLog("You can only sharpen weapons.");
+                }
+            });
+        }
+        // --- End Drag and Drop Listeners ---
     }
 
     showSharpenItemSelection() {
@@ -1486,17 +1750,23 @@ class UI {
         document.body.appendChild(menu);
         
         // Click outside to close
-        const closeMenu = (e) => {
+        // Use a named function for easier removal
+        const closeSharpenMenu = (e) => {
             if (!menu.contains(e.target) && !slot.contains(e.target)) {
                 menu.remove();
-                document.removeEventListener('click', closeMenu);
+                document.removeEventListener('click', closeSharpenMenu, true);
             }
         };
-        document.addEventListener('click', closeMenu);
+        document.addEventListener('click', closeSharpenMenu, true);
     }
 
     selectSharpenItem(item, inventoryIndex) {
         const slot = document.querySelector('.sharpen-slot');
+        
+        // --- Clear previous item first ---
+        this.clearSharpenSlot();
+        // ---------------------------------
+
         slot.dataset.itemIndex = inventoryIndex;
         slot.querySelector('.sharpen-slot-content').textContent = item.name;
         
@@ -1507,10 +1777,43 @@ class UI {
         
         // Enable sharpen button
         document.getElementById('sharpen-button').disabled = false;
+
+        // --- Mark inventory item as in-use ---
+        this.updateInventoryInUseStyles();
+        // -------------------------------------
         
         // Remove selection menu
         document.querySelector('.sharpen-selection-menu')?.remove();
     }
+
+    // --- NEW: Clear Sharpen Slot ---
+    clearSharpenSlot() {
+        console.log(`[Trace] Entering clearSharpenSlot()`); // Add Log
+        const slot = document.querySelector('#sharpen-area .sharpen-slot');
+        if (!slot || !slot.dataset.itemIndex) return; // Nothing to clear
+
+        const inventoryIndex = parseInt(slot.dataset.itemIndex);
+
+        // Clear slot data and appearance
+        slot.querySelector('.sharpen-slot-content').textContent = 'Click to choose';
+        delete slot.dataset.itemIndex;
+
+        const previewArea = document.getElementById('sharpen-preview');
+        if (previewArea) previewArea.textContent = 'Select a weapon to preview enhancement';
+        const sharpenButton = document.getElementById('sharpen-button');
+        if (sharpenButton) sharpenButton.disabled = true;
+
+        // --- Unmark inventory item --- 
+        const inventorySlot = this.inventoryGrid.querySelector(`.inventory-slot[data-index="${inventoryIndex}"]`);
+        if (inventorySlot) {
+            inventorySlot.classList.remove('in-use');
+            inventorySlot.draggable = true; // Make it draggable again
+        }
+        // ---------------------------
+        
+        document.querySelector('.sharpen-selection-menu')?.remove(); // Close menu if open
+    }
+    // --- End Clear Sharpen Slot ---
 
     handleSharpenItem() {
         const slot = document.querySelector('.sharpen-slot');
@@ -1560,7 +1863,13 @@ class UI {
             <div class="armourer-slot-label">Select Armor</div>
             <div class="armourer-slot-content">Click to choose</div>
         `;
-        armorSlot.onclick = () => this.showArmourerItemSelection();
+        armorSlot.onclick = () => {
+            if (armorSlot.dataset.itemIndex) { // If an item is selected
+                this.clearArmourerSlot(); // Clear it
+            } else {
+                this.showArmourerItemSelection(); // Otherwise, show selection menu
+            }
+        };
         
         const previewArea = document.createElement('div');
         previewArea.id = 'armourer-preview';
@@ -1575,10 +1884,11 @@ class UI {
         const leaveButton = document.createElement('button');
         leaveButton.id = 'armourer-leave-button';
         leaveButton.textContent = 'Leave';
-        leaveButton.onclick = () => {
+        leaveButton.onclick = function() { // Use function and bind 'this'
             this.game.addLog("You leave without using the Armourer's tools.");
+            this.resetCraftingSlots(); // Reset slots on leave
             this.game.proceedToNextRound();
-        };
+        }.bind(this);
         
         slotContainer.appendChild(armorSlot);
         armourerArea.appendChild(slotContainer);
@@ -1587,6 +1897,64 @@ class UI {
         armourerArea.appendChild(leaveButton);
         
         mainContent.appendChild(armourerArea);
+
+        // --- Add Drag and Drop Listeners ---
+        const armourerSlot = armourerArea.querySelector('.armourer-slot');
+        if (armourerSlot) {
+            armourerSlot.addEventListener('dragover', (event) => {
+                event.preventDefault(); // Allow drop
+                 // --- MODIFIED: Use stored drag info ---
+                const sourceIndex = this.draggedItemIndex;
+                const item = this.draggedItem;
+                // --- End MODIFIED ---
+
+                if (sourceIndex === null || item === null) return; // No item being dragged
+
+                // --- DEBUGGING (Updated) ---
+                console.log(`Drag Over Armourer Slot: Stored Index = ${sourceIndex}, Item Type = ${item?.type}, Expected Class = ${item && item.type === 'armor' ? 'drag-over-valid' : 'drag-over-invalid'}`);
+                // --- END DEBUGGING ---
+
+                // Ensure previous classes are removed before adding new one
+                armourerSlot.classList.remove('drag-over-valid', 'drag-over-invalid');
+
+                if (item && item.type === 'armor') {
+                    armourerSlot.classList.add('drag-over-valid');
+                } else {
+                    armourerSlot.classList.add('drag-over-invalid');
+                }
+            });
+
+            armourerSlot.addEventListener('dragenter', (event) => {
+                event.preventDefault();
+            });
+
+            armourerSlot.addEventListener('dragleave', (event) => {
+                armourerSlot.classList.remove('drag-over-valid', 'drag-over-invalid');
+            });
+
+            armourerSlot.addEventListener('drop', (event) => {
+                event.preventDefault();
+                armourerSlot.classList.remove('drag-over-valid', 'drag-over-invalid');
+                
+                 // --- Drop event still uses getData (reliable here) ---
+                 const sourceIndexStr = event.dataTransfer.getData('text/plain');
+                 if (sourceIndexStr === null || sourceIndexStr === undefined || sourceIndexStr === '') {
+                     console.warn("Armourer drop event received invalid sourceIndexStr:", sourceIndexStr);
+                     return; 
+                 }
+                 // --- End ---
+
+                const sourceIndex = parseInt(sourceIndexStr, 10);
+                const item = this.game.player.inventory[sourceIndex]; // Get item fresh
+
+                if (item && item.type === 'armor') { // Check item existence
+                    this.selectArmourItem(item, sourceIndex);
+                } else {
+                    this.game.addLog("You can only enhance armor.");
+                }
+            });
+        }
+         // --- End Drag and Drop Listeners ---
     }
 
     showArmourerItemSelection() {
@@ -1622,17 +1990,24 @@ class UI {
         document.querySelectorAll('.armourer-selection-menu').forEach(m => m.remove());
         document.body.appendChild(menu);
         
-        const closeMenu = (e) => {
+        // Click outside to close
+        // Use named function
+        const closeArmourerMenu = (e) => {
             if (!menu.contains(e.target) && !slot.contains(e.target)) {
                 menu.remove();
-                document.removeEventListener('click', closeMenu);
+                document.removeEventListener('click', closeArmourerMenu, true);
             }
         };
-        document.addEventListener('click', closeMenu);
+        document.addEventListener('click', closeArmourerMenu, true);
     }
 
     selectArmourItem(item, inventoryIndex) {
         const slot = document.querySelector('.armourer-slot');
+        
+        // --- Clear previous item --- 
+        this.clearArmourerSlot();
+        // ---------------------------
+
         slot.dataset.itemIndex = inventoryIndex;
         slot.querySelector('.armourer-slot-content').textContent = item.name;
         
@@ -1640,12 +2015,45 @@ class UI {
         const newDefense = (item.stats.defense || 0) + 1;
         previewArea.textContent = `${item.name} → Defense: ${item.stats.defense} → ${newDefense}`;
         
-        // Enable sharpen button only if player has hammer
+        // Enable enhance button only if player has hammer
         const hasHammer = this.game.player.inventory.some(i => i && i.id === 'blacksmith_hammer');
         document.getElementById('armourer-button').disabled = !hasHammer;
+
+        // --- Mark inventory item as in-use ---
+        this.updateInventoryInUseStyles();
+        // -------------------------------------
         
         document.querySelector('.armourer-selection-menu')?.remove();
     }
+
+    // --- NEW: Clear Armourer Slot --- 
+    clearArmourerSlot() {
+        console.log(`[Trace] Entering clearArmourerSlot()`); // Add Log
+        const slot = document.querySelector('#armourer-area .armourer-slot');
+        if (!slot || !slot.dataset.itemIndex) return; // Nothing to clear
+
+        const inventoryIndex = parseInt(slot.dataset.itemIndex);
+
+        // Clear slot data and appearance
+        slot.querySelector('.armourer-slot-content').textContent = 'Click to choose';
+        delete slot.dataset.itemIndex;
+
+        const previewArea = document.getElementById('armourer-preview');
+        if (previewArea) previewArea.textContent = 'Select armor to preview enhancement';
+        const enhanceButton = document.getElementById('armourer-button');
+        if (enhanceButton) enhanceButton.disabled = true;
+
+        // --- Unmark inventory item --- 
+        const inventorySlot = this.inventoryGrid.querySelector(`.inventory-slot[data-index="${inventoryIndex}"]`);
+        if (inventorySlot) {
+            inventorySlot.classList.remove('in-use');
+            inventorySlot.draggable = true; // Make it draggable again
+        }
+        // ---------------------------
+
+        document.querySelector('.armourer-selection-menu')?.remove(); // Close menu if open
+    }
+    // --- End Clear Armourer Slot ---
 
     handleArmourEnhancement() {
         // Add check for blacksmith hammer before enhancing
@@ -2000,4 +2408,20 @@ class UI {
             this.updateForgeButton();
         }
     }
+
+    // --- NEW: Reset All Crafting Slots ---
+    resetCraftingSlots() {
+        console.log("[Trace] Entering resetCraftingSlots()"); // Add Log
+        // Attempt to clear slots even if the UI isn't currently displayed
+        // (Handles cases where player might leave unexpectedly)
+        this.clearForgeSlot(1);
+        this.clearForgeSlot(2);
+        this.clearSharpenSlot();
+        this.clearArmourerSlot();
+
+        // Force an update of inventory styles to remove any lingering 'in-use' classes
+        this.updateInventoryInUseStyles();
+        console.log("[Trace] Exiting resetCraftingSlots()"); // Add Log
+    }
+    // --- End Reset All Crafting Slots ---
 }

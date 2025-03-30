@@ -146,20 +146,13 @@ class Game {
 
         // Generate unique encounters
         const usedEncounters = new Set();
-        while (this.currentChoices.length < numChoices) {
-        var i= 0;
-        // while (usedEncounters.size < ENCOUNTER_PROBABILITY.length) {
-            // const encounter = ENCOUNTER_PROBABILITY[i];
-            i++;
+        while (usedEncounters.size < ENCOUNTER_PROBABILITY.length) {
             const encounter = this.getRandomEncounter();
-            
-
             if (encounter.type === 'monster') {
                 encounter.monsterId = COMMON_MONSTERS[getRandomInt(0, COMMON_MONSTERS.length - 1)];
             } else if (encounter.type === 'mini-boss') {
                 encounter.monsterId = MINI_BOSSES[getRandomInt(0, MINI_BOSSES.length - 1)];
             }
-
             // Create a unique key for the encounter to prevent duplicates
             const encounterKey = encounter.type + (encounter.monsterId || '');
             
