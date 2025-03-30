@@ -190,6 +190,15 @@ const ITEMS = {
         value: 2,
         description: 'A sturdy hammer.\nRequired for blacksmithing and armoury.'
     },
+
+    // Add Thief's Tools item
+    'thief_tools': {
+        id: 'thief_tools',
+        name: "Thief's Tools",
+        type: 'tool',
+        value: 3,
+        description: 'A set of tools for delicate work.\nIncreases trap disarm chance by 20%.'
+    },
 };
 
 const MONSTERS = {

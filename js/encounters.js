@@ -54,7 +54,7 @@ function generateShopItems(count) {
             items: [
                 'wooden_sword', 'rusty_sword', 'leather_helm', 'leather_armor', 
                 'leather_legs', 'wooden_shield', 'bread', 'cooked_meat', 
-                'health_potion', 'fishing_rod', 'blacksmith_hammer'
+                'health_potion', 'fishing_rod', 'blacksmith_hammer', 'thief_tools'
             ],
             weight: 70  // 70% chance for early game items
         },
@@ -304,7 +304,15 @@ function handleTrapEncounter(game, ui) {
 }
 
 function handleDisarmAttempt() {
-    const successChance = 0.01;
+    let successChance = 0.30; // Increased base chance to 40%
+
+    // Check for Thief's Tools
+    const hasTools = game.player.inventory.some(item => item && item.id === 'thief_tools');
+    if (hasTools) {
+        successChance += 0.20; // Add 20% bonus
+        game.addLog("Your Thief's Tools aid your attempt...");
+    }
+
     const roll = Math.random();
     const trapResultMessage = document.getElementById('trap-result-message');
     const disarmButton = document.getElementById('disarm-trap-button');
