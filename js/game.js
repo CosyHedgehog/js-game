@@ -20,6 +20,7 @@ class Game {
             combatStart: [],
             combatEnd: [],
             playerDamaged: [],
+            // ... etc
         };
     }
 
@@ -513,92 +514,4 @@ class Game {
         this.ui.renderChoices(this.currentChoices);
     }
 
-    // --- NEW: Shop Handlers ---
-
-    handleShopReroll() {
-        if (this.state !== 'shop') return; // Only allow in shop state
-
-        if (!this.shopCanReroll) {
-            this.addLog("You have already rerolled this shop.");
-            return;
-        }
-        if (!this.player.spendGold(SHOP_REROLL_COST)) {
-            this.addLog(`You need ${SHOP_REROLL_COST} gold to reroll.`);
-            return;
-        }
-
-        this.addLog(`Spent ${SHOP_REROLL_COST} gold to reroll the shop inventory.`);
-        this.currentShopItems = generateShopItems(SHOP_NUM_ITEMS); // Assuming generateShopItems is accessible or defined globally/imported
-        this.shopCanReroll = false; // Can only reroll once
-
-        // Refresh the UI
-        this.ui.updatePlayerStats();
-        this.ui.showShopUI(this.currentShopItems, this.shopCanReroll);
-    }
-
-    handleShopBuy(itemIndex) {
-        if (this.state !== 'shop' || !this.currentShopItems || itemIndex >= this.currentShopItems.length) return;
-
-        const item = this.currentShopItems[itemIndex];
-        if (!item) return;
-
-        // Check if player can afford it
-        if (!this.player.spendGold(item.buyPrice)) {
-            this.addLog(`You can't afford ${item.name} (${item.buyPrice} gold).`);
-            return;
-        }
-
-        // Check inventory space
-        if (!this.player.addItem(createItem(item.id))) { // Use createItem to get a fresh copy
-            this.addLog("Your inventory is full!");
-            this.player.addGold(item.buyPrice); // Refund gold
-            return;
-        }
-
-        // Buy the item
-        this.addLog(`You bought ${item.name} for ${item.buyPrice} gold.`);
-
-        // Remove the item from the shop's available items for this visit
-        this.currentShopItems.splice(itemIndex, 1);
-
-        // Update UI
-        this.ui.updatePlayerStats();
-        this.ui.renderInventory();
-        this.ui.showShopUI(this.currentShopItems, this.shopCanReroll); // Refresh shop UI
-    }
-
-    handleShopSell(inventoryIndex) {
-        if (this.state !== 'shop') return;
-
-        const item = this.player.inventory[inventoryIndex];
-        if (!item) {
-            this.addLog("No item in that slot to sell.");
-            return;
-        }
-
-        const sellPrice = item.value || 0; // Sell price based on item's base value
-        if (sellPrice <= 0) {
-             this.addLog(`${item.name} cannot be sold.`);
-             return;
-        }
-
-        // Remove item from inventory
-        const removedItem = this.player.removeItem(inventoryIndex);
-        if (removedItem) {
-            // Add gold to player
-            this.player.addGold(sellPrice);
-            this.addLog(`Sold ${removedItem.name} for ${sellPrice} gold.`);
-
-            // Update UI
-            this.ui.updatePlayerStats();
-            this.ui.renderInventory();
-            this.ui.hideContextMenu();
-            // Optional: Could refresh shop UI if needed, but usually not necessary for selling
-            // this.ui.showShopUI(this.currentShopItems, this.shopCanReroll);
-        } else {
-            this.addLog(`Failed to sell ${item.name}.`);
-        }
-    }
-
-    // --- End Shop Handlers ---
 }
