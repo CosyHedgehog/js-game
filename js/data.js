@@ -1,3 +1,5 @@
+const ENCOUNTERS = {};
+
 const ITEMS = {
     // Weapons - Divided by ~3
     'wooden_sword': {

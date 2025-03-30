@@ -18,5 +18,4 @@ const CONFIG = {
         MIN_ATTACK_SPEED: 0.5,
         FOOD_DELAY: 2.0
     },
-    // ... other config settings
-}; 
+};

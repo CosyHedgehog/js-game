@@ -759,7 +759,7 @@ class UI {
         const leaveButton = document.getElementById('shop-leave-button');
         
         if (rerollButton) {
-            rerollButton.onclick = () => handleRerollShop(this.game, this);  // Use the function from encounters.js
+            rerollButton.onclick = () => this.game.handleShopReroll();  // Use the game method
         }
         if (leaveButton) {
             leaveButton.onclick = () => {
@@ -773,7 +773,7 @@ class UI {
         buyButtons.forEach(button => {
             button.onclick = () => {
                 const index = parseInt(button.dataset.index);
-                handleBuyItem(this.game, this, index);  // Use the function from encounters.js
+                this.game.handleShopBuy(index); // Use the game method
             };
         });
 
@@ -894,7 +894,7 @@ class UI {
             const sellButton = document.createElement('button');
             const sellPrice = item.value || 0;
             sellButton.textContent = `Sell (${sellPrice} G)`;
-            sellButton.onclick = () => handleSellItem(this.game, this, index);
+            sellButton.onclick = () => this.game.handleShopSell(index); // Use the game method
             this.itemContextMenu.appendChild(sellButton);
         }
         // Destroy
