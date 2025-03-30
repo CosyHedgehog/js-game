@@ -14,32 +14,6 @@ class Game {
         this.pendingLoot = null; // Will hold { gold: number, items: [] }
 
         if (this.ui) { this.ui.game = this; }
-
-        this.eventHandlers = {
-            stateChange: [],
-            combatStart: [],
-            combatEnd: [],
-            playerDamaged: [],
-            // ... etc
-        };
-    }
-
-    on(event, handler) {
-        if (this.eventHandlers[event]) {
-            this.eventHandlers[event].push(handler);
-        }
-    }
-
-    emit(event, data) {
-        if (this.eventHandlers[event]) {
-            this.eventHandlers[event].forEach(handler => handler(data));
-        }
-    }
-
-    setState(newState) {
-        const oldState = this.state;
-        this.state = newState;
-        this.emit('stateChange', { oldState, newState });
     }
 
     startGame() {
