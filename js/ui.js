@@ -832,9 +832,14 @@ class UI {
     showRestUI(message) {
         const restArea = document.getElementById('rest-area');
         restArea.classList.remove('hidden');
+        // Add a container div with a specific class for styling
         restArea.innerHTML = `
-            <p>${message}</p>
-            <button id="rest-continue-button">Continue</button>
+            <div class="rest-campfire-container">
+                 <div class="rest-campfire-icon">&#128150;</div> 
+                 <h3>A Moment's Respite</h3>
+                 <p class="rest-message">${message.replace(/\\n/g, '<br>')}</p> 
+                 <button id="rest-continue-button">Continue Journey</button>
+            </div>
         `;
         
         const continueButton = document.getElementById('rest-continue-button');
@@ -1028,6 +1033,7 @@ class UI {
             container = document.createElement('div');
             container.className = 'damage-splat-container';
             // Ensure parent has relative positioning for absolute positioning of splats
+            // Check if computed style is static - more reliable
             if (getComputedStyle(targetElement).position === 'static') {
                  targetElement.style.position = 'relative';
             }
@@ -1038,10 +1044,18 @@ class UI {
         const splat = document.createElement('div');
         splat.className = `damage-splat ${type}`;
         
-        // Position randomly within the container
+        // Position randomly horizontally
         const x = Math.random() * 60 - 30; // Random x position between -30 and 30
         splat.style.left = `calc(50% + ${x}px)`;
-        splat.style.top = '50%';
+        
+        // --- ADJUST VERTICAL POSITION ---
+        // Default to middle, but start higher for inventory panel
+        if (targetSelector === '#inventory-area') {
+            splat.style.top = '15%'; // Start higher up
+        } else {
+            splat.style.top = '50%'; // Default for combat, rest, etc.
+        }
+        // --------------------------------
 
         // Set text content based on type and blocked amount
         if (type === 'damage') {
@@ -1117,7 +1131,7 @@ class UI {
                 <div class="forge-slot" id="forge-slot-1">
                     <div class="forge-slot-label">Item 1</div>
                     <div class="forge-slot-content">Click to select item</div>
-                </div>
+            </div>
                 <div class="forge-symbol">+</div>
                 <div class="forge-slot" id="forge-slot-2">
                     <div class="forge-slot-label">Item 2</div>

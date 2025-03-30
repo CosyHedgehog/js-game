@@ -15,24 +15,33 @@ function handleMonsterEncounter(game, ui, monsterId) {
 function handleRestEncounter(game, ui) {
     game.state = 'rest';
     
-    // Calculate and apply healing (without including the +1 max HP)
-    const healPercent = 0.2 + Math.random() * 0.5; // Random between 20-70%
-    const healAmount = Math.floor(game.player.maxHealth * healPercent);
-    const actualHealed = game.player.heal(healAmount);
-    
-    // Increase max HP by 1 (but don't heal this amount)
+    // Increase max HP by 1 FIRST
     game.player.maxHealth += 1;
     
-    // Create detailed message
-    let message = `You rest and recover ${actualHealed} HP.`;
-    message += `\nYour maximum HP increases by 1 (now ${game.player.maxHealth}).`;
+    // Calculate and apply healing based on the NEW max health
+    const healPercent = 0.2 + Math.random() * 0.5; // Random between 20-70%
+    const healAmount = Math.floor(game.player.maxHealth * healPercent); // Heal based on new max HP
+    const actualHealed = game.player.heal(healAmount);
+    
+    // Create detailed message (reflecting the order)
+    let message = `Your maximum HP increases by 1 (now ${game.player.maxHealth}).`;
+    message += `\nYou rest by the fire and recover ${actualHealed} HP.`; // Updated message
     
     game.addLog(message);
     
-    // Update UI stats immediately before showing rest UI
+    // Update UI stats immediately
     ui.updatePlayerStats();
     
-    ui.showRestUI(message);
+    // Show the UI FIRST, so the target element exists
+    ui.showRestUI(message); 
+    
+    // THEN create the heal splat animation
+    if (actualHealed > 0) {
+        // Short delay to ensure the element is definitely rendered
+        setTimeout(() => {
+             ui.createDamageSplat('#rest-area .rest-campfire-container', actualHealed, 'heal'); 
+        }, 50); // 50ms delay should be sufficient
+    }
 }
 
 function handleShopEncounter(game, ui) {

@@ -383,24 +383,39 @@ class Game {
     }
 
     handleUseItem(inventoryIndex) {
+        // Add a check for the inventory index bounds
+        if (inventoryIndex < 0 || inventoryIndex >= this.player.inventory.length) {
+            console.error(`Invalid inventory index: ${inventoryIndex}`);
+            return; // Stop execution if index is out of bounds
+        }
+
         const item = this.player.inventory[inventoryIndex];
-        if (!item) return;
+        if (!item) {
+            console.warn(`No item found at index: ${inventoryIndex}`);
+            return; // Stop execution if no item exists
+        }
 
         const useResult = this.player.useItem(inventoryIndex);
 
         if (this.state === 'combat' && this.currentCombat) {
-            // Let the combat instance handle the result (logging, applying delay)
+            // Combat usage: Already handled by Combat class
             this.currentCombat.handlePlayerItemUse(useResult);
-            // No need to re-render inventory here, combat handler does it
         } else {
-            // Handle non-combat usage
+            // Non-combat usage
             if (useResult.success) {
                 this.addLog(useResult.message);
+                
+                // Add heal splat for non-combat heals
+                if (useResult.healedAmount && useResult.healedAmount > 0) {
+                   // Target the inventory area instead
+                   this.ui.createDamageSplat('#inventory-area', useResult.healedAmount, 'heal'); 
+                }
+
                 this.ui.renderInventory(); // Item consumed
-                this.ui.updatePlayerStats(); // Health might have changed
+                this.ui.updatePlayerStats(); // Health/Stats changed
                 this.ui.hideContextMenu();
             } else {
-                this.addLog(useResult.message); // Log failure (e.g., health full)
+                this.addLog(useResult.message); 
             }
         }
     }
