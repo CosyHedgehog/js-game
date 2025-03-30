@@ -146,12 +146,12 @@ class Game {
 
         // Generate unique encounters
         const usedEncounters = new Set();
-        // while (this.currentChoices.length < numChoices) {
+        while (this.currentChoices.length < numChoices) {
         var i= 0;
-        while (usedEncounters.size < ENCOUNTER_PROBABILITY.length) {
-            const encounter = ENCOUNTER_PROBABILITY[i];
+        // while (usedEncounters.size < ENCOUNTER_PROBABILITY.length) {
+            // const encounter = ENCOUNTER_PROBABILITY[i];
             i++;
-            // const encounter = this.getRandomEncounter();
+            const encounter = this.getRandomEncounter();
             
 
             if (encounter.type === 'monster') {
