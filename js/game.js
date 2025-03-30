@@ -34,6 +34,7 @@ class Game {
 
     // Ensure proceedToNextRound correctly sets state and clears UI
     proceedToNextRound() {
+        console.log("[LoopDebug] Entering proceedToNextRound");
         this.currentRound++;
         this.addLog(`--- Round ${this.currentRound} ---`);
 
@@ -53,8 +54,11 @@ class Game {
         }
 
         this.ui.updatePlayerStats();
+        console.log("[LoopDebug] proceedToNextRound: Calling renderEquipment");
         this.ui.renderEquipment();
+        console.log("[LoopDebug] proceedToNextRound: Calling renderInventory");
         this.ui.renderInventory();
+        console.log("[LoopDebug] Exiting proceedToNextRound");
     }
 
     enterLootState(gold, items) {
@@ -260,7 +264,7 @@ class Game {
                        `Do you want to rest here?`;
             case 'shop':
                 return "Visit a merchant to buy and sell items.\n" +
-                       "You can also reroll the shop's inventory once for 5 gold.\n\n" +
+                       "You can also reroll the shop's inventory once for 3 gold.\n\n" +
                        `Current gold: ${this.player.gold}\n\n` +
                        "Enter shop?";
             case 'fishing':
@@ -350,6 +354,7 @@ class Game {
     // --- Player Action Handlers ---
 
     handleEquipItem(index) {
+        console.log(`[LoopDebug] Entering handleEquipItem for index ${index}`);
         const result = this.player.equipItem(index);
         if (result.success) {
             this.addLog(`Equipped ${result.item.name}.`);
@@ -373,6 +378,7 @@ class Game {
     }
 
     handleUnequipItem(slotName) {
+        console.log(`[LoopDebug] Entering handleUnequipItem for slot ${slotName}`);
         const result = this.player.unequipItem(slotName);
         if (result.success) {
             this.addLog(`Unequipped ${result.item.name}.`);
