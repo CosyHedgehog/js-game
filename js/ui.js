@@ -1948,9 +1948,7 @@ class UI {
         this.updateInventoryInUseStyles();
         console.log("[Trace] Exiting resetCraftingSlots()"); // Add Log
     }
-    // --- End Reset All Crafting Slots ---
 
-    // --- Restore updateForgeButton --- 
     updateForgeButton() {
         const slot1 = document.getElementById('forge-slot-1');
         const slot2 = document.getElementById('forge-slot-2');
@@ -2024,9 +2022,7 @@ class UI {
              forgePreview.classList.remove('hidden');
         }
     }
-    // --- End Restore updateForgeButton ---
 
-    // --- Restore previewForgedItem --- 
     previewForgedItem(item1, item2) {
         // Basic check for forgeability (should match updateForgeButton logic)
         if (!item1 || !item2 || item1.type !== item2.type || item1.slot !== item2.slot || item1.id !== item2.id) {
@@ -2056,9 +2052,7 @@ class UI {
 
         return forgedItem;
     }
-    // --- End Restore previewForgedItem ---
 
-    // --- Restore handleForgeItems ---
     handleForgeItems() {
         // Add check for blacksmith hammer before forging
         const hasHammer = this.game.player.inventory.some(item => item && item.id === 'blacksmith_hammer');
@@ -2088,7 +2082,6 @@ class UI {
             this.game.addLog("Error: Could not retrieve item data for forging.");
             return;
         }
-        // -------- End Fix --------
         
         if (!item1 || !item2) return; // Should not happen if parsing worked, but safety check
 
@@ -2134,9 +2127,7 @@ class UI {
             setTimeout(() => blacksmithArea.classList.remove('upgrade-success-flash'), 500); // Duration matches animation
         }
     }
-    // --- End Restore handleForgeItems ---
 
-    // --- Restore clearSharpenSlot ---
     clearSharpenSlot() {
         console.log("Clearing sharpen slot");
         // --- MODIFIED: Get element using querySelector ---
@@ -2164,7 +2155,6 @@ class UI {
                 // Don't return item if parse failed, but still clear visually
             }
         }
-        // ---------------------------------------------------------
 
         // Clear visual content and stored data
         slotElement.innerHTML = `
@@ -2192,9 +2182,7 @@ class UI {
         
         this.renderInventory(); // Update inventory display
     }
-    // --- End Restore clearSharpenSlot ---
 
-    // New handler for both sharpen types
     handleSharpen(type) {
         const slot = document.querySelector('#sharpen-area .sharpen-slot');
         const itemDataString = slot?.dataset.itemData;
@@ -2281,9 +2269,7 @@ class UI {
              this.game.proceedToNextRound();
         }
     }
-    // --- End Restore handleSharpenItem ---
 
-    // +++ RESTORE showArmourerUI function +++
     showArmourerUI() {
         this.clearMainArea();
         
@@ -2416,9 +2402,7 @@ class UI {
             });
         } // End if (armourerSlot)
     }
-    // +++ End RESTORE showArmourerUI +++
 
-    // --- Restore clearArmourerSlot ---
     clearArmourerSlot() {
         console.log("Clearing armourer slot");
         // const slotElement = document.getElementById('armourer-slot'); // Old way using non-existent ID
@@ -2447,9 +2431,7 @@ class UI {
                 // Don't return item if parse failed, but still clear visually
             }
         }
-        // ---------------------------------------------------------
 
-        // Clear visual content and stored data
         slotElement.innerHTML = `
             <div class="armourer-slot-label">Armor Slot</div>
             <div class="armourer-slot-content">Drop armor here</div>
@@ -2477,13 +2459,9 @@ class UI {
         }
 
         this.renderInventory(); // Update inventory display
-        // NO NEED for updateInventoryInUseStyles here
     }
-    // --- End Restore clearArmourerSlot ---
 
-    // --- Restore handleArmourEnhancement ---
     handleArmourEnhancement() {
-        // Add check for blacksmith hammer before enhancing
         const hasHammer = this.game.player.inventory.some(item => item && item.id === 'blacksmith_hammer');
         if (!hasHammer) {
             this.game.addLog("You need a Blacksmith Hammer to enhance armor!");
@@ -2492,7 +2470,6 @@ class UI {
 
         const slot = document.querySelector('#armourer-area .armourer-slot'); // More specific selector
         
-        // Get item from data attribute
         const itemDataString = slot?.dataset.itemData;
         if (!itemDataString) {
             this.game.addLog("No item placed on the station.");
@@ -2547,5 +2524,4 @@ class UI {
             this.game.proceedToNextRound();
         }
     }
-    // --- End Restore handleArmourEnhancement ---
 }
