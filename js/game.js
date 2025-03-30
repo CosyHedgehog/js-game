@@ -21,12 +21,12 @@ class Game {
         this.ui.renderAll();
         // Show starting pack selection
         this.state = 'selecting_pack';
-        this.ui.showStartingPackSelection();
+        new Starting(this, this.ui).display();
     }
 
     addLog(message) {
         this.logMessages.push(message);
-        if (this.logMessages.length > 50) { // Keep log manageable
+        if (this.logMessages.length > 200) { // Keep log manageable
             this.logMessages.shift();
         }
         this.ui.renderLog(); // Update UI immediately
@@ -316,34 +316,34 @@ class Game {
             case 'monster':
             case 'mini-boss':
             case 'boss':
-                handleMonsterEncounter(this, this.ui, encounter.monsterId);
+                new Monster(this, this.ui).handle(encounter.monsterId);
                 break;
             case 'rest':
-                handleRestEncounter(this, this.ui);
+                new Rest(this, this.ui).handle();
                 break;
             case 'shop':
-                handleShopEncounter(this, this.ui);
+                new Shop(this, this.ui).handle();
                 break;
             case 'fishing':
-                handleFishingEncounter(this, this.ui);
+                new Fishing(this, this.ui).handle();
                 break;
             case 'blacksmith':
-                handleBlacksmithEncounter(this, this.ui);
+                new Blacksmith(this, this.ui).handle();
                 break;
             case 'sharpen':
-                handleSharpenEncounter(this, this.ui);
+                new Sharpen(this, this.ui).handle();
                 break;
             case 'armourer':
-                handleArmourerEncounter(this, this.ui);
+                new Armoury(this, this.ui).handle();
                 break;
             case 'alchemist':
-                handleAlchemistEncounter(this, this.ui);
+                new Alchemist(this, this.ui).handle();
                 break;
             case 'trap':
-                handleTrapEncounter(this, this.ui);
+                new Trap(this, this.ui).handle();
                 break;
             case 'treasure_chest':
-                handleTreasureChestEncounter(this, this.ui);
+                new Treasure(this, this.ui).handle();
                 break;
             default:
                 this.addLog("Unknown encounter type selected.");
