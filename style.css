@@ -114,13 +114,17 @@ body {
 
 /* Output Log Area (Bottom Left) */
 #output-log-area {
-    position: relative;
-    background: #282828;
+    position: absolute; /* Position over parent */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(40, 40, 40, 0.95); /* Dark semi-transparent background */
     border: 1px solid #404040;
-    height: 70%;
-    width: 90%;
-    overflow-y: auto;
-    margin-top: 8px;
+    z-index: 50; /* Ensure it's on top */
+    overflow-y: auto; /* Keep scroll */
+    padding: 10px;
+    box-sizing: border-box;
 }
 
 .log-header {
@@ -953,6 +957,7 @@ button:disabled {
 /* Content wrapper for scrollable area */
 #main-content {
     display: flex;
+    position: relative; /* Needed for absolute positioning of children */
     flex-direction: column;
     gap: 10px;
     padding: 10px;

@@ -1043,19 +1043,6 @@ class UI {
             return;
         }
 
-        // Hide all other content areas first
-        this.choicesArea.classList.add('hidden');
-        this.combatArea.classList.add('hidden');
-        this.shopArea.classList.add('hidden');
-        this.restArea.classList.add('hidden');
-        this.lootArea.classList.add('hidden');
-        // this.blacksmithArea.classList.add('hidden');
-        // this.sharpenArea.classList.add('hidden');
-        // this.armourerArea.classList.add('hidden');
-        // this.alchemistArea.classList.add('hidden');
-
-        // this.startingPackArea.classList.add('hidden');
-
         // Show the log area
         this.outputLogArea.classList.remove('hidden');
         // Update button text
@@ -1070,40 +1057,6 @@ class UI {
         // Reset button text
         if (this.toggleLogButton) {
             this.toggleLogButton.textContent = 'Show Log';
-        }
-        
-        // Show the appropriate content area based on game state
-        switch (this.game.state) {
-            case 'choosing':
-                this.choicesArea.classList.remove('hidden');
-                break;
-            case 'combat':
-                this.combatArea.classList.remove('hidden');
-                break;
-            case 'shop':
-                this.shopArea.classList.remove('hidden');
-                break;
-            case 'rest':
-                this.restArea.classList.remove('hidden');
-                break;
-            case 'looting':
-                this.lootArea.classList.remove('hidden');
-                break;
-            case 'blacksmith':
-                this.blacksmithArea.classList.remove('hidden');
-                break;
-            case 'sharpen':
-                this.sharpenArea.classList.remove('hidden');
-                break;
-            case 'armourer':
-                this.armourerArea.classList.remove('hidden');
-                break;
-            case 'alchemist':
-                this.alchemistArea.classList.remove('hidden');
-                break;
-            case 'starting_pack':
-                this.startingPackArea.classList.remove('hidden');
-                break;
         }
     }
 
