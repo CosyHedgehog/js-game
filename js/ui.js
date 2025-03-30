@@ -703,6 +703,16 @@ class UI {
 
                 lootItemsContainer.appendChild(itemDiv);
             });
+
+            // --- Auto-select first item --- 
+            if (allDisplayableLoot.length > 0) {
+                const firstItemDiv = lootItemsContainer.querySelector('.loot-item');
+                if (firstItemDiv) {
+                    firstItemDiv.classList.add('selected');
+                    descriptionBox.textContent = allDisplayableLoot[0].description || 'No description available.';
+                }
+            }
+            // --- End auto-select ---
         }
 
         // Add button listeners
@@ -884,6 +894,17 @@ class UI {
                 }
             });
         });
+
+        // --- Auto-select first item --- 
+        if (items && items.length > 0) {
+            const firstShopItem = shopArea.querySelector('.shop-item[data-index="0"]');
+            const descriptionArea = shopArea.querySelector('.item-description');
+            if (firstShopItem && descriptionArea) {
+                firstShopItem.classList.add('selected');
+                descriptionArea.textContent = items[0].description || 'No description available.';
+            }
+        }
+        // --- End auto-select ---
     }
 
 
@@ -2122,6 +2143,17 @@ class UI {
 
         mainContent.appendChild(alchemistArea);
         this.setupAlchemistEventListeners(items);
+
+        // --- Auto-select first item --- 
+        if (items && items.length > 0) {
+            const firstItemDiv = alchemistArea.querySelector('.shop-item'); // First shop item element
+            const descriptionBox = alchemistArea.querySelector('#potion-description');
+            if (firstItemDiv && descriptionBox) {
+                firstItemDiv.classList.add('selected');
+                descriptionBox.textContent = items[0].description || 'No description available.';
+            }
+        }
+        // --- End auto-select ---
     }
 
     setupAlchemistEventListeners(items) {
