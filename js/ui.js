@@ -1829,9 +1829,9 @@ class UI {
                     <p>A defensive focused loadout:</p>
                     <ul>
                         <li data-item-id="wooden_sword">Wooden Sword</li>
-                        <li data-item-id="leather_helm">Leather Helm</li>
+                        <li data-item-id="leather_armor">Leather Armor</li>
                         <li data-item-id="leather_legs">Leather Legs</li>
-                        <li data-item-id="bread">Bread (2)</li>
+                        <li data-item-id="bread">Bread (3)</li>
                     </ul>
                     <button onclick="game.selectStartingPack('warrior')">Choose Warrior</button>
                 </div>
@@ -1843,7 +1843,9 @@ class UI {
                         <li data-item-id="rusty_sword">Rusty Sword</li>
                         <li data-item-id="leather_helm">Leather Helm</li>
                         <li data-item-id="fishing_rod">Fishing Rod</li>
-                        <li data-item-id="large_fish">Large Fish (4)</li>
+                        <li data-item-id="large_fish">Large Fish (3)</li>
+                        <li data-item-id="medium_fish">Medium Fish (2)</li>
+                        <li data-item-id="small_fish">Small Fish (2)</li>
                     </ul>
                     <button onclick="game.selectStartingPack('fisher')">Choose Fisher</button>
                 </div>
@@ -1853,9 +1855,10 @@ class UI {
                     <p>A crafting focused loadout:</p>
                     <ul>
                         <li data-item-id="rusty_sword">Rusty Sword</li>
+                        <li data-item-id="leather_armor">Leather Armor</li>
                         <li data-item-id="blacksmith_hammer">Blacksmith Hammer</li>
-                        <li data-item-id="bread">Bread</li>
-                        <li data-item-id="small_fish">Small Fish</li>
+                        <li data-item-id="bread">Bread (2)</li>
+                        <li data-item-id="small_fish">Small Fish (2)</li>
                     </ul>
                     <button onclick="game.selectStartingPack('blacksmith')">Choose Blacksmith</button>
                 </div>

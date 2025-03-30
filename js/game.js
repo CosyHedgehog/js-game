@@ -575,8 +575,9 @@ class Game {
             case 'warrior':
                 // Warrior pack: More armor focused
                 this.player.addItem(createItem('wooden_sword'));
-                this.player.addItem(createItem('leather_helm'));
+                this.player.addItem(createItem('leather_armor'));
                 this.player.addItem(createItem('leather_legs'));
+                this.player.addItem(createItem('bread'));
                 this.player.addItem(createItem('bread'));
                 this.player.addItem(createItem('bread'));
                 this.ui.clearMainArea();
@@ -589,26 +590,22 @@ class Game {
                 this.player.addItem(createItem('fishing_rod'));
                 this.player.addItem(createItem('large_fish'));
                 this.player.addItem(createItem('large_fish'));
-                this.player.addItem(createItem('large_fish'));
-                this.player.addItem(createItem('large_fish'));
+                this.player.addItem(createItem('medium_fish'));
+                this.player.addItem(createItem('medium_fish'));
+                this.player.addItem(createItem('small_fish'));
                 this.ui.clearMainArea();
                 break;
 
             case 'blacksmith':
                 // Blacksmith pack: Includes hammer and some basic resources
                 this.player.addItem(createItem('rusty_sword'));
+                this.player.addItem(createItem('leather_armor'));
                 this.player.addItem(createItem('blacksmith_hammer'));
                 this.player.addItem(createItem('bread'));
+                this.player.addItem(createItem('bread'));
                 this.player.addItem(createItem('small_fish'));
-                this.player.addItem(createItem('leather_helm'));
-                this.player.addItem(createItem('leather_helm'));
-                this.player.addItem(createItem('attack_potion'));
-                this.player.addItem(createItem('defense_potion'));
-                this.player.addItem(createItem('attack_potion'));
-                this.player.addItem(createItem('defense_potion'));
-                this.player.addItem(createItem('health_potion'));
-                this.player.addItem(createItem('speed_potion'));
-            
+                this.player.addItem(createItem('small_fish'));
+
                 this.ui.clearMainArea();
                 break;
         }
