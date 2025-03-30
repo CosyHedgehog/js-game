@@ -19,7 +19,6 @@ class Game {
     startGame() {
         this.player = new Player();
         this.ui.renderAll();
-        // Show starting pack selection
         this.state = 'selecting_pack';
         new Starting(this, this.ui).display();
     }
@@ -29,7 +28,7 @@ class Game {
         if (this.logMessages.length > 200) { // Keep log manageable
             this.logMessages.shift();
         }
-        this.ui.renderLog(); // Update UI immediately
+        new Log(this, this.ui).renderLog();
     }
 
     // Ensure proceedToNextRound correctly sets state and clears UI
@@ -71,7 +70,7 @@ class Game {
         this.pendingLoot = { gold, items };
         this.state = 'looting';
         this.addLog("Examining loot..."); // Changed log message
-        this.ui.showLootUI(this.pendingLoot);
+        new Loot(this, this.ui).handle(this.pendingLoot);
     }
     // --- NEW: Toggle Loot Item Selection ---
     toggleLootSelection(itemIndex) {
@@ -566,58 +565,6 @@ class Game {
         } else {
             this.proceedToNextRound();
         }
-    }
-
-    // Add new method to handle pack selection
-    selectStartingPack(packId) {
-        this.state = 'starting_pack';
-        switch(packId) {
-            case 'warrior':
-                // Warrior pack: More armor focused
-                this.player.addItem(createItem('wooden_sword'));
-                this.player.addItem(createItem('leather_armor'));
-                this.player.addItem(createItem('leather_legs'));
-                this.player.addItem(createItem('bread'));
-                this.player.addItem(createItem('bread'));
-                this.player.addItem(createItem('bread'));
-                this.ui.clearMainArea();
-                break;
-                
-            case 'fisher':
-                // Fisher pack: Includes fishing rod
-                this.player.addItem(createItem('rusty_sword'));
-                this.player.addItem(createItem('leather_helm'));
-                this.player.addItem(createItem('fishing_rod'));
-                this.player.addItem(createItem('large_fish'));
-                this.player.addItem(createItem('large_fish'));
-                this.player.addItem(createItem('medium_fish'));
-                this.player.addItem(createItem('medium_fish'));
-                this.player.addItem(createItem('small_fish'));
-                this.ui.clearMainArea();
-                break;
-
-            case 'blacksmith':
-                // Blacksmith pack: Includes hammer and some basic resources
-                this.player.addItem(createItem('rusty_sword'));
-                this.player.addItem(createItem('leather_armor'));
-                this.player.addItem(createItem('blacksmith_hammer'));
-                this.player.addItem(createItem('bread'));
-                this.player.addItem(createItem('bread'));
-                this.player.addItem(createItem('small_fish'));
-                this.player.addItem(createItem('small_fish'));
-
-                this.ui.clearMainArea();
-                break;
-        }
-
-        this.currentRound = 0;
-        this.logMessages = ["Welcome to the Simple Rogue-like!"];
-        this.state = 'choosing';
-
-        this.ui.renderAll();
-        this.addLog("Game started with your chosen equipment.");
-        this.ui.switchScreen('game-screen');
-        this.proceedToNextRound();
     }
 
     // Add new method for mini-boss encounters

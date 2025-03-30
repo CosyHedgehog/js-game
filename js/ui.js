@@ -108,10 +108,10 @@ class UI {
 
         // Add click handlers for the log toggle buttons
         if (this.toggleLogButton) {
-            this.toggleLogButton.onclick = () => this.showLog();
+            this.toggleLogButton.onclick = () => new Log(this.game, this).showLog();
         }
         if (this.closeLogButton) {
-            this.closeLogButton.onclick = () => this.hideLog();
+            this.closeLogButton.onclick = () => new Log(this.game, this).hideLog();
         }
     }
 
@@ -174,7 +174,7 @@ class UI {
         this.renderInventory();
         this.renderEquipment();
         this.updatePlayerStats();
-        this.renderLog();
+        new Log(this.game, this).renderLog();
     }
 
     renderInventory() {
@@ -444,26 +444,7 @@ class UI {
         }
     }
 
-    renderLog() {
-        // Check if the elements exist before manipulating them
-        if (!this.outputLog || !this.outputLogArea) {
-            console.error("UI Error: Cannot render log, outputLog or outputLogArea element not found.");
-            return;
-        }
 
-        this.outputLog.innerHTML = ''; // Clear existing log
-        this.game.logMessages.forEach(msg => {
-            const li = document.createElement('li');
-            li.textContent = msg;
-            this.outputLog.appendChild(li);
-        });
-
-        // Scroll to the bottom using the CORRECT property name
-        // Also add a check in case the element somehow became invalid later
-        if (this.outputLogArea) {
-            this.outputLogArea.scrollTop = this.outputLogArea.scrollHeight; // Use this.outputLogArea
-        }
-    }
 
     renderChoices(choices) {
         this.clearMainArea();
@@ -647,132 +628,7 @@ class UI {
         }
     }
 
-    showLootUI(loot) {
-        this.clearMainArea();
 
-        if (!this.lootArea) {
-            console.error("UI Error: Cannot show loot UI, lootArea element missing.");
-            return;
-        }
-
-        // Convert gold into a loot item format for consistent display
-        const allDisplayableLoot = [];
-        if (loot.gold > 0) {
-            allDisplayableLoot.push({
-                id: 'gold', // Use 'gold' as a special ID
-                name: `${loot.gold} Gold`,
-                description: "Precious golden coins.",
-                type: "gold",
-                amount: loot.gold,
-                looted: false // Gold isn't 'looted' in the same way as items initially
-            });
-        }
-        if (loot.items) {
-            // Only show unlooted items
-            allDisplayableLoot.push(...loot.items.filter(item => !item.looted));
-        }
-
-        // Add description box to the layout
-        this.lootArea.innerHTML = `
-            <h3>Loot Found!</h3>
-            <div class="loot-display-area"> 
-                <div id="loot-items" class="loot-items-container">
-                    <!-- Items will be added here -->
-                </div>
-                <div id="loot-item-description" class="item-description">
-                    Click an item to see its description.
-                </div>
-            </div>
-            <div class="loot-buttons">
-                ${allDisplayableLoot.length > 0 ? 
-                    '<button id="loot-take-all-button">Take All</button>' : ''
-                }
-                <button id="loot-continue-button">Continue</button>
-            </div>
-        `;
-
-        // Display all loot items (including gold) in a consistent format
-        const lootItemsContainer = this.lootArea.querySelector('#loot-items');
-        const descriptionBox = this.lootArea.querySelector('#loot-item-description'); // Cache description box
-
-        if (lootItemsContainer && descriptionBox) {
-            if (allDisplayableLoot.length === 0) {
-                lootItemsContainer.innerHTML = '<p class="loot-empty-message">Nothing left to take.</p>';
-                descriptionBox.textContent = ''; // Clear description if nothing to show
-            }
-
-            allDisplayableLoot.forEach((item, displayIndex) => {
-                const itemDiv = document.createElement('div');
-                itemDiv.classList.add('loot-item');
-                // Store the original index if it's a real item, or -1 for gold
-                const originalItemIndex = item.type === 'gold' ? -1 : loot.items.findIndex(lootItem => lootItem === item);
-                itemDiv.dataset.originalIndex = originalItemIndex; 
-                itemDiv.dataset.type = item.type || 'item';
-                itemDiv.dataset.displayIndex = displayIndex; // Keep track of the displayed order index
-                
-                itemDiv.innerHTML = `
-                    <div class="loot-item-info">
-                        <span class="loot-item-icon">${item.spritePath ? '' : 'I'}</span>
-                        <span class="loot-item-name">${item.name}</span>
-                    </div>
-                    <button class="loot-item-button">Take</button>
-                `;
-                
-                // Add tooltip functionality (on name span)
-                const nameSpan = itemDiv.querySelector('.loot-item-name');
-                nameSpan.addEventListener('mouseenter', (e) => this.showTooltip(item.description || 'No description', this.itemTooltip, e));
-                nameSpan.addEventListener('mouseleave', () => this.hideTooltip(this.itemTooltip));
-
-                // Add take button listener
-                const takeButton = itemDiv.querySelector('.loot-item-button');
-                takeButton.onclick = (e) => {
-                    e.stopPropagation(); // Prevent triggering the description update
-                    if (item.type === 'gold') {
-                        this.game.handleIndividualLoot('gold');
-                    } else {
-                        // Use the original index to find the item in game.pendingLoot.items
-                        this.game.handleIndividualLoot('item', originalItemIndex); 
-                    }
-                };
-
-                // --- Add click listener for description ---
-                itemDiv.addEventListener('click', () => {
-                    // Remove selected class from all other items
-                    lootItemsContainer.querySelectorAll('.loot-item').forEach(div => div.classList.remove('selected'));
-                    // Add selected class to this item
-                    itemDiv.classList.add('selected');
-                    // Update description box
-                    descriptionBox.textContent = item.description || 'No description available.';
-                });
-                // ----------------------------------------
-
-                lootItemsContainer.appendChild(itemDiv);
-            });
-
-            // --- Auto-select first item --- 
-            if (allDisplayableLoot.length > 0) {
-                const firstItemDiv = lootItemsContainer.querySelector('.loot-item');
-                if (firstItemDiv) {
-                    firstItemDiv.classList.add('selected');
-                    descriptionBox.textContent = allDisplayableLoot[0].description || 'No description available.';
-                }
-            }
-            // --- End auto-select ---
-        }
-
-        // Add button listeners
-        const takeAllButton = this.lootArea.querySelector('#loot-take-all-button');
-        if (takeAllButton) {
-            takeAllButton.onclick = () => this.game.collectLoot();
-        }
-
-        const continueButton = this.lootArea.querySelector('#loot-continue-button');
-        if (continueButton) {
-            continueButton.onclick = () => this.game.continueLoot();
-        }
-
-        this.lootArea.classList.remove('hidden');
-    }
 
     showCombatUI(player, enemy) {
         this.clearMainArea();
@@ -1068,29 +924,7 @@ class UI {
         setTimeout(() => splat.remove(), 2000);
     }
 
-    showLog() {
-        // If log is already visible, hide it instead
-        if (!this.outputLogArea.classList.contains('hidden')) {
-            this.hideLog();
-            return;
-        }
 
-        // Show the log area
-        this.outputLogArea.classList.remove('hidden');
-        // Update button text
-        if (this.toggleLogButton) {
-            this.toggleLogButton.textContent = 'Hide Log';
-        }
-        this.renderLog(); // Refresh the log content
-    }
-
-    hideLog() {
-        this.outputLogArea.classList.add('hidden');
-        // Reset button text
-        if (this.toggleLogButton) {
-            this.toggleLogButton.textContent = 'Show Log';
-        }
-    }
 
     confirmChoice(index) {
         const selectedChoice = this.currentChoices[index];

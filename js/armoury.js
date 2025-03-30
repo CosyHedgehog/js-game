@@ -11,8 +11,8 @@ class Armoury {
             game.proceedToNextRound();
             return;
         }
-        game.state = 'armourer';
-        game.addLog("You find an Armourer's tools. You can use them to reinforce a piece of armor.");
-        ui.showArmourerUI();
+        this.game.state = 'armourer';
+        this.game.addLog("You find an Armourer's tools. You can use them to reinforce a piece of armor.");
+        this.ui.showArmourerUI();
     }
 }

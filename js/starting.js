@@ -25,7 +25,7 @@ class Starting {
                         <li data-item-id="leather_legs">Leather Legs</li>
                         <li data-item-id="bread">Bread (3)</li>
                     </ul>
-                    <button onclick="game.selectStartingPack('warrior')">Choose Warrior</button>
+                    <button data-pack-id="warrior">Choose Warrior</button>
                 </div>
                 
                 <div class="pack-option" id="fisher-pack">
@@ -39,7 +39,7 @@ class Starting {
                         <li data-item-id="medium_fish">Medium Fish (2)</li>
                         <li data-item-id="small_fish">Small Fish (2)</li>
                     </ul>
-                    <button onclick="game.selectStartingPack('fisher')">Choose Fisher</button>
+                    <button data-pack-id="fisher">Choose Fisher</button>
                 </div>
     
                 <div class="pack-option" id="blacksmith-pack">
@@ -52,7 +52,7 @@ class Starting {
                         <li data-item-id="bread">Bread (2)</li>
                         <li data-item-id="small_fish">Small Fish (2)</li>
                     </ul>
-                    <button onclick="game.selectStartingPack('blacksmith')">Choose Blacksmith</button>
+                    <button data-pack-id="blacksmith">Choose Blacksmith</button>
                 </div>
             </div>
             <div class="pack-item-description">
@@ -81,5 +81,65 @@ class Starting {
                 }
             });
         });
+
+        // --- NEW: Add click handlers for pack selection buttons ---
+        const packButtons = container.querySelectorAll('button[data-pack-id]');
+        packButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const packId = button.getAttribute('data-pack-id');
+                this.selectStartingPack(packId); // Call the method on the instance
+            });
+        });
+        // --- End NEW ---
+    }
+
+    // Add new method to handle pack selection
+    selectStartingPack(packId) {
+        this.game.state = 'starting_pack'; // Use game instance
+        switch (packId) {
+            case 'warrior':
+                // Warrior pack: More armor focused
+                this.game.player.addItem(createItem('wooden_sword')); // Use game.player
+                this.game.player.addItem(createItem('leather_armor'));
+                this.game.player.addItem(createItem('leather_legs'));
+                this.game.player.addItem(createItem('bread'));
+                this.game.player.addItem(createItem('bread'));
+                this.game.player.addItem(createItem('bread'));
+                break; // Removed clearMainArea, handled by proceeding
+
+            case 'fisher':
+                // Fisher pack: Includes fishing rod
+                this.game.player.addItem(createItem('rusty_sword')); // Use game.player
+                this.game.player.addItem(createItem('leather_helm'));
+                this.game.player.addItem(createItem('fishing_rod'));
+                this.game.player.addItem(createItem('large_fish'));
+                this.game.player.addItem(createItem('large_fish'));
+                this.game.player.addItem(createItem('medium_fish'));
+                this.game.player.addItem(createItem('medium_fish'));
+                this.game.player.addItem(createItem('small_fish'));
+                break; // Removed clearMainArea
+
+            case 'blacksmith':
+                // Blacksmith pack: Includes hammer and some basic resources
+                this.game.player.addItem(createItem('rusty_sword')); // Use game.player
+                this.game.player.addItem(createItem('leather_armor'));
+                this.game.player.addItem(createItem('blacksmith_hammer'));
+                this.game.player.addItem(createItem('bread'));
+                this.game.player.addItem(createItem('bread'));
+                this.game.player.addItem(createItem('small_fish'));
+                this.game.player.addItem(createItem('small_fish'));
+                break; // Removed clearMainArea
+        }
+        
+        // Moved game state changes and progression logic here, after adding items
+        this.game.currentRound = 0;
+        this.game.logMessages = ["Welcome to the Simple Rogue-like!"];
+        this.game.state = 'choosing';
+
+        this.ui.renderAll(); // Render everything after items are added
+        this.game.addLog("Game started with your chosen equipment.");
+        // this.ui.switchScreen('game-screen'); // Already switched in display()
+        this.ui.clearMainArea(); // Clear the pack selection UI
+        this.game.proceedToNextRound(); // Start the first round
     }
 }
