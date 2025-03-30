@@ -18,25 +18,5 @@ const CONFIG = {
         MIN_ATTACK_SPEED: 0.5,
         FOOD_DELAY: 2.0
     },
-    player: {
-        initial: {
-            gold: 150,
-            health: 20,
-            baseAttack: 1,
-            baseDefense: 1,
-            inventorySize: 15,
-            defaultAttackSpeed: 2.0
-        },
-        equipment: {
-            slots: ['helm', 'body', 'legs', 'weapon', 'shield', 'ring'],
-            defaultSpeed: 2.0,
-            minAttackSpeed: 0.5,
-            foodDelay: 2.0
-        },
-        inventory: {
-            size: 15,
-            maxLogSize: 50
-        }
-    },
     // ... other config settings
 }; 
