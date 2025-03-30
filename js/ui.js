@@ -2247,6 +2247,139 @@ class UI {
     }
     // --- End Restore handleSharpenItem ---
 
+    // +++ RESTORE showArmourerUI function +++
+    showArmourerUI() {
+        this.clearMainArea();
+        
+        const mainContent = document.getElementById('main-content');
+
+        // Check for hammer
+        const hasHammer = this.game.player.inventory.some(item => item && item.id === 'blacksmith_hammer');
+        let hammerWarning = hasHammer ? '' : '<p style="color: #ff4444; font-weight: bold;">Requires: Blacksmith Hammer</p>';
+        
+        const armourerArea = document.createElement('div');
+        armourerArea.id = 'armourer-area';
+        armourerArea.innerHTML = `
+            <h3>Armourer Station</h3>
+            ${hammerWarning}
+            <p>Drag a piece of armor onto the station to enhance its defense (+1 Defense).</p>
+        `;
+        
+        const slotContainer = document.createElement('div');
+        slotContainer.className = 'armourer-container';
+        
+        const armorSlot = document.createElement('div');
+        armorSlot.className = 'armourer-slot'; // Use class, not ID
+        armorSlot.innerHTML = `
+            <div class="armourer-slot-label">Armor Slot</div>
+            <div class="armourer-slot-content">Drag armor here</div>
+        `;
+        
+        const previewArea = document.createElement('div');
+        previewArea.id = 'armourer-preview';
+        previewArea.textContent = 'Select armor to preview enhancement';
+        
+        const enhanceButton = document.createElement('button');
+        enhanceButton.id = 'armourer-button';
+        enhanceButton.textContent = 'Enhance Armor (+1 Defense)';
+        enhanceButton.disabled = true;
+        enhanceButton.onclick = () => this.handleArmourEnhancement();
+        
+        const leaveButton = document.createElement('button');
+        leaveButton.id = 'armourer-leave-button';
+        leaveButton.textContent = 'Leave';
+        leaveButton.onclick = function() { 
+            this.game.addLog("You leave without using the Armourer's tools.");
+            this.resetCraftingSlots(); // Reset slots on leave
+            this.game.proceedToNextRound();
+        }.bind(this);
+        
+        slotContainer.appendChild(armorSlot);
+        armourerArea.appendChild(slotContainer);
+        armourerArea.appendChild(previewArea);
+        armourerArea.appendChild(enhanceButton);
+        armourerArea.appendChild(leaveButton);
+        
+        mainContent.appendChild(armourerArea);
+
+        // --- Add Drag and Drop Listeners ---
+        const armourerSlot = armourerArea.querySelector('.armourer-slot'); // Find the slot element
+        if (armourerSlot) {
+            armourerSlot.addEventListener('dragover', (event) => {
+                event.preventDefault(); // Allow drop
+                const sourceIndex = this.draggedItemIndex;
+                const item = this.draggedItem;
+                if (sourceIndex === null || item === null) return;
+                armourerSlot.classList.remove('drag-over-valid', 'drag-over-invalid');
+                if (item && item.type === 'armor') {
+                    armourerSlot.classList.add('drag-over-valid');
+                } else {
+                    armourerSlot.classList.add('drag-over-invalid');
+                }
+            });
+
+            armourerSlot.addEventListener('dragenter', (event) => {
+                event.preventDefault();
+            });
+
+            armourerSlot.addEventListener('dragleave', (event) => {
+                armourerSlot.classList.remove('drag-over-valid', 'drag-over-invalid');
+            });
+
+            armourerSlot.addEventListener('drop', (event) => {
+                event.preventDefault();
+                armourerSlot.classList.remove('drag-over-valid', 'drag-over-invalid');
+                
+                const sourceIndexStr = event.dataTransfer.getData('text/plain');
+                if (sourceIndexStr === null || sourceIndexStr === undefined || sourceIndexStr === '') return;
+
+                const sourceIndex = parseInt(sourceIndexStr, 10);
+                const itemToDrop = this.game.player.inventory[sourceIndex]; 
+
+                if (itemToDrop && itemToDrop.type === 'armor') {
+                    if (armourerSlot.dataset.itemData) {
+                        this.clearArmourerSlot(); 
+                    }
+                    const currentInventoryItem = this.game.player.inventory[sourceIndex]; 
+                    if (!currentInventoryItem || currentInventoryItem.id !== itemToDrop.id) {
+                         console.warn(`Item at index ${sourceIndex} changed or removed unexpectedly.`);
+                         this.game.addLog("Action interrupted. Please try dragging the item again.");
+                         this.renderInventory(); 
+                         return;
+                    }
+                    const removedItem = this.game.player.removeItem(sourceIndex);
+                    
+                    armourerSlot.dataset.itemData = JSON.stringify(removedItem);
+                    armourerSlot.dataset.originalIndex = sourceIndex;
+
+                    armourerSlot.innerHTML = `
+                        <div class="armourer-slot-label">Armor Slot</div>
+                        <div class="armourer-slot-content">${removedItem.name}</div>
+                    `;
+                    armourerSlot.style.cursor = 'pointer';
+                    armourerSlot.onclick = () => {
+                        if (armourerSlot.dataset.itemData) { 
+                            this.clearArmourerSlot();
+                        }
+                    };
+        
+                    // Update preview (using the local previewArea reference)
+                    const newDefense = (removedItem.stats.defense || 0) + 1;
+                    previewArea.textContent = `${removedItem.name} → Defense: ${(removedItem.stats.defense || 0)} → ${newDefense}`;
+                    
+                    // Enable enhance button (check hammer)
+                    const hammerCheck = this.game.player.inventory.some(i => i && i.id === 'blacksmith_hammer');
+                    enhanceButton.disabled = !hammerCheck;
+                    
+                    this.renderInventory(); 
+                } else {
+                    this.game.addLog("You can only enhance armor.");
+                }
+            });
+        } // End if (armourerSlot)
+    }
+    // +++ End RESTORE showArmourerUI +++
+
     // --- Restore clearArmourerSlot ---
     clearArmourerSlot() {
         console.log("Clearing armourer slot");
