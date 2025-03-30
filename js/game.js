@@ -136,9 +136,11 @@ class Game {
         // Determine number of choices (2-4)
         const roll = Math.random() * 100;
         let numChoices;
-        if (roll < 30) {
+        if (roll < 5){
+            numChoices = 1;
+        } else if (roll < 30) {
             numChoices = 2;
-        } else if (roll < 85) {
+        } else if (roll < 95) {
             numChoices = 3;
         } else { // 15% chance for 4 choices
             numChoices = 4;
@@ -146,7 +148,7 @@ class Game {
 
         // Generate unique encounters
         const usedEncounters = new Set();
-        while (usedEncounters.size < ENCOUNTER_PROBABILITY.length) {
+        while (usedEncounters.size < numChoices) {
             const encounter = this.getRandomEncounter();
             if (encounter.type === 'monster') {
                 encounter.monsterId = COMMON_MONSTERS[getRandomInt(0, COMMON_MONSTERS.length - 1)];
