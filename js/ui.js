@@ -2395,6 +2395,8 @@ class UI {
                     enhanceButton.disabled = !hammerCheck;
                     
                     this.renderInventory(); 
+
+                    armourerSlot.classList.add('crafting-slot-filled'); // Add visual class
                 } else {
                     this.game.addLog("You can only enhance armor.");
                 }
@@ -2520,30 +2522,17 @@ class UI {
         const armourerArea = document.getElementById('armourer-area');
         if (armourerArea) {
             armourerArea.classList.add('upgrade-success-flash');
-            setTimeout(() => armourerArea.classList.remove('upgrade-success-flash'), 500);
+            // Use timeout to remove flash AND proceed
+            setTimeout(() => {
+                armourerArea.classList.remove('upgrade-success-flash'); // Use existing armourerArea
+                this.clearMainArea();
+                this.game.proceedToNextRound();
+            }, 500); // Match animation duration
+        } else {
+            // If area not found, proceed immediately
+            this.clearMainArea();
+            this.game.proceedToNextRound();
         }
-
-        // Item consumed: Reset the slot directly
-        slot.innerHTML = `
-            <div class="armourer-slot-label">Armor Slot</div>
-            <div class="armourer-slot-content">Drop armor here</div>
-        `;
-        slot.style.cursor = 'default';
-        slot.onclick = null;
-        delete slot.dataset.itemData;
-        delete slot.dataset.originalIndex;
-
-        // Reset button and preview
-        const enhanceButton = document.getElementById('armourer-button');
-        if (enhanceButton) enhanceButton.disabled = true;
-        const previewArea = document.getElementById('armourer-preview');
-        if (previewArea) previewArea.textContent = 'Select armor to preview enhancement';
-
-        this.renderInventory(); // Re-render inventory to show the new item
-
-        // Proceed to next round after enhancement
-        this.clearMainArea();
-        this.game.proceedToNextRound();
     }
     // --- End Restore handleArmourEnhancement ---
 }
