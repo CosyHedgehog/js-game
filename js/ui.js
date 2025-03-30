@@ -1294,31 +1294,45 @@ class UI {
 
                 if (isNaN(parsedIndex)) return;
 
-                const item = this.game.player.inventory[parsedIndex];
+                const item = this.game.player.inventory[parsedIndex]; // Get the item being dragged
                 const targetSlotNum = index + 1;
 
+                // Re-validate on drop
                 if (!this.isValidForgeItem(item, parsedIndex, targetSlotNum)) {
-                    this.game.addLog("Invalid item for this forge slot.");
+                    this.game.addLog("Invalid item combination for forging."); // Updated log message
                     return;
                 }
 
-                // --- NEW LOGIC: Remove item from inventory --- 
-                const removedItem = this.game.player.removeItem(parsedIndex);
-                if (!removedItem) {
-                    console.error(`Failed to remove item at index ${parsedIndex} before dropping into forge slot ${targetSlotNum}`);
-                    this.game.addLog("Error: Could not move item.");
-                    this.renderInventory(); // Re-render inventory to be safe
-                    return;
+                // --- Fix: Return item if slot is already occupied --- 
+                if (slot.dataset.itemData) {
+                    console.log(`Slot ${targetSlotNum} occupied, clearing first...`);
+                    this.clearForgeSlot(targetSlotNum); // Attempt to return existing item
+                    // Note: If clearForgeSlot fails (e.g., inventory full), the drop might still proceed
+                    // depending on desired behavior. For now, we assume clearForgeSlot handles messaging.
                 }
+                // -----------------------------------------------------
+
+                // --- Remove NEW item from inventory --- 
+                // Make sure item still exists in inventory (clearForgeSlot might have rearranged things)
+                const currentInventoryItem = this.game.player.inventory[parsedIndex]; 
+                if (!currentInventoryItem || currentInventoryItem.id !== item.id) {
+                     console.warn(`Item at index ${parsedIndex} changed or removed unexpectedly.`);
+                     this.game.addLog("Action interrupted. Please try dragging the item again.");
+                     this.renderInventory(); // Refresh inventory view
+                     return;
+                }
+                const removedItem = this.game.player.removeItem(parsedIndex);
                 // --- Store removed item data in the slot --- 
-                e.target.dataset.itemData = JSON.stringify(removedItem);
+                // e.target.dataset.itemData = JSON.stringify(removedItem); // Old way
+                slot.dataset.itemData = JSON.stringify(removedItem); // Store on the slot div itself
+                slot.dataset.originalIndex = parsedIndex; // Store original index too
                 // -------------------------------------------
 
-                console.log(`Dropped item ${item.name} into forge slot ${targetSlotNum}`);
+                console.log(`Dropped item ${removedItem.name} into forge slot ${targetSlotNum}`);
 
                 // Display item in the slot with a clear button
                 slot.innerHTML = `
-                    <span>${item.name}</span>
+                    <span>${removedItem.name}</span>
                     <button class="clear-slot-button" data-slot-num="${targetSlotNum}">(x)</button>
                 `;
                 slot.querySelector('.clear-slot-button').addEventListener('click', () => this.clearForgeSlot(targetSlotNum));
@@ -1328,145 +1342,9 @@ class UI {
 
                 // --- NEW LOGIC: Re-render inventory to show removal ---
                 this.renderInventory(); 
+                // Mark inventory item as in-use
+                this.updateInventoryInUseStyles();
             });
-        });
-
-        // --- Drag and Drop for Sharpen Slot ---
-        this.sharpenSlot.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            const sourceIndexStr = this.draggedItemIndex;
-            const sourceIndex = parseInt(sourceIndexStr);
-            const item = this.game.player.inventory[sourceIndex];
-
-            if (item && item.type === 'weapon' && !this.sharpenSlot.dataset.itemData) {
-                e.dataTransfer.dropEffect = 'move';
-                this.sharpenSlot.classList.add('drag-over-valid');
-                this.sharpenSlot.classList.remove('drag-over-invalid');
-        } else {
-                e.dataTransfer.dropEffect = 'none';
-                this.sharpenSlot.classList.add('drag-over-invalid');
-                this.sharpenSlot.classList.remove('drag-over-valid');
-            }
-        });
-
-        this.sharpenSlot.addEventListener('dragleave', (e) => {
-            this.sharpenSlot.classList.remove('drag-over-valid', 'drag-over-invalid');
-        });
-
-        this.sharpenSlot.addEventListener('drop', (e) => {
-            e.preventDefault();
-            this.sharpenSlot.classList.remove('drag-over-valid', 'drag-over-invalid');
-
-            const sourceIndexStr = this.draggedItemIndex;
-            if (sourceIndexStr === null) return;
-            const parsedIndex = parseInt(sourceIndexStr, 10);
-
-            if (isNaN(parsedIndex)) return;
-
-            const item = this.game.player.inventory[parsedIndex];
-
-            if (!item || item.type !== 'weapon' || this.sharpenSlot.dataset.itemData) {
-                this.game.addLog("Invalid item or slot already occupied.");
-                return;
-            }
-
-            // --- NEW LOGIC: Remove item from inventory --- 
-            const removedItem = this.game.player.removeItem(parsedIndex);
-            if (!removedItem) {
-                console.error(`Failed to remove item at index ${parsedIndex} before dropping into sharpen slot`);
-                this.game.addLog("Error: Could not move item.");
-                this.renderInventory();
-                return;
-            }
-            // --- Store removed item data in the slot --- 
-            e.target.dataset.itemData = JSON.stringify(removedItem);
-            // -------------------------------------------
-
-            console.log(`Dropped weapon ${item.name} into sharpen slot`);
-
-            // Display item in the slot with a clear button
-            this.sharpenSlot.innerHTML = `
-                <span>${item.name}</span>
-                <button class="clear-slot-button">(x)</button>
-            `;
-            this.sharpenSlot.querySelector('.clear-slot-button').addEventListener('click', () => this.clearSharpenSlot());
-
-            // Update sharpen button state
-            this.sharpenButton.disabled = false;
-            this.sharpenButton.textContent = `Sharpen ${item.name}`; // Optional: Update button text
-
-            // --- NEW LOGIC: Re-render inventory to show removal ---
-            this.renderInventory();
-        });
-
-        // --- Drag and Drop for Armourer Slot ---
-        this.armourerSlot.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            const sourceIndexStr = this.draggedItemIndex;
-            const sourceIndex = parseInt(sourceIndexStr);
-            const item = this.game.player.inventory[sourceIndex];
-
-            // Allow drop if item is armor and slot is empty
-            if (item && item.type === 'armor' && !this.armourerSlot.dataset.itemData) {
-                e.dataTransfer.dropEffect = 'move';
-                this.armourerSlot.classList.add('drag-over-valid');
-                this.armourerSlot.classList.remove('drag-over-invalid');
-            } else {
-                e.dataTransfer.dropEffect = 'none';
-                this.armourerSlot.classList.add('drag-over-invalid');
-                this.armourerSlot.classList.remove('drag-over-valid');
-            }
-        });
-
-        this.armourerSlot.addEventListener('dragleave', (e) => {
-            this.armourerSlot.classList.remove('drag-over-valid', 'drag-over-invalid');
-        });
-
-        this.armourerSlot.addEventListener('drop', (e) => {
-            e.preventDefault();
-            this.armourerSlot.classList.remove('drag-over-valid', 'drag-over-invalid');
-
-            const sourceIndexStr = this.draggedItemIndex;
-            if (sourceIndexStr === null) return;
-            const parsedIndex = parseInt(sourceIndexStr, 10);
-
-            if (isNaN(parsedIndex)) return;
-
-            const item = this.game.player.inventory[parsedIndex];
-
-            // Check if item is valid armor and slot is empty
-            if (!item || item.type !== 'armor' || this.armourerSlot.dataset.itemData) {
-                this.game.addLog("Invalid item for Armourer or slot already occupied.");
-                return;
-            }
-
-            // --- NEW LOGIC: Remove item from inventory --- 
-            const removedItem = this.game.player.removeItem(parsedIndex);
-            if (!removedItem) {
-                console.error(`Failed to remove item at index ${parsedIndex} before dropping into armourer slot`);
-                this.game.addLog("Error: Could not move item.");
-                this.renderInventory();
-                return;
-            }
-            // --- Store removed item data in the slot --- 
-            e.target.dataset.itemData = JSON.stringify(removedItem);
-            // -------------------------------------------
-
-            console.log(`Dropped armor ${item.name} into armourer slot`);
-
-            // Display item in the slot with a clear button
-            this.armourerSlot.innerHTML = `
-                <span>${item.name}</span>
-                <button class="clear-slot-button">(x)</button>
-            `;
-            this.armourerSlot.querySelector('.clear-slot-button').addEventListener('click', () => this.clearArmourerSlot());
-
-            // Update armourer button state
-            this.armourerButton.disabled = false;
-            this.armourerButton.textContent = `Enhance ${item.name}`; // Optional: Update button text
-
-            // --- NEW LOGIC: Re-render inventory to show removal ---
-            this.renderInventory();
         });
 
         // Handle forge button - Fix: Bind the handler to 'this'
@@ -1474,8 +1352,12 @@ class UI {
             const slot1 = document.getElementById('forge-slot-1');
             const slot2 = document.getElementById('forge-slot-2');
             
-            if (slot1.dataset.itemIndex && slot2.dataset.itemIndex) {
+            // Fix: Check for itemData, not itemIndex
+            if (slot1.dataset.itemData && slot2.dataset.itemData) { 
                 this.handleForgeItems();
+            } else {
+                // Optional: Add a log if button is clicked when not ready (should be disabled, but for safety)
+                console.warn("Forge button clicked but slots not ready.");
             }
         };
 
@@ -2125,18 +2007,13 @@ class UI {
     }
 
     clearForgeSlot(slotNum) {
-        console.log(`Clearing forge slot ${slotNum}`);
-        // --- MODIFIED: Get element by ID directly ---
-        const slotElement = document.getElementById(`forge-slot-${slotNum}`); 
-        // const slotElement = slotNum === 1 ? this.forgeSlot1 : this.forgeSlot2; // Old way
-
+        const slotId = `forge-slot-${slotNum}`;
+        const slotElement = document.getElementById(slotId);
         if (!slotElement) {
-            console.error(`Forge slot element ${slotNum} not found using ID forge-slot-${slotNum}!`); // Updated error message
-            this.game.addLog(`Error: UI element missing for forge slot ${slotNum}.`);
+            console.error(`Forge slot element not found: ${slotId}`);
             return;
         }
 
-        // --- NEW: Retrieve item data and add back to inventory ---
         const itemDataString = slotElement.dataset.itemData;
         if (itemDataString) {
             try {
@@ -2144,30 +2021,30 @@ class UI {
                 if (this.game.player.addItem(item)) {
                     this.game.addLog(`Returned ${item.name} to inventory.`);
                 } else {
-                    this.game.addLog(`Inventory full! Cannot return ${item.name}. Item lost.`);
-                    // NOTE: Item is lost if inventory is full when clearing.
-                    // Alternatively, could prevent clearing if inventory is full.
+                    this.game.addLog(`Inventory full! Failed to return ${item.name}.`);
+                    // If addItem fails, we should probably still clear the slot visually,
+                    // but the item is lost. Consider alternative handling?
                 }
             } catch (error) {
-                console.error("Error parsing item data from forge slot:", error);
-                this.game.addLog("Error clearing slot. Item data corrupted?");
-                // Don't clear visual if data is bad, might allow recovery?
-                return; 
+                console.error(`Error parsing item data from forge slot ${slotNum}:`, error);
+                this.game.addLog(`Error clearing slot ${slotNum}. Item data corrupted?`);
+                // Still try to clear visually even if parsing fails
             }
-        } else {
-            console.warn(`No item data found in forge slot ${slotNum} to return.`);
         }
-        // ---------------------------------------------------------
 
-        // Clear visual content and stored data regardless of add success (unless parse failed)
+        // Reset the slot content to default without replacing the whole element
         slotElement.innerHTML = `
-            <div class="forge-slot-label">Slot ${slotNum}</div>
-            <div class="forge-slot-content">Drop item here</div>
+            <div class="forge-slot-label">Item ${slotNum}</div>
+            <div class="forge-slot-content">Drag item here</div>
         `;
-        delete slotElement.dataset.itemData; // Remove stored item data
 
-            this.updateForgeButton();
-        this.renderInventory(); // Update inventory display
+        // Clear stored data
+        delete slotElement.dataset.itemData;
+        delete slotElement.dataset.originalIndex;
+
+        this.updateForgeButton(); // Update button state
+        this.renderInventory(); // Update inventory visuals
+        this.updateInventoryInUseStyles(); // Update styles for inventory items
     }
 
     // --- NEW: Reset All Crafting Slots ---
@@ -2201,33 +2078,51 @@ class UI {
             return;
         }
 
-        const item1Index = slot1.dataset.itemIndex;
-        const item2Index = slot2.dataset.itemIndex;
+        // Fix: Use itemData
+        const item1DataString = slot1.dataset.itemData;
+        const item2DataString = slot2.dataset.itemData;
 
         // Check for hammer as well
         const hasHammer = this.game.player.inventory.some(item => item && item.id === 'blacksmith_hammer');
 
-        if (item1Index && item2Index) {
-            const item1 = this.game.player.inventory[item1Index];
-            const item2 = this.game.player.inventory[item2Index];
+        let canForge = false;
+        let item1 = null;
+        let item2 = null;
 
-            const canForge = item1 && item2 && 
-                            item1.type === item2.type && 
-                            item1.slot === item2.slot &&
-                            item1Index !== item2Index &&
-                            hasHammer;
+        if (item1DataString && item2DataString) {
+            try {
+                item1 = JSON.parse(item1DataString);
+                item2 = JSON.parse(item2DataString);
 
-            forgeButton.disabled = !canForge;
+                // Basic compatibility check (same type and slot, different items)
+                // Note: This assumes itemData always has the necessary properties
+                canForge = item1 && item2 && 
+                           item1.type === item2.type && 
+                           item1.slot === item2.slot && // Ensure they equip to the same place
+                           item1.id === item2.id && // Require identical items for simplicity
+                           hasHammer;
+                           // Removed check for itemIndex !== item2Index as we don't store index here anymore
 
-            if (canForge) {
-                // Need getItemStats function back for preview
-                const previewItem = this.previewForgedItem(item1, item2);
-                forgePreview.textContent = `Result: ${previewItem.name}`; // Simplified preview for now
+            } catch (error) {
+                console.error("Error parsing item data in updateForgeButton:", error);
+                canForge = false; // Treat as not forgeable if data is corrupt
+            }
+        }
+
+        forgeButton.disabled = !canForge;
+
+        if (canForge && item1 && item2) { // Ensure items were parsed successfully
+            const previewItem = this.previewForgedItem(item1, item2);
+            if (previewItem) {
+                forgePreview.textContent = `Result: ${previewItem.name}`; 
                 forgePreview.classList.remove('hidden');
             } else {
+                // If preview fails (e.g., incompatible despite basic checks), disable button and hide preview
+                forgeButton.disabled = true;
                 forgePreview.classList.add('hidden');
             }
         } else {
+            // If not canForge or items failed to parse, disable and hide
             forgeButton.disabled = true;
             forgePreview.classList.add('hidden');
         }
@@ -2273,36 +2168,51 @@ class UI {
         const slot1 = document.getElementById('forge-slot-1');
         const slot2 = document.getElementById('forge-slot-2');
         
-        const item1Index = parseInt(slot1.dataset.itemIndex);
-        const item2Index = parseInt(slot2.dataset.itemIndex);
+        // Fix: Get items from itemData, not itemIndex
+        const item1DataString = slot1.dataset.itemData;
+        const item2DataString = slot2.dataset.itemData;
+
+        if (!item1DataString || !item2DataString) {
+            console.error("Forge items called but item data missing from one or both slots.");
+            return;
+        }
+
+        let item1, item2;
+        try {
+            item1 = JSON.parse(item1DataString);
+            item2 = JSON.parse(item2DataString);
+        } catch (error) {
+            console.error("Error parsing item data in handleForgeItems:", error);
+            this.game.addLog("Error: Could not retrieve item data for forging.");
+            return;
+        }
+        // -------- End Fix --------
         
-        const item1 = this.game.player.inventory[item1Index];
-        const item2 = this.game.player.inventory[item2Index];
-        
-        if (!item1 || !item2) return;
+        if (!item1 || !item2) return; // Should not happen if parsing worked, but safety check
 
         // Create new forged item using preview logic
         const forgedItem = this.previewForgedItem(item1, item2);
+        if (!forgedItem) { // Check if preview returned null (e.g., incompatible items)
+             this.game.addLog("Cannot forge these items together."); // Add log
+             return;
+        }
         
-        // Remove original items *from player data*
-        this.game.player.inventory[item1Index] = null;
-        this.game.player.inventory[item2Index] = null;
-        // -----------------------------------------
-        
-        // Add new item
-        this.game.player.addItem(forgedItem);
+        // Add new item BEFORE clearing slots
+        if (!this.game.player.addItem(forgedItem)) {
+            this.game.addLog("Inventory full! Cannot forge items.");
+            // Do not clear slots if the forged item can't be added
+            return; 
+        }
 
-        // --- Clear forge slots BEFORE rendering inventory --- 
-        this.clearForgeSlot(1); // Use the clear function
+        // --- Clear forge slots AFTER successfully adding the new item --- 
+        this.clearForgeSlot(1); // Use the clear function (this removes itemData from slot)
         this.clearForgeSlot(2); // Use the clear function
         // --- End Clearing --- 
         
         // Update UI
         this.game.addLog(`The Blacksmith combines your ${item1.name} and ${item2.name} into a ${forgedItem.name}!`);
-        this.renderInventory(); // Render inventory AFTER clearing slots and modifying player data
-        
-        // Disable forge button and hide preview (already handled by clearForgeSlot -> updateForgeButton)
-        // No need to update button/preview here, clearForgeSlot handles it via updateForgeButton
+        // Inventory is already updated by addItem and clearForgeSlot
+        // this.renderInventory(); // No need to render again here
     }
     // --- End Restore handleForgeItems ---
 
