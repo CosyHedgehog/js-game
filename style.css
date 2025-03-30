@@ -2068,3 +2068,74 @@ html {
 .game-over-container button:hover {
     background-color: #555;
 }
+
+/* --- Trap Encounter Styling --- */
+#trap-area {
+    background-color: #333;
+    border-radius: 6px;
+    padding: 20px;
+    margin: 10px auto;
+    width: 90%;
+    max-width: 600px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#trap-area h3 {
+    color: #aaaaaa;
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+#trap-area p {
+    color: #ecf0f1;
+    line-height: 1.4;
+}
+
+#trap-area button {
+    padding: 10px 20px;
+    background: #505050;
+    border: 1px solid #3a3a3a;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    max-width: 200px;
+    align-self: center;
+}
+
+#trap-area button:hover:not(:disabled) {
+    background: #5a5a5a;
+}
+
+#trap-area button:disabled {
+    background: #333;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+#trap-result-message {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+/* Add specific styles for success/failure messages */
+#trap-result-message.success {
+    background-color: rgba(46, 204, 113, 0.2); /* Light green background */
+    color: #2ecc71; /* Green text */
+    border: 1px solid #2ecc71;
+}
+
+#trap-result-message.failure {
+    background-color: rgba(231, 76, 60, 0.2); /* Light red background */
+    color: #e74c3c; /* Red text */
+    border: 1px solid #e74c3c;
+}
+
+#trap-continue-button {
+    margin-top: 10px;
+}

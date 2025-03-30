@@ -297,3 +297,68 @@ function handleAlchemistEncounter(game, ui) {
     ui.showAlchemistUI(availableItems);
 }
 
+function handleTrapEncounter(game, ui) {
+    game.currentEncounterType = 'trap';
+    game.addLog('You carefully approach a suspicious area...');
+    ui.showTrapUI();
+}
+
+function handleDisarmAttempt() {
+    const successChance = 0.01;
+    const roll = Math.random();
+    const trapResultMessage = document.getElementById('trap-result-message');
+    const disarmButton = document.getElementById('disarm-trap-button');
+    const skipButton = document.getElementById('skip-trap-button');
+
+    if (roll <= successChance) {
+        // Success: Disable buttons here
+        if (disarmButton) disarmButton.disabled = true;
+        if (skipButton) skipButton.disabled = true;
+
+        const goldReward = Math.floor(Math.random() * 6) + 1;
+        const weaponRewardId = TRAP_WEAPON_LOOT[Math.floor(Math.random() * TRAP_WEAPON_LOOT.length)];
+        const weaponItem = createItem(weaponRewardId);
+
+        const weaponData = ITEMS[weaponRewardId];
+        const successMsg = `Success! You disarmed the trap. Found ${goldReward} gold and a ${weaponData.name}.`;
+        game.addLog(successMsg);
+
+        if(trapResultMessage) {
+            trapResultMessage.textContent = successMsg;
+            trapResultMessage.className = 'message success';
+        }
+
+        game.enterLootState(goldReward, [weaponItem]);
+
+        game.ui.updatePlayerStats(); // Use game.ui
+
+        if (game.player.health <= 0) {
+            return; // Stop further execution if game over
+        }
+    } else {
+        // Failure
+        const damageTaken = Math.floor(Math.random() * 3) + 1;
+        game.player.takeRawDamage(damageTaken);
+        game.ui.createDamageSplat('#trap-area', damageTaken, 'damage');
+        game.ui.updatePlayerStats();
+
+        const failMsg = `Failure! The trap triggers, dealing ${damageTaken} damage.`;
+        game.addLog(failMsg);
+
+        if(trapResultMessage) {
+            trapResultMessage.textContent = failMsg;
+            trapResultMessage.className = 'message failure';
+        }
+
+        // Check if player died
+        if (game.player.health <= 0) {
+            game.endGame(false);
+            return; // Stop further execution if game over
+        }
+    }
+}
+
+function handleSkipTrap() {
+    game.proceedToNextRound();
+}
+

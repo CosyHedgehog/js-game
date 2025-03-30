@@ -53,6 +53,10 @@ class Player {
         return { actualDamage, isDead: this.health <= 0 };
     }
 
+    takeRawDamage(amount) {
+        this.health = Math.max(0, this.health - amount);
+    }
+
     heal(amount) {
         const healedAmount = Math.min(amount, this.maxHealth - this.health);
         this.health = Math.min(this.maxHealth, this.health + amount);

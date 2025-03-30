@@ -288,7 +288,8 @@ const ENCOUNTER_PROBABILITY = [
     { type: 'blacksmith', weight: 5 },
     { type: 'sharpen', weight: 5 },
     { type: 'armourer', weight: 5 },
-    { type: 'alchemist', weight: 5 }
+    { type: 'alchemist', weight: 5 },
+    { type: 'trap', weight: 5 }
 ];
 
 // Define which monsters appear in which stages
@@ -331,4 +332,11 @@ const ALCHEMIST_ITEMS = [
     'defense_potion',
     'greater_defense_potion',
     'speed_potion'
+];
+
+// Define loot pool for successful trap disarm
+const TRAP_WEAPON_LOOT = [
+    'wooden_sword',
+    'rusty_sword',
+    'quick_dagger'
 ];

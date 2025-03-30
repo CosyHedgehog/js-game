@@ -489,6 +489,11 @@ class UI {
         this.shopArea.classList.add('hidden');
         this.restArea.classList.add('hidden');
         this.lootArea.classList.add('hidden');
+        // Also hide the trap area if it exists
+        const trapArea = document.getElementById('trap-area');
+        if (trapArea) {
+            trapArea.classList.add('hidden');
+        }
         
         // Add these lines to remove both blacksmith and sharpen areas
         const blacksmithArea = document.getElementById('blacksmith-area');
@@ -664,7 +669,7 @@ class UI {
 
             // Create damage splat if damage was dealt or fully blocked
             if (damage > 0 || fullBlock) {
-                this.createDamageSplat('player', damage, isHeal ? 'heal' : 'damage', blocked, fullBlock);
+                this.createDamageSplat('.player-side', damage, isHeal ? 'heal' : 'damage', blocked, fullBlock);
             }
         } else if (who === 'enemy') {
             this.combatEnemyHp.textContent = `${current}/${max}`;
@@ -678,7 +683,7 @@ class UI {
 
             // Create damage splat if damage was dealt or fully blocked
             if (damage > 0 || fullBlock) {
-                this.createDamageSplat('enemy', damage, isHeal ? 'heal' : 'damage', blocked, fullBlock);
+                this.createDamageSplat('.enemy-side', damage, isHeal ? 'heal' : 'damage', blocked, fullBlock);
             }
         }
     }
@@ -985,16 +990,23 @@ class UI {
     }
 
 
-    createDamageSplat(who, amount, type = 'damage', blocked = 0, fullBlock = false) {
-        const combatant = document.querySelector(who === 'player' ? '.player-side' : '.enemy-side');
-        if (!combatant) return;
+    createDamageSplat(targetSelector, amount, type = 'damage', blocked = 0, fullBlock = false) {
+        const targetElement = document.querySelector(targetSelector);
+        if (!targetElement) {
+            console.error("Damage splat target not found:", targetSelector);
+            return;
+        };
 
-        // Create container if it doesn't exist
-        let container = combatant.querySelector('.damage-splat-container');
+        // Create container if it doesn't exist (relative positioning needed on parent)
+        let container = targetElement.querySelector('.damage-splat-container');
         if (!container) {
             container = document.createElement('div');
             container.className = 'damage-splat-container';
-            combatant.appendChild(container);
+            // Ensure parent has relative positioning for absolute positioning of splats
+            if (getComputedStyle(targetElement).position === 'static') {
+                 targetElement.style.position = 'relative';
+            }
+            targetElement.appendChild(container);
         }
 
         // Create the damage splat element
@@ -1880,5 +1892,28 @@ class UI {
                 }
             });
         });
+    }
+
+    showTrapUI() {
+        const trapArea = document.getElementById('trap-area');
+        // hideAllAreas(); // Ensure other areas are hidden
+        trapArea.classList.remove('hidden');
+        trapArea.innerHTML = `
+            <h3>Suspicious Area</h3>
+            <button id="disarm-trap-button">Attempt Disarm</button>
+            <button id="skip-trap-button">Skip</button>
+            <div id="trap-result-message" class="message"></div>
+        `;
+
+        // Add event listeners after generating the buttons
+        const disarmButton = document.getElementById('disarm-trap-button');
+        const skipButton = document.getElementById('skip-trap-button');
+
+        if (disarmButton) {
+            disarmButton.addEventListener('click', handleDisarmAttempt);
+        }
+        if (skipButton) {
+            skipButton.addEventListener('click', handleSkipTrap);
+        }
     }
 }

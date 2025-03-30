@@ -211,6 +211,8 @@ class Game {
                 return "Visit Armourer";
             case 'alchemist':
                 return "Visit Alchemist";
+            case 'trap':
+                return "Disarm Trap";
 
             default:
                 return 'Unknown Encounter';
@@ -293,6 +295,11 @@ class Game {
                        "- Speed Potions: Attack faster for combat\n\n" +
                        `Current gold: ${this.player.gold}\n\n` +
                        "Enter the Alchemist's shop?";
+            case 'trap':
+                return "You notice something suspicious on the ground. It might be a trap."
+                    + "\n\nYou could try to disarm it (30% chance) for a potential reward."
+                    + "\nFailure will result in 1-3 damage."
+                    + "\n\nInvestigate the trap?";
             default:
                 return "Unknown encounter type.";
         }
@@ -330,8 +337,10 @@ class Game {
             case 'alchemist':
                 handleAlchemistEncounter(this, this.ui);
                 break;
-
+            case 'trap':
+                handleTrapEncounter(this, this.ui);
                 break;
+
             default:
                 this.addLog("Unknown encounter type selected.");
                 this.proceedToNextRound();
