@@ -574,7 +574,7 @@ class Game {
         switch(packId) {
             case 'warrior':
                 // Warrior pack: More armor focused
-                this.player.addItem(createItem('rusty_sword'));
+                this.player.addItem(createItem('wooden_sword'));
                 this.player.addItem(createItem('leather_helm'));
                 this.player.addItem(createItem('leather_legs'));
                 this.player.addItem(createItem('bread'));
@@ -584,7 +584,7 @@ class Game {
                 
             case 'fisher':
                 // Fisher pack: Includes fishing rod
-                this.player.addItem(createItem('wooden_sword'));
+                this.player.addItem(createItem('rusty_sword'));
                 this.player.addItem(createItem('leather_helm'));
                 this.player.addItem(createItem('fishing_rod'));
                 this.player.addItem(createItem('large_fish'));
@@ -596,7 +596,7 @@ class Game {
 
             case 'blacksmith':
                 // Blacksmith pack: Includes hammer and some basic resources
-                this.player.addItem(createItem('wooden_sword'));
+                this.player.addItem(createItem('rusty_sword'));
                 this.player.addItem(createItem('blacksmith_hammer'));
                 this.player.addItem(createItem('bread'));
                 this.player.addItem(createItem('small_fish'));
