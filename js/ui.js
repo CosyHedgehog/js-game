@@ -1498,166 +1498,21 @@ class UI {
                 event.preventDefault();
                 sharpenSlot.classList.remove('drag-over-valid', 'drag-over-invalid');
                 
-                // --- Drop event still uses getData (reliable here) ---
                 const sourceIndexStr = event.dataTransfer.getData('text/plain');
                 if (sourceIndexStr === null || sourceIndexStr === undefined || sourceIndexStr === '') {
                      console.warn("Sharpen drop event received invalid sourceIndexStr:", sourceIndexStr);
                      return; 
                 }
-                // --- End ---
-
-                const sourceIndex = parseInt(sourceIndexStr, 10);
-                const item = this.game.player.inventory[sourceIndex]; // Get item fresh
-
-                if (item && item.type === 'weapon') { // Check item existence
-                    // REMOVED: this.selectSharpenItem(item, sourceIndex);
-                    // --- Inline selectSharpenItem logic --- 
-                    this.clearSharpenSlot(); // Clear current slot first
-                    const slot = sharpenArea.querySelector('.sharpen-slot'); 
-                    const content = slot.querySelector('.sharpen-slot-content');
-                    // content.textContent = item.name; // CHANGED BELOW
-                    // Add item name and clear button
-                    content.innerHTML = `
-                        ${item.name} 
-                        <button class="clear-craft-slot-button" data-slot-num="sharp"> (x)</button>
-                    `;
-                    // Add listener to the new clear button
-                    content.querySelector('.clear-craft-slot-button').onclick = (e) => {
-                        e.stopPropagation(); 
-                        this.clearSharpenSlot();
-                    };
-
-                    slot.dataset.itemIndex = sourceIndex;
-                    content.textContent = item.name; 
-        
-        // Update preview
-        const previewArea = document.getElementById('sharpen-preview');
-        const newAttack = (item.stats.attack || 0) + 1;
-        previewArea.textContent = `${item.name} → Attack: ${item.stats.attack} → ${newAttack}`;
-        
-        // Enable sharpen button
-        document.getElementById('sharpen-button').disabled = false;
-        
-                    // Mark inventory item as in-use
-                    this.updateInventoryInUseStyles();
-                    // --------------------------------------
-                } else {
-                    this.game.addLog("You can only sharpen weapons.");
-                }
-            });
-        }
-        // --- End Drag and Drop Listeners ---
-    }
-
-    showArmourerUI() {
-        this.clearMainArea();
-        
-        const mainContent = document.getElementById('main-content');
-
-        // Check for hammer
-        const hasHammer = this.game.player.inventory.some(item => item && item.id === 'blacksmith_hammer');
-        let hammerWarning = hasHammer ? '' : '<p style="color: #ff4444; font-weight: bold;">Requires: Blacksmith Hammer</p>';
-        
-        const armourerArea = document.createElement('div');
-        armourerArea.id = 'armourer-area';
-        armourerArea.innerHTML = `
-            <h3>Armourer Station</h3>
-            ${hammerWarning}
-            <p>Drag a piece of armor onto the station to enhance its defense (+1 Defense).</p> <!-- Updated text -->
-        `;
-        
-        const slotContainer = document.createElement('div');
-        slotContainer.className = 'armourer-container';
-        
-        const armorSlot = document.createElement('div');
-        armorSlot.className = 'armourer-slot';
-        armorSlot.innerHTML = `
-            <div class="armourer-slot-label">Armor Slot</div>
-            <div class="armourer-slot-content">Drag armor here</div> <!-- Updated text -->
-        `;
-        
-        const previewArea = document.createElement('div');
-        previewArea.id = 'armourer-preview';
-        previewArea.textContent = 'Select armor to preview enhancement';
-        
-        const enhanceButton = document.createElement('button');
-        enhanceButton.id = 'armourer-button';
-        enhanceButton.textContent = 'Enhance Armor (+1 Defense)';
-        enhanceButton.disabled = true;
-        enhanceButton.onclick = () => this.handleArmourEnhancement();
-        
-        const leaveButton = document.createElement('button');
-        leaveButton.id = 'armourer-leave-button';
-        leaveButton.textContent = 'Leave';
-        leaveButton.onclick = function() { // Use function and bind 'this'
-            this.game.addLog("You leave without using the Armourer's tools.");
-            this.resetCraftingSlots(); // Reset slots on leave
-            this.game.proceedToNextRound();
-        }.bind(this);
-        
-        slotContainer.appendChild(armorSlot);
-        armourerArea.appendChild(slotContainer);
-        armourerArea.appendChild(previewArea);
-        armourerArea.appendChild(enhanceButton);
-        armourerArea.appendChild(leaveButton);
-        
-        mainContent.appendChild(armourerArea);
-
-        // --- Add Drag and Drop Listeners ---
-        const armourerSlot = armourerArea.querySelector('.armourer-slot');
-        if (armourerSlot) {
-            armourerSlot.addEventListener('dragover', (event) => {
-                event.preventDefault(); // Allow drop
-                 // --- MODIFIED: Use stored drag info ---
-                const sourceIndex = this.draggedItemIndex;
-                const item = this.draggedItem;
-                // --- End MODIFIED ---
-
-                if (sourceIndex === null || item === null) return; // No item being dragged
-
-                // --- DEBUGGING (Updated) ---
-                console.log(`Drag Over Armourer Slot: Stored Index = ${sourceIndex}, Item Type = ${item?.type}, Expected Class = ${item && item.type === 'armor' ? 'drag-over-valid' : 'drag-over-invalid'}`);
-                // --- END DEBUGGING ---
-
-                // Ensure previous classes are removed before adding new one
-                armourerSlot.classList.remove('drag-over-valid', 'drag-over-invalid');
-
-                if (item && item.type === 'armor') {
-                    armourerSlot.classList.add('drag-over-valid');
-        } else {
-                    armourerSlot.classList.add('drag-over-invalid');
-                }
-            });
-
-            armourerSlot.addEventListener('dragenter', (event) => {
-                event.preventDefault();
-            });
-
-            armourerSlot.addEventListener('dragleave', (event) => {
-                armourerSlot.classList.remove('drag-over-valid', 'drag-over-invalid');
-            });
-
-            armourerSlot.addEventListener('drop', (event) => {
-                event.preventDefault();
-                armourerSlot.classList.remove('drag-over-valid', 'drag-over-invalid');
-                
-                 // --- Drop event still uses getData (reliable here) ---
-                 const sourceIndexStr = event.dataTransfer.getData('text/plain');
-                 if (sourceIndexStr === null || sourceIndexStr === undefined || sourceIndexStr === '') {
-                     console.warn("Armourer drop event received invalid sourceIndexStr:", sourceIndexStr);
-                     return; 
-                 }
-                 // --- End ---
 
                 const sourceIndex = parseInt(sourceIndexStr, 10);
                 const itemToDrop = this.game.player.inventory[sourceIndex]; // Get item fresh
 
-                if (itemToDrop && itemToDrop.type === 'armor') { // Check item existence and type
+                if (itemToDrop && itemToDrop.type === 'weapon') { // Check item existence and type
                     
                     // --- Return item if slot is already occupied --- 
-                    if (armourerSlot.dataset.itemData) {
-                        console.log(`Armourer slot occupied, clearing first...`);
-                        this.clearArmourerSlot(); // Attempt to return existing item
+                    if (sharpenSlot.dataset.itemData) {
+                        console.log(`Sharpen slot occupied, clearing first...`);
+                        this.clearSharpenSlot(); // Attempt to return existing item
                     }
                     // -------------------------------------------------
 
@@ -1673,31 +1528,30 @@ class UI {
                     // ------------------------------------
 
                     // --- Store removed item data in the slot --- 
-                    armourerSlot.dataset.itemData = JSON.stringify(removedItem);
-                    armourerSlot.dataset.originalIndex = sourceIndex; // Store original index too
+                    sharpenSlot.dataset.itemData = JSON.stringify(removedItem);
+                    sharpenSlot.dataset.originalIndex = sourceIndex; // Store original index too
                     // -------------------------------------------
 
                     // --- Display item name and add click listener --- 
-                    armourerSlot.innerHTML = `
-                        <div class="armourer-slot-label">Armor Slot</div>
-                        <div class="armourer-slot-content">${removedItem.name}</div>
+                    sharpenSlot.innerHTML = `
+                        <div class="sharpen-slot-label">Weapon Slot</div>
+                        <div class="sharpen-slot-content">${removedItem.name}</div>
                     `;
-                    armourerSlot.style.cursor = 'pointer';
-                    armourerSlot.onclick = () => {
-                        if (armourerSlot.dataset.itemData) { 
-                            this.clearArmourerSlot();
+                    sharpenSlot.style.cursor = 'pointer';
+                    sharpenSlot.onclick = () => {
+                        if (sharpenSlot.dataset.itemData) { // Check sharpenSlot data
+                            this.clearSharpenSlot();
                         }
                     };
                     // ---------------------------------------------
         
                     // Update preview
-                    const previewArea = document.getElementById('armourer-preview');
-                    const newDefense = (removedItem.stats.defense || 0) + 1;
-                    previewArea.textContent = `${removedItem.name} → Defense: ${(removedItem.stats.defense || 0)} → ${newDefense}`; // Use removedItem stats
+                    // const previewArea = document.getElementById('sharpen-preview'); // Use variable from outer scope
+                    const newAttack = (removedItem.stats.attack || 0) + 1;
+                    previewArea.textContent = `${removedItem.name} → Attack: ${(removedItem.stats.attack || 0)} → ${newAttack}`; // Use removedItem stats
                     
-                    // Enable enhance button only if player has hammer
-                    const hasHammer = this.game.player.inventory.some(i => i && i.id === 'blacksmith_hammer');
-                    document.getElementById('armourer-button').disabled = !hasHammer;
+                    // Enable sharpen button
+                    document.getElementById('sharpen-button').disabled = false;
                     
                     // Re-render inventory
                     this.renderInventory(); 
@@ -2269,17 +2123,16 @@ class UI {
     // --- Restore clearSharpenSlot ---
     clearSharpenSlot() {
         console.log("Clearing sharpen slot");
-        // --- MODIFIED: Get element by ID directly ---
-        const slotElement = document.getElementById('sharpen-slot'); 
-        // const slotElement = this.sharpenSlot; // Old way
+        // --- MODIFIED: Get element using querySelector ---
+        const slotElement = document.querySelector('#sharpen-area .sharpen-slot'); 
 
         if (!slotElement) {
-            console.error("Sharpen slot element not found using ID sharpen-slot!"); // Updated error message
+            console.error("Sharpen slot element not found using querySelector!");
             this.game.addLog("Error: UI element missing for sharpen slot.");
             return;
         }
 
-        // --- NEW: Retrieve item data and add back to inventory ---
+        // --- Retrieve item data and add back to inventory ---
         const itemDataString = slotElement.dataset.itemData;
         if (itemDataString) {
             try {
@@ -2292,10 +2145,8 @@ class UI {
             } catch (error) {
                 console.error("Error parsing item data from sharpen slot:", error);
                 this.game.addLog("Error clearing slot. Item data corrupted?");
-                return;
+                // Don't return item if parse failed, but still clear visually
             }
-        } else {
-            console.warn("No item data found in sharpen slot to return.");
         }
         // ---------------------------------------------------------
 
@@ -2304,33 +2155,57 @@ class UI {
             <div class="sharpen-slot-label">Weapon Slot</div>
             <div class="sharpen-slot-content">Drop weapon here</div>
         `;
+        slotElement.style.cursor = 'default'; // Reset cursor
+        slotElement.onclick = null; // Remove click listener
         delete slotElement.dataset.itemData;
+        delete slotElement.dataset.originalIndex; // Clear original index too
 
         // Reset and disable the button
-        // Ensure sharpenButton is cached correctly before accessing
-        if (this.sharpenButton) { 
-            this.sharpenButton.disabled = true;
-            this.sharpenButton.textContent = 'Sharpen';
+        const sharpenButton = document.getElementById('sharpen-button');
+        if (sharpenButton) { 
+            sharpenButton.disabled = true;
+            sharpenButton.textContent = 'Enhance Weapon (+1 Attack)'; // Reset text
         } else {
-            console.error("Sharpen button reference is missing in UI cache!");
+            console.error("Sharpen button element not found!");
+        }
+
+        // Reset preview text
+        const previewArea = document.getElementById('sharpen-preview');
+        if (previewArea) {
+            previewArea.textContent = 'Select a weapon to preview enhancement';
         }
         
         this.renderInventory(); // Update inventory display
+        // No need for updateInventoryInUseStyles here
     }
     // --- End Restore clearSharpenSlot ---
 
     // --- Restore handleSharpenItem ---
     handleSharpenItem() {
-        const slot = document.querySelector('.sharpen-slot');
-        const itemIndex = parseInt(slot.dataset.itemIndex);
-        const item = this.game.player.inventory[itemIndex];
-        
-        if (!item || item.type !== 'weapon') {
-            this.game.addLog("Invalid item selected.");
+        const slot = document.querySelector('#sharpen-area .sharpen-slot'); // Use querySelector
+
+        // Get item from data attribute
+        const itemDataString = slot?.dataset.itemData;
+        if (!itemDataString) {
+            this.game.addLog("No weapon placed on the stone.");
+            return;
+        }
+
+        let item;
+        try {
+            item = JSON.parse(itemDataString);
+        } catch (error) {
+            console.error("Error parsing item data in handleSharpenItem:", error);
+            this.game.addLog("Error: Could not retrieve item data for sharpening.");
             return;
         }
         
-        // Enhance the weapon
+        if (!item || item.type !== 'weapon') {
+            this.game.addLog("Invalid item type for sharpening."); // Should not happen
+            return;
+        }
+        
+        // Enhance the item data
         item.stats.attack = (item.stats.attack || 0) + 1; // Ensure attack exists
         // Update name only if not already sharpened/reinforced
         if (!item.name.startsWith("Sharpened ") && !item.name.startsWith("Reinforced ")) {
@@ -2339,8 +2214,32 @@ class UI {
         item.description = item.description.replace(/Attack: \+\d+/, `Attack: +${item.stats.attack}`);
         item.value = Math.floor(item.value * 1.2); // Increase value
         
-        this.game.addLog(`Enhanced ${item.name}! Attack power increased by 1.`);
-        this.renderInventory();
+        // Add the *enhanced* item back to inventory
+        if (!this.game.player.addItem(item)) {
+            this.game.addLog(`Inventory full! Could not add sharpened ${item.name}.`);
+            // Don't clear the slot if we couldn't add the new item
+            return;
+        }
+        
+        this.game.addLog(`Sharpened ${item.name}! Attack power increased by 1.`);
+
+        // Item consumed: Reset the slot directly
+        slot.innerHTML = `
+            <div class="sharpen-slot-label">Weapon Slot</div>
+            <div class="sharpen-slot-content">Drop weapon here</div>
+        `;
+        slot.style.cursor = 'default';
+        slot.onclick = null;
+        delete slot.dataset.itemData;
+        delete slot.dataset.originalIndex;
+
+        // Reset button and preview
+        const sharpenButton = document.getElementById('sharpen-button');
+        if (sharpenButton) sharpenButton.disabled = true;
+        const previewArea = document.getElementById('sharpen-preview');
+        if (previewArea) previewArea.textContent = 'Select a weapon to preview enhancement';
+
+        this.renderInventory(); // Re-render inventory to show the new item
         
         // Proceed to next round
         this.clearMainArea();
