@@ -216,6 +216,7 @@ function handleSellItem(game, ui, inventoryIndex) {
 
     ui.renderInventory();
     ui.updatePlayerStats();
+    updateShopAffordability(game, ui); // Add this line
     ui.hideContextMenu(); // Hide menu after selling
 }
 
