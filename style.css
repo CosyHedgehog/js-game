@@ -569,6 +569,7 @@ button:disabled {
 .shop-item-button:disabled {
     background-color: #666;
     cursor: not-allowed;
+    border-color: #555;
     opacity: 0.6;
 }
 
@@ -1487,6 +1488,7 @@ html {
 .shop-item-button:disabled {
     background-color: #666;
     cursor: not-allowed;
+    border-color: #555;
     opacity: 0.6;
 }
 

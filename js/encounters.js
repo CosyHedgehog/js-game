@@ -138,9 +138,60 @@ function handleBuyItem(game, ui, itemIndex) {
     game.addLog(`You bought ${item.name} for ${item.buyPrice} gold.`);
     // Mark item as bought instead of removing it
     game.currentShopItems[itemIndex].bought = true;
-    ui.showShopUI(game.currentShopItems, game.shopCanReroll); // Refresh shop UI
+    
+    // --- Targeted UI Update with Scroll Preservation ---
+    const shopItemsContainer = ui.shopArea.querySelector('.shop-items-container');
+    const scrollPosition = shopItemsContainer ? shopItemsContainer.scrollTop : 0; // Save scroll position
+    
+    const shopItemDiv = ui.shopArea.querySelector(`.shop-item[data-index="${itemIndex}"]`);
+    if (shopItemDiv) {
+        const buyButton = shopItemDiv.querySelector('.shop-item-button');
+        if (buyButton) {
+            buyButton.textContent = 'Bought';
+            buyButton.disabled = true;
+        }
+        shopItemDiv.classList.add('item-bought'); 
+        
+        // ui.updateShopAffordability(); // Removed for now, implement this later if needed
+    } else {
+        console.warn("Shop item div not found for targeted update.");
+        // Re-render as fallback ONLY if absolutely necessary (ideally avoid)
+        // ui.showShopUI(game.currentShopItems, game.shopCanReroll); 
+    }
+    
+    if (shopItemsContainer) {
+        shopItemsContainer.scrollTop = scrollPosition; // Restore scroll position
+    }
+    // --- End Targeted UI Update ---
+
+    // Update affordability AFTER restoring scroll to potentially avoid jump
+    if (shopItemDiv) {
+        updateShopAffordability(game, ui); // Call the helper function
+    }
+
     ui.renderInventory();
     ui.updatePlayerStats();
+}
+
+// Helper function to update button states based on affordability
+function updateShopAffordability(game, ui) {
+    const shopItems = ui.shopArea.querySelectorAll('.shop-item:not(.item-bought)');
+    shopItems.forEach(shopItemDiv => {
+        const index = parseInt(shopItemDiv.dataset.index);
+        const item = game.currentShopItems[index];
+        const buyButton = shopItemDiv.querySelector('.shop-item-button');
+        
+        if (item && buyButton) {
+            const canAfford = game.player.gold >= item.buyPrice;
+            buyButton.disabled = !canAfford;
+        }
+    });
+    
+    // Update reroll button state too
+    const rerollButton = document.getElementById('shop-reroll-button');
+    if (rerollButton && game.shopCanReroll) {
+        rerollButton.disabled = game.player.gold < SHOP_REROLL_COST;
+    }
 }
 
 function handleSellItem(game, ui, inventoryIndex) {
