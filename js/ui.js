@@ -1307,13 +1307,10 @@ class UI {
                 if (slot.dataset.itemData) {
                     console.log(`Slot ${targetSlotNum} occupied, clearing first...`);
                     this.clearForgeSlot(targetSlotNum); // Attempt to return existing item
-                    // Note: If clearForgeSlot fails (e.g., inventory full), the drop might still proceed
-                    // depending on desired behavior. For now, we assume clearForgeSlot handles messaging.
                 }
                 // -----------------------------------------------------
 
                 // --- Remove NEW item from inventory --- 
-                // Make sure item still exists in inventory (clearForgeSlot might have rearranged things)
                 const currentInventoryItem = this.game.player.inventory[parsedIndex]; 
                 if (!currentInventoryItem || currentInventoryItem.id !== item.id) {
                      console.warn(`Item at index ${parsedIndex} changed or removed unexpectedly.`);
@@ -1323,26 +1320,33 @@ class UI {
                 }
                 const removedItem = this.game.player.removeItem(parsedIndex);
                 // --- Store removed item data in the slot --- 
-                // e.target.dataset.itemData = JSON.stringify(removedItem); // Old way
                 slot.dataset.itemData = JSON.stringify(removedItem); // Store on the slot div itself
                 slot.dataset.originalIndex = parsedIndex; // Store original index too
                 // -------------------------------------------
 
                 console.log(`Dropped item ${removedItem.name} into forge slot ${targetSlotNum}`);
 
-                // Display item in the slot with a clear button
+                // --- Display item name and add click listener to slot for removal ---
                 slot.innerHTML = `
-                    <span>${removedItem.name}</span>
-                    <button class="clear-slot-button" data-slot-num="${targetSlotNum}">(x)</button>
-                `;
-                slot.querySelector('.clear-slot-button').addEventListener('click', () => this.clearForgeSlot(targetSlotNum));
+                    <div class="forge-slot-label">Item ${targetSlotNum}</div>
+                    <div class="forge-slot-content">${removedItem.name}</div>
+                `; // Show item name
+                slot.style.cursor = 'pointer'; // Indicate it's clickable
+                
+                // Add the click listener to the slot itself
+                slot.onclick = () => {
+                    // Only clear if it still contains item data when clicked
+                    if (slot.dataset.itemData) { 
+                        this.clearForgeSlot(targetSlotNum);
+                    }
+                };
+                // --- End click listener logic ---
 
                 // Update the forge button state
                 this.updateForgeButton();
 
-                // --- NEW LOGIC: Re-render inventory to show removal ---
-                this.renderInventory(); 
-                // Mark inventory item as in-use
+                // --- Re-render inventory to show removal ---
+                this.renderInventory();
                 this.updateInventoryInUseStyles();
             });
         });
@@ -2037,6 +2041,8 @@ class UI {
             <div class="forge-slot-label">Item ${slotNum}</div>
             <div class="forge-slot-content">Drag item here</div>
         `;
+        slotElement.style.cursor = 'default'; // Reset cursor
+        slotElement.onclick = null; // Remove click listener
 
         // Clear stored data
         delete slotElement.dataset.itemData;
@@ -2114,23 +2120,38 @@ class UI {
         if (canForge && item1 && item2) { // Ensure items were parsed successfully
             const previewItem = this.previewForgedItem(item1, item2);
             if (previewItem) {
-                forgePreview.textContent = `Result: ${previewItem.name}`; 
+                forgePreview.textContent = `Result: ${previewItem.name}`;
                 forgePreview.classList.remove('hidden');
             } else {
                 // If preview fails (e.g., incompatible despite basic checks), disable button and hide preview
                 forgeButton.disabled = true;
-                forgePreview.classList.add('hidden');
+                // forgePreview.classList.add('hidden'); // Keep preview visible for message
+                forgePreview.textContent = "Cannot forge these items.";
+                forgePreview.classList.remove('hidden');
             }
         } else {
             // If not canForge or items failed to parse, disable and hide
             forgeButton.disabled = true;
-            forgePreview.classList.add('hidden');
+            // forgePreview.classList.add('hidden'); // Keep preview visible for message
+            if (!item1DataString || !item2DataString) {
+                 forgePreview.textContent = "Place two identical items to forge.";
+            } else if (!hasHammer) {
+                forgePreview.textContent = "Requires Blacksmith Hammer.";
+            } else {
+                forgePreview.textContent = "Items must be identical."; // Or more specific message
+            }
+             forgePreview.classList.remove('hidden');
         }
     }
     // --- End Restore updateForgeButton ---
 
     // --- Restore previewForgedItem --- 
     previewForgedItem(item1, item2) {
+        // Basic check for forgeability (should match updateForgeButton logic)
+        if (!item1 || !item2 || item1.type !== item2.type || item1.slot !== item2.slot || item1.id !== item2.id) {
+            return null; // Return null if items are not suitable for forging
+        }
+        
         // Create the forged item with proper stats structure
         const forgedItem = {
             name: `Reinforced ${item1.name}`,
@@ -2204,15 +2225,25 @@ class UI {
             return; 
         }
 
-        // --- Clear forge slots AFTER successfully adding the new item --- 
-        this.clearForgeSlot(1); // Use the clear function (this removes itemData from slot)
-        this.clearForgeSlot(2); // Use the clear function
-        // --- End Clearing --- 
+        // --- Items are consumed: Reset slots directly, don't call clearForgeSlot --- 
+        [slot1, slot2].forEach((slot, index) => {
+            const slotNum = index + 1;
+            slot.innerHTML = `
+                <div class="forge-slot-label">Item ${slotNum}</div>
+                <div class="forge-slot-content">Drag item here</div>
+            `;
+            slot.style.cursor = 'default';
+            slot.onclick = null;
+            delete slot.dataset.itemData;
+            delete slot.dataset.originalIndex;
+        });
+        // --- End Slot Reset ---
         
         // Update UI
         this.game.addLog(`The Blacksmith combines your ${item1.name} and ${item2.name} into a ${forgedItem.name}!`);
-        // Inventory is already updated by addItem and clearForgeSlot
-        // this.renderInventory(); // No need to render again here
+        this.updateForgeButton(); // Update button state (will disable it)
+        this.renderInventory(); // Render inventory (shows new item, removes old styles)
+        this.updateInventoryInUseStyles(); // Update inventory styles
     }
     // --- End Restore handleForgeItems ---
 
