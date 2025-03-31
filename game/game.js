@@ -30,10 +30,7 @@ class Game {
     ];
 
     startGame() {
-        this.player = new Player();
         this.ui.renderAll();
-        this.state = 'selecting_pack';
-        new Starting(this, this.ui).display();
     }
 
     addLog(message) {

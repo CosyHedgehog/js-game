@@ -6,8 +6,8 @@ class Starting {
 
     STARTING_PACKS = {
         warrior: {
-            name: 'Warrior Pack',
-            description: 'A defensive focused loadout:',
+            name: 'Warrior',
+            description: 'A balanced fighter with good health and attack. Starts with basic armor and a wooden sword.',
             stats: {
                 maxHealth: 25,
                 health: 15,
@@ -22,8 +22,8 @@ class Starting {
             ]
         },
         fisher: {
-            name: 'Fisher Pack',
-            description: 'A survival focused loadout:',
+            name: 'Fisher',
+            description: 'A resourceful adventurer with fishing gear and food. Starts with extra gold and various fish.',
             stats: {
                 maxHealth: 20,
                 health: 20,
@@ -41,8 +41,8 @@ class Starting {
             ]
         },
         blacksmith: {
-            name: 'Blacksmith Pack',
-            description: 'A crafting focused loadout:',
+            name: 'Blacksmith',
+            description: 'A sturdy craftsman with high defense. Starts with blacksmithing tools and basic supplies.',
             stats: {
                 maxHealth: 25,
                 health: 15,
@@ -58,8 +58,8 @@ class Starting {
             ]
         },
         thief: {
-            name: 'Thief Pack',
-            description: 'A stealth and trap focused loadout:',
+            name: 'Thief',
+            description: 'A swift rogue with high attack but low health. Starts with thief tools and a speed potion.',
             stats: {
                 maxHealth: 15,
                 health: 10,
@@ -79,8 +79,6 @@ class Starting {
 
     display() {
         this.ui.clearMainArea();
-        const mainContent = document.getElementById('main-content');
-
         const container = document.createElement('div');
         container.id = 'starting-pack-area';
         container.className = 'starting-pack-selection';
@@ -103,7 +101,7 @@ class Starting {
                         <span>${pack.stats.baseDefense}</span>
                     </div>
                     <div>
-                        <span>Starting Gold</span>
+                        <span>Gold</span>
                         <span>${pack.stats.startingGold ? pack.stats.startingGold : 0}</span>
                     </div>
                 </div>
@@ -120,7 +118,7 @@ class Starting {
         `).join('');
 
         container.innerHTML = `
-            <h3>Choose Your Starting Equipment</h3>
+            <h3>Choose Your Starting Pack</h3>
             <div class="pack-options-container">
                 ${packOptions}
             </div>
@@ -129,8 +127,8 @@ class Starting {
             </div>
         `;
 
-        mainContent.appendChild(container);
-        this.ui.switchScreen('game-screen');
+        document.body.appendChild(container);
+        // this.ui.switchScreen('game-screen');
 
         const items = container.querySelectorAll('li[data-item-id]');
         const descriptionBox = container.querySelector('.pack-item-description');
@@ -180,6 +178,7 @@ class Starting {
         this.game.logMessages = ["Welcome to the Simple Rogue-like!"];
         this.game.state = 'choosing';
 
+        this.ui.switchScreen('game-screen');
         this.ui.renderAll();
         this.game.addLog("Game started with your chosen equipment.");
         this.ui.clearMainArea();

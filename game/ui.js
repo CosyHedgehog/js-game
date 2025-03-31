@@ -101,9 +101,9 @@ class UI {
     }
 
     switchScreen(screenId) {
-        this.startScreen.classList.add('hidden');
-        this.gameScreen.classList.add('hidden');
-        this.endScreen.classList.add('hidden');
+        if (this.startScreen) this.startScreen.classList.add('hidden');
+        if (this.gameScreen) this.gameScreen.classList.add('hidden');
+        if (this.endScreen) this.endScreen.classList.add('hidden');
         const screenToShow = document.getElementById(screenId);
         if (screenToShow) {
             screenToShow.classList.remove('hidden');
