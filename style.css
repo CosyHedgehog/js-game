@@ -2549,3 +2549,25 @@ html {
 .inventory-slot.sharpen-valid {
     border: 2px dashed #4CAF50;
 }
+
+.pack-stats {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 5px;
+}
+
+.pack-stats div {
+    font-size: 0.9em;
+    color: #ddd;
+}
+
+.pack-stats div:last-child {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: #ffd700;
+    font-weight: bold;
+}

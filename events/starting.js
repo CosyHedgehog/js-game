@@ -4,6 +4,79 @@ class Starting {
         this.ui = ui;
     }
 
+    STARTING_PACKS = {
+        warrior: {
+            name: 'Warrior Pack',
+            description: 'A defensive focused loadout:',
+            stats: {
+                maxHealth: 25,
+                health: 15,
+                baseAttack: 2,
+                baseDefense: 1,
+            },
+            items: [
+                { id: 'wooden_sword', count: 1 },
+                { id: 'leather_armor', count: 1 },
+                { id: 'leather_legs', count: 1 },
+                { id: 'bread', count: 3 }
+            ]
+        },
+        fisher: {
+            name: 'Fisher Pack',
+            description: 'A survival focused loadout:',
+            stats: {
+                maxHealth: 20,
+                health: 20,
+                baseAttack: 1,
+                baseDefense: 1,
+                startingGold: 5
+            },
+            items: [
+                { id: 'rusty_sword', count: 1 },
+                { id: 'leather_helm', count: 1 },
+                { id: 'fishing_rod', count: 1 },
+                { id: 'large_fish', count: 3 },
+                { id: 'medium_fish', count: 2 },
+                { id: 'small_fish', count: 2 }
+            ]
+        },
+        blacksmith: {
+            name: 'Blacksmith Pack',
+            description: 'A crafting focused loadout:',
+            stats: {
+                maxHealth: 25,
+                health: 15,
+                baseAttack: 0,
+                baseDefense: 2,
+            },
+            items: [
+                { id: 'wooden_hammer', count: 1 },
+                { id: 'leather_armor', count: 1 },
+                { id: 'blacksmith_hammer', count: 1 },
+                { id: 'bread', count: 2 },
+                { id: 'small_fish', count: 2 }
+            ]
+        },
+        thief: {
+            name: 'Thief Pack',
+            description: 'A stealth and trap focused loadout:',
+            stats: {
+                maxHealth: 15,
+                health: 10,
+                baseAttack: 2,
+                baseDefense: 0,
+                startingGold: 10
+            },
+            items: [
+                { id: 'wooden_dagger', count: 1 },
+                { id: 'leather_helm', count: 1 },
+                { id: 'thief_tools', count: 1 },
+                { id: 'speed_potion', count: 1 },
+                { id: 'bread', count: 2 }
+            ]
+        }
+    };
+
     display() {
         this.ui.clearMainArea();
         const mainContent = document.getElementById('main-content');
@@ -12,61 +85,29 @@ class Starting {
         container.id = 'starting-pack-area';
         container.className = 'starting-pack-selection';
 
+        const packOptions = Object.entries(this.STARTING_PACKS).map(([packId, pack]) => `
+            <div class="pack-option" id="${packId}-pack">
+                <h4>${pack.name}</h4>
+                <p>${pack.description}</p>
+                <div class="pack-stats">
+                    <div>HP: ${pack.stats.maxHealth}</div>
+                    <div>Attack: ${pack.stats.baseAttack}</div>
+                    <div>Defense: ${pack.stats.baseDefense}</div>
+                    <div>Starting Gold: ${pack.stats.startingGold ? pack.stats.startingGold : 0}</div>
+                </div>
+                <ul>
+                    ${pack.items.map(item => `
+                        <li data-item-id="${item.id}">${ITEMS[item.id].name}${item.count > 1 ? ` (${item.count})` : ''}</li>
+                    `).join('')}
+                </ul>
+                <button data-pack-id="${packId}">Choose ${pack.name.split(' ')[0]}</button>
+            </div>
+        `).join('');
+
         container.innerHTML = `
             <h3>Choose Your Starting Equipment</h3>
-            
             <div class="pack-options-container">
-                <div class="pack-option" id="warrior-pack">
-                    <h4>Warrior Pack</h4>
-                    <p>A defensive focused loadout:</p>
-                    <ul>
-                        <li data-item-id="wooden_sword">Wooden Sword</li>
-                        <li data-item-id="leather_armor">Leather Armor</li>
-                        <li data-item-id="leather_legs">Leather Legs</li>
-                        <li data-item-id="bread">Bread (3)</li>
-                    </ul>
-                    <button data-pack-id="warrior">Choose Warrior</button>
-                </div>
-                
-                <div class="pack-option" id="fisher-pack">
-                    <h4>Fisher Pack</h4>
-                    <p>A survival focused loadout:</p>
-                    <ul>
-                        <li data-item-id="rusty_sword">Rusty Sword</li>
-                        <li data-item-id="leather_helm">Leather Helm</li>
-                        <li data-item-id="fishing_rod">Fishing Rod</li>
-                        <li data-item-id="large_fish">Large Fish (3)</li>
-                        <li data-item-id="medium_fish">Medium Fish (2)</li>
-                        <li data-item-id="small_fish">Small Fish (2)</li>
-                    </ul>
-                    <button data-pack-id="fisher">Choose Fisher</button>
-                </div>
-    
-                <div class="pack-option" id="blacksmith-pack">
-                    <h4>Blacksmith Pack</h4>
-                    <p>A crafting focused loadout:</p>
-                    <ul>
-                        <li data-item-id="wooden_hammer">Wooden Hammer</li>
-                        <li data-item-id="leather_armor">Leather Armor</li>
-                        <li data-item-id="blacksmith_hammer">Blacksmith Hammer</li>
-                        <li data-item-id="bread">Bread (2)</li>
-                        <li data-item-id="small_fish">Small Fish (2)</li>
-                    </ul>
-                    <button data-pack-id="blacksmith">Choose Blacksmith</button>
-                </div>
-
-                <div class="pack-option" id="thief-pack">
-                    <h4>Thief Pack</h4>
-                    <p>A stealth and trap focused loadout:</p>
-                    <ul>
-                        <li data-item-id="wooden_dagger">Wooden Dagger</li>
-                        <li data-item-id="leather_helm">Leather Helm</li>
-                        <li data-item-id="thief_tools">Thief's Tools</li>
-                        <li data-item-id="speed_potion">Speed Potion</li>
-                        <li data-item-id="bread">Bread (2)</li>
-                    </ul>
-                    <button data-pack-id="thief">Choose Thief</button>
-                </div>
+                ${packOptions}
             </div>
             <div class="pack-item-description">
                 Click on an item to see its description
@@ -92,72 +133,41 @@ class Starting {
             });
         });
 
-        // --- NEW: Add click handlers for pack selection buttons ---
         const packButtons = container.querySelectorAll('button[data-pack-id]');
         packButtons.forEach(button => {
             button.addEventListener('click', () => {
                 const packId = button.getAttribute('data-pack-id');
-                this.selectStartingPack(packId); // Call the method on the instance
+                this.selectStartingPack(packId);
             });
         });
-        // --- End NEW ---
     }
 
-    // Add new method to handle pack selection
     selectStartingPack(packId) {
-        this.game.state = 'starting_pack'; // Use game instance
-        switch (packId) {
-            case 'warrior':
-                // Warrior pack: More armor focused
-                this.game.player.addItem(this.game.createItem('wooden_sword')); // Use game.player
-                this.game.player.addItem(this.game.createItem('leather_armor'));
-                this.game.player.addItem(this.game.createItem('leather_legs'));
-                this.game.player.addItem(this.game.createItem('bread'));
-                this.game.player.addItem(this.game.createItem('bread'));
-                this.game.player.addItem(this.game.createItem('bread'));
-                break; // Removed clearMainArea, handled by proceeding
+        this.game.state = 'starting_pack';
+        const pack = this.STARTING_PACKS[packId];
 
-            case 'fisher':
-                // Fisher pack: Includes fishing rod
-                this.game.player.addItem(this.game.createItem('rusty_sword')); // Use game.player
-                this.game.player.addItem(this.game.createItem('leather_helm'));
-                this.game.player.addItem(this.game.createItem('fishing_rod'));
-                this.game.player.addItem(this.game.createItem('large_fish'));
-                this.game.player.addItem(this.game.createItem('large_fish'));
-                this.game.player.addItem(this.game.createItem('medium_fish'));
-                this.game.player.addItem(this.game.createItem('medium_fish'));
-                this.game.player.addItem(this.game.createItem('small_fish'));
-                break; // Removed clearMainArea
+        this.game.player.maxHealth = pack.stats.maxHealth;
+        this.game.player.health = pack.stats.health;
+        this.game.player.baseAttack = pack.stats.baseAttack;
+        this.game.player.baseDefense = pack.stats.baseDefense;
 
-            case 'blacksmith':
-                // Blacksmith pack: Includes hammer and some basic resources
-                this.game.player.addItem(this.game.createItem('wooden_hammer'));
-                this.game.player.addItem(this.game.createItem('leather_armor'));
-                this.game.player.addItem(this.game.createItem('blacksmith_hammer'));
-                this.game.player.addItem(this.game.createItem('bread'));
-                this.game.player.addItem(this.game.createItem('bread'));
-                this.game.player.addItem(this.game.createItem('small_fish'));
-                this.game.player.addItem(this.game.createItem('small_fish'));
-                break;
-
-            case 'thief':
-                // Thief pack: Focused on speed and trap disarming
-                this.game.player.addItem(this.game.createItem('wooden_dagger'));
-                this.game.player.addItem(this.game.createItem('leather_helm'));
-                this.game.player.addItem(this.game.createItem('thief_tools'));
-                this.game.player.addItem(this.game.createItem('speed_potion'));
-                this.game.player.addItem(this.game.createItem('bread'));
-                this.game.player.addItem(this.game.createItem('bread'));
-                break;
+        if (pack.stats.startingGold) {
+            this.game.player.addGold(pack.stats.startingGold);
         }
+
+        pack.items.forEach(item => {
+            for (let i = 0; i < item.count; i++) {
+                this.game.player.addItem(this.game.createItem(item.id));
+            }
+        });
         
         this.game.currentRound = 0;
         this.game.logMessages = ["Welcome to the Simple Rogue-like!"];
         this.game.state = 'choosing';
 
-        this.ui.renderAll(); // Render everything after items are added
+        this.ui.renderAll();
         this.game.addLog("Game started with your chosen equipment.");
-        this.ui.clearMainArea(); // Clear the pack selection UI
-        this.game.proceedToNextRound(); // Start the first round
+        this.ui.clearMainArea();
+        this.game.proceedToNextRound();
     }
 }
