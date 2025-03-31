@@ -44,21 +44,28 @@ class Trap {
     showTrapAreaSelection() {
         this.ui.clearMainArea();
 
+        const hasTools = this.game.player.inventory.some(item => item && item.id === 'thief_tools');
+
         const trapArea = document.getElementById('trap-area');
         trapArea.classList.remove('hidden');
         trapArea.innerHTML = `
             <div class="trap-areas-container">
-                ${Object.entries(this.TRAP_REWARDS).map(([key, area]) => `
-                    <div class="trap-area-option" data-risk="${key}">
-                        <h4>${area.name}</h4>
-                        <p>${area.description}</p>
-                        <div class="trap-area-details">
-                            <p>Disarm Chance: ${Math.round(area.disarmChance * 100)}%</p>
-                            <p>Damage: ${area.damageRange[0]}-${area.damageRange[1]}</p>
+                ${Object.entries(this.TRAP_REWARDS).map(([key, area]) => {
+                    const baseChance = Math.round(area.disarmChance * 100);
+                    const adjustedChance = hasTools ? Math.min(100, Math.round((area.disarmChance + 0.2) * 100)) : baseChance;
+                    const toolBonus = hasTools ? ` (+20%)` : '';
+                    return `
+                        <div class="trap-area-option" data-risk="${key}">
+                            <h4>${area.name}</h4>
+                            <p>${area.description}</p>
+                            <div class="trap-area-details">
+                                <p>Disarm Chance: ${adjustedChance}%${toolBonus}</p>
+                                <p>Damage: ${area.damageRange[0]}-${area.damageRange[1]}</p>
+                            </div>
+                            <button class="trap-area-button">Attempt Disarm</button>
                         </div>
-                        <button class="trap-area-button">Attempt Disarm</button>
-                    </div>
-                `).join('')}
+                    `;
+                }).join('')}
             </div>
         `;
 
