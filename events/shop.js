@@ -18,7 +18,7 @@ class Shop {
 
         let shopContent = `
             <h3>Shop</h3>
-            <p class="shop-info">Right-click inventory items to sell them.</p>
+            <p class="shop-info">Sell your items from your inventory.</p>
             <div class="shop-content">
                 <div class="shop-items-container">
         `;

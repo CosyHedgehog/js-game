@@ -53,28 +53,30 @@ class Alchemist {
         alchemistArea.id = 'alchemist-area';
         alchemistArea.innerHTML = `
             <h3>Alchemist's Shop</h3>
-            <div class="shop-items-container">
-                ${items.map((item, index) => {
-            const isBought = item.bought === true;
-            const canAfford = this.game.player.gold >= item.buyPrice;
-            return `
-                    <div class="shop-item ${isBought ? 'item-bought' : ''}" data-item-id="${item.id}">
-                        <div class="shop-item-info">
-                            <span class="shop-item-name">${item.name}</span>
-                            <span class="shop-item-price">${item.buyPrice} gold</span>
+            <div class="shop-content">
+                <div class="shop-items-container">
+                    ${items.map((item, index) => {
+                const isBought = item.bought === true;
+                const canAfford = this.game.player.gold >= item.buyPrice;
+                return `
+                        <div class="shop-item ${isBought ? 'item-bought' : ''}" data-item-id="${item.id}">
+                            <div class="shop-item-info">
+                                <span class="shop-item-name">${item.name}</span>
+                                <span class="shop-item-price">${item.buyPrice} gold</span>
+                            </div>
+                            <button class="shop-item-button" ${isBought || !canAfford ? 'disabled' : ''}>
+                                ${isBought ? 'Bought' : 'Buy'}
+                            </button>
                         </div>
-                        <button class="shop-item-button" ${isBought || !canAfford ? 'disabled' : ''}>
-                            ${isBought ? 'Bought' : 'Buy'}
-                        </button>
-                    </div>
-                `}).join('')}
-                ${items.length === 0 ? '<div class="shop-empty-message">No more potions available!</div>' : ''}
-            </div>
-            <div id="potion-description" class="potion-description">
-                Click a potion to see its description
-            </div>
-            <div class="shop-buttons">
-                <button id="alchemist-leave-button" class="shop-leave-button">Leave Shop</button>
+                    `}).join('')}
+                    ${items.length === 0 ? '<div class="shop-empty-message">No more potions available!</div>' : ''}
+                </div>
+                <div id="potion-description" class="potion-description">
+                    Click a potion to see its description
+                </div>
+                <div class="shop-buttons">
+                    <button id="alchemist-leave-button" class="shop-leave-button">Leave Shop</button>
+                </div>
             </div>
         `;
 

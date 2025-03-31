@@ -1867,21 +1867,25 @@ html {
 
 #alchemist-area {
     padding: 20px;
-    text-align: center;
+    background-color: #333;
+    border-radius: 6px;
+    padding: 20px;
+    margin: 10px auto;
+    width: 90%;
+    max-width: 600px;
 }
 
 .potion-description {
-    margin: 20px auto;
-    padding: 15px;
+    padding: 12px;
     background: #2a2a2a;
     border: 1px solid #404040;
-    border-radius: 5px;
-    color: #ecf0f1;
+    border-radius: 4px;
     font-size: 0.9em;
-    min-height: 80px;
-    max-width: 400px;
+    min-height: 60px;
+    width: 95%;
     white-space: pre-line;
     text-align: left;
+    color: #ccc;
 }
 
 .shop-item {
