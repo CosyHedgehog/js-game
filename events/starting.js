@@ -86,18 +86,33 @@ class Starting {
         container.className = 'starting-pack-selection';
 
         const packOptions = Object.entries(this.STARTING_PACKS).map(([packId, pack]) => `
-            <div class="pack-option" id="${packId}-pack">
+            <div class="pack-option" id="${packId}-pack" data-pack-id="${packId}">
                 <h4>${pack.name}</h4>
                 <p>${pack.description}</p>
                 <div class="pack-stats">
-                    <div>HP: ${pack.stats.maxHealth}</div>
-                    <div>Attack: ${pack.stats.baseAttack}</div>
-                    <div>Defense: ${pack.stats.baseDefense}</div>
-                    <div>Starting Gold: ${pack.stats.startingGold ? pack.stats.startingGold : 0}</div>
+                    <div>
+                        <span>HP</span>
+                        <span>${pack.stats.maxHealth}</span>
+                    </div>
+                    <div>
+                        <span>Attack</span>
+                        <span>${pack.stats.baseAttack}</span>
+                    </div>
+                    <div>
+                        <span>Defense</span>
+                        <span>${pack.stats.baseDefense}</span>
+                    </div>
+                    <div>
+                        <span>Starting Gold</span>
+                        <span>${pack.stats.startingGold ? pack.stats.startingGold : 0}</span>
+                    </div>
                 </div>
                 <ul>
                     ${pack.items.map(item => `
-                        <li data-item-id="${item.id}">${ITEMS[item.id].name}${item.count > 1 ? ` (${item.count})` : ''}</li>
+                        <li data-item-id="${item.id}">
+                            <span class="item-name">${ITEMS[item.id].name}</span>
+                            ${item.count > 1 ? `<span class="item-count">(${item.count})</span>` : ''}
+                        </li>
                     `).join('')}
                 </ul>
                 <button data-pack-id="${packId}">Choose ${pack.name.split(' ')[0]}</button>
