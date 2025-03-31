@@ -4,89 +4,108 @@ class Trap {
         this.ui = ui;
     }
 
-    TRAP_WEAPON_LOOT = [
-        'wooden_sword',
-        'rusty_sword',
-        'quick_dagger'
-    ];
-
+    TRAP_REWARDS = {
+        safe: {
+            name: 'Safe Trap',
+            description: 'A simple trap with low risk and low reward.',
+            disarmChance: 0.7,
+            damageRange: [1, 2],
+            itemPool: ['bread', 'cooked_meat', 'wooden_shield', 'leather_helm', 'rusty_sword']
+        },
+        risky: {
+            name: 'Risky Trap',
+            description: 'A dangerous trap with high damage but good disarm chance.',
+            disarmChance: 0.4,
+            damageRange: [1, 4],
+            itemPool: ['leather_armor', 'leather_legs', 'quick_dagger', 'health_potion']
+        },
+        challenging: {
+            name: 'Challenging Trap',
+            description: 'A complex trap difficult to disarm.',
+            disarmChance: 0.2,
+            damageRange: [2, 5],
+            itemPool: ['iron_helm', 'iron_sword', 'iron_armor', 'speed_potion']
+        },
+        deadly: {
+            name: 'Deadly Trap',
+            description: 'A highly dangerous trap with high risk and high reward.',
+            disarmChance: 0.1,
+            damageRange: [3, 7],
+            itemPool: ['steel_greatsword', 'steel_armor', 'dragon_ring']
+        }
+    };
 
     handle() {
-        this.game.currentEncounterType = 'trap';
+        this.game.state = 'trap';
         this.game.addLog('You carefully approach a suspicious area...');
+        this.showTrapAreaSelection();
+    }
+
+    showTrapAreaSelection() {
+        this.ui.clearMainArea();
 
         const trapArea = document.getElementById('trap-area');
         trapArea.classList.remove('hidden');
         trapArea.innerHTML = `
-            <h3>Suspicious Area</h3>
-            <button id="disarm-trap-button">Attempt Disarm</button>
-            <button id="skip-trap-button">Skip</button>
-            <div id="trap-result-message" class="message"></div>
+            <div class="trap-areas-container">
+                ${Object.entries(this.TRAP_REWARDS).map(([key, area]) => `
+                    <div class="trap-area-option" data-risk="${key}">
+                        <h4>${area.name}</h4>
+                        <p>${area.description}</p>
+                        <div class="trap-area-details">
+                            <p>Disarm Chance: ${Math.round(area.disarmChance * 100)}%</p>
+                            <p>Damage: ${area.damageRange[0]}-${area.damageRange[1]}</p>
+                        </div>
+                        <button class="trap-area-button">Attempt Disarm</button>
+                    </div>
+                `).join('')}
+            </div>
         `;
 
-        const disarmButton = document.getElementById('disarm-trap-button');
-        const skipButton = document.getElementById('skip-trap-button');
+        const trapButtons = trapArea.querySelectorAll('.trap-area-button');
+        trapButtons.forEach((button, index) => {
+            button.addEventListener('click', () => {
+                const areaKey = Object.keys(this.TRAP_REWARDS)[index];
+                this.startTrapDisarm(areaKey);
+            });
+        });
+    }
 
-        if (disarmButton) {
-            disarmButton.addEventListener('click', () => {
-                let successChance = 0.30;
-                const hasTools = this.game.player.inventory.some(item => item && item.id === 'thief_tools');
-                if (hasTools) {
-                    successChance += 0.20;
-                    this.game.addLog("Your Thief's Tools aid your attempt...");
-                }
-
-                const roll = Math.random();
-                const trapResultMessage = document.getElementById('trap-result-message');
-                const disarmButton = document.getElementById('disarm-trap-button');
-                const skipButton = document.getElementById('skip-trap-button');
-
-                if (roll <= successChance) {
-                    if (disarmButton) disarmButton.disabled = true;
-                    if (skipButton) skipButton.disabled = true;
-
-                    const goldReward = Math.floor(Math.random() * 6) + 1;
-                    const weaponRewardId = this.TRAP_WEAPON_LOOT[Math.floor(Math.random() * this.TRAP_WEAPON_LOOT.length)];
-                    const weaponItem = this.game.createItem(weaponRewardId);
-
-                    const weaponData = ITEMS[weaponRewardId];
-                    const successMsg = `Success! You disarmed the trap. Found ${goldReward} gold and a ${weaponData.name}.`;
-                    this.game.addLog(successMsg);
-
-                    if (trapResultMessage) {
-                        trapResultMessage.textContent = successMsg;
-                        trapResultMessage.className = 'message success';
-                    }
-
-                    this.game.enterLootState(goldReward, [weaponItem]);
-                    this.game.ui.updatePlayerStats();
-
-                    if (this.game.player.health <= 0) {
-                        return;
-                    }
-                } else {
-                    const damageTaken = Math.floor(Math.random() * 3) + 1;
-                    this.game.player.takeRawDamage(damageTaken);
-                    this.game.ui.createDamageSplat('#trap-area', damageTaken, 'damage');
-                    this.game.ui.updatePlayerStats();
-
-                    const failMsg = `Failure! The trap triggers, dealing ${damageTaken} damage.`;
-                    game.addLog(failMsg);
-
-                    if (trapResultMessage) {
-                        trapResultMessage.textContent = failMsg;
-                        trapResultMessage.className = 'message failure';
-                    }
-
-                    if (this.game.player.health <= 0) {
-                        this.game.endGame(false);
-                        return;
-                    }
-                };
-            })
+    startTrapDisarm(areaKey) {
+        const area = this.TRAP_REWARDS[areaKey];
+        this.game.addLog(`You attempt to disarm the ${area.name}...`);
+        
+        let successChance = area.disarmChance;
+        const hasTools = this.game.player.inventory.some(item => item && item.id === 'thief_tools');
+        if (hasTools) {
+            successChance += 0.2;
+            this.game.addLog("Your Thief's Tools aid your attempt...");
         }
-        if (skipButton) {
-            skipButton.addEventListener('click', this.game.proceedToNextRound);
+
+        const roll = Math.random();
+
+        if (roll <= successChance) {
+            const rewardItemId = area.itemPool[Math.floor(Math.random() * area.itemPool.length)];
+            const rewardItem = this.game.createItem(rewardItemId);
+            const itemData = ITEMS[rewardItemId];
+            
+            const successMsg = `Success! You disarmed the trap and found a ${itemData.name}.`;
+            this.game.addLog(successMsg);
+            this.game.enterLootState(0, [rewardItem]);
+            this.game.ui.updatePlayerStats();
+        } else {
+            const damageTaken = this.game.getRandomInt(area.damageRange[0], area.damageRange[1]);
+            this.game.player.takeRawDamage(damageTaken);
+            this.game.ui.createDamageSplat('#trap-area', damageTaken, 'damage');
+            this.game.ui.updatePlayerStats();
+
+            const failMsg = `Failure! The trap triggers, dealing ${damageTaken} damage.`;
+            this.game.addLog(failMsg);
+
+            if (this.game.player.health <= 0) {
+                this.game.endGame(false);
+                return;
+            }
         }
     }
 }

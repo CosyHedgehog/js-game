@@ -2428,3 +2428,92 @@ html {
 .fishing-area-button:hover {
     background: #666;
 }
+
+.trap-areas-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.trap-area-option {
+    background: #2a2a2a;
+    border: 2px solid #444;
+    border-radius: 8px;
+    padding: 20px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.trap-area-option:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    border-color: #666;
+}
+
+.trap-area-option h4 {
+    color: #fff;
+    margin: 0 0 10px 0;
+    font-size: 1.2em;
+}
+
+.trap-area-option p {
+    color: #ccc;
+    margin: 5px 0;
+    font-size: 0.9em;
+}
+
+.trap-area-details {
+    background: #333;
+    padding: 10px;
+    border-radius: 4px;
+    margin: 10px 0;
+}
+
+.trap-area-details p {
+    margin: 5px 0;
+    color: #aaa;
+    font-size: 0.85em;
+}
+
+.trap-area-button {
+    width: 100%;
+    padding: 10px;
+    background: #444;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.trap-area-button:hover {
+    background: #555;
+}
+
+.trap-area-option[data-risk="safe"] {
+    border-color: #4CAF50;
+}
+
+.trap-area-option[data-risk="risky"] {
+    border-color: #FFA726;
+}
+
+.trap-area-option[data-risk="challenging"] {
+    border-color: #EF5350;
+}
+
+.trap-area-option[data-risk="deadly"] {
+    border-color: #D32F2F;
+}
+
+@media (max-width: 768px) {
+    .trap-areas-container {
+        grid-template-columns: 1fr;
+    }
+}

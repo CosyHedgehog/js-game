@@ -125,6 +125,7 @@ class Starting {
                 this.game.player.addItem(this.game.createItem('bread'));
                 this.game.player.addItem(this.game.createItem('small_fish'));
                 this.game.player.addItem(this.game.createItem('small_fish'));
+                this.game.player.addItem(this.game.createItem('thief_tools'));
                 break; // Removed clearMainArea
         }
         

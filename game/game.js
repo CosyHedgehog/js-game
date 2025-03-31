@@ -25,8 +25,8 @@ class Game {
         { type: 'fishing', weight: 15 },
         { type: 'blacksmith', weight: 5 },
         { type: 'sharpen', weight: 5 },
-        { type: 'armorsmith', weight: 90 },
-        { type: 'trap', weight: 5 }
+        { type: 'armorsmith', weight: 5 },
+        { type: 'trap', weight: 105 }
     ];
 
     startGame() {
