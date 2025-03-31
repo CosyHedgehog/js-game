@@ -319,7 +319,7 @@ class UI {
                 requirementHTML = '<div style="color: #ff4444; margin-bottom: 10px;">Requires: Fishing Rod</div>';
                 buttonDisabled = true;
             }
-        } else if (choice.encounter.type === 'blacksmith' || choice.encounter.type === 'armourer') {
+        } else if (choice.encounter.type === 'blacksmith' || choice.encounter.type === 'armorsmith') {
             if (!hasHammer) {
                 requirementHTML = '<div style="color: #ff4444; margin-bottom: 10px;">Requires: Blacksmith Hammer</div>';
                 buttonDisabled = true;
