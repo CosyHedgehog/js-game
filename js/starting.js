@@ -121,7 +121,8 @@ class Starting {
 
             case 'blacksmith':
                 // Blacksmith pack: Includes hammer and some basic resources
-                this.game.player.addItem(this.game.createItem('rusty_sword')); // Use game.player
+                this.game.player.addItem(this.game.createItem('rusty_sword'));
+                this.game.player.addItem(this.game.createItem('rusty_sword'));
                 this.game.player.addItem(this.game.createItem('leather_armor'));
                 this.game.player.addItem(this.game.createItem('blacksmith_hammer'));
                 this.game.player.addItem(this.game.createItem('bread'));
