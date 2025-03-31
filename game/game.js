@@ -22,10 +22,10 @@ class Game {
         { type: 'shop', weight: 5 },
         { type: 'alchemist', weight: 5 },
         { type: 'treasure_chest', weight: 10 },
-        { type: 'fishing', weight: 90 },
+        { type: 'fishing', weight: 15 },
         { type: 'blacksmith', weight: 5 },
         { type: 'sharpen', weight: 5 },
-        { type: 'armourer', weight: 5 },
+        { type: 'armourer', weight: 90 },
         { type: 'trap', weight: 5 }
     ];
 

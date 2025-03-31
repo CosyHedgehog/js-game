@@ -126,7 +126,7 @@ class Combat {
         this.ui.updateCombatantHealth(
             'player', 
             this.player.health, 
-            this.player.maxHealth, 
+            this.player.getMaxHealth(), 
             damageDealt, 
             actualBlocked,
             false, 

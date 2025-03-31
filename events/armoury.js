@@ -29,7 +29,7 @@ class Armoury {
         armourerArea.innerHTML = `
             <h3>Armourer Station</h3>
             ${hammerWarning}
-            <p>Drag a piece of armor onto the station to enhance its defense (+1 Defense).</p>
+            <p>Drag a piece of armor onto the station to enhance its Defense (+1) or Max Health (+3).</p>
         `;
         
         const slotContainer = document.createElement('div');
@@ -40,31 +40,38 @@ class Armoury {
         armorSlot.innerHTML = `
             <div class="armourer-slot-label">Armor Slot</div>
             <div class="armourer-slot-content">Drag armor here</div>
-        `;
+        `;    
         
-        const previewArea = document.createElement('div');
-        previewArea.id = 'armourer-preview';
-        previewArea.textContent = 'Select armor to preview enhancement';
-        
-        const enhanceButton = document.createElement('button');
-        enhanceButton.id = 'armourer-button';
-        enhanceButton.textContent = 'Enhance Armor (+1 Defense)';
-        enhanceButton.disabled = true;
-        enhanceButton.onclick = () => this.handleArmourEnhancement();
+        const buttonContainer = document.createElement('div');
+        buttonContainer.style.display = 'flex';
+        buttonContainer.style.gap = '10px';
+        buttonContainer.style.justifyContent = 'center';
+
+        const enhanceDefenseButton = document.createElement('button');
+        enhanceDefenseButton.id = 'armourer-defense-button';
+        enhanceDefenseButton.textContent = 'Reinforce (+1 Def)';
+        enhanceDefenseButton.disabled = true;
+        enhanceDefenseButton.onclick = () => this.handleArmourEnhancement('defense');
+
+        const enhanceHealthButton = document.createElement('button');
+        enhanceHealthButton.id = 'armourer-health-button';
+        enhanceHealthButton.textContent = 'Fortify (+3 HP)';
+        enhanceHealthButton.disabled = true;
+        enhanceHealthButton.onclick = () => this.handleArmourEnhancement('health');
         
         const leaveButton = document.createElement('button');
         leaveButton.id = 'armourer-leave-button';
         leaveButton.textContent = 'Leave';
         leaveButton.onclick = function() { 
             this.game.addLog("You leave without using the Armourer's tools.");
-
             this.game.proceedToNextRound();
         }.bind(this);
         
         slotContainer.appendChild(armorSlot);
         armourerArea.appendChild(slotContainer);
-        armourerArea.appendChild(previewArea);
-        armourerArea.appendChild(enhanceButton);
+        buttonContainer.appendChild(enhanceDefenseButton);
+        buttonContainer.appendChild(enhanceHealthButton);
+        armourerArea.appendChild(buttonContainer);
         armourerArea.appendChild(leaveButton);
         
         mainContent.appendChild(armourerArea);
@@ -127,12 +134,10 @@ class Armoury {
                         if (armourerSlot.dataset.itemData) { 
                             this.clearArmourerSlot();
                         }
-                    };
-        
-                    const newDefense = (removedItem.stats.defense || 0) + 1;
-                    previewArea.textContent = `${removedItem.name} → Defense: ${(removedItem.stats.defense || 0)} → ${newDefense}`;
-                    const hammerCheck = this.game.player.inventory.some(i => i && i.id === 'blacksmith_hammer');
-                    enhanceButton.disabled = !hammerCheck;
+                    };    
+
+                    document.getElementById('armourer-defense-button').disabled = false;
+                    document.getElementById('armourer-health-button').disabled = false;
                     
                     this.ui.renderInventory(); 
 
@@ -179,23 +184,15 @@ class Armoury {
 
         slotElement.classList.remove('crafting-slot-filled');
 
-        const enhanceButton = document.getElementById('armourer-button');
-        if (enhanceButton) { 
-            enhanceButton.disabled = true;
-            enhanceButton.textContent = 'Enhance Armor (+1 Defense)';
-        } else {
-            console.error("Armourer button element not found!");
-        }
-
-        const previewArea = document.getElementById('armourer-preview');
-        if (previewArea) {
-            previewArea.textContent = 'Select armor to preview enhancement';
-        }
+        const enhanceDefenseButton = document.getElementById('armourer-defense-button');
+        const enhanceHealthButton = document.getElementById('armourer-health-button');
+        if (enhanceDefenseButton) enhanceDefenseButton.disabled = true;
+        if (enhanceHealthButton) enhanceHealthButton.disabled = true;
 
         this.ui.renderInventory();
     }
 
-    handleArmourEnhancement() {
+    handleArmourEnhancement(type) {
         const hasHammer = this.game.player.inventory.some(item => item && item.id === 'blacksmith_hammer');
         if (!hasHammer) {
             this.game.addLog("You need a Blacksmith Hammer to enhance armor!");
@@ -223,19 +220,43 @@ class Armoury {
             this.game.addLog("Invalid item type for enhancement.");
             return;
         }
-        
-        item.stats.defense = (item.stats.defense || 0) + 1;
-        if (!item.name.startsWith("Sharpened ") && !item.name.startsWith("Reinforced ")) {
-            item.name = `Reinforced ${item.name}`;
+
+        let successMessage = "";
+
+        if (type === 'defense') {
+            item.stats.defense = (item.stats.defense || 0) + 1;
+            successMessage = `Reinforced ${item.name}! Defense +1.`;
+            if (!item.name.startsWith("Fortified ") && !item.name.startsWith("Reinforced ")) {
+                item.name = `Reinforced ${item.name}`;
+            } else if (item.name.startsWith("Fortified ")) {
+                item.name = item.name.replace("Fortified", "Reinforced");
+            }
+            item.description = item.description.replace(/Defense: \+\d+/, `Defense: +${item.stats.defense}`);
+        } else if (type === 'health') {
+            item.stats.maxHealth = (item.stats.maxHealth || 0) + 3;
+            successMessage = `Fortified ${item.name}! Max HP +3 when equipped.`;
+            if (!item.name.startsWith("Fortified ") && !item.name.startsWith("Reinforced ")) {
+                item.name = `Fortified ${item.name}`;
+            } else if (item.name.startsWith("Reinforced ")) {
+                item.name = item.name.replace("Reinforced", "Fortified");
+            }
+            if (!item.description.includes("Max HP")) {
+                item.description += "\nMax HP: +3 when equipped";
+            }
+        } else {
+            this.game.addLog("Unknown enhancement type.");
+            return;
         }
-        item.description = item.description.replace(/Defense: \+\d+/, `Defense: +${item.stats.defense}`);
+
         item.value = Math.floor(item.value * 1.2);
         
         if (!this.game.player.addItem(item)) {
             this.game.addLog(`Inventory full! Could not add enhanced ${item.name}.`);
             return;
         }
-        this.game.addLog(`Enhanced ${item.name}! Defense increased by 1.`);
+
+        this.game.addLog(successMessage);
+        this.ui.updatePlayerStats();
 
         const armourerArea = document.getElementById('armourer-area');
         if (armourerArea) {

@@ -231,7 +231,7 @@ class UI {
     updatePlayerStats() {
         const player = this.game.player;
         this.statHealth.textContent = player.health;
-        this.statMaxHealth.textContent = player.maxHealth;
+        this.statMaxHealth.textContent = player.getMaxHealth();
         
         let attackText = player.getAttack();
         if (player.tempAttack > 0) {

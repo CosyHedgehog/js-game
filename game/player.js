@@ -22,6 +22,16 @@ class Player {
         this.tempSpeedReduction = 0;
     }
 
+    getMaxHealth() {
+        let totalMaxHealth = this.maxHealth;
+        for (const slot in this.equipment) {
+            if (this.equipment[slot] && this.equipment[slot].stats?.maxHealth) {
+                totalMaxHealth += this.equipment[slot].stats.maxHealth;
+            }
+        }
+        return totalMaxHealth;
+    }
+
     getAttack() {
         let totalAttack = this.baseAttack + this.tempAttack;
         if (this.equipment.weapon && this.equipment.weapon.stats?.attack) {
@@ -56,8 +66,9 @@ class Player {
     }
 
     heal(amount) {
-        const healedAmount = Math.min(amount, this.maxHealth - this.health);
-        this.health = Math.min(this.maxHealth, this.health + amount);
+        const maxHealth = this.getMaxHealth();
+        const healedAmount = Math.min(amount, maxHealth - this.health);
+        this.health = Math.min(maxHealth, this.health + amount);
         return healedAmount;
     }
 
