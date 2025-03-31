@@ -129,7 +129,9 @@ class Alchemist {
         }
     }
     handleAlchemistBuy(itemIndex) {
-        if (!this.game || !this.game.currentShopItems || itemIndex >= this.game.currentShopItems.length) return;
+        if (!this.game || !this.game.currentShopItems || itemIndex >= this.game.currentShopItems.length) {
+            console.log("Alchemist buy error {itemIndex: " + itemIndex + ", currentShopItems: " + this.game.currentShopItems + ", game: " + this.game + "}");
+        }
 
         const item = this.game.currentShopItems[itemIndex];
         if (!item || item.bought) return;
