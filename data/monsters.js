@@ -4,7 +4,7 @@ const FINAL_BOSS = 'dragon'
 
 const MONSTERS = {
     'rat': {
-        name: 'Giant Rat', health: 10, attack: 2, defense: 0, speed: 1.5, goldDrop: [2, 4],
+        name: 'Giant Rat', health: 10, attack: 2, defense: 1, speed: 1.5, goldDrop: [2, 4],
         lootTable: [
             { itemId: 'bread', chance: 0.5 },
             { itemId: 'wooden_sword', chance: 0.1 },
@@ -12,7 +12,7 @@ const MONSTERS = {
         ]
     },
     'bandit': {
-        name: 'Bandit', health: 15, attack: 3, defense: 0, speed: 1.8, goldDrop: [3, 6],
+        name: 'Bandit', health: 15, attack: 3, defense: 2, speed: 1.8, goldDrop: [3, 6],
         lootTable: [
             { itemId: 'rusty_sword', chance: 0.15 },
             { itemId: 'wooden_shield', chance: 0.15 },
@@ -20,7 +20,7 @@ const MONSTERS = {
         ]
     },
     'wolf': {
-        name: 'Dire Wolf', health: 10, attack: 4, defense: 0, speed: 0.8, goldDrop: [2, 5],
+        name: 'Dire Wolf', health: 10, attack: 4, defense: 1, speed: 0.8, goldDrop: [2, 5],
         lootTable: [
             { itemId: 'cooked_meat', chance: 0.4 },
             { itemId: 'leather_legs', chance: 0.15 },

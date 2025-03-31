@@ -1,8 +1,8 @@
 const ITEMS = {
     'rusty_sword': {
-        id: 'rusty_sword', name: 'Rusty Sword', type: 'weapon', slot: 'weapon', hands: 1,
+        id: 'rusty_sword', name: 'Rusty Sword', type: 'weapon', slot: 'weapon', hands: 2,
         stats: { attack: 1 }, speed: 2.0, value: 3,
-        description: 'An old, somewhat effective sword.\nAttack: +1\nSpeed: 2.0s\n1-Handed'
+        description: 'An old, somewhat effective sword.\nAttack: +1\nSpeed: 2.0s\n2-Handed'
     },
     'wooden_dagger': {
         id: 'wooden_dagger', name: 'Wooden Dagger', type: 'weapon', slot: 'weapon', hands: 1,
@@ -10,9 +10,9 @@ const ITEMS = {
         description: 'A lightweight wooden dagger.\nAttack: +1\nSpeed: 1.2s\n1-Handed'
     },
     'wooden_hammer': {
-        id: 'wooden_hammer', name: 'Wooden Hammer', type: 'weapon', slot: 'weapon', hands: 1,
-        stats: { attack: 3 }, speed: 3, value: 6,
-        description: 'A heavy wooden hammer.\nAttack: +3\nSpeed: 3.0s\n1-Handed'
+        id: 'wooden_hammer', name: 'Wooden Hammer', type: 'weapon', slot: 'weapon', hands: 2,
+        stats: { attack: 3 }, speed: 4, value: 6,
+        description: 'A heavy wooden hammer.\nAttack: +3\nSpeed: 4.0s\n2-Handed'
     },
     'wooden_sword': {
         id: 'wooden_sword', name: 'Wooden Sword', type: 'weapon', slot: 'weapon', hands: 1,
