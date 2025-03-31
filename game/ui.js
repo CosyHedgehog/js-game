@@ -151,7 +151,13 @@ class UI {
             slot.classList.remove('slot-empty', 'slot-filled', 'dragging');
 
             if (item) {
-                slot.textContent = item.name;
+                if (this.game.state === 'shop') {
+                    slot.textContent = item.name;
+                    slot.classList.add('sell-price');
+                    slot.classList.add('shop-sellable');
+                } else {
+                    slot.textContent = item.name;
+                }
                 slot.classList.add('slot-filled');
                 slot.draggable = true;
                 slot.addEventListener('dragstart', (event) => {

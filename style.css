@@ -2521,3 +2521,19 @@ html {
         grid-template-columns: 1fr;
     }
 }
+
+@keyframes shopGlow {
+    0% {
+        box-shadow: 0 0 5px rgba(255, 215, 0, 0.2);
+    }
+    50% {
+        box-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
+    }
+    100% {
+        box-shadow: 0 0 5px rgba(255, 215, 0, 0.2);
+    }
+}
+
+.inventory-slot.shop-sellable {
+    animation: shopGlow 2s infinite ease-in-out;
+}

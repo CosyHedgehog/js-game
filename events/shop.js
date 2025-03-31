@@ -13,6 +13,7 @@ class Shop {
         this.game.currentShopItems = this.generateShopItems(this.SHOP_NUM_ITEMS);
         this.game.shopCanReroll = true;
         this.ui.clearMainArea();
+        this.ui.renderInventory(); // to show gold prices
         const shopArea = document.getElementById('shop-area');
         shopArea.classList.remove('hidden');
 
