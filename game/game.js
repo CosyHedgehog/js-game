@@ -25,7 +25,7 @@ class Game {
         { type: 'fishing', weight: 15 },
         { type: 'blacksmith', weight: 5 },
         { type: 'sharpen', weight: 5 },
-        { type: 'armourer', weight: 90 },
+        { type: 'armorsmith', weight: 90 },
         { type: 'trap', weight: 5 }
     ];
 
@@ -208,8 +208,8 @@ class Game {
                 return "Visit Blacksmith";
             case 'sharpen':
                 return "Use Sharpening Stone";
-            case 'armourer':
-                return "Visit Armourer";
+            case 'armorsmith':
+                return "Visit Armorsmith";
             case 'alchemist':
                 return "Visit Alchemist";
             case 'trap':
@@ -283,9 +283,10 @@ class Game {
                 return "You find a sharpening stone that can enhance a weapon.\n" +
                        "Select one weapon to permanently increase its attack power by 1.\n\n" +
                        "Use the sharpening stone?";
-            case 'armourer':
-                return "You find an Armourer's tools that can enhance armor.\n" +
+            case 'armorsmith':
+                return "You find an Armorsmith that can enhance armor.\n" +
                        "Select one piece of armor to permanently increase its defense by 1.\n\n" +
+                       "OR increase its max health by 3.\n\n" +
                        "Use the Armourer's tools?";
             case 'alchemist':
                 return "Visit the Alchemist to buy powerful potions:\n" +
@@ -334,7 +335,7 @@ class Game {
             case 'sharpen':
                 new Sharpen(this, this.ui).handle();
                 break;
-            case 'armourer':
+            case 'armorsmith':
                 new Armoury(this, this.ui).handle();
                 break;
             case 'alchemist':

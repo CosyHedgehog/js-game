@@ -1543,8 +1543,15 @@ html {
 }
 
 .forge-slot-content {
-    font-size: 0.9em;
-    word-wrap: break-word;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #888;
+}
+
+.forge-slot.crafting-slot-filled .forge-slot-content {
+    color: white;
 }
 
 .forge-symbol {
@@ -1669,8 +1676,15 @@ html {
 }
 
 .sharpen-slot-content {
-    font-size: 0.9em;
-    word-wrap: break-word;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #888;
+}
+
+.sharpen-slot.crafting-slot-filled .sharpen-slot-content {
+    color: white;
 }
 
 .sharpen-selection-menu {
@@ -1787,7 +1801,15 @@ html {
 }
 
 .armourer-slot-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: #888;
+}
+
+.armourer-slot.crafting-slot-filled .armourer-slot-content {
+    color: white;
 }
 
 .armourer-selection-menu {
