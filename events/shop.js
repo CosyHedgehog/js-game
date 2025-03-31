@@ -4,7 +4,6 @@ class Shop {
         this.ui = ui;
     }
 
-    // Shop settings
     SHOP_NUM_ITEMS = 3;
     SHOP_REROLL_COST = 3;
 
@@ -17,7 +16,6 @@ class Shop {
         const shopArea = document.getElementById('shop-area');
         shopArea.classList.remove('hidden');
 
-        // Create shop content with updated structure and selling info
         let shopContent = `
             <h3>Shop</h3>
             <p class="shop-info">Right-click inventory items to sell them.</p>
@@ -61,7 +59,6 @@ class Shop {
 
         shopArea.innerHTML = shopContent;
 
-        // Add event listeners
         const rerollButton = document.getElementById('shop-reroll-button');
         const leaveButton = document.getElementById('shop-leave-button');
 
@@ -75,7 +72,6 @@ class Shop {
             }
         }
 
-        // Add click listeners to buy buttons
         const buyButtons = document.querySelectorAll('.shop-item-button');
         buyButtons.forEach(button => {
             button.onclick = () => {
@@ -84,15 +80,11 @@ class Shop {
             };
         });
 
-        // Add click listeners to shop items for descriptions
         const shopItems = document.querySelectorAll('.shop-item');
         shopItems.forEach((shopItem, index) => {
             shopItem.addEventListener('click', () => {
-                // Remove selected class from all items
                 shopItems.forEach(item => item.classList.remove('selected'));
-                // Add selected class to clicked item
                 shopItem.classList.add('selected');
-                // Update description
                 const descriptionArea = document.querySelector('.item-description');
                 if (descriptionArea && items[index]) {
                     descriptionArea.textContent = items[index].description || 'No description available.';
@@ -116,31 +108,26 @@ class Shop {
         if (this.game.state !== 'shop' || !this.game.currentShopItems || itemIndex < 0 || itemIndex >= this.game.currentShopItems.length) return;
     
         const item = this.game.currentShopItems[itemIndex];
-        if (!item) return; // Item might have been bought already
+        if (!item) return;
     
-        // Check gold first
         if (this.game.player.gold < item.buyPrice) {
             this.game.addLog(`You can't afford ${item.name} (${item.buyPrice} gold).`);
             return;
         }
     
-        // Only check inventory space if they can afford it
-        const freeSlot = game.player.findFreeInventorySlot();
+        const freeSlot = this.game.player.findFreeInventorySlot();
         if (freeSlot === -1) {
-            game.addLog("Your inventory is full!");
+            this.game.addLog("Your inventory is full!");
             return;
         }
     
-        // If we get here, they can afford it and have space
         this.game.player.spendGold(item.buyPrice);
-        this.game.player.addItem(item); // Add a *copy*
+        this.game.player.addItem(item);
         this.game.addLog(`You bought ${item.name} for ${item.buyPrice} gold.`);
-        // Mark item as bought instead of removing it
         this.game.currentShopItems[itemIndex].bought = true;
         
-        // --- Targeted UI Update with Scroll Preservation ---
         const shopItemsContainer = this.ui.shopArea.querySelector('.shop-items-container');
-        const scrollPosition = shopItemsContainer ? shopItemsContainer.scrollTop : 0; // Save scroll position
+        const scrollPosition = shopItemsContainer ? shopItemsContainer.scrollTop : 0;
         
         const shopItemDiv = this.ui.shopArea.querySelector(`.shop-item[data-index="${itemIndex}"]`);
         if (shopItemDiv) {
@@ -151,21 +138,16 @@ class Shop {
             }
             shopItemDiv.classList.add('item-bought'); 
             
-            // ui.updateShopAffordability(); // Removed for now, implement this later if needed
         } else {
             console.warn("Shop item div not found for targeted update.");
-            // Re-render as fallback ONLY if absolutely necessary (ideally avoid)
-            // ui.showShopUI(game.currentShopItems, game.shopCanReroll); 
         }
         
         if (shopItemsContainer) {
-            shopItemsContainer.scrollTop = scrollPosition; // Restore scroll position
+            shopItemsContainer.scrollTop = scrollPosition;
         }
-        // --- End Targeted UI Update ---
     
-        // Update affordability AFTER restoring scroll to potentially avoid jump
         if (shopItemDiv) {
-            this.updateShopAffordability(); // Call the helper function
+            this.updateShopAffordability();
         }
     
         this.ui.renderInventory();
@@ -185,7 +167,6 @@ class Shop {
             }
         });
         
-        // Update reroll button state too
         const rerollButton = document.getElementById('shop-reroll-button');
         if (rerollButton && this.game.shopCanReroll) {
             rerollButton.disabled = this.game.player.gold < SHOP_REROLL_COST;
@@ -194,12 +175,12 @@ class Shop {
 
 
     handleSellItem(inventoryIndex) {
-        if (this.game.state !== 'shop') return; // Can only sell in shop
+        if (this.game.state !== 'shop') return;
     
         const item = this.game.player.inventory[inventoryIndex];
         if (!item) return;
     
-        const sellPrice = item.value || 0; // Use item's base value
+        const sellPrice = item.value || 0;
         this.game.player.removeItem(inventoryIndex);
         this.game.player.addGold(sellPrice);
         this.game.addLog(`You sold ${item.name} for ${sellPrice} gold.`);
@@ -221,25 +202,25 @@ class Shop {
                     'leather_legs', 'wooden_shield', 'bread', 'cooked_meat', 
                     'health_potion', 'fishing_rod', 'blacksmith_hammer', 'thief_tools'
                 ],
-                weight: 70  // 70% chance for early game items
+                weight: 70
             },
             mid: {
                 items: [
                     'iron_sword', 'quick_dagger', 'iron_helm', 'iron_armor', 
                     'iron_legs', 'iron_shield', 'health_potion'
                 ],
-                weight: 25  // 25% chance for mid game items
+                weight: 25
             },
             late: {
                 items: [
                     'steel_sword', 'steel_greatsword', 'steel_helm', 'steel_armor', 
                     'steel_legs', 'steel_shield', 'greater_health_potion'
                 ],
-                weight: 5   // 5% chance for late game items
+                weight: 5
             }
         };
     
-        const availableItems = new Set(); // Use Set to prevent duplicates
+        const availableItems = new Set();
     
         while (availableItems.size < numItems) {
             const roll = Math.random() * 100;
@@ -254,21 +235,17 @@ class Shop {
                 }
             }
     
-            // Select random item from the chosen tier
             const tierItems = selectedTier.items;
             const randomItem = tierItems[this.game.getRandomInt(0, tierItems.length - 1)];
             
-            // Only add if not already selected
             if (!availableItems.has(randomItem)) {
                 availableItems.add(randomItem);
             }
         }
     
-        // Convert selected items to actual item objects
         for (const itemId of availableItems) {
             const itemData = this.game.createItem(itemId);
             if (itemData) {
-                // Reduce shop prices: 1.3x value + small random addition
                 itemData.buyPrice = Math.ceil(itemData.value * 1.3 + this.game.getRandomInt(0, Math.floor(itemData.value * 0.2)));
                 items.push(itemData);
             }
@@ -283,7 +260,7 @@ class Shop {
         if (this.game.player.spendGold(SHOP_REROLL_COST)) {
             this.game.addLog(`You spend ${SHOP_REROLL_COST} gold to reroll the shop.`);
             this.game.currentShopItems = this.generateShopItems(SHOP_NUM_ITEMS);
-            this.game.shopCanReroll = false; // Only one reroll per visit
+            this.game.shopCanReroll = false;
             this.handle();
             this.ui.updatePlayerStats();
         } else {

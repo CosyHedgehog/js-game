@@ -1,18 +1,18 @@
 class Combat {
     constructor(player, enemy, game, ui) {
         this.player = player;
-        this.enemy = { // Create a combat instance of the enemy
-            ...enemy, // Copy base stats
-            health: enemy.health, // Ensure current health is set
+        this.enemy = {
+            ...enemy,
+            health: enemy.health,
             maxHealth: enemy.health,
             attackTimer: 0,
         };
-        this.game = game; // Reference to the main game logic
-        this.ui = ui;     // Reference to the UI manager
+        this.game = game;
+        this.ui = ui;
         this.intervalId = null;
-        this.tickRate = 100; // Changed from 500 to 100 milliseconds (0.1 seconds)
-        this.timeScale = this.tickRate / 1000; // Now 0.1
-        this.isPlayerTurn = false; // Used if simultaneous attacks aren't desired
+        this.tickRate = 100;
+        this.timeScale = this.tickRate / 1000;
+        this.isPlayerTurn = false;
         this.isEnemyTurn = false;
 
         this.player.attackTimer = 0;
@@ -20,11 +20,10 @@ class Combat {
         this.player.pendingActionDelay = 0;
         this.player.attackTimerPaused = false;
 
-        // Update run button text with damage range
         const runButton = document.getElementById('combat-run-button');
         if (runButton) {
-            const minDamage = Math.floor(this.enemy.attack * 1); // 1x damage
-            const maxDamage = Math.floor(this.enemy.attack * 3); // 3x damage
+            const minDamage = Math.floor(this.enemy.attack * 1);
+            const maxDamage = Math.floor(this.enemy.attack * 3);
             runButton.textContent = `Run (${minDamage}-${maxDamage} damage)`;
             runButton.onclick = () => this.handleRun();
         }
@@ -33,13 +32,10 @@ class Combat {
     start() {
         this.game.addLog(`Combat started: Player vs ${this.enemy.name}!`);
         
-        // Reset any previous escape animations
         const playerSide = document.querySelector('.player-side');
         if (playerSide) {
             playerSide.classList.remove('player-escape-animation');
-            // Reset the element by forcing a reflow
             void playerSide.offsetWidth;
-            // Reset any transforms that might have been applied
             playerSide.style.transform = 'none';
             playerSide.style.opacity = '1';
         }
@@ -55,26 +51,23 @@ class Combat {
         let playerActed = false;
         let enemyActed = false;
 
-        // Decrement timers
         if (!this.player.attackTimerPaused) {
             this.player.attackTimer = Math.max(0, this.player.attackTimer - this.timeScale);
         }
         if (this.player.pendingActionDelay > 0) {
             this.player.pendingActionDelay = Math.max(0, this.player.pendingActionDelay - this.timeScale);
             if (this.player.pendingActionDelay === 0) {
-                this.player.attackTimerPaused = false; // Resume attack timer when delay is done
+                this.player.attackTimerPaused = false;
             }
         }
         this.enemy.attackTimer = Math.max(0, this.enemy.attackTimer - this.timeScale);
 
-        // Update UI timers
         this.ui.updateCombatTimers(
             this.player.attackTimer,
             this.enemy.attackTimer,
             this.player.pendingActionDelay
         );
 
-        // Check if player can attack
         if (!this.player.attackTimerPaused && this.player.attackTimer <= 0) {
             this.playerAttack();
             playerActed = true;
@@ -82,24 +75,22 @@ class Combat {
             if (this.checkCombatEnd()) return;
         }
 
-        // Check if enemy can attack
         if (this.enemy.attackTimer <= 0) {
             this.enemyAttack();
             enemyActed = true;
-            this.enemy.attackTimer = this.enemy.speed; // Reset timer
-            if (this.checkCombatEnd()) return; // Check if player died
+            this.enemy.attackTimer = this.enemy.speed;
+            if (this.checkCombatEnd()) return;
         }
     }
 
     playerAttack() {
         const playerAttackRoll = this.game.rollDamage(this.player.getAttack());
         const enemyDefenseRoll = this.game.rollDamage(this.enemy.defense || 0);
-        const actualBlocked = Math.min(playerAttackRoll, enemyDefenseRoll); // Only block up to the attack amount
+        const actualBlocked = Math.min(playerAttackRoll, enemyDefenseRoll);
         const damageDealt = Math.max(0, playerAttackRoll - enemyDefenseRoll);
         
         this.enemy.health = Math.max(0, this.enemy.health - damageDealt);
         
-        // Update log message to show actual amount blocked
         if (damageDealt === 0 && actualBlocked > 0) {
             this.game.addLog(`You attack ${this.enemy.name} but they block all ${actualBlocked} damage!`);
         } else {
@@ -111,7 +102,7 @@ class Combat {
             this.enemy.health, 
             this.enemy.maxHealth, 
             damageDealt, 
-            actualBlocked, // Pass actual blocked amount instead of defense roll
+            actualBlocked,
             false, 
             damageDealt === 0 && actualBlocked > 0
         );
@@ -121,12 +112,11 @@ class Combat {
     enemyAttack() {
         const enemyAttackRoll = this.game.rollDamage(this.enemy.attack);
         const playerDefenseRoll = this.game.rollDamage(this.player.getDefense());
-        const actualBlocked = Math.min(enemyAttackRoll, playerDefenseRoll); // Only block up to the attack amount
+        const actualBlocked = Math.min(enemyAttackRoll, playerDefenseRoll);
         const damageDealt = Math.max(0, enemyAttackRoll - playerDefenseRoll);
         
         this.player.health = Math.max(0, this.player.health - damageDealt);
         
-        // Update log message to show actual amount blocked
         if (damageDealt === 0 && actualBlocked > 0) {
             this.game.addLog(`${this.enemy.name} attacks but you block all ${actualBlocked} damage!`);
         } else {
@@ -138,14 +128,13 @@ class Combat {
             this.player.health, 
             this.player.maxHealth, 
             damageDealt, 
-            actualBlocked, // Pass actual blocked amount instead of defense roll
+            actualBlocked,
             false, 
             damageDealt === 0 && actualBlocked > 0
         );
         this.ui.updatePlayerStats();
     }
 
-    // Call this when player uses an item during combat
     handlePlayerItemUse(useResult) {
         if (useResult.success) {
             this.game.addLog(useResult.message);
@@ -159,7 +148,6 @@ class Combat {
                     this.player.pendingActionDelay
                 );
             }
-            // Update health display immediately if healed
             if (useResult.item?.healAmount) {
                 this.ui.updateCombatantHealth('player', this.player.health, this.player.maxHealth, useResult.healedAmount, 0, true);
                 this.ui.updatePlayerStats();
@@ -191,25 +179,20 @@ class Combat {
     }
 
     handleRun() {
-        // Stop combat immediately
         clearInterval(this.intervalId);
         this.intervalId = null;
 
-        // Calculate run damage as 1-3x the enemy's attack
         const multiplier = 1 + Math.random() * 2;
         const runDamage = Math.floor(this.enemy.attack * multiplier);
         const damageResult = this.player.takeDamage(runDamage);
         
-        // Update health display one last time
         this.ui.updateCombatantHealth('player', this.player.health, this.player.maxHealth, damageResult.actualDamage);
         
-        // Add escape animation to player side
         const playerSide = document.querySelector('.player-side');
         if (playerSide) {
             playerSide.classList.add('player-escape-animation');
         }
 
-        // Hide combat area after animation starts
         setTimeout(() => {
             const combatArea = document.querySelector('#combat-area');
             if (combatArea) {
@@ -217,12 +200,10 @@ class Combat {
             }
         }, 750);
 
-        // Create backdrop
         const backdrop = document.createElement('div');
         backdrop.className = 'escape-backdrop';
         document.body.appendChild(backdrop);
 
-        // Create escape message box
         const messageContainer = document.createElement('div');
         messageContainer.className = 'escape-message-container';
         
@@ -240,7 +221,6 @@ class Combat {
         messageContainer.innerHTML = content;
         document.body.appendChild(messageContainer);
 
-        // Handle continue button
         const continueButton = document.getElementById('escape-continue');
         continueButton.onclick = () => {
             messageContainer.remove();
@@ -250,14 +230,14 @@ class Combat {
                 this.game.endGame(false);
             } else {
                 this.game.addLog(`You successfully fled from the ${this.enemy.name}!`);
-                this.player.resetCombatBuffs(); // Reset buffs before ending combat
+                this.player.resetCombatBuffs();
                 this.endCombat(false, true);
             }
         };
     }
 
     endCombat(playerWon, ranAway = false) {
-        this.player.resetCombatBuffs(); // Reset buffs as soon as combat ends
+        this.player.resetCombatBuffs();
         clearInterval(this.intervalId);
         this.intervalId = null;
         this.ui.hideCombatUI();
@@ -265,7 +245,6 @@ class Combat {
         if (playerWon) {
             this.game.addLog(`You defeated the ${this.enemy.name}!`);
 
-            // Calculate Loot
             const goldDropped = this.game.getRandomInt(this.enemy.goldDrop[0], this.enemy.goldDrop[1]);
             const droppedItems = [];
             if (this.enemy.lootTable && this.enemy.lootTable.length > 0) {
@@ -278,27 +257,20 @@ class Combat {
                         }
                     }
                 });
-            }
-
-            // --- Store defeated enemy name BEFORE state transition ---
-            const defeatedName = this.enemy.name; // Store locally first
-            this.game.lastDefeatedEnemyName = defeatedName; // Store on game object
-            // ---
+            }            
+            const defeatedName = this.enemy.name;
+            this.game.lastDefeatedEnemyName = defeatedName;
 
             if (goldDropped > 0 || droppedItems.length > 0) {
-                // Enter loot state, which will handle proceeding later
                 this.game.enterLootState(goldDropped, droppedItems);
             } else {
-                // No loot, proceed directly using the helper
                 this.game.addLog("The enemy dropped nothing.");
-                this.checkBossWinAndProceed(); // This checks boss/proceeds
+                this.checkBossWinAndProceed();
             }
 
         } else if (ranAway) {
-            // Just proceed to next round if ran away
             this.game.proceedToNextRound();
         } else {
-            // Player lost
             this.game.addLog(`You were defeated by the ${this.enemy.name}...`);
             this.game.endGame(false);
         }

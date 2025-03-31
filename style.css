@@ -1,16 +1,15 @@
-/* --- Global Styles & Dark Mode Base --- */
 body {
     font-family: 'Courier New', monospace;
-    background-color: #1a1a1a; /* Darker background */
+    background-color: #1a1a1a;
     color: #ecf0f1;
     margin: 0;
-    padding: 0; /* Remove padding that might cause scrolling */
+    padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
     box-sizing: border-box;
-    overflow: hidden; /* Prevent body scrolling */
+    overflow: hidden;
 }
 
 #game-container {
@@ -25,7 +24,6 @@ body {
     padding: 0;
 }
 
-/* --- Screen Visibility --- */
 .screen {
     width: 100%;
     height: 100%;
@@ -40,12 +38,11 @@ body {
     display: flex;
 }
 
-/* --- NEW Game Screen Grid Layout --- */
 #game-screen:not(.hidden) {
     width: 100%;
     height: 100%;
     display: grid;
-    grid-template-columns: minmax(400px, 1fr) 320px; /* Updated to match right column width */
+    grid-template-columns: minmax(400px, 1fr) 320px;
     grid-template-rows: auto 1fr;
     gap: 16px;
     padding: 12px;
@@ -54,7 +51,6 @@ body {
 
 /* --- Grid Area Assignments --- */
 
-/* Player Stats (Top Left) */
 #player-stats-area {
     grid-column: 1 / -1;
     display: flex;

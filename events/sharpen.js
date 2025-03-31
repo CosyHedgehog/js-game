@@ -34,9 +34,8 @@ class Sharpen {
 
         const previewArea = document.createElement('div');
         previewArea.id = 'sharpen-preview';
-        previewArea.innerHTML = 'Select a weapon to preview enhancements'; // Use innerHTML for formatting
+        previewArea.innerHTML = 'Select a weapon to preview enhancements';
 
-        // Create two buttons
         const buttonContainer = document.createElement('div');
         buttonContainer.style.display = 'flex';
         buttonContainer.style.gap = '10px';
@@ -46,13 +45,13 @@ class Sharpen {
         sharpenAttackButton.id = 'sharpen-attack-button';
         sharpenAttackButton.textContent = 'Sharpen (+1 Attack)';
         sharpenAttackButton.disabled = true;
-        sharpenAttackButton.onclick = () => this.handleSharpen('attack'); // New handler
+        sharpenAttackButton.onclick = () => this.handleSharpen('attack');
 
         const sharpenSpeedButton = document.createElement('button');
         sharpenSpeedButton.id = 'sharpen-speed-button';
         sharpenSpeedButton.textContent = 'Hone (-0.2s Speed)';
         sharpenSpeedButton.disabled = true;
-        sharpenSpeedButton.onclick = () => this.handleSharpen('speed'); // New handler
+        sharpenSpeedButton.onclick = () => this.handleSharpen('speed');
 
         const leaveButton = document.createElement('button');
         leaveButton.id = 'sharpen-leave-button';
@@ -73,12 +72,10 @@ class Sharpen {
 
         mainContent.appendChild(sharpenArea);
 
-        // --- Add Drag and Drop Listeners ---
         const sharpenSlot = sharpenArea.querySelector('.sharpen-slot');
         if (sharpenSlot) {
-            // ... (dragover, dragenter, dragleave listeners remain the same) ...
             sharpenSlot.addEventListener('dragover', (event) => {
-                event.preventDefault(); // Allow drop
+                event.preventDefault();
                 const sourceIndex = this.ui.draggedItemIndex;
                 const item = this.ui.draggedItem;
                 if (sourceIndex === null || item === null) return;
@@ -141,8 +138,7 @@ class Sharpen {
 
                     sharpenSlot.classList.add('crafting-slot-filled');
 
-                    // Update preview for BOTH options
-                    const previewElement = document.getElementById('sharpen-preview'); // Use the correct variable name
+                    const previewElement = document.getElementById('sharpen-preview');
                     const currentAttack = (removedItem.stats.attack || 0);
                     const newAttack = currentAttack + 1;
                     const currentSpeed = (removedItem.speed ?? this.game.player.defaultAttackSpeed);
@@ -154,14 +150,13 @@ class Sharpen {
                         Hone:    Atk ${currentAttack} / Spd ${newSpeedValue.toFixed(1)}s
                     `;
 
-                    // Enable BOTH buttons
                     document.getElementById('sharpen-attack-button').disabled = false;
                     document.getElementById('sharpen-speed-button').disabled = false;
 
                     this.ui.renderInventory();
 
                 } else {
-                    this.game.addLog("You can only place weapons on the sharpening stone."); // More specific message
+                    this.game.addLog("You can only place weapons on the sharpening stone.");
                 }
             });
         }
@@ -176,7 +171,6 @@ class Sharpen {
             return;
         }
 
-        // --- Retrieve item data and add back to inventory ---
         const itemDataString = slotElement.dataset.itemData;
         if (itemDataString) {
             try {
@@ -189,35 +183,31 @@ class Sharpen {
             } catch (error) {
                 console.error("Error parsing item data from sharpen slot:", error);
                 this.game.addLog("Error clearing slot. Item data corrupted?");
-                // Don't return item if parse failed, but still clear visually
             }
         }
 
-        // Clear visual content and stored data
         slotElement.innerHTML = `
                 <div class="sharpen-slot-label">Weapon Slot</div>
                 <div class="sharpen-slot-content">Drop weapon here</div>
             `;
-        slotElement.style.cursor = 'default'; // Reset cursor
-        slotElement.onclick = null; // Remove click listener
+        slotElement.style.cursor = 'default';
+        slotElement.onclick = null;
         delete slotElement.dataset.itemData;
-        delete slotElement.dataset.originalIndex; // Clear original index too
+        delete slotElement.dataset.originalIndex;
 
-        slotElement.classList.remove('crafting-slot-filled'); // Remove visual class
+        slotElement.classList.remove('crafting-slot-filled');
 
-        // Reset and disable the buttons
         const sharpenAttackButton = document.getElementById('sharpen-attack-button');
         const sharpenSpeedButton = document.getElementById('sharpen-speed-button');
         if (sharpenAttackButton) sharpenAttackButton.disabled = true;
         if (sharpenSpeedButton) sharpenSpeedButton.disabled = true;
 
-        // Reset preview text
         const previewArea = document.getElementById('sharpen-preview');
         if (previewArea) {
-            previewArea.innerHTML = 'Select a weapon to preview enhancements'; // Use innerHTML
+            previewArea.innerHTML = 'Select a weapon to preview enhancements';
         }
 
-        this.ui.renderInventory(); // Update inventory display
+        this.ui.renderInventory();
     }
 
     handleSharpen(type) {
@@ -245,7 +235,6 @@ class Sharpen {
         let successMessage = "";
         let alreadyEnhanced = false;
 
-        // Apply enhancement based on type
         if (type === 'attack') {
             const currentAttack = item.stats.attack || 0;
             item.stats.attack = currentAttack + 1;
@@ -253,7 +242,7 @@ class Sharpen {
             if (!item.name.startsWith("Honed ") && !item.name.startsWith("Sharpened ")) {
                 item.name = `Sharpened ${item.name}`;
             } else if (item.name.startsWith("Honed ")) {
-                item.name = item.name.replace("Honed", "Sharpened"); // Overwrite hone
+                item.name = item.name.replace("Honed", "Sharpened");
             }
             item.description = item.description.replace(/Attack: \+\d+/, `Attack: +${item.stats.attack}`);
         } else if (type === 'speed') {
@@ -268,10 +257,10 @@ class Sharpen {
                 if (!item.name.startsWith("Honed ") && !item.name.startsWith("Sharpened ")) {
                     item.name = `Honed ${item.name}`;
                 } else if (item.name.startsWith("Sharpened ")) {
-                    item.name = item.name.replace("Sharpened", "Honed"); // Overwrite sharpen
+                    item.name = item.name.replace("Sharpened", "Honed");
                 }
                 item.description = item.description.replace(/Speed: [\d.]+s/, `Speed: ${item.speed.toFixed(1)}s`);
-                if (!item.description.includes("Speed:")) { // Add speed if not present
+                if (!item.description.includes("Speed:")) {
                     item.description += `\nSpeed: ${item.speed.toFixed(1)}s`;
                 }
             }
@@ -280,11 +269,10 @@ class Sharpen {
             return;
         }
 
-        if (alreadyEnhanced) return; // Stop if speed couldn't be improved
+        if (alreadyEnhanced) return;
 
-        item.value = Math.floor(item.value * 1.2); // Increase value for either enhancement
+        item.value = Math.floor(item.value * 1.2);
 
-        // Add the *enhanced* item back to inventory
         if (!this.game.player.addItem(item)) {
             this.game.addLog(`Inventory full! Could not add enhanced ${item.name}.`);
             return;
@@ -292,7 +280,6 @@ class Sharpen {
 
         this.game.addLog(successMessage);
 
-        // Flash and proceed
         const sharpenArea = document.getElementById('sharpen-area');
         if (sharpenArea) {
             sharpenArea.classList.add('upgrade-success-flash');
