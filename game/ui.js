@@ -44,6 +44,7 @@ class UI {
         this.shopRerollButton = document.getElementById('shop-reroll-button');
         this.outputLogArea = document.getElementById('output-log-area');
         this.outputLog = document.getElementById('output-log');
+        this.fishingArea = document.getElementById('fishing-area');
         document.addEventListener('click', (event) => {
             if (this.itemContextMenu && !this.itemContextMenu.classList.contains('hidden') &&
                 !this.itemContextMenu.contains(event.target) &&
@@ -368,6 +369,7 @@ class UI {
         this.shopArea.classList.add('hidden');
         this.restArea.classList.add('hidden');
         this.lootArea.classList.add('hidden');
+        this.fishingArea.classList.add('hidden');
         const trapArea = document.getElementById('trap-area');
         if (trapArea) {
             trapArea.classList.add('hidden');

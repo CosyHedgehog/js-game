@@ -525,7 +525,7 @@ class Game {
                 if (this.isAllLootCollected()) {
                     this.continueLoot();
                 } else {
-                    this.ui.showLootUI(this.pendingLoot);
+                    new Loot(this, this.ui).handle(this.pendingLoot);
                 }
             } else {
                 this.addLog("Failed to pick up item - inventory might be full!");

@@ -2343,3 +2343,66 @@ html {
 .upgrade-success-flash {
     animation: upgradeFlash 0.5s ease-out;
 }
+
+#fishing-area {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.fishing-areas-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.fishing-area-option {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 20px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.fishing-area-option:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.fishing-area-option h4 {
+    margin: 0 0 10px 0;
+    color: #ffd700;
+}
+
+.fishing-area-option p {
+    margin: 5px 0;
+    color: #ccc;
+}
+
+.fishing-area-details {
+    margin: 15px 0;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+}
+
+.fishing-area-details p {
+    margin: 5px 0;
+    font-size: 0.9em;
+}
+
+.fishing-area-button {
+    width: 100%;
+    padding: 10px;
+    background: #4a4a4a;
+    border: 1px solid #666;
+    color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.fishing-area-button:hover {
+    background: #666;
+}

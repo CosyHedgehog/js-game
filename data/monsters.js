@@ -78,5 +78,14 @@ const MONSTERS = {
     'dragon': {
         name: 'Ancient Dragon', health: 120, attack: 12, defense: 6, speed: 2.5, goldDrop: [40, 60],
         lootTable: []
+    },
+
+    // fishing monsters
+    'river_troll': {
+        name: 'River Troll', health: 15, attack: 6, defense: 1, speed: 3, goldDrop: [4, 8],
+        lootTable: [
+            { itemId: 'small_fish', chance: 0.4 },
+            { itemId: 'leather_legs', chance: 0.15 },
+        ]
     }
 };

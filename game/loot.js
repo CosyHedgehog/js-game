@@ -65,8 +65,8 @@ class Loot {
                     `;
 
                 const nameSpan = itemDiv.querySelector('.loot-item-name');
-                nameSpan.addEventListener('mouseenter', (e) => this.showTooltip(item.description || 'No description', this.itemTooltip, e));
-                nameSpan.addEventListener('mouseleave', () => this.hideTooltip(this.itemTooltip));
+                nameSpan.addEventListener('mouseenter', (e) => this.ui.showTooltip(item.description || 'No description', this.ui.itemTooltip, e));
+                nameSpan.addEventListener('mouseleave', () => this.ui.hideTooltip(this.ui.itemTooltip));
 
                 const takeButton = itemDiv.querySelector('.loot-item-button');
                 takeButton.onclick = (e) => {
