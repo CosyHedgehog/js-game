@@ -1,8 +1,15 @@
 class Fishing {
+
     constructor(game, ui) {
         this.game = game;
         this.ui = ui;
     }
+
+    FISHING_LOOT_TABLE = [
+        { itemId: 'small_fish', chance: 0.6 },    // Common
+        { itemId: 'medium_fish', chance: 0.3 },   // Uncommon
+        { itemId: 'large_fish', chance: 0.1 }     // Rare
+    ];
 
     handle() {
         const hasFishingRod = this.game.player.inventory.some(item => item && item.id === 'fishing_rod');

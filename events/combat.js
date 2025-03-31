@@ -322,10 +322,8 @@ class Combat {
         const isBossDefeated = defeatedName && MONSTERS[FINAL_BOSS] && defeatedName === MONSTERS[FINAL_BOSS].name;
 
         if (isBossDefeated) {
-            console.log("checkBossWinAndProceed: Boss detected, calling endGame(true).");
             this.game.endGame(true); // Player wins
         } else {
-            console.log("checkBossWinAndProceed: Not boss, calling proceedToNextRound().");
             this.game.proceedToNextRound(); // Go to next round
         }
     }

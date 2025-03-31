@@ -66,7 +66,6 @@ class Blacksmith {
                 const sourceIndex = parseInt(sourceIndexStr);
                 const item = this.game.player.inventory[sourceIndex];
                 const targetSlotNum = index + 1;
-                console.log(item);
 
                 if (this.isValidForgeItem(item, sourceIndex, targetSlotNum)) {
                     e.dataTransfer.dropEffect = 'move';
@@ -104,7 +103,6 @@ class Blacksmith {
 
                 // --- Fix: Return item if slot is already occupied --- 
                 if (slot.dataset.itemData) {
-                    console.log(`Slot ${targetSlotNum} occupied, clearing first...`);
                     this.clearForgeSlot(targetSlotNum); // Attempt to return existing item
                 }
                 // -----------------------------------------------------
@@ -118,14 +116,8 @@ class Blacksmith {
                     return;
                 }
                 const removedItem = this.game.player.removeItem(parsedIndex);
-                // --- Store removed item data in the slot --- 
                 slot.dataset.itemData = JSON.stringify(removedItem); // Store on the slot div itself
                 slot.dataset.originalIndex = parsedIndex; // Store original index too
-                // -------------------------------------------
-
-                console.log(`Dropped item ${removedItem.name} into forge slot ${targetSlotNum}`);
-
-                // --- Display item name and add click listener to slot for removal ---
                 slot.innerHTML = `
                     <div class="forge-slot-label">Item ${targetSlotNum}</div>
                     <div class="forge-slot-content">${removedItem.name}</div>
@@ -399,7 +391,6 @@ class Blacksmith {
 
     isValidForgeItem(item, sourceIndex, targetSlotNum) {
         if (!item || (item.type !== 'weapon' && item.type !== 'armor')) {
-            console.log("Invalid item type for forge");
             return false; // Must be weapon or armor
         }
 

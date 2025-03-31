@@ -16,6 +16,20 @@ class Game {
         if (this.ui) { this.ui.game = this; }
     }
 
+    ENCOUNTER_PROBABILITY = [
+        { type: 'monster', weight: 30 },
+        { type: 'rest', weight: 25 },
+        { type: 'shop', weight: 5 },
+        { type: 'alchemist', weight: 5 },
+        { type: 'treasure_chest', weight: 10 },
+        { type: 'mini-boss', weight: 5 },
+        { type: 'fishing', weight: 10 },
+        { type: 'blacksmith', weight: 5 },
+        { type: 'sharpen', weight: 5 },
+        { type: 'armourer', weight: 5 },
+        { type: 'trap', weight: 5 }
+    ];
+
     startGame() {
         this.player = new Player();
         this.ui.renderAll();
@@ -33,7 +47,6 @@ class Game {
 
     // Ensure proceedToNextRound correctly sets state and clears UI
     proceedToNextRound() {
-        console.log("[LoopDebug] Entering proceedToNextRound");
         this.currentRound++;
         this.addLog(`--- Round ${this.currentRound} ---`);
 
@@ -53,11 +66,8 @@ class Game {
         }
 
         this.ui.updatePlayerStats();
-        console.log("[LoopDebug] proceedToNextRound: Calling renderEquipment");
         this.ui.renderEquipment();
-        console.log("[LoopDebug] proceedToNextRound: Calling renderInventory");
         this.ui.renderInventory();
-        console.log("[LoopDebug] Exiting proceedToNextRound");
     }
 
     enterLootState(gold, items) {
@@ -174,11 +184,11 @@ class Game {
     }
 
     getRandomEncounter() {
-        const totalWeight = ENCOUNTER_PROBABILITY.reduce((sum, enc) => sum + enc.weight, 0);
+        const totalWeight = this.ENCOUNTER_PROBABILITY.reduce((sum, enc) => sum + enc.weight, 0);
         let randomRoll = Math.random() * totalWeight;
         let chosenEncounter = null;
 
-        for (const encounter of ENCOUNTER_PROBABILITY) {
+        for (const encounter of this.ENCOUNTER_PROBABILITY) {
             if (randomRoll < encounter.weight) {
                 chosenEncounter = { type: encounter.type };
                 break;
@@ -353,7 +363,6 @@ class Game {
     // --- Player Action Handlers ---
 
     handleEquipItem(index) {
-        console.log(`[LoopDebug] Entering handleEquipItem for index ${index}`);
         const result = this.player.equipItem(index);
         if (result.success) {
             this.addLog(`Equipped ${result.item.name}.`);
@@ -377,7 +386,6 @@ class Game {
     }
 
     handleUnequipItem(slotName) {
-        console.log(`[LoopDebug] Entering handleUnequipItem for slot ${slotName}`);
         const result = this.player.unequipItem(slotName);
         if (result.success) {
             this.addLog(`Unequipped ${result.item.name}.`);

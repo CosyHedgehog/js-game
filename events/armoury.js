@@ -150,8 +150,6 @@ class Armoury {
     }
 
     clearArmourerSlot() {
-        console.log("Clearing armourer slot");
-        // const slotElement = document.getElementById('armourer-slot'); // Old way using non-existent ID
         const slotElement = document.querySelector('#armourer-area .armourer-slot'); // Use querySelector
 
         if (!slotElement) {

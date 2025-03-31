@@ -4,6 +4,13 @@ class Trap {
         this.ui = ui;
     }
 
+    TRAP_WEAPON_LOOT = [
+        'wooden_sword',
+        'rusty_sword',
+        'quick_dagger'
+    ];
+
+
     handle() {
         this.game.currentEncounterType = 'trap';
         this.game.addLog('You carefully approach a suspicious area...');
@@ -21,10 +28,6 @@ class Trap {
         // Add event listeners after generating the buttons
         const disarmButton = document.getElementById('disarm-trap-button');
         const skipButton = document.getElementById('skip-trap-button');
-
-        console.log('trap area', trapArea);
-        console.log('disarm button', disarmButton);
-        console.log('skip button', skipButton);
 
         if (disarmButton) {
             disarmButton.addEventListener('click', () => {

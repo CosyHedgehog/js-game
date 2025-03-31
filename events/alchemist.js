@@ -4,30 +4,30 @@ class Alchemist {
         this.ui = ui;
     }
 
+    POTION_TIERS = {
+        common: {
+            items: ['health_potion', 'attack_potion', 'defense_potion'],
+            chance: 0.8 // 80% chance for common potions
+        },
+        rare: {
+            items: ['greater_health_potion', 'greater_attack_potion', 'greater_defense_potion'],
+            chance: 0.4 // 40% chance for greater potions
+        },
+        special: {
+            items: ['speed_potion', 'greater_speed_potion'],
+            chance: 0.3 // 30% chance for speed potion
+        }
+    };
+
     handle() {
         this.game.state = 'alchemist';
         this.game.addLog("You find an Alchemist's shop, filled with mysterious potions.");
-
-        const potionTiers = {
-            common: {
-                items: ['health_potion', 'attack_potion', 'defense_potion'],
-                chance: 0.8 // 80% chance for common potions
-            },
-            rare: {
-                items: ['greater_health_potion', 'greater_attack_potion', 'greater_defense_potion'],
-                chance: 0.4 // 40% chance for greater potions
-            },
-            special: {
-                items: ['speed_potion', 'greater_speed_potion'],
-                chance: 0.3 // 30% chance for speed potion
-            }
-        };
 
         // Generate available stock
         const availableItems = [];
 
         // Check each tier and item
-        Object.entries(potionTiers).forEach(([tier, { items, chance }]) => {
+        Object.entries(POTION_TIERS).forEach(([tier, { items, chance }]) => {
             items.forEach(itemId => {
                 if (Math.random() < chance) {
                     const item = this.game.createItem(itemId);

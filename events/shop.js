@@ -4,6 +4,10 @@ class Shop {
         this.ui = ui;
     }
 
+    // Shop settings
+    SHOP_NUM_ITEMS = 3;
+    SHOP_REROLL_COST = 3;
+
     handle() {
         this.game.state = 'shop';
         this.game.addLog("You arrive at a small shop.");

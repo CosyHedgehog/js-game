@@ -84,10 +84,8 @@ class Sharpen {
                 if (sourceIndex === null || item === null) return;
                 sharpenSlot.classList.remove('drag-over-valid', 'drag-over-invalid');
                 if (item && item.type === 'weapon') {
-                    console.log("Drag over valid");
                     sharpenSlot.classList.add('drag-over-valid');
                 } else {
-                    console.log("Drag over invalid");
                     sharpenSlot.classList.add('drag-over-invalid');
                 }
             });
@@ -115,7 +113,6 @@ class Sharpen {
 
                 if (itemToDrop && itemToDrop.type === 'weapon') {
                     if (sharpenSlot.dataset.itemData) {
-                        console.log(`Sharpen slot occupied, clearing first...`);
                         this.clearSharpenSlot();
                     }
 
@@ -171,7 +168,6 @@ class Sharpen {
     }
 
     clearSharpenSlot() {
-        console.log("Clearing sharpen slot");
         const slotElement = document.querySelector('#sharpen-area .sharpen-slot');
 
         if (!slotElement) {
