@@ -6,9 +6,9 @@ class Fishing {
     }
 
     FISHING_LOOT_TABLE = [
-        { itemId: 'small_fish', chance: 0.6 },    // Common
-        { itemId: 'medium_fish', chance: 0.3 },   // Uncommon
-        { itemId: 'large_fish', chance: 0.1 }     // Rare
+        { itemId: 'small_fish', chance: 0.6 },
+        { itemId: 'medium_fish', chance: 0.3 },
+        { itemId: 'large_fish', chance: 0.1 }
     ];
 
     handle() {
@@ -29,7 +29,7 @@ class Fishing {
             const roll = Math.random();
             let cumulative = 0;
 
-            for (const fish of FISHING_LOOT_TABLE) {
+            for (const fish of this.FISHING_LOOT_TABLE) {
                 cumulative += fish.chance;
                 if (roll < cumulative) {
                     const fishItem = this.game.createItem(fish.itemId);
