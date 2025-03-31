@@ -148,7 +148,6 @@ class Blacksmith {
 
                 // --- Re-render inventory to show removal ---
                 this.ui.renderInventory();
-                this.ui.updateInventoryInUseStyles();
             });
         });
 
@@ -171,7 +170,6 @@ class Blacksmith {
             this.game.addLog("You leave the Blacksmith's forge.");
             this.clearForgeSlot(1);
             this.clearForgeSlot(2);
-            this.ui.updateInventoryInUseStyles();
             this.game.proceedToNextRound();
         }.bind(this); // Explicitly bind 'this'
     }
@@ -346,7 +344,6 @@ class Blacksmith {
         this.game.addLog(`The Blacksmith combines your ${item1.name} and ${item2.name} into a ${forgedItem.name}!`);
         this.updateForgeButton(); // Update button state (will disable it)
         this.ui.renderInventory(); // Render inventory (shows new item, removes old styles)
-        this.ui.updateInventoryInUseStyles(); // Update inventory styles
 
         // Add flash effect
         const blacksmithArea = document.getElementById('blacksmith-area');
@@ -398,7 +395,6 @@ class Blacksmith {
 
         this.updateForgeButton(); // Update button state
         this.ui.renderInventory(); // Update inventory visuals
-        this.ui.updateInventoryInUseStyles(); // Update styles for inventory items
     }
 
     isValidForgeItem(item, sourceIndex, targetSlotNum) {

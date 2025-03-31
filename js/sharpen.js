@@ -59,10 +59,7 @@ class Sharpen {
         leaveButton.textContent = 'Leave';
         leaveButton.onclick = function () {
             this.game.addLog("You leave without using the sharpening stone.");
-            //reset slots
             this.clearSharpenSlot();
-            // this.clearArmourerSlot();
-            this.ui.updateInventoryInUseStyles();
             this.game.proceedToNextRound();
         }.bind(this);
 

@@ -1,7 +1,6 @@
 class UI {
     constructor(game) {
         this.game = game;
-        this.roundIndicatorArea = document.getElementById('round-indicator-area');
         this.draggedItemIndex = null;
         this.draggedItem = null;
         this.lootArea = document.getElementById('loot-area');
@@ -58,23 +57,18 @@ class UI {
                 this.hideTooltip(this.equipTooltip);
             }
         }, true);
+        
         this.cacheDynamicElements();
-        if (this.game) {
-            this.game.ui = this;
-        }
-        if (this.lootTakeButton) {
-            this.lootTakeButton.onclick = () => this.game.collectLoot();
-        } else {
-            console.error("UI Error: Loot Take Button not found during constructor.");
-        }
+
+        if (this.game) this.game.ui = this;
+        if (this.lootTakeButton) this.lootTakeButton.onclick = () => this.game.collectLoot();
+        else console.error("UI Error: Loot Take Button not found during constructor.");
+        
         this.toggleLogButton = document.getElementById('toggle-log-button');
-        this.closeLogButton = document.getElementById('close-log-button');
-        if (this.toggleLogButton) {
-            this.toggleLogButton.onclick = () => new Log(this.game, this).showLog();
-        }
-        if (this.closeLogButton) {
-            this.closeLogButton.onclick = () => new Log(this.game, this).hideLog();
-        }
+        if (this.toggleLogButton) this.toggleLogButton.onclick = () => new Log(this.game, this).showLog();
+
+        this.closeLogButton = document.getElementById('close-log-button');    
+        if (this.closeLogButton) this.closeLogButton.onclick = () => new Log(this.game, this).hideLog();
     }
 
     cacheDynamicElements() {
@@ -97,7 +91,6 @@ class UI {
         this.statDefense = document.getElementById('stat-defense');
         this.statGold = document.getElementById('stat-gold');
         this.statRound = document.getElementById('stat-round');
-
         if (!this.inventoryArea) {
             this.inventoryArea = document.getElementById('inventory-area');
             if (!this.inventoryArea) {
@@ -198,36 +191,6 @@ class UI {
                 slot.addEventListener('click', () => this.hideContextMenu());
             }
             this.inventoryGrid.appendChild(slot);
-        });
-
-        this.updateInventoryInUseStyles(); 
-    }
-
-    updateInventoryInUseStyles() {
-        const inventorySlots = this.inventoryGrid.querySelectorAll('.inventory-slot');
-        const usedIndices = new Set();
-        const forgeSlot1 = document.getElementById('forge-slot-1');
-        const forgeSlot2 = document.getElementById('forge-slot-2');
-        const forgeIndex1 = forgeSlot1?.dataset.itemIndex;
-        const forgeIndex2 = forgeSlot2?.dataset.itemIndex;
-        if (forgeIndex1) usedIndices.add(parseInt(forgeIndex1));
-        if (forgeIndex2) usedIndices.add(parseInt(forgeIndex2));
-        const sharpenSlot = document.querySelector('#sharpen-area .sharpen-slot'); // More specific selector
-        const sharpenIndex = sharpenSlot?.dataset.itemIndex;
-        if (sharpenIndex) usedIndices.add(parseInt(sharpenIndex));
-        const armourerSlot = document.querySelector('#armourer-area .armourer-slot'); // More specific selector
-        const armourerIndex = armourerSlot?.dataset.itemIndex;
-        if (armourerIndex) usedIndices.add(parseInt(armourerIndex));
-        inventorySlots.forEach((slot, index) => {
-            const isInUse = usedIndices.has(index);
-            if (isInUse) {
-                slot.classList.add('in-use');
-                slot.draggable = false;
-            } else {
-                slot.classList.remove('in-use');
-                const item = this.game.player.inventory[index];
-                slot.draggable = !!item; 
-            }
         });
     }
 
