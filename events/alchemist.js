@@ -7,15 +7,15 @@ class Alchemist {
     POTION_TIERS = {
         common: {
             items: ['health_potion', 'attack_potion', 'defense_potion'],
-            chance: 0.8 // 80% chance for common potions
+            chance: 0.8
         },
         rare: {
             items: ['greater_health_potion', 'greater_attack_potion', 'greater_defense_potion'],
-            chance: 0.4 // 40% chance for greater potions
+            chance: 0.4
         },
         special: {
             items: ['speed_potion', 'greater_speed_potion'],
-            chance: 0.3 // 30% chance for speed potion
+            chance: 0.3
         }
     };
 
@@ -23,16 +23,13 @@ class Alchemist {
         this.game.state = 'alchemist';
         this.game.addLog("You find an Alchemist's shop, filled with mysterious potions.");
 
-        // Generate available stock
         const availableItems = [];
 
-        // Check each tier and item
-        Object.entries(POTION_TIERS).forEach(([tier, { items, chance }]) => {
+        Object.entries(this.POTION_TIERS).forEach(([tier, { items, chance }]) => {
             items.forEach(itemId => {
                 if (Math.random() < chance) {
                     const item = this.game.createItem(itemId);
                     if (item) {
-                        // Alchemist charges more than regular shops
                         item.buyPrice = Math.ceil(item.value);
                         availableItems.push(item);
                     }
@@ -81,7 +78,6 @@ class Alchemist {
             </div>
         `;
 
-        // Clear existing alchemist area if it exists
         const existingArea = document.getElementById('alchemist-area');
         if (existingArea) {
             existingArea.remove();
@@ -90,9 +86,8 @@ class Alchemist {
         mainContent.appendChild(alchemistArea);
         this.setupAlchemistEventListeners(items);
 
-        // --- Auto-select first item --- 
         if (items && items.length > 0) {
-            const firstItemDiv = alchemistArea.querySelector('.shop-item'); // First shop item element
+            const firstItemDiv = alchemistArea.querySelector('.shop-item');
             const descriptionBox = alchemistArea.querySelector('#potion-description');
             if (firstItemDiv && descriptionBox) {
                 firstItemDiv.classList.add('selected');
@@ -102,7 +97,6 @@ class Alchemist {
     }
 
     setupAlchemistEventListeners(items) {
-        // Add click listeners for potion descriptions
         const potionItems = document.querySelectorAll('.shop-item');
         const descriptionBox = document.getElementById('potion-description');
 
@@ -113,23 +107,20 @@ class Alchemist {
             item.addEventListener('click', () => {
                 if (itemData) {
                     descriptionBox.textContent = itemData.description;
-                    // Highlight the selected item
                     potionItems.forEach(i => i.classList.remove('selected'));
                     item.classList.add('selected');
                 }
             });
         });
 
-        // Add buy button listeners
         const buyButtons = document.querySelectorAll('.shop-item-button');
         buyButtons.forEach((button, index) => {
             button.onclick = (e) => {
-                e.stopPropagation(); // Prevent triggering the description
+                e.stopPropagation();
                 this.handleAlchemistBuy(index);
             };
         });
 
-        // Add leave button listener
         const leaveButton = document.getElementById('alchemist-leave-button');
         if (leaveButton) {
             leaveButton.onclick = () => this.handleAlchemistLeave();
@@ -139,30 +130,23 @@ class Alchemist {
         if (!this.game || !this.game.currentShopItems || itemIndex >= this.game.currentShopItems.length) return;
 
         const item = this.game.currentShopItems[itemIndex];
-        if (!item || item.bought) return; // Return if item not found or already bought
-
-        // Check if player can afford it
+        if (!item || item.bought) return;
         if (this.game.player.gold < item.buyPrice) {
             this.game.addLog(`You can't afford ${item.name} (${item.buyPrice} gold).`);
             return;
         }
-
-        // Check inventory space
         const freeSlot = this.game.player.findFreeInventorySlot();
         if (freeSlot === -1) {
             this.game.addLog("Your inventory is full!");
             return;
         }
 
-        // Buy the item
         this.game.player.spendGold(item.buyPrice);
         this.game.player.addItem(item);
         this.game.addLog(`You bought ${item.name} for ${item.buyPrice} gold.`);
 
-        // Mark the item as bought instead of removing it
         this.game.currentShopItems[itemIndex].bought = true;
 
-        // --- Targeted UI Update with Scroll Preservation ---
         const alchemistArea = document.getElementById('alchemist-area');
         let scrollPosition = 0;
         let itemsContainer = null;
@@ -170,7 +154,7 @@ class Alchemist {
         if (alchemistArea) {
             itemsContainer = alchemistArea.querySelector('.shop-items-container');
             if (itemsContainer) {
-                scrollPosition = itemsContainer.scrollTop; // Save scroll position
+                scrollPosition = itemsContainer.scrollTop;
             }
 
             const shopItemDiv = alchemistArea.querySelector(`.shop-item[data-item-id="${item.id}"]`);
@@ -181,33 +165,23 @@ class Alchemist {
                     buyButton.disabled = true;
                 }
                 shopItemDiv.classList.add('item-bought');
-
-                // updateAlchemistAffordability will be called after restoring scroll
             } else {
                 console.warn("Alchemist item div not found for targeted update.");
-                // Fallback ONLY if absolutely necessary
-                // this.showAlchemistUI(this.game.currentShopItems);
             }
-
             if (itemsContainer) {
-                itemsContainer.scrollTop = scrollPosition; // Restore scroll position
+                itemsContainer.scrollTop = scrollPosition;
             }
         } else {
             console.error("Alchemist area not found for update.");
-            // Fallback ONLY if absolutely necessary
-            // this.showAlchemistUI(this.game.currentShopItems);
         }
-        // --- End Targeted UI Update ---
-
-        // Update affordability after restoring scroll
         if (alchemistArea) {
-            this.updateAlchemistAffordability(); // Call the helper function
+            this.updateAlchemistAffordability();
         }
 
         this.ui.updatePlayerStats();
         this.ui.renderInventory();
     }
-    // Helper function to update alchemist button states
+    
     updateAlchemistAffordability() {
         const alchemistArea = document.getElementById('alchemist-area');
         if (!alchemistArea) return;
@@ -215,10 +189,8 @@ class Alchemist {
         const shopItems = alchemistArea.querySelectorAll('.shop-item:not(.item-bought)');
         shopItems.forEach(shopItemDiv => {
             const itemId = shopItemDiv.dataset.itemId;
-            // Find the corresponding item in the game data (assuming currentShopItems is accurate)
             const itemData = this.game.currentShopItems.find(item => item.id === itemId && !item.bought);
             const buyButton = shopItemDiv.querySelector('.shop-item-button');
-
             if (itemData && buyButton) {
                 const canAfford = this.game.player.gold >= itemData.buyPrice;
                 buyButton.disabled = !canAfford;

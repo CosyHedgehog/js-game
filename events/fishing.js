@@ -21,12 +21,9 @@ class Fishing {
 
         this.game.state = 'fishing';
         this.game.addLog("You found a good fishing spot and cast your line!");
-
-        // Rest of the fishing logic remains the same
         const fishCaught = this.game.getRandomInt(1, 5);
         this.game.addLog(`You caught ${fishCaught} fish!`);
 
-        // Generate fish based on rarity
         const caughtItems = [];
         for (let i = 0; i < fishCaught; i++) {
             const roll = Math.random();
@@ -45,6 +42,6 @@ class Fishing {
             }
         }
 
-        this.game.enterLootState(0, caughtItems); // No gold, just fish
+        this.game.enterLootState(0, caughtItems);
     }
 }

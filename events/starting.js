@@ -63,15 +63,12 @@ class Starting {
         mainContent.appendChild(container);
         this.ui.switchScreen('game-screen');
 
-        // Add click handlers for items
         const items = container.querySelectorAll('li[data-item-id]');
         const descriptionBox = container.querySelector('.pack-item-description');
 
         items.forEach(item => {
             item.addEventListener('click', () => {
-                // Remove selected class from all items
                 items.forEach(i => i.classList.remove('selected'));
-                // Add selected class to clicked item
                 item.classList.add('selected');
 
                 const itemId = item.getAttribute('data-item-id');

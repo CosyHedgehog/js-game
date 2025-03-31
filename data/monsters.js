@@ -77,6 +77,6 @@ const MONSTERS = {
     },
     'dragon': {
         name: 'Ancient Dragon', health: 120, attack: 12, defense: 6, speed: 2.5, goldDrop: [40, 60],
-        lootTable: [] // Boss doesn't drop items, just victory
+        lootTable: []
     }
 };

@@ -16,7 +16,6 @@ class Trap {
         this.game.addLog('You carefully approach a suspicious area...');
 
         const trapArea = document.getElementById('trap-area');
-        // hideAllAreas(); // Ensure other areas are hidden
         trapArea.classList.remove('hidden');
         trapArea.innerHTML = `
             <h3>Suspicious Area</h3>
@@ -25,18 +24,15 @@ class Trap {
             <div id="trap-result-message" class="message"></div>
         `;
 
-        // Add event listeners after generating the buttons
         const disarmButton = document.getElementById('disarm-trap-button');
         const skipButton = document.getElementById('skip-trap-button');
 
         if (disarmButton) {
             disarmButton.addEventListener('click', () => {
-                let successChance = 0.30; // Increased base chance to 40%
-
-                // Check for Thief's Tools
+                let successChance = 0.30;
                 const hasTools = this.game.player.inventory.some(item => item && item.id === 'thief_tools');
                 if (hasTools) {
-                    successChance += 0.20; // Add 20% bonus
+                    successChance += 0.20;
                     this.game.addLog("Your Thief's Tools aid your attempt...");
                 }
 
@@ -46,7 +42,6 @@ class Trap {
                 const skipButton = document.getElementById('skip-trap-button');
 
                 if (roll <= successChance) {
-                    // Success: Disable buttons here
                     if (disarmButton) disarmButton.disabled = true;
                     if (skipButton) skipButton.disabled = true;
 
@@ -64,14 +59,12 @@ class Trap {
                     }
 
                     this.game.enterLootState(goldReward, [weaponItem]);
-
-                    this.game.ui.updatePlayerStats(); // Use game.ui
+                    this.game.ui.updatePlayerStats();
 
                     if (this.game.player.health <= 0) {
-                        return; // Stop further execution if game over
+                        return;
                     }
                 } else {
-                    // Failure
                     const damageTaken = Math.floor(Math.random() * 3) + 1;
                     this.game.player.takeRawDamage(damageTaken);
                     this.game.ui.createDamageSplat('#trap-area', damageTaken, 'damage');
@@ -85,10 +78,9 @@ class Trap {
                         trapResultMessage.className = 'message failure';
                     }
 
-                    // Check if player died
                     if (this.game.player.health <= 0) {
                         this.game.endGame(false);
-                        return; // Stop further execution if game over
+                        return;
                     }
                 };
             })

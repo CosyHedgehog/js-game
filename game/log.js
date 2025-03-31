@@ -18,7 +18,6 @@ class Log {
 
     hideLog() {
         this.ui.outputLogArea.classList.add('hidden');
-        // Reset button text
         if (this.toggleLogButton) {
             this.toggleLogButton.textContent = 'Show Log';
         }

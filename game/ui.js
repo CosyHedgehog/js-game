@@ -33,7 +33,7 @@ class UI {
         this.statMaxHealth = document.getElementById('stat-max-health');
         this.statAttack = document.getElementById('stat-attack');
         this.statDefense = document.getElementById('stat-defense');
-        this.statSpeed = document.getElementById('stat-speed'); // Add this line
+        this.statSpeed = document.getElementById('stat-speed');
         this.statGold = document.getElementById('stat-gold');
         this.statRound = document.getElementById('stat-round');
         this.combatPlayerHp = document.getElementById('combat-player-hp');
@@ -53,7 +53,7 @@ class UI {
             if (this.itemTooltip && !this.itemTooltip.contains(event.target) && !event.target.closest('.inventory-slot, .shop-item span, .equip-slot')) {
                 this.hideTooltip(this.itemTooltip);
             }
-            if (this.equipTooltip && !this.equipTooltip.contains(event.target) && !event.target.closest('.equip-slot, .inventory-slot')) { // Also hide equip tooltip if hovering over inventory
+            if (this.equipTooltip && !this.equipTooltip.contains(event.target) && !event.target.closest('.equip-slot, .inventory-slot')) {
                 this.hideTooltip(this.equipTooltip);
             }
         }, true);
@@ -103,7 +103,6 @@ class UI {
         this.startScreen.classList.add('hidden');
         this.gameScreen.classList.add('hidden');
         this.endScreen.classList.add('hidden');
-
         const screenToShow = document.getElementById(screenId);
         if (screenToShow) {
             screenToShow.classList.remove('hidden');
@@ -156,9 +155,9 @@ class UI {
                 slot.draggable = true;
                 slot.addEventListener('dragstart', (event) => {
                     event.dataTransfer.setData('text/plain', index.toString());
-                    event.dataTransfer.effectAllowed = 'move'; // Indicate it's a move operation
+                    event.dataTransfer.effectAllowed = 'move';
                     this.draggedItemIndex = index;
-                    this.draggedItem = item; // Store the actual item object
+                    this.draggedItem = item;
                     setTimeout(() => slot.classList.add('dragging'), 0);
                     this.hideContextMenu();
                     this.hideTooltip(this.itemTooltip);
@@ -166,7 +165,7 @@ class UI {
                 });
 
                 slot.addEventListener('dragend', () => {
-                    slot.classList.remove('dragging'); // Remove dragging style from source
+                    slot.classList.remove('dragging');
                     this.inventoryGrid.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
                     this.draggedItemIndex = null;
                     this.draggedItem = null;
@@ -183,7 +182,7 @@ class UI {
             } else {
                 slot.textContent = '';
                 slot.classList.add('slot-empty');
-                slot.draggable = false; // Empty slots are not draggable
+                slot.draggable = false;
                 slot.addEventListener('mouseenter', () => {
                     this.hideTooltip(this.itemTooltip);
                     this.hideTooltip(this.equipTooltip);
@@ -197,17 +196,17 @@ class UI {
     renderEquipment() {
         for (const slotName in this.equipSlots) {
             const item = this.game.player.equipment[slotName];
-            const slotElement = this.equipSlots[slotName]; // Get element from cache
+            const slotElement = this.equipSlots[slotName];
             if (!slotElement) {
-                console.warn(`[LoopDebug] renderEquipment: Slot element not found for ${slotName}`); // ADD LOG
-                continue; // Skip if element not found
+                console.warn(`[LoopDebug] renderEquipment: Slot element not found for ${slotName}`);
+                continue;
             }
             const elementToModify = slotElement; 
             elementToModify.classList.remove('slot-empty', 'slot-filled');
-            elementToModify.innerHTML = ''; // Clear content and listeners (less reliable than clone)
+            elementToModify.innerHTML = '';
 
             if (item) {
-                elementToModify.textContent = item.name; // Show item name
+                elementToModify.textContent = item.name;
                 elementToModify.classList.add('slot-filled');
                 elementToModify.addEventListener('mouseenter', (e) => this.showTooltip(item.description, this.equipTooltip, e));
                 elementToModify.addEventListener('mouseleave', () => this.hideTooltip(this.equipTooltip));
@@ -217,13 +216,13 @@ class UI {
                 });
 
             } else {
-                elementToModify.textContent = slotName.toUpperCase(); // Show default slot name (HELM, etc.)
+                elementToModify.textContent = slotName.toUpperCase();
                 elementToModify.classList.add('slot-empty');
                 elementToModify.addEventListener('mouseenter', () => {
                     this.hideTooltip(this.itemTooltip);
                     this.hideTooltip(this.equipTooltip);
                 });
-                elementToModify.addEventListener('click', () => { }); // No action
+                elementToModify.addEventListener('click', () => { });
             }
         }
     }
@@ -233,30 +232,26 @@ class UI {
         this.statHealth.textContent = player.health;
         this.statMaxHealth.textContent = player.maxHealth;
         
-        // Attack Display
         let attackText = player.getAttack();
         if (player.tempAttack > 0) {
-            attackText += ` (+${player.tempAttack})`; // Add temporary buff display
+            attackText += ` (+${player.tempAttack})`;
         }
         this.statAttack.textContent = attackText;
 
-        // Defense Display
         let defenseText = player.getDefense();
         if (player.tempDefense > 0) {
-            defenseText += ` (+${player.tempDefense})`; // Add temporary buff display
+            defenseText += ` (+${player.tempDefense})`;
         }
         this.statDefense.textContent = defenseText;
         
-        // Speed Display
         let speedValue = player.getAttackSpeed();
-        let speedText = `${speedValue.toFixed(1)}s`; // Format to one decimal place and add 's'
+        let speedText = `${speedValue.toFixed(1)}s`;
         if (player.tempSpeedReduction > 0) {
-            speedText += ` (-${player.tempSpeedReduction.toFixed(1)}s)`; // Show reduction
+            speedText += ` (-${player.tempSpeedReduction.toFixed(1)}s)`;
         }
         this.statSpeed.textContent = speedText;
 
         this.statGold.textContent = player.gold;
-        // Add round display
         if (this.statRound) {
             this.statRound.textContent = `${this.game.currentRound}/${this.game.maxRounds}`;
         }
@@ -269,19 +264,19 @@ class UI {
 
         const buttonsContainer = document.createElement('div');
         buttonsContainer.style.display = 'flex';
-        buttonsContainer.style.flexWrap = 'wrap'; // Allow wrapping
+        buttonsContainer.style.flexWrap = 'wrap';
         buttonsContainer.style.justifyContent = 'center';
         buttonsContainer.style.gap = '15px';
         buttonsContainer.style.width = '100%';
-        buttonsContainer.style.padding = '10px'; // Add some padding
+        buttonsContainer.style.padding = '10px';
 
         choices.forEach((choice, index) => {
             const button = document.createElement('button');
             button.textContent = choice.text;
             button.classList.add('choice-button');
-            button.style.flex = '0 1 auto'; // Allow buttons to shrink but not grow
-            button.style.minWidth = '200px'; // Minimum width for buttons
-            button.style.maxWidth = '300px'; // Maximum width for buttons
+            button.style.flex = '0 1 auto';
+            button.style.minWidth = '200px';
+            button.style.maxWidth = '300px';
             if (index === 0) {
                 button.classList.add('selected');
                 setTimeout(() => this.game.selectChoice(0), 0);
@@ -338,11 +333,9 @@ class UI {
         const confirmButton = document.createElement('button');
         let difficultyText = '';
         
-        // Add difficulty coloring and text for combat encounters
         if (choice.encounter.type === 'monster' || choice.encounter.type === 'mini-boss' || choice.encounter.type === 'boss') {
             const monster = MONSTERS[choice.encounter.monsterId];
             const playerAttack = this.game.player.getAttack();
-            
             if (monster.defense >= playerAttack) {
                 confirmButton.classList.add('difficulty-hard');
                 difficultyText = 'HARD';
@@ -379,32 +372,26 @@ class UI {
         if (trapArea) {
             trapArea.classList.add('hidden');
         }
-        
         const blacksmithArea = document.getElementById('blacksmith-area');
         if (blacksmithArea) {
             blacksmithArea.remove();
         }
-        
         const sharpenArea = document.getElementById('sharpen-area');
         if (sharpenArea) {
             sharpenArea.remove();
         }
-
         const armourerArea = document.getElementById('armourer-area');
         if (armourerArea) {
             armourerArea.remove();
         }
-
         const alchemistArea = document.getElementById('alchemist-area');
         if (alchemistArea) {
             alchemistArea.remove();
         }
-
         const startingPackArea = document.getElementById('starting-pack-area');
         if (startingPackArea) {
             startingPackArea.remove();
         }
-
         this.choicesArea.innerHTML = '';
         this.cacheDynamicElements();
         this.outputLogArea.classList.add('hidden');
@@ -444,13 +431,9 @@ class UI {
             this.combatPlayerHp.textContent = `${current}/${max}`;
             const healthBar = document.querySelector('.player-health');
             healthBar.style.width = `${percentage}%`;
-            
-            // Add damage flash effect
             healthBar.classList.remove('damage-taken');
-            void healthBar.offsetWidth; // Force reflow
+            void healthBar.offsetWidth;
             healthBar.classList.add('damage-taken');
-
-            // Create damage splat if damage was dealt or fully blocked
             if (damage > 0 || fullBlock) {
                 this.createDamageSplat('.player-side', damage, isHeal ? 'heal' : 'damage', blocked, fullBlock);
             }
@@ -458,13 +441,9 @@ class UI {
             this.combatEnemyHp.textContent = `${current}/${max}`;
             const healthBar = document.querySelector('.enemy-health');
             healthBar.style.width = `${percentage}%`;
-            
-            // Add damage flash effect
             healthBar.classList.remove('damage-taken');
-            void healthBar.offsetWidth; // Force reflow
+            void healthBar.offsetWidth;
             healthBar.classList.add('damage-taken');
-
-            // Create damage splat if damage was dealt or fully blocked
             if (damage > 0 || fullBlock) {
                 this.createDamageSplat('.enemy-side', damage, isHeal ? 'heal' : 'damage', blocked, fullBlock);
             }
@@ -472,29 +451,21 @@ class UI {
     }
 
     updateCombatTimers(playerTime, enemyTime, playerDelay = 0) {
-        // Update text
         this.combatPlayerTimer.textContent = playerDelay > 0 ? 
             `Delayed: ${playerDelay.toFixed(1)}s` : 
             playerTime.toFixed(1);
         this.combatEnemyTimer.textContent = enemyTime.toFixed(1);
-        
-        // Update timer bars
         const playerMaxTime = this.game.player.getAttackSpeed();
         const enemyMaxTime = this.game.currentCombat.enemy.speed;
-        
         const playerTimerBar = document.querySelector('.player-timer');
         const enemyTimerBar = document.querySelector('.enemy-timer');
-        
         if (playerDelay > 0) {
-            // Show delay timer in yellow
             playerTimerBar.style.width = `${(playerDelay / 2) * 100}%`;
             playerTimerBar.style.backgroundColor = '#ffd700';
         } else {
-            // Show normal attack timer
             playerTimerBar.style.width = `${(playerTime / playerMaxTime) * 100}%`;
             playerTimerBar.style.backgroundColor = '';
         }
-        
         enemyTimerBar.style.width = `${(enemyTime / enemyMaxTime) * 100}%`;
     }
 
@@ -539,25 +510,21 @@ class UI {
             return;
         }
 
-        // Show Context Menu
         this.hideContextMenu();
         this.itemContextMenu.innerHTML = '';
 
-        // Equip
         if (item.type === 'weapon' || item.type === 'armor') {
             const equipButton = document.createElement('button');
             equipButton.textContent = 'Equip';
             equipButton.onclick = () => this.game.handleEquipItem(index);
             this.itemContextMenu.appendChild(equipButton);
         }
-        // Use/Consume
         if (item.type === 'consumable') {
             const useButton = document.createElement('button');
             useButton.textContent = item.useAction || 'Use';
             useButton.onclick = () => this.game.handleUseItem(index);
             this.itemContextMenu.appendChild(useButton);
         }
-        // Sell (In Shop)
         if (this.game.state === 'shop') {
             const sellButton = document.createElement('button');
             const sellPrice = item.value || 0;
@@ -565,46 +532,29 @@ class UI {
             sellButton.onclick = () => new Shop(this.game, this).handleSellItem(index);
             this.itemContextMenu.appendChild(sellButton);
         }
-        // Destroy
         const destroyButton = document.createElement('button');
         destroyButton.textContent = 'Destroy';
-        // Use a class for styling instead of direct style manipulation if preferred
-        destroyButton.classList.add('context-destroy-button'); // Added class
+        destroyButton.classList.add('context-destroy-button');
         destroyButton.onclick = () => this.game.handleDestroyItem(index);
         this.itemContextMenu.appendChild(destroyButton);
-
-        // --- Add Cancel Button ---
         const cancelButton = document.createElement('button');
         cancelButton.textContent = 'Cancel';
-        cancelButton.classList.add('context-cancel-button'); // Added class for styling
-        cancelButton.onclick = () => this.hideContextMenu(); // Simply hide the menu
+        cancelButton.classList.add('context-cancel-button');
+        cancelButton.onclick = () => this.hideContextMenu();
         this.itemContextMenu.appendChild(cancelButton);
-        // --- End Adding Buttons ---
-
-        // --- Updated Positioning Logic ---
         const slotRect = slotElement.getBoundingClientRect();
-        
-        // Make menu visible to get its dimensions
         this.itemContextMenu.classList.remove('hidden');
         const menuRect = this.itemContextMenu.getBoundingClientRect();
-
-        // Calculate position relative to viewport
         let left = slotRect.left;
-        let top = slotRect.bottom + 5; // 5px gap below the slot
-
-        // Adjust if menu would go off screen
+        let top = slotRect.bottom + 5;
         if (left + menuRect.width > window.innerWidth) {
             left = slotRect.right - menuRect.width;
         }
         if (top + menuRect.height > window.innerHeight) {
-            top = slotRect.top - menuRect.height - 5; // Show above instead
+            top = slotRect.top - menuRect.height - 5;
         }
-
-        // Keep menu on screen
         left = Math.max(5, Math.min(left, window.innerWidth - menuRect.width - 5));
         top = Math.max(5, Math.min(top, window.innerHeight - menuRect.height - 5));
-
-        // Apply final position
         this.itemContextMenu.style.left = `${left}px`;
         this.itemContextMenu.style.top = `${top}px`;
     }
@@ -660,11 +610,9 @@ class UI {
             targetElement.appendChild(container);
         }
 
-        // Create the damage splat element
         const splat = document.createElement('div');
         splat.className = `damage-splat ${type}`;
         
-        // Position randomly horizontally
         const x = Math.random() * 60 - 30;
         splat.style.left = `calc(50% + ${x}px)`;
         

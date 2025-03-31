@@ -304,27 +304,24 @@ class Combat {
         }
     }
 
-    // Helper function to avoid code duplication
     checkBossWinAndProceed() {
-        // If boss was defeated, trigger win condition
-        if (this.enemy.name === MONSTERS[FINAL_BOSS]?.name) { // Added safety check
-            this.game.endGame(true); // Player wins
+        if (this.enemy.name === MONSTERS[FINAL_BOSS]?.name) {
+            this.game.endGame(true);
         } else {
-            this.game.proceedToNextRound(); // Go to next round choice/boss
+            this.game.proceedToNextRound();
         }
     }
 
     checkBossWinAndProceed() {
-        // Use the stored name from the game object
         const defeatedName = this.game.lastDefeatedEnemyName;
-        this.game.lastDefeatedEnemyName = null; // Clear the temporary name
+        this.game.lastDefeatedEnemyName = null;
 
         const isBossDefeated = defeatedName && MONSTERS[FINAL_BOSS] && defeatedName === MONSTERS[FINAL_BOSS].name;
 
         if (isBossDefeated) {
-            this.game.endGame(true); // Player wins
+            this.game.endGame(true);
         } else {
-            this.game.proceedToNextRound(); // Go to next round
+            this.game.proceedToNextRound();
         }
     }
 }

@@ -3,22 +3,20 @@ class Player {
         this.gold = 100;
         this.maxHealth = 20;
         this.health = 10;
-        this.baseAttack = 1; // Base stats, can be increased by effects later
-        this.baseDefense = 1; // Changed from 0 to 1
-        this.inventory = new Array(15).fill(null); // Changed from 12 to 15 slots
+        this.baseAttack = 1;
+        this.baseDefense = 1;
+        this.inventory = new Array(15).fill(null);
         this.equipment = {
             helm: null,
             body: null,
             legs: null,
             weapon: null,
             shield: null,
-            ring: null  // Added ring slot
+            ring: null
         };
-
         this.attackTimer = 0;
-        this.pendingActionDelay = 0; // Delay added by actions like eating
-        this.defaultAttackSpeed = 2.0; // Changed from 0.5 to 2.0 seconds for better balance
-
+        this.pendingActionDelay = 0;
+        this.defaultAttackSpeed = 2.0;
         this.tempAttack = 0;
         this.tempDefense = 0;
         this.tempSpeedReduction = 0;
@@ -34,7 +32,7 @@ class Player {
 
     getAttackSpeed() {
         const baseSpeed = this.equipment.weapon?.speed ?? this.defaultAttackSpeed;
-        return Math.max(0.5, baseSpeed - this.tempSpeedReduction); // Minimum 0.5s attack speed
+        return Math.max(0.5, baseSpeed - this.tempSpeedReduction);
     }
 
     getDefense() {
@@ -85,14 +83,14 @@ class Player {
             this.inventory[freeSlotIndex] = item;
             return true;
         }
-        return false; // Inventory full
+        return false;
     }
 
     removeItem(index) {
         if (index >= 0 && index < this.inventory.length && this.inventory[index]) {
             const item = this.inventory[index];
             this.inventory[index] = null;
-            return item; // Return the removed item
+            return item;
         }
         return null;
     }
@@ -112,28 +110,20 @@ class Player {
             return { success: false, message: "Item cannot be equipped in any slot." };
         }
 
-        // Handle 2-handed weapon constraint
         if (itemToEquip.type === 'weapon' && itemToEquip.hands === 2 && this.equipment.shield) {
-            if (!this.unequipItem('shield')) { // Try to unequip shield first
+            if (!this.unequipItem('shield')) {
                 return { success: false, message: "Inventory full, cannot unequip shield for 2H weapon." };
             }
         }
-        // Handle equipping shield when 2-handed weapon is equipped
         if (itemToEquip.slot === 'shield' && this.equipment.weapon?.hands === 2) {
             return { success: false, message: "Cannot equip shield with a 2-handed weapon." };
         }
-
-        // Get current equipped item in that slot
         const currentItem = this.equipment[slot];
-
-        // If we're replacing an item of the same type, we don't need an extra inventory slot
         if (currentItem) {
-            // Just swap the items
             this.inventory[index] = currentItem;
             this.equipment[slot] = itemToEquip;
             return { success: true, item: itemToEquip, unequipped: currentItem };
         } else {
-            // We're equipping to an empty slot, just move the item from inventory to equipment
             this.inventory[index] = null;
             this.equipment[slot] = itemToEquip;
             return { success: true, item: itemToEquip };
@@ -166,11 +156,11 @@ class Player {
 
         if (item.type === 'consumable' && item.healAmount) {
             const healed = this.heal(item.healAmount);
-            if (healed > 0 || item.healAmount === 0) { // Allow using 0-heal items if needed later
-                this.inventory[index] = null; // Consume the item
+            if (healed > 0 || item.healAmount === 0) {
+                this.inventory[index] = null;
                 let delay = 0;
-                if (!item.isPotion) { // Potions don't delay attack
-                    delay = 2.0; // Food delays attack by 2 seconds
+                if (!item.isPotion) {
+                    delay = 2.0;
                 }
                 return { success: true, message: `You ${item.useAction || 'use'} ${item.name}. Healed ${healed} HP.`, item: item, actionDelay: delay };
             } else {
