@@ -46,7 +46,7 @@ class Starting {
                     <h4>Blacksmith Pack</h4>
                     <p>A crafting focused loadout:</p>
                     <ul>
-                        <li data-item-id="rusty_sword">Rusty Sword</li>
+                        <li data-item-id="wooden_hammer">Wooden Hammer</li>
                         <li data-item-id="leather_armor">Leather Armor</li>
                         <li data-item-id="blacksmith_hammer">Blacksmith Hammer</li>
                         <li data-item-id="bread">Bread (2)</li>
@@ -131,7 +131,7 @@ class Starting {
 
             case 'blacksmith':
                 // Blacksmith pack: Includes hammer and some basic resources
-                this.game.player.addItem(this.game.createItem('rusty_sword'));
+                this.game.player.addItem(this.game.createItem('wooden_hammer'));
                 this.game.player.addItem(this.game.createItem('leather_armor'));
                 this.game.player.addItem(this.game.createItem('blacksmith_hammer'));
                 this.game.player.addItem(this.game.createItem('bread'));
