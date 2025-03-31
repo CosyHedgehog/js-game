@@ -119,7 +119,6 @@ class Starting {
             case 'blacksmith':
                 // Blacksmith pack: Includes hammer and some basic resources
                 this.game.player.addItem(this.game.createItem('rusty_sword'));
-                this.game.player.addItem(this.game.createItem('rusty_sword'));
                 this.game.player.addItem(this.game.createItem('leather_armor'));
                 this.game.player.addItem(this.game.createItem('blacksmith_hammer'));
                 this.game.player.addItem(this.game.createItem('bread'));
@@ -129,14 +128,12 @@ class Starting {
                 break; // Removed clearMainArea
         }
         
-        // Moved game state changes and progression logic here, after adding items
         this.game.currentRound = 0;
         this.game.logMessages = ["Welcome to the Simple Rogue-like!"];
         this.game.state = 'choosing';
 
         this.ui.renderAll(); // Render everything after items are added
         this.game.addLog("Game started with your chosen equipment.");
-        // this.ui.switchScreen('game-screen'); // Already switched in display()
         this.ui.clearMainArea(); // Clear the pack selection UI
         this.game.proceedToNextRound(); // Start the first round
     }

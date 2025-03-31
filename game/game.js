@@ -22,8 +22,7 @@ class Game {
         { type: 'shop', weight: 5 },
         { type: 'alchemist', weight: 5 },
         { type: 'treasure_chest', weight: 10 },
-        { type: 'mini-boss', weight: 5 },
-        { type: 'fishing', weight: 10 },
+        { type: 'fishing', weight: 90 },
         { type: 'blacksmith', weight: 5 },
         { type: 'sharpen', weight: 5 },
         { type: 'armourer', weight: 5 },
@@ -53,17 +52,10 @@ class Game {
         this.state = 'choosing';
         this.ui.clearMainArea();
 
-        // Special rounds handling
-        if (this.currentRound === 10 || this.currentRound === 20) {
-            // Mini-boss rounds
-            this.generateMiniBossEvent();
-        } else if (this.currentRound === 30) {
-            // Final boss round
-            this.generateBossEvent();
-        } else {
-            // Normal rounds
-            this.generateEventChoices();
-        }
+        if (this.currentRound === 10) this.generateLevel10Boss();
+        else if (this.currentRound === 20) this.generateLevel20Boss();
+        else if (this.currentRound === 30) this.generateBossEvent();
+        else this.generateEventChoices();
 
         this.ui.updatePlayerStats();
         this.ui.renderEquipment();
@@ -590,6 +582,25 @@ class Game {
         this.ui.renderChoices(this.currentChoices);
     }
 
+    generateLevel10Boss() {
+        this.currentChoices = [{
+            text: `Fight ${MONSTERS['orc_warrior'].name} (Mini-Boss)`,
+            encounter: { type: 'mini-boss', monsterId: 'orc_warrior' }
+        }];
+        
+        this.addLog(`A powerful enemy approaches...`);
+        this.ui.renderChoices(this.currentChoices);
+    }
+
+    generateLevel20Boss() {
+        this.currentChoices = [{
+            text: `Fight ${MONSTERS['troll'].name} (Mini-Boss)`,
+            encounter: { type: 'mini-boss', monsterId: 'troll' }
+        }];
+        
+        this.addLog(`A powerful enemy approaches...`);
+        this.ui.renderChoices(this.currentChoices);
+    }
 
     getRandomInt(min, max) {
         min = Math.ceil(min);
