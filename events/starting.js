@@ -54,6 +54,19 @@ class Starting {
                     </ul>
                     <button data-pack-id="blacksmith">Choose Blacksmith</button>
                 </div>
+
+                <div class="pack-option" id="thief-pack">
+                    <h4>Thief Pack</h4>
+                    <p>A stealth and trap focused loadout:</p>
+                    <ul>
+                        <li data-item-id="wooden_dagger">Wooden Dagger</li>
+                        <li data-item-id="leather_helm">Leather Helm</li>
+                        <li data-item-id="thief_tools">Thief's Tools</li>
+                        <li data-item-id="speed_potion">Speed Potion</li>
+                        <li data-item-id="bread">Bread (2)</li>
+                    </ul>
+                    <button data-pack-id="thief">Choose Thief</button>
+                </div>
             </div>
             <div class="pack-item-description">
                 Click on an item to see its description
@@ -125,8 +138,17 @@ class Starting {
                 this.game.player.addItem(this.game.createItem('bread'));
                 this.game.player.addItem(this.game.createItem('small_fish'));
                 this.game.player.addItem(this.game.createItem('small_fish'));
+                break;
+
+            case 'thief':
+                // Thief pack: Focused on speed and trap disarming
+                this.game.player.addItem(this.game.createItem('wooden_dagger'));
+                this.game.player.addItem(this.game.createItem('leather_helm'));
                 this.game.player.addItem(this.game.createItem('thief_tools'));
-                break; // Removed clearMainArea
+                this.game.player.addItem(this.game.createItem('speed_potion'));
+                this.game.player.addItem(this.game.createItem('bread'));
+                this.game.player.addItem(this.game.createItem('bread'));
+                break;
         }
         
         this.game.currentRound = 0;
