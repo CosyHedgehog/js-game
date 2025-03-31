@@ -10,7 +10,7 @@ class Shop {
     handle() {
         this.game.state = 'shop';
         this.game.addLog("You arrive at a small shop.");
-        this.game.currentShopItems = this.generateShopItems(SHOP_NUM_ITEMS);
+        this.game.currentShopItems = this.generateShopItems(this.SHOP_NUM_ITEMS);
         this.game.shopCanReroll = true;
         this.ui.clearMainArea();
         const shopArea = document.getElementById('shop-area');
@@ -50,8 +50,8 @@ class Shop {
                 <div class="item-description"></div>
             </div>
             <div class="shop-buttons">
-                <button id="shop-reroll-button" ${!this.game.canReroll || this.game.player.gold < SHOP_REROLL_COST ? 'disabled' : ''}>
-                    Reroll (${SHOP_REROLL_COST} Gold)
+                <button id="shop-reroll-button" ${!this.game.canReroll || this.game.player.gold < this.SHOP_REROLL_COST ? 'disabled' : ''}>
+                    Reroll (${this.SHOP_REROLL_COST} Gold)
                 </button>
                 <button id="shop-leave-button">Leave Shop</button>
             </div>
@@ -169,7 +169,7 @@ class Shop {
         
         const rerollButton = document.getElementById('shop-reroll-button');
         if (rerollButton && this.game.shopCanReroll) {
-            rerollButton.disabled = this.game.player.gold < SHOP_REROLL_COST;
+            rerollButton.disabled = this.game.player.gold < this.SHOP_REROLL_COST;
         }
     }
 
@@ -257,14 +257,14 @@ class Shop {
     handleRerollShop() {
         if (this.game.state !== 'shop' || !this.game.shopCanReroll) return;
     
-        if (this.game.player.spendGold(SHOP_REROLL_COST)) {
-            this.game.addLog(`You spend ${SHOP_REROLL_COST} gold to reroll the shop.`);
-            this.game.currentShopItems = this.generateShopItems(SHOP_NUM_ITEMS);
+        if (this.game.player.spendGold(this.SHOP_REROLL_COST)) {
+            this.game.addLog(`You spend ${this.SHOP_REROLL_COST} gold to reroll the shop.`);
+            this.game.currentShopItems = this.generateShopItems(this.SHOP_NUM_ITEMS);
             this.game.shopCanReroll = false;
             this.handle();
             this.ui.updatePlayerStats();
         } else {
-            this.game.addLog(`Not enough gold to reroll (costs ${SHOP_REROLL_COST})!`);
+            this.game.addLog(`Not enough gold to reroll (costs ${this.SHOP_REROLL_COST})!`);
         }
     }
 }
