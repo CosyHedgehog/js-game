@@ -231,17 +231,26 @@ class Armoury {
             } else if (item.name.startsWith("Fortified ")) {
                 item.name = item.name.replace("Fortified", "Reinforced");
             }
-            item.description = item.description.replace(/Defense: \+\d+/, `Defense: +${item.stats.defense}`);
+            const defenseMatch = item.description.match(/Defense: \+\d+/);
+            if (defenseMatch) {
+                item.description = item.description.replace(/Defense: \+\d+/, `Defense: +${item.stats.defense}`);
+            } else {
+                item.description += `\nDefense: +${item.stats.defense}`;
+            }
         } else if (type === 'health') {
             item.stats.maxHealth = (item.stats.maxHealth || 0) + 3;
-            successMessage = `Fortified ${item.name}! Max HP +3 when equipped.`;
+            successMessage = `Fortified ${item.name}! Max HP +3`;
             if (!item.name.startsWith("Fortified ") && !item.name.startsWith("Reinforced ")) {
                 item.name = `Fortified ${item.name}`;
             } else if (item.name.startsWith("Reinforced ")) {
                 item.name = item.name.replace("Reinforced", "Fortified");
             }
-            if (!item.description.includes("Max HP")) {
-                item.description += "\nMax HP: +3 when equipped";
+            const maxHpMatch = item.description.match(/Max HP: \+\d+/);
+            if (maxHpMatch) {
+                const currentBonus = parseInt(maxHpMatch[0].match(/\d+/)[0]);
+                item.description = item.description.replace(/Max HP: \+\d+/, `Max HP: +${currentBonus + 3}`);
+            } else {
+                item.description += `\nMax HP: +3`;
             }
         } else {
             this.game.addLog("Unknown enhancement type.");
