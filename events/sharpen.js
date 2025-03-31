@@ -12,6 +12,7 @@ class Sharpen {
 
     showSharpenUI() {
         this.ui.clearMainArea();
+        this.ui.renderInventory();
 
         const mainContent = document.getElementById('main-content');
 

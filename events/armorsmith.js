@@ -18,6 +18,7 @@ class Armoury {
 
     showArmourerUI() {
         this.ui.clearMainArea();
+        this.ui.renderInventory();
         
         const mainContent = document.getElementById('main-content');
 

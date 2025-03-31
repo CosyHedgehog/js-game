@@ -2537,3 +2537,15 @@ html {
 .inventory-slot.shop-sellable {
     animation: shopGlow 2s infinite ease-in-out;
 }
+
+.inventory-slot.blacksmith-valid {
+    border: 2px dashed #4CAF50;
+}
+
+.inventory-slot.armourer-valid {
+    border: 2px dashed #4CAF50;
+}
+
+.inventory-slot.sharpen-valid {
+    border: 2px dashed #4CAF50;
+}

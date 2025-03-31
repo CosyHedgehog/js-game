@@ -17,6 +17,7 @@ class Blacksmith {
 
     showBlacksmithUI() {
         this.ui.clearMainArea();
+        this.ui.renderInventory();
 
         const hasHammer = this.game.player.inventory.some(item => item && item.id === 'blacksmith_hammer');
         let hammerWarning = hasHammer ? '' : '<p style="color: #ff4444; font-weight: bold;">Requires: Blacksmith Hammer</p>';

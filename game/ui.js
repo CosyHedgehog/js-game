@@ -151,12 +151,22 @@ class UI {
             slot.classList.remove('slot-empty', 'slot-filled', 'dragging');
 
             if (item) {
+                slot.textContent = item.name;
                 if (this.game.state === 'shop') {
-                    slot.textContent = item.name;
                     slot.classList.add('sell-price');
                     slot.classList.add('shop-sellable');
-                } else {
-                    slot.textContent = item.name;
+                } else if (this.game.state === 'blacksmith') {
+                    if (item.type === 'weapon' || item.type === 'armor') {
+                        slot.classList.add('blacksmith-valid');
+                    }
+                } else if (this.game.state === 'armourer') {
+                    if (item.type === 'armor') {
+                        slot.classList.add('armourer-valid');
+                    }
+                } else if (this.game.state === 'sharpen') {
+                    if (item.type === 'weapon') {
+                        slot.classList.add('sharpen-valid');
+                    }
                 }
                 slot.classList.add('slot-filled');
                 slot.draggable = true;
