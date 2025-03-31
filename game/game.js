@@ -16,7 +16,7 @@ class Game {
         if (this.ui) { this.ui.game = this; }
     }
 
-    ENCOUNTER_PROBABILITY = [
+    EVENT_PROBABILITY = [
         { type: 'monster', weight: 30 },
         { type: 'rest', weight: 25 },
         { type: 'shop', weight: 5 },
@@ -56,13 +56,13 @@ class Game {
         // Special rounds handling
         if (this.currentRound === 10 || this.currentRound === 20) {
             // Mini-boss rounds
-            this.generateMiniBossEncounter();
+            this.generateMiniBossEvent();
         } else if (this.currentRound === 30) {
             // Final boss round
-            this.generateBossEncounter();
+            this.generateBossEvent();
         } else {
             // Normal rounds
-            this.generateChoices();
+            this.generateEventChoices();
         }
 
         this.ui.updatePlayerStats();
@@ -143,7 +143,7 @@ class Game {
         }
     }
 
-    generateChoices() {
+    generateEventChoices() {
         this.currentChoices = [];
         
         // Determine number of choices (2-4)
@@ -162,7 +162,7 @@ class Game {
         // Generate unique encounters
         const usedEncounters = new Set();
         while (usedEncounters.size < numChoices) {
-            const encounter = this.getRandomEncounter();
+            const encounter = this.getRandomEvent();
             if (encounter.type === 'monster') {
                 encounter.monsterId = COMMON_MONSTERS[this.getRandomInt(0, COMMON_MONSTERS.length - 1)];
             } else if (encounter.type === 'mini-boss') {
@@ -183,12 +183,12 @@ class Game {
         this.ui.renderChoices(this.currentChoices);
     }
 
-    getRandomEncounter() {
-        const totalWeight = this.ENCOUNTER_PROBABILITY.reduce((sum, enc) => sum + enc.weight, 0);
+    getRandomEvent() {
+        const totalWeight = this.EVENT_PROBABILITY.reduce((sum, enc) => sum + enc.weight, 0);
         let randomRoll = Math.random() * totalWeight;
         let chosenEncounter = null;
 
-        for (const encounter of this.ENCOUNTER_PROBABILITY) {
+        for (const encounter of this.EVENT_PROBABILITY) {
             if (randomRoll < encounter.weight) {
                 chosenEncounter = { type: encounter.type };
                 break;
@@ -229,7 +229,7 @@ class Game {
         }
     }
 
-    generateBossEncounter() {
+    generateBossEvent() {
         this.addLog("The air grows heavy... The Final Boss appears!");
         this.currentChoices = [{
             text: `Fight ${MONSTERS[FINAL_BOSS].name} (Final Boss)`,
@@ -576,7 +576,7 @@ class Game {
     }
 
     // Add new method for mini-boss encounters
-    generateMiniBossEncounter() {
+    generateMiniBossEvent() {
         // Select a random mini-boss
         const miniBossIndex = this.getRandomInt(0, MINI_BOSSES.length - 1);
         const miniBossId = MINI_BOSSES[miniBossIndex];

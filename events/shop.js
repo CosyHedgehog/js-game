@@ -66,7 +66,7 @@ class Shop {
         const leaveButton = document.getElementById('shop-leave-button');
 
         if (rerollButton) {
-            rerollButton.onclick = () => this.handleRerollShop();  // Use the function from encounters.js
+            rerollButton.onclick = () => this.handleRerollShop();
         }
         if (leaveButton) {
             leaveButton.onclick = () => {
@@ -80,7 +80,7 @@ class Shop {
         buyButtons.forEach(button => {
             button.onclick = () => {
                 const index = parseInt(button.dataset.index);
-                this.handleBuyItem(index);  // Use the function from encounters.js
+                this.handleBuyItem(index); 
             };
         });
 
