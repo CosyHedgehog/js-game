@@ -46,7 +46,7 @@ class Trap {
                     if (skipButton) skipButton.disabled = true;
 
                     const goldReward = Math.floor(Math.random() * 6) + 1;
-                    const weaponRewardId = TRAP_WEAPON_LOOT[Math.floor(Math.random() * TRAP_WEAPON_LOOT.length)];
+                    const weaponRewardId = this.TRAP_WEAPON_LOOT[Math.floor(Math.random() * this.TRAP_WEAPON_LOOT.length)];
                     const weaponItem = this.game.createItem(weaponRewardId);
 
                     const weaponData = ITEMS[weaponRewardId];
