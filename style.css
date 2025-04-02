@@ -259,11 +259,9 @@ body {
         flex-direction: column; /* Stack inventory/equipment vertically again */
         width: 100%;
         height: auto; /* Let content determine height */
-        flex: 1 1 40%; /* Allow right column to take ~40% vertical space */
         min-height: 200px; /* Minimum height for inventory area */
         border-left: none;
         border-top: 1px solid #444;
-        flex-shrink: 0;
         flex-grow: 1; /* Allow growing */
     }
 
@@ -289,7 +287,6 @@ body {
     #inventory-grid {
         height: calc(100% - 45px); /* Explicit height */
         overflow-y: auto; /* Enable vertical scroll *within* the grid */
-        grid-template-columns: repeat(6, 1fr);
         padding: 5px;
         gap: 3px;
     }
@@ -2741,7 +2738,7 @@ html {
 
 /* --- Slot Styling (Inventory) --- */
 .inventory-slot {
-    aspect-ratio: 1; /* Keep square shape */
+    aspect-ratio: 0; /* Keep square shape */
     display: flex;
     align-items: center;
     justify-content: center;
