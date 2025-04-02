@@ -186,7 +186,8 @@ class Combat {
         const runDamage = Math.floor(this.enemy.attack * multiplier);
         const damageResult = this.player.takeDamage(runDamage);
         
-        this.ui.updateCombatantHealth('player', this.player.health, this.player.maxHealth, damageResult.actualDamage);
+        // Update player stats display immediately, but don't create splat on player side
+        this.ui.updatePlayerStats(); 
         
         const playerSide = document.querySelector('.player-side');
         if (playerSide) {
@@ -210,7 +211,6 @@ class Combat {
                 <h3>${this.player.health <= 0 ? 'Failed to Escape!' : 'Escape Successful!'}</h3>
                 <p>You fled from the ${this.enemy.name}...</p>
                 <p>But took <span style="color: #ff4444">${damageResult.actualDamage} damage</span> in the process!</p>
-                <p style="color: #888">(${multiplier.toFixed(1)}x enemy attack)</p>
                 ${this.player.health <= 0 ? 
                     `<p style="color: #ff4444">Unfortunately, you didn't survive the escape attempt...</p>` : 
                     ''}
@@ -220,6 +220,10 @@ class Combat {
             messageContainer.innerHTML = content;
             document.body.appendChild(messageContainer);
     
+            // --- Create splat on the message box --- 
+            this.ui.createDamageSplat('.escape-message-container', damageResult.actualDamage, 'damage');
+            // -------------------------------------
+
             const continueButton = document.getElementById('escape-continue');
             continueButton.onclick = () => {
                 messageContainer.remove();
@@ -233,7 +237,7 @@ class Combat {
                     this.endCombat(false, true);
                 }
             };
-        }, 400);
+        }, 250);
     }
 
     endCombat(playerWon, ranAway = false) {

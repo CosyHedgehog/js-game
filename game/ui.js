@@ -639,10 +639,12 @@ class UI {
         
         if (selector.includes('.inventory-slot')) { 
             splat.style.top = '25%'; // Start higher within inventory slot
-        } else if (selector.includes('.trap-area-option')) { // NEW: Handle trap area
+        } else if (selector.includes('.trap-area-option')) { 
             splat.style.top = '30%'; // Position within the trap card
         } else if (selector === '#rest-area .rest-campfire-container') {
-            splat.style.top = '30%'; // Keep rest area position
+            splat.style.top = '30%'; 
+        } else if (selector === '.escape-message-container') { // NEW: Handle escape message
+            splat.style.top = '1%'; // Position near the top of the message box
         } else if (selector === '#trap-area') {
             const y = Math.random() * 60 - 20;
             splat.style.top = `calc(30% + ${y}px)`;

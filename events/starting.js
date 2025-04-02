@@ -138,6 +138,17 @@ class Starting {
                     descriptionBox.textContent = itemData.description;
                 }
             });
+
+            item.addEventListener('mouseenter', () => {
+                items.forEach(i => i.classList.remove('selected'));
+                item.classList.add('selected');
+
+                const itemId = item.getAttribute('data-item-id');
+                const itemData = ITEMS[itemId];
+                if (itemData) {
+                    descriptionBox.textContent = itemData.description;
+                }
+            });
         });
 
         const packButtons = container.querySelectorAll('button[data-pack-id]');
