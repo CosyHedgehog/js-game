@@ -198,42 +198,42 @@ class Combat {
             if (combatArea) {
                 combatArea.classList.add('hidden');
             }
-        }, 750);
 
-        const backdrop = document.createElement('div');
-        backdrop.className = 'escape-backdrop';
-        document.body.appendChild(backdrop);
-
-        const messageContainer = document.createElement('div');
-        messageContainer.className = 'escape-message-container';
-        
-        const content = `
-            <h3>${this.player.health <= 0 ? 'Failed to Escape!' : 'Escape Successful!'}</h3>
-            <p>You fled from the ${this.enemy.name}...</p>
-            <p>But took <span style="color: #ff4444">${damageResult.actualDamage} damage</span> in the process!</p>
-            <p style="color: #888">(${multiplier.toFixed(1)}x enemy attack)</p>
-            ${this.player.health <= 0 ? 
-                `<p style="color: #ff4444">Unfortunately, you didn't survive the escape attempt...</p>` : 
-                ''}
-            <button id="escape-continue">Continue</button>
-        `;
-        
-        messageContainer.innerHTML = content;
-        document.body.appendChild(messageContainer);
-
-        const continueButton = document.getElementById('escape-continue');
-        continueButton.onclick = () => {
-            messageContainer.remove();
-            backdrop.remove();
-            if (this.player.health <= 0) {
-                this.game.addLog(`You were defeated while trying to escape from the ${this.enemy.name}...`);
-                this.game.endGame(false);
-            } else {
-                this.game.addLog(`You successfully fled from the ${this.enemy.name}!`);
-                this.player.resetCombatBuffs();
-                this.endCombat(false, true);
-            }
-        };
+            const backdrop = document.createElement('div');
+            backdrop.className = 'escape-backdrop';
+            document.body.appendChild(backdrop);
+    
+            const messageContainer = document.createElement('div');
+            messageContainer.className = 'escape-message-container';
+            
+            const content = `
+                <h3>${this.player.health <= 0 ? 'Failed to Escape!' : 'Escape Successful!'}</h3>
+                <p>You fled from the ${this.enemy.name}...</p>
+                <p>But took <span style="color: #ff4444">${damageResult.actualDamage} damage</span> in the process!</p>
+                <p style="color: #888">(${multiplier.toFixed(1)}x enemy attack)</p>
+                ${this.player.health <= 0 ? 
+                    `<p style="color: #ff4444">Unfortunately, you didn't survive the escape attempt...</p>` : 
+                    ''}
+                <button id="escape-continue">Continue</button>
+            `;
+            
+            messageContainer.innerHTML = content;
+            document.body.appendChild(messageContainer);
+    
+            const continueButton = document.getElementById('escape-continue');
+            continueButton.onclick = () => {
+                messageContainer.remove();
+                backdrop.remove();
+                if (this.player.health <= 0) {
+                    this.game.addLog(`You were defeated while trying to escape from the ${this.enemy.name}...`);
+                    this.game.endGame(false);
+                } else {
+                    this.game.addLog(`You successfully fled from the ${this.enemy.name}!`);
+                    this.player.resetCombatBuffs();
+                    this.endCombat(false, true);
+                }
+            };
+        }, 400);
     }
 
     endCombat(playerWon, ranAway = false) {
