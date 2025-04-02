@@ -41,11 +41,11 @@ body {
 }
 
 #game-screen:not(.hidden) {
-    display: flex;
+    display: flex; /* Ensure flex is set */
     flex-direction: column; /* Stack stats bar and game body */
-    height: 100%; /* Ensure it takes full container height */
+    height: 100%;
     width: 100%;
-    overflow: hidden; /* Keep this to prevent screen scroll */
+    overflow: hidden;
 }
 
 /* --- Grid Area Assignments --- */
@@ -102,6 +102,7 @@ body {
 
 #game-body {
     display: flex;
+    min-width: 400px;
     flex-grow: 1; /* Takes remaining vertical space */
     width: 100%; /* Ensure it spans full width */
     position: relative; /* For positioning log area */
@@ -250,24 +251,56 @@ body {
 @media (max-width: 800px) {
     #game-body {
         flex-direction: column; /* Stack main and right column */
+        flex-grow: 1; /* Ensure game-body takes remaining space after stats bar */
+        min-height: 0; /* Allow shrinking if needed, prevents overflow */
     }
 
     #right-column {
-        width: 100%; /* Take full width */
-        height: 250px; /* Fixed height when stacked */
+        flex-direction: column; /* Stack inventory/equipment vertically again */
+        width: 100%;
+        height: auto; /* Let content determine height */
+        flex: 1 1 40%; /* Allow right column to take ~40% vertical space */
+        min-height: 200px; /* Minimum height for inventory area */
         border-left: none;
         border-top: 1px solid #444;
-        flex-shrink: 0; /* Don't shrink */
-        flex-grow: 0; /* Don't grow */
+        flex-shrink: 0;
+        flex-grow: 1; /* Allow growing */
     }
 
     #main-area {
-        min-width: unset; /* Remove min-width */
+        min-width: unset;
         border-bottom: 1px solid #444;
+        flex: 1 1 60%; /* Allow main area to take ~60% vertical space */
+        min-height: 0; /* Allow shrinking */
     }
 
     #inventory-area {
-         height: calc(100% - 85px); /* Adjust based on equipment height */
+         height: 100%;
+         width: 100%;
+         border-bottom: none;
+         border-right: none;
+         overflow: hidden; /* Ensure parent contains the scrolling grid */
+    }
+
+    #equipment-area {
+        display: none; /* Hide equipment area */
+    }
+
+    #inventory-grid {
+        height: calc(100% - 45px); /* Explicit height */
+        overflow-y: auto; /* Enable vertical scroll *within* the grid */
+        grid-template-columns: repeat(6, 1fr);
+        padding: 5px;
+        gap: 3px;
+    }
+
+    #inventory-area .inventory-slot {
+        font-size: 0.75em;
+    }
+
+    #inventory-area .inventory-slot .equipped-slot-chip {
+        font-size: 0.6em;
+        padding: 1px 4px;
     }
 }
 
@@ -1124,7 +1157,7 @@ button:disabled {
     padding: 15px;
     margin: auto;
     text-align: center;
-    width: 100%;
+    width: 80%;
     max-width: 600px;
     height: auto;
     display: flex;
@@ -1390,19 +1423,11 @@ html {
     #game-screen:not(.hidden) {
         grid-template-columns: minmax(350px, 1fr) 300px; /* Adjusted for smaller screens */
     }
-    
-    #right-column {
-        width: 300px;
-    }
 }
 
 @media (max-width: 900px) {
     #game-screen:not(.hidden) {
         grid-template-columns: minmax(300px, 1fr) 280px;
-    }
-    
-    #right-column {
-        width: 280px;
     }
 }
 
