@@ -188,43 +188,51 @@ class Player {
             const healed = this.heal(item.healAmount);
             if (healed > 0 || item.healAmount === 0) {
                 this.inventory[index] = null;
-                let delay = 0;
-                if (!item.isPotion) {
-                    delay = 2.0;
-                }
-                return { success: true, message: `You ${item.useAction || 'use'} ${item.name}. Healed ${healed} HP.`, item: item, actionDelay: delay };
+                let delay = item.isPotion ? 0 : 2.0;
+                return { success: true, message: `You ${item.useAction || 'use'} ${item.name}. Healed ${healed} HP.`, item: item, actionDelay: delay, healedAmount: healed };
             } else {
                 this.inventory[index] = null;
-                let delay = 0;
-                if (!item.isPotion) {
-                    delay = 2.0;
-                }
-                return { success: true, message: `You ${item.useAction || 'use'} ${item.name}, but were already full health.`, item: item, actionDelay: delay };
+                let delay = item.isPotion ? 0 : 2.0;
+                return { success: true, message: `You ${item.useAction || 'use'} ${item.name}, but were already full health.`, item: item, actionDelay: delay, healedAmount: 0 };
             }
         }
 
         if (item.type === 'consumable') {
             if (item.stats) {
-                let canApply = true;
-                if (item.stats.tempAttack && this.tempAttack > 0) canApply = false;
-                if (item.stats.tempDefense && this.tempDefense > 0) canApply = false;
-                if (item.stats.tempSpeed && this.tempSpeedReduction > 0) canApply = false;
+                let buffType = null;
+                let buffAmount = 0;
 
-                if (!canApply) {
-                    return { success: false, message: "You already have a similar temporary effect active." };
+                // Determine buff type and amount (simplified)
+                if (item.stats.tempAttack) {
+                    buffType = 'attack'; 
+                    buffAmount = item.stats.tempAttack;
+                }
+                if (item.stats.tempDefense) {
+                    buffType = 'defense'; 
+                    buffAmount = item.stats.tempDefense;
+                }
+                if (item.stats.tempSpeed) {
+                    // Note: Speed reduction is negative for display, but positive in stats
+                    buffType = 'speed'; 
+                    buffAmount = item.stats.tempSpeed; 
                 }
 
+                // Always apply the buff - removed the !canApply check
                 if (item.stats.tempAttack) this.tempAttack += item.stats.tempAttack;
                 if (item.stats.tempDefense) this.tempDefense += item.stats.tempDefense;
                 if (item.stats.tempSpeed) this.tempSpeedReduction += item.stats.tempSpeed;
                 
-                let buffMessage = `Used ${item.name}.`;
-                if (item.stats.tempAttack) buffMessage += ` Attack +${item.stats.tempAttack}`;
-                if (item.stats.tempDefense) buffMessage += ` Defense +${item.stats.tempDefense}`;
-                if (item.stats.tempSpeed) buffMessage += ` Speed +${item.stats.tempSpeed}s`;
-                
-                this.inventory[index] = null;
-                return { success: true, message: buffMessage, item: item, actionDelay: item.isPotion ? 0 : 2.0 };
+                this.inventory[index] = null; // Consume item
+
+                // Return buff details for splat creation
+                return { 
+                    success: true, 
+                    message: `Used ${item.name}. Buff applied!`, // Simplified message
+                    item: item, 
+                    actionDelay: item.isPotion ? 0 : 2.0, 
+                    buffType: buffType, 
+                    buffAmount: buffAmount 
+                };
             }
         }
 

@@ -103,7 +103,8 @@ class Trap {
         } else {
             const damageTaken = this.game.getRandomInt(area.damageRange[0], area.damageRange[1]);
             this.game.player.takeRawDamage(damageTaken);
-            this.game.ui.createDamageSplat('#trap-area', damageTaken, 'damage');
+            const trapSelector = `.trap-area-option[data-risk="${areaKey}"]`;
+            this.game.ui.createDamageSplat(trapSelector, damageTaken, 'damage');
             this.game.ui.updatePlayerStats();
 
             const failMsg = `Failure! The trap triggers, dealing ${damageTaken} damage.`;

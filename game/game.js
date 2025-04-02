@@ -19,12 +19,12 @@ class Game {
     EVENT_PROBABILITY = [
         { type: 'monster', weight: 30 },
         { type: 'rest', weight: 10 },
-        { type: 'shop', weight: 5 },
-        { type: 'alchemist', weight: 10 },
-        { type: 'treasure_chest', weight: 10 },
-        { type: 'fishing', weight: 10 },
-        { type: 'blacksmith', weight: 5 },
-        { type: 'sharpen', weight: 10 },
+        // { type: 'shop', weight: 5 },
+        // { type: 'alchemist', weight: 10 },
+        // { type: 'treasure_chest', weight: 10 },
+        // { type: 'fishing', weight: 10 },
+        // { type: 'blacksmith', weight: 5 },
+        // { type: 'sharpen', weight: 10 },
         { type: 'armorsmith', weight: 5 },
         { type: 'trap', weight: 5 }
     ];
@@ -407,13 +407,26 @@ class Game {
             if (useResult.success) {
                 this.addLog(useResult.message);
                 
+                // Render inventory FIRST to reflect item consumption
+                this.ui.renderInventory(); 
+
                 // Add heal splat for non-combat heals - TARGET THE SPECIFIC SLOT
-                if (useResult.healedAmount && useResult.healedAmount > 0) {
-                   const slotSelector = `.inventory-slot"`;
-                   this.ui.createDamageSplat(slotSelector, useResult.healedAmount, 'heal');
+                // Show splat even if heal amount is 0 (e.g., eating at full health)
+                if (useResult.item?.healAmount !== undefined) { // Check if it was a healing item attempt
+                   // Simplify the selector
+                   const slotSelector = `.inventory-slot[data-index="${inventoryIndex}"]`;
+                   const amountToShow = useResult.healedAmount || 0; // Show +0 if full health
+                   const splatType = useResult.item?.isPotion ? 'potion-heal' : 'heal'; 
+                   console.log(`Attempting to create splat. Selector: "${slotSelector}", Amount: ${amountToShow}, Type: ${splatType}`); 
+                   this.ui.createDamageSplat(slotSelector, amountToShow, splatType); // Pass the specific type
+                } else if (useResult.buffType) { // NEW: Check for buffs
+                    const slotSelector = `.inventory-slot[data-index="${inventoryIndex}"]`;
+                    const buffAmount = useResult.buffAmount;
+                    const buffSplatType = `buff-${useResult.buffType}`; // e.g., buff-attack
+                    console.log(`Attempting to create splat. Selector: "${slotSelector}", Amount: ${buffAmount}, Type: ${buffSplatType}`); 
+                    this.ui.createDamageSplat(slotSelector, buffAmount, buffSplatType);
                 }
 
-                this.ui.renderInventory(); // Item consumed
                 this.ui.updatePlayerStats(); // Health/Stats changed
             } else {
                 this.addLog(useResult.message); 

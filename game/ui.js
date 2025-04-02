@@ -219,6 +219,7 @@ class UI {
                         }
                     } else if (item.type === 'consumable' && item.useAction) {
                         this.game.handleUseItem(index);
+                        this.hideTooltip(this.itemTooltip);
                     } else if (this.game.state === 'shop') {
                         const sellPrice = item.value || 0;
                         this.game.addLog(`Click again to confirm sell ${item.name} for ${sellPrice}G?`);
@@ -619,33 +620,32 @@ class UI {
         document.body.appendChild(container);
     }
 
-    createDamageSplat(targetSelector, amount, type = 'damage', blocked = 0, fullBlock = false) {
-        const targetElement = document.querySelector(targetSelector);
-        if (!targetElement) {
-            console.error("Damage splat target not found:", targetSelector);
-            return;
-        };
-
-        let container = targetElement.querySelector('.damage-splat-container');
+    createDamageSplat(selector, amount, type = 'damage', blocked = 0, fullBlock = false) {
+        console.log(`[createDamageSplat] Called with selector: "${selector}", amount: ${amount}, type: ${type}`);
+        const container = document.querySelector(selector);
+        console.log('[createDamageSplat] Found container:', container); // Log the result
+        
         if (!container) {
-            container = document.createElement('div');
-            container.className = 'damage-splat-container';
-            if (getComputedStyle(targetElement).position === 'static') {
-                 targetElement.style.position = 'relative';
-            }
-            targetElement.appendChild(container);
+            console.error(`Damage splat container not found with selector: ${selector}`);
+            return;
         }
 
         const splat = document.createElement('div');
         splat.className = `damage-splat ${type}`;
+        splat.style.position = 'absolute'; // Ensure absolute positioning
         
-        const x = Math.random() * 60 - 30;
+        const x = Math.random() * 60 - 20;
         splat.style.left = `calc(50% + ${x}px)`;
         
-        if (targetSelector === '#inventory-area') {
-            splat.style.top = '15%';
-        } else {
-            splat.style.top = '50%';
+        if (selector.includes('.inventory-slot')) { 
+            splat.style.top = '25%'; // Start higher within inventory slot
+        } else if (selector.includes('.trap-area-option')) { // NEW: Handle trap area
+            splat.style.top = '30%'; // Position within the trap card
+        } else if (selector === '#rest-area .rest-campfire-container') {
+            splat.style.top = '30%'; // Keep rest area position
+        } else if (selector === '#trap-area') {
+            const y = Math.random() * 60 - 20;
+            splat.style.top = `calc(30% + ${y}px)`;
         }
         if (type === 'damage') {
             if (fullBlock) {
@@ -655,11 +655,20 @@ class UI {
             } else {
                 splat.textContent = amount;
             }
-        } else if (type === 'heal') {
+        } else if (type === 'heal' || type === 'potion-heal') { 
             splat.textContent = '+' + amount;
+        } else if (type === 'buff-attack') {
+            splat.textContent = `+${amount} Atk`;
+        } else if (type === 'buff-defense') {
+            splat.textContent = `+${amount} Def`;
+        } else if (type === 'buff-speed') {
+            // Speed buff is a reduction, so show as negative
+            splat.textContent = `-${amount.toFixed(1)}s Spd`; 
         }
 
         container.appendChild(splat);
+        console.log("[createDamageSplat] Damage splat appended:", splat);
+        // Re-enable removal
         setTimeout(() => splat.remove(), 2000);
     }
 

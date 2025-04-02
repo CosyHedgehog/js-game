@@ -66,6 +66,13 @@ class Starting {
                 { id: 'wooden_dagger', count: 1 },
                 { id: 'thief_tools', count: 1 },
                 { id: 'speed_potion', count: 3 },
+                { id: 'greater_speed_potion', count: 1 },
+                { id: 'greater_health_potion', count: 1 },
+                { id: 'health_potion', count: 1 },
+                { id: 'greater_attack_potion', count: 1 },
+                { id: 'attack_potion', count: 1 },
+                { id: 'greater_defense_potion', count: 1 },
+                { id: 'defense_potion', count: 1 },
             ]
         }
     };
