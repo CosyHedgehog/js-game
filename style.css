@@ -268,13 +268,12 @@ body {
     #main-area {
         min-width: unset;
         border-bottom: 1px solid #444;
-        flex: 1 1 60%; /* Allow main area to take ~60% vertical space */
+        flex: 1 1 50%; /* Allow main area to take ~60% vertical space */
         min-height: 0; /* Allow shrinking */
     }
 
     #inventory-area {
-         height: 100%;
-         width: 100%;
+        height: 100%;
          border-bottom: none;
          border-right: none;
          overflow: hidden; /* Ensure parent contains the scrolling grid */
@@ -289,6 +288,8 @@ body {
         overflow-y: auto; /* Enable vertical scroll *within* the grid */
         padding: 5px;
         gap: 3px;
+        grid-template-columns: repeat(6, 1fr);
+        grid-template-rows: repeat(3, 1fr);
     }
 
     #inventory-area .inventory-slot {
