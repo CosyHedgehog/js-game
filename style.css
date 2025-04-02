@@ -2944,3 +2944,53 @@ html {
     display: none; /* Use display none instead of just opacity */
 }
 
+/* ADD Style for Food action CHIP */
+.inventory-slot .food-action-chip {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    background-color: #806040; /* Brownish background */
+    color: #ffe0c0; /* Light text */
+    font-size: 0.7em;
+    font-weight: bold;
+    padding: 1px 8px;
+    border-radius: 0 0 5px 5px;
+    line-height: 1.1;
+    z-index: 2;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.4);
+    text-transform: uppercase;
+}
+
+/* Style for EQUIPPED slots - CHANGED TO BLUE */
+#inventory-grid .inventory-slot.equipped {
+    background-color: #746d6d47 !important; /* Darker grey background */
+    /* border-color: #444444 !important; Darker grey border */
+    border-color: green !important;
+}
+
+#inventory-grid .inventory-slot.equipped:hover {
+    transform: scale(1.03);
+    z-index: 5;
+}
+
+/* ADD Style for Tool action CHIP */
+.inventory-slot .tool-action-chip {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    background-color: #5a6a7a; /* Greyish-blue background */
+    color: #d0d8e0; /* Light text */
+    font-size: 0.7em;
+    font-weight: bold;
+    padding: 1px 8px;
+    border-radius: 0 0 5px 5px;
+    line-height: 1.1;
+    z-index: 2;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.4);
+    text-transform: uppercase;
+}
+

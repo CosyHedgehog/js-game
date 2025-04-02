@@ -239,6 +239,18 @@ class UI {
                     slot.appendChild(chip);
                 } else {
                     slot.classList.remove('equipped');
+                    // Check if it's food to add the 'Eat' chip
+                    if (item.type === 'consumable' && item.useAction === 'Eat') {
+                        const foodChip = document.createElement('span');
+                        foodChip.classList.add('food-action-chip');
+                        foodChip.textContent = 'Food';
+                        slot.appendChild(foodChip);
+                    } else if (item.type === 'tool') {
+                        const toolChip = document.createElement('span');
+                        toolChip.classList.add('tool-action-chip');
+                        toolChip.textContent = 'Tool';
+                        slot.appendChild(toolChip);
+                    }
                 }
 
             } else {
