@@ -447,12 +447,14 @@ button:disabled {
 }
 
 #shop-area {
-    background-color: #333;
-    border-radius: 6px;
-    padding: 20px;
+    padding: 15px;
+    border: 1px solid #555;
+    max-width: 800px;
     margin: 10px auto;
-    width: 90%;
-    max-width: 600px;
+    background-color: #333;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    pointer-events: none; /* Prevent container from blocking underlying elements */
 }
 
 #shop-area h3 {
@@ -460,6 +462,7 @@ button:disabled {
     font-size: 1.2em;
     text-align: center;
     margin: 0 0 15px 0;
+    flex-grow: 1;
 }
 
 .shop-content {
@@ -482,13 +485,12 @@ button:disabled {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px 12px;
-    margin: 5px 0;
-    background: #333;
-    border: 1px solid #404040;
-    border-radius: 4px;
-    cursor: pointer;
+    margin-bottom: 8px;
+    padding: 5px;
+    border-radius: 3px;
     transition: background-color 0.2s;
+    cursor: pointer;
+    pointer-events: auto; /* Enable events for items */
 }
 
 .shop-item:hover {
@@ -516,20 +518,28 @@ button:disabled {
     font-size: 0.9em;
 }
 
-.shop-item-button {
-    padding: 6px 12px;
-    background: #4a6b4a;
-    border: 1px solid #355535;
+.shop-item-button,
+#shop-reroll-button,
+#shop-leave-button {
+    padding: 8px 12px;
+    background-color: #5c677d;
     color: white;
+    border: none;
     border-radius: 4px;
     cursor: pointer;
+    transition: background-color 0.2s;
+    pointer-events: auto; /* Enable events for buttons */
 }
 
-.shop-item-button:hover:not(:disabled) {
-    background: #557755;
+.shop-item-button:hover:not(:disabled),
+#shop-reroll-button:hover:not(:disabled),
+#shop-leave-button:hover:not(:disabled) {
+    background-color: #666;
 }
 
-.shop-item-button:disabled {
+.shop-item-button:disabled,
+#shop-reroll-button:disabled,
+#shop-leave-button:disabled {
     background-color: #666;
     cursor: not-allowed;
     border-color: #555;
@@ -537,7 +547,9 @@ button:disabled {
 }
 
 /* NEW: Prevent hover effect on disabled/bought buttons */
-.shop-item-button:disabled:hover {
+.shop-item-button:disabled:hover,
+#shop-reroll-button:disabled:hover,
+#shop-leave-button:disabled:hover {
     background-color: #666; /* Keep the same background color on hover */
     border-color: #666; /* Keep the border color the same as well */
     filter: none; /* Remove any brightness/filter effects */

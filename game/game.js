@@ -19,14 +19,14 @@ class Game {
     EVENT_PROBABILITY = [
         { type: 'monster', weight: 30 },
         { type: 'rest', weight: 10 },
-        // { type: 'shop', weight: 5 },
-        // { type: 'alchemist', weight: 10 },
+        { type: 'shop', weight: 100 },
+        { type: 'alchemist', weight: 10 },
         // { type: 'treasure_chest', weight: 10 },
         // { type: 'fishing', weight: 10 },
         // { type: 'blacksmith', weight: 5 },
         // { type: 'sharpen', weight: 10 },
-        { type: 'armorsmith', weight: 5 },
-        { type: 'trap', weight: 5 }
+        // { type: 'armorsmith', weight: 5 },
+        // { type: 'trap', weight: 5 }
     ];
 
     startGame() {
@@ -448,6 +448,25 @@ class Game {
             this.ui.renderEquipment(); // Update equipment display if the destroyed item was equipped
             this.ui.updatePlayerStats();
         }
+    }
+
+    handleSellItem(inventoryIndex) {
+        if (this.state !== 'shop') return;
+    
+        const item = this.player.inventory[inventoryIndex];
+        if (!item) return;
+    
+        const sellPrice = item.value || 0;
+        // Ensure item is unequipped before selling
+        this.player.unequipItem(inventoryIndex); 
+        this.player.removeItem(inventoryIndex); // removeItem now handles unequip internally, but belt-and-suspenders
+        this.player.addGold(sellPrice);
+        this.addLog(`You sold ${item.name} for ${sellPrice} gold.`);
+
+        this.ui.renderInventory();
+        this.ui.renderEquipment();
+        this.ui.updatePlayerStats();
+        this.ui.updateShopAffordability(); // Call UI method
     }
 
     // --- NEW: Inventory Drag/Drop Handler ---

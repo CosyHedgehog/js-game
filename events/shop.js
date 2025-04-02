@@ -174,24 +174,6 @@ class Shop {
         }
     }
 
-
-    handleSellItem(inventoryIndex) {
-        if (this.game.state !== 'shop') return;
-    
-        const item = this.game.player.inventory[inventoryIndex];
-        if (!item) return;
-    
-        const sellPrice = item.value || 0;
-        this.game.player.removeItem(inventoryIndex);
-        this.game.player.addGold(sellPrice);
-        this.game.addLog(`You sold ${item.name} for ${sellPrice} gold.`);
-
-        this.ui.renderInventory();
-        this.ui.renderEquipment();
-        this.ui.updatePlayerStats();
-        this.updateShopAffordability();
-    }
-
     generateShopItems(count) {
         const numItems = this.game.getRandomInt(3, 8);
         const items = [];

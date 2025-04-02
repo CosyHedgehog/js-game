@@ -64,7 +64,7 @@ class Alchemist {
                                 <span class="shop-item-name">${item.name}</span>
                                 <span class="shop-item-price">${item.buyPrice} gold</span>
                             </div>
-                            <button class="shop-item-button" ${isBought || !canAfford ? 'disabled' : ''}>
+                            <button class="shop-item-button" data-index="${index}" ${isBought || !canAfford ? 'disabled' : ''}>
                                 ${isBought ? 'Bought' : 'Buy'}
                             </button>
                         </div>
@@ -115,11 +115,19 @@ class Alchemist {
             });
         });
 
-        const buyButtons = document.querySelectorAll('.shop-item-button');
-        buyButtons.forEach((button, index) => {
+        const alchemistArea = document.getElementById('alchemist-area');
+        if (!alchemistArea) return;
+
+        const buyButtons = alchemistArea.querySelectorAll('.shop-item-button');
+        buyButtons.forEach((button) => {
             button.onclick = (e) => {
                 e.stopPropagation();
-                this.handleAlchemistBuy(index);
+                const itemIndex = parseInt(button.dataset.index);
+                if (!isNaN(itemIndex)) {
+                    this.handleAlchemistBuy(itemIndex);
+                } else {
+                    console.error('Invalid item index on alchemist buy button:', button.dataset.index);
+                }
             };
         });
 

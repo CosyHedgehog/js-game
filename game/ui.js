@@ -130,6 +130,7 @@ class UI {
             const slot = document.createElement('div');
             slot.classList.add('inventory-slot');
             slot.dataset.index = index;
+            
             slot.addEventListener('dragover', (event) => {
                 event.preventDefault();
             });
@@ -142,7 +143,6 @@ class UI {
             slot.addEventListener('dragleave', () => {
                 slot.classList.remove('drag-over');
             });
-
             slot.addEventListener('drop', (event) => {
                 event.preventDefault();
                 slot.classList.remove('drag-over');
@@ -155,24 +155,83 @@ class UI {
 
             if (item) {
                 slot.textContent = item.name;
+                slot.classList.add('slot-filled');
+                slot.draggable = true;
+                
+                let clickHandler = null;
+                let actionText = '';
+                let isEquipped = false;
+                for (const slotName in this.game.player.equipment) {
+                    if (this.game.player.equipment[slotName] === index) {
+                        isEquipped = true;
+                        break;
+                    }
+                }
+
                 if (this.game.state === 'shop') {
-                    slot.classList.add('sell-price');
+                    const sellPrice = item.value || 0;
+                    actionText = `[Sell: ${sellPrice} Gold]`;
+                    clickHandler = (event) => {
+                        event.stopPropagation();
+                        this.game.handleSellItem(index);
+                        this.hideTooltip(this.itemTooltip);
+                    };
                     slot.classList.add('shop-sellable');
-                } else if (this.game.state === 'blacksmith') {
+
+                    let tooltipHTML = '';
+                    if (actionText) {
+                        tooltipHTML += `<span class="tooltip-action">${actionText}</span><br>`;
+                    }
+                    tooltipHTML += item.description || 'No description';
+
+                    slot.addEventListener('mouseenter', (e) => { 
+                        this.showTooltip(tooltipHTML, this.itemTooltip, e)
+                    }); 
+                    slot.addEventListener('mouseleave', () => this.hideTooltip(this.itemTooltip));         
+                } else {
                     if (item.type === 'weapon' || item.type === 'armor') {
+                        actionText = isEquipped ? '[Unequip]' : '[Equip]';
+                        clickHandler = (event) => {
+                            event.stopPropagation();
+                            if (isEquipped) {
+                                this.game.handleUnequipItem(index);
+                            } else {
+                                this.game.handleEquipItem(index);
+                            }
+                            this.hideTooltip(this.itemTooltip);
+                        };
+                    } else if (item.type === 'consumable' && item.useAction) {
+                        actionText = `[${item.useAction}]`;
+                        clickHandler = (event) => {
+                            event.stopPropagation();
+                            this.game.handleUseItem(index);
+                            this.hideTooltip(this.itemTooltip);
+                        };
+                    } else {
+                        actionText = '[No Action]';
+                        slot.style.cursor = 'default';
+                    }
+                    
+                    let tooltipHTML = '';
+                    if (actionText) {
+                        tooltipHTML += `<span class="tooltip-action">${actionText}</span><br>`;
+                    }
+                    tooltipHTML += item.description || 'No description';
+
+                    slot.addEventListener('mouseenter', (e) => { 
+                        this.showTooltip(tooltipHTML, this.itemTooltip, e)
+                    }); 
+                    slot.addEventListener('mouseleave', () => this.hideTooltip(this.itemTooltip));                 
+                    
+                    if (this.game.state === 'blacksmith' && (item.type === 'weapon' || item.type === 'armor')) {
                         slot.classList.add('blacksmith-valid');
-                    }
-                } else if (this.game.state === 'armourer') {
-                    if (item.type === 'armor') {
+                    } else if (this.game.state === 'armourer' && item.type === 'armor') {
                         slot.classList.add('armourer-valid');
-                    }
-                } else if (this.game.state === 'sharpen') {
-                    if (item.type === 'weapon') {
+                    } else if (this.game.state === 'sharpen' && item.type === 'weapon') {
                         slot.classList.add('sharpen-valid');
                     }
                 }
-                slot.classList.add('slot-filled');
-                slot.draggable = true;
+
                 slot.addEventListener('dragstart', (event) => {
                     event.dataTransfer.setData('text/plain', index.toString());
                     event.dataTransfer.effectAllowed = 'move';
@@ -182,51 +241,16 @@ class UI {
                     this.hideTooltip(this.itemTooltip);
                     this.hideTooltip(this.equipTooltip);
                 });
-
                 slot.addEventListener('dragend', () => {
                     slot.classList.remove('dragging');
                     this.inventoryGrid.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
                     this.draggedItemIndex = null;
                     this.draggedItem = null;
                 });
-
-                let tooltipText = item.description || 'No description';
-                let actionPrefix = '';
-                let isEquipped = false;
-                for (const slotName in this.game.player.equipment) {
-                    if (this.game.player.equipment[slotName] === index) {
-                        isEquipped = true;
-                        break;
-                    }
+                if (clickHandler) {
+                    slot.addEventListener('click', clickHandler);
                 }
-                if (item.type === 'weapon' || item.type === 'armor') {
-                    actionPrefix = isEquipped ? '[Unequip]' : '[Equip]';
-                } else if (item.type === 'consumable' && item.useAction) {
-                    actionPrefix = `[${item.useAction}]`;
-                }
-                tooltipText = actionPrefix ? `<span class="tooltip-action">${actionPrefix}</span><br>${tooltipText}` : tooltipText;
-
-                slot.addEventListener('mouseenter', (e) => this.showTooltip(tooltipText, this.itemTooltip, e));
-                slot.addEventListener('mouseleave', () => this.hideTooltip(this.itemTooltip));
-                slot.addEventListener('click', (e) => {
-                    if (slot.classList.contains('dragging')) return;
-                    e.stopPropagation();
-                    if (item.type === 'weapon' || item.type === 'armor') {
-                        if (isEquipped) {
-                            this.game.handleUnequipItem(index);
-                        } else {
-                            this.game.handleEquipItem(index);
-                        }
-                    } else if (item.type === 'consumable' && item.useAction) {
-                        this.game.handleUseItem(index);
-                        this.hideTooltip(this.itemTooltip);
-                    } else if (this.game.state === 'shop') {
-                        const sellPrice = item.value || 0;
-                        this.game.addLog(`Click again to confirm sell ${item.name} for ${sellPrice}G?`);
-                        console.log("Selling via left-click disabled for now.");
-                    }
-                });
-
+                
                 if (isEquipped) {
                     slot.classList.add('equipped');
                     const chip = document.createElement('span');
@@ -240,7 +264,6 @@ class UI {
                     slot.appendChild(chip);
                 } else {
                     slot.classList.remove('equipped');
-                    // Check if it's food to add the 'Eat' chip
                     if (item.type === 'consumable' && item.useAction === 'Eat') {
                         const foodChip = document.createElement('span');
                         foodChip.classList.add('food-action-chip');
@@ -263,9 +286,6 @@ class UI {
                 slot.textContent = '';
                 slot.classList.add('slot-empty');
                 slot.draggable = false;
-                slot.onmouseenter = null;
-                slot.onmouseleave = null;
-                slot.onclick = null;
             }
             this.inventoryGrid.appendChild(slot);
         });
@@ -589,6 +609,35 @@ class UI {
     hideTooltip(tooltipElement) {
         if (tooltipElement) {
             tooltipElement.classList.add('hidden');
+        }
+    }
+
+    updateShopAffordability() {
+        if (!this.game || this.game.state !== 'shop') return; // Add safety checks
+        
+        const shopArea = document.getElementById('shop-area');
+        if (!shopArea || shopArea.classList.contains('hidden')) return;
+
+        // Update buy buttons based on player gold
+        const shopItems = shopArea.querySelectorAll('.shop-item:not(.item-bought)');
+        shopItems.forEach(shopItemDiv => {
+            const index = parseInt(shopItemDiv.dataset.index);
+            if (isNaN(index) || !this.game.currentShopItems || !this.game.currentShopItems[index]) return; // More checks
+            
+            const item = this.game.currentShopItems[index];
+            const buyButton = shopItemDiv.querySelector('.shop-item-button');
+            
+            if (item && buyButton) {
+                const canAfford = this.game.player.gold >= item.buyPrice;
+                buyButton.disabled = !canAfford;
+            }
+        });
+        
+        // Update reroll button based on player gold and reroll status
+        const rerollButton = document.getElementById('shop-reroll-button');
+        if (rerollButton) { // Check if button exists
+            const canAffordReroll = this.game.player.gold >= 3; // Assuming cost is 3
+            rerollButton.disabled = !this.game.shopCanReroll || !canAffordReroll;
         }
     }
 
