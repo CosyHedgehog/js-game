@@ -5,7 +5,7 @@ class Player {
         this.health = 10;
         this.baseAttack = 1;
         this.baseDefense = 1;
-        this.inventory = new Array(15).fill(null);
+        this.inventory = new Array(18).fill(null);
         this.equipment = {
             helm: null,
             body: null,
@@ -24,41 +24,49 @@ class Player {
 
     getMaxHealth() {
         let totalMaxHealth = this.maxHealth;
-        for (const slot in this.equipment) {
-            if (this.equipment[slot] && this.equipment[slot].stats?.maxHealth) {
-                totalMaxHealth += this.equipment[slot].stats.maxHealth;
+        Object.values(this.equipment).forEach(index => {
+            if (index !== null && this.inventory[index]?.stats?.maxHealth) {
+                totalMaxHealth += this.inventory[index].stats.maxHealth;
             }
-        }
+        });
         return totalMaxHealth;
     }
 
     getAttack() {
         let totalAttack = this.baseAttack + this.tempAttack;
-        if (this.equipment.weapon && this.equipment.weapon.stats?.attack) {
-            totalAttack += this.equipment.weapon.stats.attack;
+        const weaponIndex = this.equipment.weapon;
+        if (weaponIndex !== null && this.inventory[weaponIndex]?.stats?.attack) {
+            totalAttack += this.inventory[weaponIndex].stats.attack;
+        }
+        const ringIndex = this.equipment.ring;
+         if (ringIndex !== null && this.inventory[ringIndex]?.stats?.attack) {
+            totalAttack += this.inventory[ringIndex].stats.attack;
         }
         return totalAttack;
     }
 
     getAttackSpeed() {
-        const baseSpeed = this.equipment.weapon?.speed ?? this.defaultAttackSpeed;
+        const weaponIndex = this.equipment.weapon;
+        const baseSpeed = weaponIndex !== null ? (this.inventory[weaponIndex]?.speed ?? this.defaultAttackSpeed) : this.defaultAttackSpeed;
         return Math.max(0.5, baseSpeed - this.tempSpeedReduction);
     }
 
     getDefense() {
         let totalDefense = this.baseDefense + this.tempDefense;
-        for (const slot in this.equipment) {
-            if (this.equipment[slot] && this.equipment[slot].stats?.defense) {
-                totalDefense += this.equipment[slot].stats.defense;
+        Object.values(this.equipment).forEach(index => {
+            if (index !== null && this.inventory[index]?.stats?.defense) {
+                totalDefense += this.inventory[index].stats.defense;
             }
-        }
+        });
         return totalDefense;
     }
 
     takeDamage(amount) {
-        const actualDamage = Math.max(0, amount - this.getDefense());
+        const defenseRoll = game.rollDamage(this.getDefense());
+        const actualBlocked = Math.min(amount, defenseRoll);
+        const actualDamage = Math.max(0, amount - actualBlocked);
         this.health = Math.max(0, this.health - actualDamage);
-        return { actualDamage, isDead: this.health <= 0 };
+        return { actualDamage, actualBlocked, isDead: this.health <= 0 };
     }
 
     takeRawDamage(amount) {
@@ -100,6 +108,7 @@ class Player {
     removeItem(index) {
         if (index >= 0 && index < this.inventory.length && this.inventory[index]) {
             const item = this.inventory[index];
+            this.unequipItem(index);
             this.inventory[index] = null;
             return item;
         }
@@ -121,42 +130,52 @@ class Player {
             return { success: false, message: "Item cannot be equipped in any slot." };
         }
 
-        if (itemToEquip.type === 'weapon' && itemToEquip.hands === 2 && this.equipment.shield) {
-            if (!this.unequipItem('shield')) {
-                return { success: false, message: "Inventory full, cannot unequip shield for 2H weapon." };
+        if (itemToEquip.type === 'weapon' && itemToEquip.hands === 2 && this.equipment.shield !== null) {
+            const shieldIndex = this.equipment.shield;
+            const unequipResult = this.unequipItem(shieldIndex);
+            if (!unequipResult.success) {
+                 return { success: false, message: "Could not unequip shield to equip 2H weapon (should not happen unless logic error)." };
             }
+             game?.addLog(`Unequipped ${this.inventory[shieldIndex]?.name} to equip 2H weapon.`);
         }
-        if (itemToEquip.slot === 'shield' && this.equipment.weapon?.hands === 2) {
-            return { success: false, message: "Cannot equip shield with a 2-handed weapon." };
+        if (itemToEquip.slot === 'shield' && this.equipment.weapon !== null && this.inventory[this.equipment.weapon]?.hands === 2) {
+             return { success: false, message: "Cannot equip shield with a 2-handed weapon equipped." };
         }
-        const currentItem = this.equipment[slot];
-        if (currentItem) {
-            this.inventory[index] = currentItem;
-            this.equipment[slot] = itemToEquip;
-            return { success: true, item: itemToEquip, unequipped: currentItem };
-        } else {
-            this.inventory[index] = null;
-            this.equipment[slot] = itemToEquip;
-            return { success: true, item: itemToEquip };
+
+        const currentlyEquippedIndex = this.equipment[slot];
+
+        if (currentlyEquippedIndex !== null && currentlyEquippedIndex !== index) {
+             const unequipResult = this.unequipItem(currentlyEquippedIndex);
+             if (!unequipResult.success) {
+                 return { success: false, message: "Could not unequip the previous item (should not happen unless logic error)." };
+             }
+              game?.addLog(`Unequipped ${this.inventory[currentlyEquippedIndex]?.name}.`);
         }
+
+        this.equipment[slot] = index;
+        return { success: true, item: itemToEquip, previouslyEquippedIndex: currentlyEquippedIndex };
     }
 
-    unequipItem(slot) {
-        if (!this.equipment[slot]) {
-            return { success: false, message: "No item equipped in that slot." };
+    unequipItem(index) {
+        if (index < 0 || index >= this.inventory.length || !this.inventory[index]) {
+            return { success: false, message: "Invalid inventory index." };
         }
 
-        const itemToUnequip = this.equipment[slot];
-        const freeSlotIndex = this.findFreeInventorySlot();
-
-        if (freeSlotIndex === -1) {
-            return { success: false, message: "Inventory full, cannot unequip item." };
+        let foundSlot = null;
+        for (const slotName in this.equipment) {
+            if (this.equipment[slotName] === index) {
+                foundSlot = slotName;
+                break;
+            }
         }
 
-        this.inventory[freeSlotIndex] = itemToUnequip;
-        this.equipment[slot] = null;
+        if (!foundSlot) {
+            return { success: false, message: "Item is not equipped." };
+        }
 
-        return { success: true, item: itemToUnequip };
+        const item = this.inventory[index];
+        this.equipment[foundSlot] = null;
+        return { success: true, item: item, slot: foundSlot };
     }
 
     useItem(index) {
@@ -175,12 +194,26 @@ class Player {
                 }
                 return { success: true, message: `You ${item.useAction || 'use'} ${item.name}. Healed ${healed} HP.`, item: item, actionDelay: delay };
             } else {
-                return { success: false, message: "Health is already full." };
+                this.inventory[index] = null;
+                let delay = 0;
+                if (!item.isPotion) {
+                    delay = 2.0;
+                }
+                return { success: true, message: `You ${item.useAction || 'use'} ${item.name}, but were already full health.`, item: item, actionDelay: delay };
             }
         }
 
         if (item.type === 'consumable') {
             if (item.stats) {
+                let canApply = true;
+                if (item.stats.tempAttack && this.tempAttack > 0) canApply = false;
+                if (item.stats.tempDefense && this.tempDefense > 0) canApply = false;
+                if (item.stats.tempSpeed && this.tempSpeedReduction > 0) canApply = false;
+
+                if (!canApply) {
+                    return { success: false, message: "You already have a similar temporary effect active." };
+                }
+
                 if (item.stats.tempAttack) this.tempAttack += item.stats.tempAttack;
                 if (item.stats.tempDefense) this.tempDefense += item.stats.tempDefense;
                 if (item.stats.tempSpeed) this.tempSpeedReduction += item.stats.tempSpeed;

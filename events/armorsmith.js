@@ -140,7 +140,8 @@ class Armoury {
                     document.getElementById('armourer-defense-button').disabled = false;
                     document.getElementById('armourer-health-button').disabled = false;
                     
-                    this.ui.renderInventory(); 
+                    this.ui.renderInventory();
+                    this.ui.renderEquipment();
 
                     armourerSlot.classList.add('crafting-slot-filled');
                 } else {
@@ -191,6 +192,7 @@ class Armoury {
         if (enhanceHealthButton) enhanceHealthButton.disabled = true;
 
         this.ui.renderInventory();
+        this.ui.renderEquipment();
     }
 
     handleArmourEnhancement(type) {
@@ -267,6 +269,8 @@ class Armoury {
 
         this.game.addLog(successMessage);
         this.ui.updatePlayerStats();
+        this.ui.renderInventory();
+        this.ui.renderEquipment();
 
         const armourerArea = document.getElementById('armourer-area');
         if (armourerArea) {

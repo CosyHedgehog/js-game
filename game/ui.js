@@ -20,13 +20,13 @@ class UI {
         this.playerStatsArea = document.getElementById('player-stats-area');
         this.inventoryGrid = document.getElementById('inventory-grid');
         this.itemTooltip = document.getElementById('item-tooltip');
-        this.itemContextMenu = document.getElementById('item-context-menu');
-        this.equipSlots = {
-            helm: document.getElementById('equip-helm'),
-            body: document.getElementById('equip-body'),
-            legs: document.getElementById('equip-legs'),
-            weapon: document.getElementById('equip-weapon'),
-            shield: document.getElementById('equip-shield'),
+        this.equipmentTextDisplay = {
+            weapon: document.getElementById('equip-text-weapon'),
+            shield: document.getElementById('equip-text-shield'),
+            helm: document.getElementById('equip-text-helm'),
+            body: document.getElementById('equip-text-body'),
+            legs: document.getElementById('equip-text-legs'),
+            ring: document.getElementById('equip-text-ring')
         };
         this.equipTooltip = document.getElementById('equip-tooltip');
         this.statHealth = document.getElementById('stat-health');
@@ -45,12 +45,14 @@ class UI {
         this.outputLogArea = document.getElementById('output-log-area');
         this.outputLog = document.getElementById('output-log');
         this.fishingArea = document.getElementById('fishing-area');
+        this.equipSlots = {
+            helm: document.getElementById('equip-helm'),
+            shield: document.getElementById('equip-shield'),
+            body: document.getElementById('equip-body'),
+            legs: document.getElementById('equip-legs'),
+            ring: document.getElementById('equip-ring')
+        };
         document.addEventListener('click', (event) => {
-            if (this.itemContextMenu && !this.itemContextMenu.classList.contains('hidden') &&
-                !this.itemContextMenu.contains(event.target) &&
-                !event.target.closest('.inventory-slot')) {
-                this.hideContextMenu();
-            }
             if (this.itemTooltip && !this.itemTooltip.contains(event.target) && !event.target.closest('.inventory-slot, .shop-item span, .equip-slot')) {
                 this.hideTooltip(this.itemTooltip);
             }
@@ -79,12 +81,13 @@ class UI {
         this.combatEnemyTimer = document.getElementById('combat-enemy-timer');
         this.shopItemsContainer = document.getElementById('shop-items');
         this.shopRerollButton = document.getElementById('shop-reroll-button');
-        this.equipSlots = {
-            helm: document.getElementById('equip-helm'),
-            body: document.getElementById('equip-body'),
-            legs: document.getElementById('equip-legs'),
-            weapon: document.getElementById('equip-weapon'),
-            shield: document.getElementById('equip-shield'),
+        this.equipmentTextDisplay = {
+            weapon: document.getElementById('equip-text-weapon'),
+            shield: document.getElementById('equip-text-shield'),
+            helm: document.getElementById('equip-text-helm'),
+            body: document.getElementById('equip-text-body'),
+            legs: document.getElementById('equip-text-legs'),
+            ring: document.getElementById('equip-text-ring')
         };
         this.statHealth = document.getElementById('stat-health');
         this.statMaxHealth = document.getElementById('stat-max-health');
@@ -148,7 +151,7 @@ class UI {
                 if (sourceIndex === null || sourceIndex === undefined || targetIndex === null || targetIndex === undefined) return;
                 this.game.handleInventorySwap(sourceIndex, targetIndex);
             });
-            slot.classList.remove('slot-empty', 'slot-filled', 'dragging');
+            slot.classList.remove('slot-empty', 'slot-filled', 'dragging', 'equipped');
 
             if (item) {
                 slot.textContent = item.name;
@@ -176,7 +179,6 @@ class UI {
                     this.draggedItemIndex = index;
                     this.draggedItem = item;
                     setTimeout(() => slot.classList.add('dragging'), 0);
-                    this.hideContextMenu();
                     this.hideTooltip(this.itemTooltip);
                     this.hideTooltip(this.equipTooltip);
                 });
@@ -188,59 +190,114 @@ class UI {
                     this.draggedItem = null;
                 });
 
-                slot.addEventListener('mouseenter', (e) => this.showTooltip(item.description, this.itemTooltip, e));
+                let tooltipText = item.description || 'No description';
+                let actionPrefix = '';
+                let isEquipped = false;
+                for (const slotName in this.game.player.equipment) {
+                    if (this.game.player.equipment[slotName] === index) {
+                        isEquipped = true;
+                        break;
+                    }
+                }
+                if (item.type === 'weapon' || item.type === 'armor') {
+                    actionPrefix = isEquipped ? '[Unequip]' : '[Equip]';
+                } else if (item.type === 'consumable' && item.useAction) {
+                    actionPrefix = `[${item.useAction}]`;
+                }
+                tooltipText = actionPrefix ? `<span class="tooltip-action">${actionPrefix}</span><br>${tooltipText}` : tooltipText;
+
+                slot.addEventListener('mouseenter', (e) => this.showTooltip(tooltipText, this.itemTooltip, e));
                 slot.addEventListener('mouseleave', () => this.hideTooltip(this.itemTooltip));
                 slot.addEventListener('click', (e) => {
                     if (slot.classList.contains('dragging')) return;
                     e.stopPropagation();
-                    this.showContextMenu(item, index, e);
+                    if (item.type === 'weapon' || item.type === 'armor') {
+                        if (isEquipped) {
+                            this.game.handleUnequipItem(index);
+                        } else {
+                            this.game.handleEquipItem(index);
+                        }
+                    } else if (item.type === 'consumable' && item.useAction) {
+                        this.game.handleUseItem(index);
+                    } else if (this.game.state === 'shop') {
+                        const sellPrice = item.value || 0;
+                        this.game.addLog(`Click again to confirm sell ${item.name} for ${sellPrice}G?`);
+                        console.log("Selling via left-click disabled for now.");
+                    }
                 });
+
+                if (isEquipped) {
+                    slot.classList.add('equipped');
+                    const chip = document.createElement('span');
+                    chip.classList.add('equipped-slot-chip');
+                    for (const slotName in this.game.player.equipment) {
+                        if (this.game.player.equipment[slotName] === index) {
+                            chip.textContent = slotName;
+                            break;
+                        }
+                    }
+                    slot.appendChild(chip);
+                } else {
+                    slot.classList.remove('equipped');
+                }
 
             } else {
                 slot.textContent = '';
                 slot.classList.add('slot-empty');
                 slot.draggable = false;
-                slot.addEventListener('mouseenter', () => {
-                    this.hideTooltip(this.itemTooltip);
-                    this.hideTooltip(this.equipTooltip);
-                });
-                slot.addEventListener('click', () => this.hideContextMenu());
+                slot.onmouseenter = null;
+                slot.onmouseleave = null;
+                slot.onclick = null;
             }
             this.inventoryGrid.appendChild(slot);
         });
     }
 
     renderEquipment() {
-        for (const slotName in this.equipSlots) {
-            const item = this.game.player.equipment[slotName];
-            const slotElement = this.equipSlots[slotName];
-            if (!slotElement) {
-                console.warn(`[LoopDebug] renderEquipment: Slot element not found for ${slotName}`);
+        for (const slotName in this.equipmentTextDisplay) {
+            const element = this.equipmentTextDisplay[slotName];
+            if (!element) {
+                console.warn(`UI renderEquipment: Text display element not found for ${slotName}`);
                 continue;
             }
-            const elementToModify = slotElement; 
-            elementToModify.classList.remove('slot-empty', 'slot-filled');
-            elementToModify.innerHTML = '';
 
-            if (item) {
-                elementToModify.textContent = item.name;
-                elementToModify.classList.add('slot-filled');
-                elementToModify.addEventListener('mouseenter', (e) => this.showTooltip(item.description, this.equipTooltip, e));
-                elementToModify.addEventListener('mouseleave', () => this.hideTooltip(this.equipTooltip));
-                elementToModify.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    this.game.handleUnequipItem(slotName);
-                });
+            const equippedItemIndex = this.game.player.equipment[slotName];
+            let itemName = '-';
+            let itemDescription = '';
 
+            // Find the corresponding unequip button
+            const unequipButton = document.querySelector(`#equipment-text-display .unequip-button[data-slot="${slotName}"]`);
+
+            if (equippedItemIndex !== null && this.game.player.inventory[equippedItemIndex]) {
+                const item = this.game.player.inventory[equippedItemIndex];
+                itemName = item.name;
+                itemDescription = item.description || 'No description';
+
+                element.onmouseenter = (e) => this.showTooltip(itemDescription, this.equipTooltip, e);
+                element.onmouseleave = () => this.hideTooltip(this.equipTooltip);
+
+                // Show and setup unequip button
+                if (unequipButton) {
+                    unequipButton.classList.remove('hidden');
+                    unequipButton.onclick = (e) => {
+                        e.stopPropagation(); // Prevent row hover effect if clicking button
+                        this.game.handleUnequipItem(equippedItemIndex); // Unequip using the item's index
+                    };
+                }
             } else {
-                elementToModify.textContent = slotName.toUpperCase();
-                elementToModify.classList.add('slot-empty');
-                elementToModify.addEventListener('mouseenter', () => {
-                    this.hideTooltip(this.itemTooltip);
-                    this.hideTooltip(this.equipTooltip);
-                });
-                elementToModify.addEventListener('click', () => { });
+                element.onmouseenter = null;
+                element.onmouseleave = null;
+
+                // Hide unequip button
+                if (unequipButton) {
+                    unequipButton.classList.add('hidden');
+                    unequipButton.onclick = null; // Remove listener
+                }
             }
+
+            // Update the text content of the value span
+            element.textContent = itemName;
+            element.title = ''; // Keep removing browser tooltip
         }
     }
 
@@ -286,6 +343,7 @@ class UI {
         buttonsContainer.style.gap = '15px';
         buttonsContainer.style.width = '100%';
         buttonsContainer.style.padding = '10px';
+        buttonsContainer.style.maxWidth = '500px'
 
         choices.forEach((choice, index) => {
             const button = document.createElement('button');
@@ -386,6 +444,9 @@ class UI {
         this.restArea.classList.add('hidden');
         this.lootArea.classList.add('hidden');
         this.fishingArea.classList.add('hidden');
+        this.outputLogArea.classList.add('hidden');
+        if (this.toggleLogButton) this.toggleLogButton.textContent = 'Show Log';
+
         const trapArea = document.getElementById('trap-area');
         if (trapArea) {
             trapArea.classList.add('hidden');
@@ -412,7 +473,6 @@ class UI {
         }
         this.choicesArea.innerHTML = '';
         this.cacheDynamicElements();
-        this.outputLogArea.classList.add('hidden');
     }
 
     cacheDynamicElements() {
@@ -488,9 +548,6 @@ class UI {
     }
 
     showTooltip(text, tooltipElement, event) {
-        if (this.itemContextMenu && !this.itemContextMenu.classList.contains('hidden')) {
-            return;
-        }
         if (!tooltipElement) return;
 
         tooltipElement.innerHTML = text;
@@ -514,72 +571,6 @@ class UI {
     hideTooltip(tooltipElement) {
         if (tooltipElement) {
             tooltipElement.classList.add('hidden');
-        }
-    }
-
-    showContextMenu(item, index, event) {
-        this.hideTooltip(this.itemTooltip);
-        this.hideTooltip(this.equipTooltip);
-
-        const slotElement = event.target.closest('.inventory-slot');
-        if (!this.inventoryArea || !slotElement) {
-            console.error("UI Error: Cannot show context menu - slot or inventory area missing.");
-            this.hideContextMenu();
-            return;
-        }
-
-        this.hideContextMenu();
-        this.itemContextMenu.innerHTML = '';
-
-        if (item.type === 'weapon' || item.type === 'armor') {
-            const equipButton = document.createElement('button');
-            equipButton.textContent = 'Equip';
-            equipButton.onclick = () => this.game.handleEquipItem(index);
-            this.itemContextMenu.appendChild(equipButton);
-        }
-        if (item.type === 'consumable') {
-            const useButton = document.createElement('button');
-            useButton.textContent = item.useAction || 'Use';
-            useButton.onclick = () => this.game.handleUseItem(index);
-            this.itemContextMenu.appendChild(useButton);
-        }
-        if (this.game.state === 'shop') {
-            const sellButton = document.createElement('button');
-            const sellPrice = item.value || 0;
-            sellButton.textContent = `Sell (${sellPrice} G)`;
-            sellButton.onclick = () => new Shop(this.game, this).handleSellItem(index);
-            this.itemContextMenu.appendChild(sellButton);
-        }
-        const destroyButton = document.createElement('button');
-        destroyButton.textContent = 'Destroy';
-        destroyButton.classList.add('context-destroy-button');
-        destroyButton.onclick = () => this.game.handleDestroyItem(index);
-        this.itemContextMenu.appendChild(destroyButton);
-        const cancelButton = document.createElement('button');
-        cancelButton.textContent = 'Cancel';
-        cancelButton.classList.add('context-cancel-button');
-        cancelButton.onclick = () => this.hideContextMenu();
-        this.itemContextMenu.appendChild(cancelButton);
-        const slotRect = slotElement.getBoundingClientRect();
-        this.itemContextMenu.classList.remove('hidden');
-        const menuRect = this.itemContextMenu.getBoundingClientRect();
-        let left = slotRect.left;
-        let top = slotRect.bottom + 5;
-        if (left + menuRect.width > window.innerWidth) {
-            left = slotRect.right - menuRect.width;
-        }
-        if (top + menuRect.height > window.innerHeight) {
-            top = slotRect.top - menuRect.height - 5;
-        }
-        left = Math.max(5, Math.min(left, window.innerWidth - menuRect.width - 5));
-        top = Math.max(5, Math.min(top, window.innerHeight - menuRect.height - 5));
-        this.itemContextMenu.style.left = `${left}px`;
-        this.itemContextMenu.style.top = `${top}px`;
-    }
-
-    hideContextMenu() {
-        if (this.itemContextMenu) {
-            this.itemContextMenu.classList.add('hidden');
         }
     }
 
@@ -643,7 +634,7 @@ class UI {
             if (fullBlock) {
                 splat.innerHTML = `<span style="color: #aaaaaa">BLOCKED ${blocked}</span>`;
             } else if (blocked > 0) {
-                splat.innerHTML = `${amount};`
+                splat.textContent = amount;
             } else {
                 splat.textContent = amount;
             }

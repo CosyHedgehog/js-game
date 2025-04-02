@@ -124,6 +124,7 @@ class Blacksmith {
 
                 this.updateForgeButton();
                 this.ui.renderInventory();
+                this.ui.renderEquipment();
             });
         });
 
@@ -288,6 +289,7 @@ class Blacksmith {
         this.game.addLog(`The Blacksmith combines your ${item1.name} and ${item2.name} into a ${forgedItem.name}!`);
         this.updateForgeButton();
         this.ui.renderInventory();
+        this.ui.renderEquipment();
 
         const blacksmithArea = document.getElementById('blacksmith-area');
         if (blacksmithArea) {
@@ -333,6 +335,7 @@ class Blacksmith {
 
         this.updateForgeButton();
         this.ui.renderInventory();
+        this.ui.renderEquipment();
     }
 
     isValidForgeItem(item, sourceIndex, targetSlotNum) {

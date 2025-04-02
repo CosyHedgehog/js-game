@@ -155,6 +155,7 @@ class Sharpen {
                     document.getElementById('sharpen-speed-button').disabled = false;
 
                     this.ui.renderInventory();
+                    this.ui.renderEquipment();
 
                 } else {
                     this.game.addLog("You can only place weapons on the sharpening stone.");
@@ -209,6 +210,7 @@ class Sharpen {
         }
 
         this.ui.renderInventory();
+        this.ui.renderEquipment();
     }
 
     handleSharpen(type) {
@@ -293,5 +295,9 @@ class Sharpen {
             this.ui.clearMainArea();
             this.game.proceedToNextRound();
         }
+
+        this.ui.updatePlayerStats();
+        this.ui.renderInventory();
+        this.ui.renderEquipment();
     }
 }

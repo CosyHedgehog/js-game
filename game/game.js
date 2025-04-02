@@ -356,30 +356,27 @@ class Game {
         const result = this.player.equipItem(index);
         if (result.success) {
             this.addLog(`Equipped ${result.item.name}.`);
-            if (result.unequipped) {
-                this.addLog(`Unequipped ${result.unequipped.name}.`);
-            }
-            
+            // Logging for auto-unequip is now handled inside Player.equipItem
+
             // If in combat and equipping a weapon, reset attack timer
             if (this.state === 'combat' && this.currentCombat && result.item.type === 'weapon') {
                 this.player.attackTimer = this.player.getAttackSpeed();
                 this.currentCombat.ui.updateCombatTimers(this.player.attackTimer, this.currentCombat.enemy.attackTimer);
             }
-            
-            this.ui.renderInventory();
+
+            this.ui.renderInventory(); // Update inventory for visual indicator
             this.ui.renderEquipment();
             this.ui.updatePlayerStats();
-            this.ui.hideContextMenu();
         } else {
             this.addLog(`Equip failed: ${result.message}`);
         }
     }
 
-    handleUnequipItem(slotName) {
-        const result = this.player.unequipItem(slotName);
+    handleUnequipItem(index) { // Changed parameter to index
+        const result = this.player.unequipItem(index);
         if (result.success) {
             this.addLog(`Unequipped ${result.item.name}.`);
-            this.ui.renderInventory();
+            this.ui.renderInventory(); // Update inventory to remove visual indicator
             this.ui.renderEquipment();
             this.ui.updatePlayerStats();
         } else {
@@ -410,15 +407,14 @@ class Game {
             if (useResult.success) {
                 this.addLog(useResult.message);
                 
-                // Add heal splat for non-combat heals
+                // Add heal splat for non-combat heals - TARGET THE SPECIFIC SLOT
                 if (useResult.healedAmount && useResult.healedAmount > 0) {
-                   // Target the inventory area instead
-                   this.ui.createDamageSplat('#inventory-area', useResult.healedAmount, 'heal'); 
+                   const slotSelector = `#inventory-grid .inventory-slot[data-index="${inventoryIndex}"]`;
+                   this.ui.createDamageSplat(slotSelector, useResult.healedAmount, 'heal');
                 }
 
                 this.ui.renderInventory(); // Item consumed
                 this.ui.updatePlayerStats(); // Health/Stats changed
-                this.ui.hideContextMenu();
             } else {
                 this.addLog(useResult.message); 
             }
@@ -426,11 +422,18 @@ class Game {
     }
 
     handleDestroyItem(inventoryIndex) {
+        const item = this.player.inventory[inventoryIndex]; // Get item before removing
+        if (!item) return;
+
+        // Ensure the item is unequipped first (removeItem now handles this, but double-check is safe)
+        this.player.unequipItem(inventoryIndex);
+
         const removedItem = this.player.removeItem(inventoryIndex);
         if (removedItem) {
             this.addLog(`Destroyed ${removedItem.name}.`);
             this.ui.renderInventory();
-            this.ui.hideContextMenu();
+            this.ui.renderEquipment(); // Update equipment display if the destroyed item was equipped
+            this.ui.updatePlayerStats();
         }
     }
 
@@ -454,6 +457,15 @@ class Game {
         const temp = this.player.inventory[sourceIndex];
         this.player.inventory[sourceIndex] = this.player.inventory[targetIndex];
         this.player.inventory[targetIndex] = temp;
+
+        // --- Update equipment references --- 
+        for (const slot in this.player.equipment) {
+            if (this.player.equipment[slot] === sourceIndex) {
+                this.player.equipment[slot] = targetIndex; // Update index if source was equipped
+            } else if (this.player.equipment[slot] === targetIndex) {
+                this.player.equipment[slot] = sourceIndex; // Update index if target was equipped
+            }
+        }
 
         // Add a log message (optional)
         // this.addLog("Rearranged inventory."); // Might be too noisy

@@ -9,140 +9,123 @@
   <body>
     <div id="game-container">
       <div id="game-screen" class="screen hidden">
-        <div id="main-area">
-          <div id="player-stats-area">
-            <button id="toggle-log-button">Show Log</button>
-            <div class="stat-item">
-              <span class="stat-label">Health:</span>
-              <span id="stat-health"></span>/<span id="stat-max-health"></span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-label">Attack:</span>
-              <span id="stat-attack"></span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-label">Defence:</span>
-              <span id="stat-defense"></span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-label">Speed:</span>
-              <span id="stat-speed"></span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-label">Gold:</span>
-              <span id="stat-gold"></span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-label">Round:</span>
-              <span id="stat-round"></span>
-            </div>
+        <div id="player-stats-area">
+          <button id="toggle-log-button">Show Log</button>
+          <div class="stat-item">
+            <span class="stat-label">Health:</span>
+            <span id="stat-health"></span>/<span id="stat-max-health"></span>
           </div>
-          <div id="main-content">
-            <div id="output-log-area" class="hidden">
-                <div class="log-header">
-                    <h3>Combat Log</h3>
-                    <button id="close-log-button">×</button>
-                </div>
-                <ul id="output-log"></ul>
-            </div>
-            <div id="choices-area">
-            </div>
-            <div id="combat-area" class="hidden">
-              <div class="combat-container">
-                <div class="combatant player-side">
-                  <div class="combatant-name">You</div>
-                  <div class="health-bar-container">
-                    <div class="health-bar player-health"></div>
-                    <div class="health-text">
-                      <span id="combat-player-hp"></span>
-                    </div>
-                  </div>
-                  <div class="attack-timer">
-                    <div class="timer-bar player-timer"></div>
-                    <div class="timer-text">Next Attack: <span id="combat-player-timer"></span>s</div>
-                  </div>
-                </div>
-                
-                <div class="combat-vs">VS</div>
-                
-                <div class="combatant enemy-side">
-                  <div class="combatant-name" id="combat-enemy-name"></div>
-                  <div class="health-bar-container">
-                    <div class="health-bar enemy-health"></div>
-                    <div class="health-text">
-                      <span id="combat-enemy-hp"></span>
-                    </div>
-                  </div>
-                  <div class="attack-timer">
-                    <div class="timer-bar enemy-timer"></div>
-                    <div class="timer-text">Next Attack: <span id="combat-enemy-timer"></span>s</div>
-                  </div>
-                </div>
-              </div>
-              <div class="combat-controls">
-                <button id="combat-run-button">Run (5 damage)</button>
-              </div>
-            </div>
-            <div id="shop-area" class="hidden">
-              <h3>Shop</h3>
-              <div id="shop-items"></div>
-              <div class="shop-buttons">
-                <button id="shop-reroll-button">Reroll (10 Gold)</button>
-                <button id="shop-leave-button">Leave Shop</button>
-              </div>
-            </div>
-            <div id="rest-area" class="hidden">
-              <p>You rest and recover some health.</p>
-              <button id="rest-continue-button">Continue</button>
-            </div>
-            <div id="loot-area" class="hidden">
-              <h3>Loot Found!</h3>
-              <p>Gold: <span id="loot-gold">0</span></p>
-              <div id="loot-items">
-              </div>
-              <button id="loot-take-button">Take Loot</button>
-            </div>
-            <div id="trap-area" class="hidden">
-            </div>
-            <div id="fishing-area" class="hidden">
-            </div>
+          <div class="stat-item">
+            <span class="stat-label">Attack:</span>
+            <span id="stat-attack"></span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Defence:</span>
+            <span id="stat-defense"></span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Speed:</span>
+            <span id="stat-speed"></span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Gold:</span>
+            <span id="stat-gold"></span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Round:</span>
+            <span id="stat-round"></span>
           </div>
         </div>
-        <div id="right-column">
-          <div id="inventory-area">
-            <div id="inventory-header">
-              <h3>Inventory</h3>
+        <div id="game-body">
+          <div id="main-area">
+            <div id="main-content">
+              <div id="output-log-area" class="hidden">
+                <div class="log-header">
+                  <h3>Combat Log</h3>
+                  <button id="close-log-button">×</button>
+                </div>
+                <ul id="output-log"></ul>
+              </div>
+              <div id="choices-area">
+              </div>
+              <div id="combat-area" class="hidden">
+                <div class="combat-container">
+                  <div class="combatant player-side">
+                    <div class="combatant-name">You</div>
+                    <div class="health-bar-container">
+                      <div class="health-bar player-health"></div>
+                      <div class="health-text">
+                        <span id="combat-player-hp"></span>
+                      </div>
+                    </div>
+                    <div class="attack-timer">
+                      <div class="timer-bar player-timer"></div>
+                      <div class="timer-text">Next Attack: <span id="combat-player-timer"></span>s</div>
+                    </div>
+                  </div>
+                  
+                  <div class="combat-vs">VS</div>
+                  
+                  <div class="combatant enemy-side">
+                    <div class="combatant-name" id="combat-enemy-name"></div>
+                    <div class="health-bar-container">
+                      <div class="health-bar enemy-health"></div>
+                      <div class="health-text">
+                        <span id="combat-enemy-hp"></span>
+                      </div>
+                    </div>
+                    <div class="attack-timer">
+                      <div class="timer-bar enemy-timer"></div>
+                      <div class="timer-text">Next Attack: <span id="combat-enemy-timer"></span>s</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="combat-controls">
+                  <button id="combat-run-button">Run (5 damage)</button>
+                </div>
+              </div>
+              <div id="shop-area" class="hidden">
+                <h3>Shop</h3>
+                <div id="shop-items"></div>
+                <div class="shop-buttons">
+                  <button id="shop-reroll-button">Reroll (10 Gold)</button>
+                  <button id="shop-leave-button">Leave Shop</button>
+                </div>
+              </div>
+              <div id="rest-area" class="hidden">
+                <p>You rest and recover some health.</p>
+                <button id="rest-continue-button">Continue</button>
+              </div>
+              <div id="loot-area" class="hidden">
+                <h3>Loot Found!</h3>
+                <p>Gold: <span id="loot-gold">0</span></p>
+                <div id="loot-items">
+                </div>
+                <button id="loot-take-button">Take Loot</button>
+              </div>
+              <div id="trap-area" class="hidden">
+              </div>
+              <div id="fishing-area" class="hidden">
+              </div>
             </div>
-            <div id="inventory-grid">
-            </div>
-            <div id="item-tooltip" class="tooltip hidden"></div>
-            <div id="item-context-menu" class="context-menu hidden"></div>
           </div>
-          <div id="equipment-area">
-            <h3>Equipment</h3>
-            <div class="equip-row">
-              <div class="equip-slot" data-slot="weapon" id="equip-weapon">
-                WEAPON
+          <div id="right-column">
+            <div id="inventory-area">
+              <div id="inventory-grid">
               </div>
-              <div class="equip-slot" data-slot="shield" id="equip-shield">
-                SHIELD
-              </div>
-              <div class="equip-slot" data-slot="ring" id="equip-ring">
-                RING
-              </div>
+              <div id="item-tooltip" class="tooltip hidden"></div>
             </div>
-            <div class="equip-row">
-              <div class="equip-slot" data-slot="helm" id="equip-helm">
-                HELM
-              </div>
-              <div class="equip-slot" data-slot="body" id="equip-body">
-                BODY
-              </div>
-              <div class="equip-slot" data-slot="legs" id="equip-legs">
-                LEGS
-              </div>
+            <div id="equipment-area">
+              <div id="equipment-text-display">
+                   <p data-slot="weapon"><span class="equip-label">Weapon:</span> <span class="equip-value" id="equip-text-weapon">-</span> <button class="unequip-button hidden" data-slot="weapon">×</button></p>
+                   <p data-slot="shield"><span class="equip-label">Shield:</span> <span class="equip-value" id="equip-text-shield">-</span> <button class="unequip-button hidden" data-slot="shield">×</button></p>
+                   <p data-slot="helm"><span class="equip-label">Helm:</span> <span class="equip-value" id="equip-text-helm">-</span> <button class="unequip-button hidden" data-slot="helm">×</button></p>
+                   <p data-slot="body"><span class="equip-label">Body:</span> <span class="equip-value" id="equip-text-body">-</span> <button class="unequip-button hidden" data-slot="body">×</button></p>
+                   <p data-slot="legs"><span class="equip-label">Legs:</span> <span class="equip-value" id="equip-text-legs">-</span> <button class="unequip-button hidden" data-slot="legs">×</button></p>
+                   <p data-slot="ring"><span class="equip-label">Ring:</span> <span class="equip-value" id="equip-text-ring">-</span> <button class="unequip-button hidden" data-slot="ring">×</button></p>
+               </div>
+              <!-- <div id="equip-tooltip" class="tooltip hidden"></div> -->
             </div>
-            <div id="equip-tooltip" class="tooltip hidden"></div>
           </div>
         </div>
       </div>

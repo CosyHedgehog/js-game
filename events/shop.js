@@ -185,11 +185,11 @@ class Shop {
         this.game.player.removeItem(inventoryIndex);
         this.game.player.addGold(sellPrice);
         this.game.addLog(`You sold ${item.name} for ${sellPrice} gold.`);
-    
+
         this.ui.renderInventory();
+        this.ui.renderEquipment();
         this.ui.updatePlayerStats();
         this.updateShopAffordability();
-        this.ui.hideContextMenu();
     }
 
     generateShopItems(count) {
