@@ -21,12 +21,12 @@ class Game {
         { type: 'rest', weight: 10 },
         { type: 'shop', weight: 100 },
         { type: 'alchemist', weight: 10 },
-        // { type: 'treasure_chest', weight: 10 },
-        // { type: 'fishing', weight: 10 },
-        // { type: 'blacksmith', weight: 5 },
-        // { type: 'sharpen', weight: 10 },
-        // { type: 'armorsmith', weight: 5 },
-        // { type: 'trap', weight: 5 }
+        { type: 'treasure_chest', weight: 10 },
+        { type: 'fishing', weight: 10 },
+        { type: 'blacksmith', weight: 5 },
+        { type: 'sharpen', weight: 10 },
+        { type: 'armorsmith', weight: 5 },
+        { type: 'trap', weight: 5 }
     ];
 
     startGame() {

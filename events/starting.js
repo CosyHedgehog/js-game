@@ -28,7 +28,7 @@ class Starting {
                 health: 20,
                 baseAttack: 1,
                 baseDefense: 1,
-                startingGold: 500
+                startingGold: 5
             },
             items: [
                 { id: 'rusty_sword', count: 1 },
