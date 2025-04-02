@@ -409,7 +409,7 @@ class Game {
                 
                 // Add heal splat for non-combat heals - TARGET THE SPECIFIC SLOT
                 if (useResult.healedAmount && useResult.healedAmount > 0) {
-                   const slotSelector = `#inventory-grid .inventory-slot[data-index="${inventoryIndex}"]`;
+                   const slotSelector = `.inventory-slot"`;
                    this.ui.createDamageSplat(slotSelector, useResult.healedAmount, 'heal');
                 }
 

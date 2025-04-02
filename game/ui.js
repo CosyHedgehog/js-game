@@ -250,6 +250,11 @@ class UI {
                         toolChip.classList.add('tool-action-chip');
                         toolChip.textContent = 'Tool';
                         slot.appendChild(toolChip);
+                    } else if (item.type === 'consumable' && item.isPotion) {
+                        const potionChip = document.createElement('span');
+                        potionChip.classList.add('potion-action-chip');
+                        potionChip.textContent = 'Potion';
+                        slot.appendChild(potionChip);
                     }
                 }
 
