@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     game.player = new Player();
     
     ui.addStatTooltipListeners();
+    ui.addCombatUITooltipListeners();
     
     new Starting(game, ui).display();
 });

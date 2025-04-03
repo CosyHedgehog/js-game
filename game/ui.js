@@ -90,6 +90,11 @@ class UI {
         this.combatPlayerDef = document.getElementById('combat-player-def');
         this.combatEnemyAtk = document.getElementById('combat-enemy-atk');
         this.combatEnemyDef = document.getElementById('combat-enemy-def');
+        
+        // Cache combat timer containers
+        this.combatPlayerTimerContainer = document.querySelector('.player-side .attack-timer:not(.breath-timer)');
+        this.combatEnemyTimerContainer = document.querySelector('.enemy-side .attack-timer:not(.breath-timer)');
+        // Note: Breath timer container already cached
     }
 
     cacheDynamicElements() {
@@ -146,8 +151,87 @@ class UI {
         // Cache round element for tooltip and indicators
         this.roundAreaElement = document.getElementById('round-area')?.querySelector('.stat-item'); 
         
-        // Cache stat tooltip element
-        this.statTooltip = document.getElementById('stat-tooltip');
+        // Cache combat stat elements if not already cached by constructor
+        if (!this.combatPlayerAtk) this.combatPlayerAtk = document.getElementById('combat-player-atk');
+        if (!this.combatPlayerDef) this.combatPlayerDef = document.getElementById('combat-player-def');
+        if (!this.combatEnemyAtk) this.combatEnemyAtk = document.getElementById('combat-enemy-atk');
+        if (!this.combatEnemyDef) this.combatEnemyDef = document.getElementById('combat-enemy-def');
+        if (!this.combatPlayerTimerContainer) this.combatPlayerTimerContainer = document.querySelector('.player-side .attack-timer:not(.breath-timer)');
+        if (!this.combatEnemyTimerContainer) this.combatEnemyTimerContainer = document.querySelector('.enemy-side .attack-timer:not(.breath-timer)');
+        // Breath timer container is cached in constructor
+    }
+
+    addCombatUITooltipListeners() {
+        if (!this.statTooltip) {
+            console.error("Stat tooltip element not found. Cannot add combat UI tooltips.");
+            return;
+        }
+
+        const combatElements = {
+            // Target the SPAN containing the label and value
+            // playerAtk: { el: this.combatPlayerAtk?.closest('span'), text: "Maximum potential damage per attack." }, 
+            // playerDef: { el: this.combatPlayerDef?.closest('span'), text: "Maximum potential damage blocked per hit." }, 
+            // enemyAtk: { el: this.combatEnemyAtk?.closest('span'), text: "Enemy's current attack power." }, 
+            // enemyDef: { el: this.combatEnemyDef?.closest('span'), text: "Enemy's current defense value." }, 
+            playerTimer: { el: this.combatPlayerTimerContainer, text: "Attack every X seconds." }, 
+            enemyTimer: { el: this.combatEnemyTimerContainer, text: "Attack every X seconds." }, 
+            enemyBreathTimer: { el: this.combatEnemyBreathTimerContainer, text: "Firebreath every X seconds." }
+        };
+
+        for (const key in combatElements) {
+            const { el, text } = combatElements[key];
+            if (el) {
+                el.dataset.tooltipTextBase = text; 
+
+                const enterHandler = (e) => {
+                    // Get dynamic text first
+                    let dynamicText = el.dataset.tooltipTextDynamic;
+                    let tooltipText = "No description available."; // Default
+
+                    if (dynamicText) { // Use dynamic if it exists
+                        tooltipText = dynamicText;
+                    } else { 
+                        // Otherwise, get base text directly from the static object
+                        tooltipText = combatElements[key]?.text || "No description available."; 
+                    }
+                    
+                    // --- DEBUG LOGGING --- 
+                    console.log(`Tooltip Enter: Key=${key}`);
+                    console.log(`  Element:`, el);
+                    console.log(`  Base Text:`, el.dataset.tooltipTextBase);
+                    console.log(`  Dynamic Text:`, el.dataset.tooltipTextDynamic);
+                    console.log(`  Tooltip Text After Assignment:`, tooltipText); // Log after assignment
+                    // ---------------------
+
+                    // Replace placeholder X with actual speed value for timers
+                    if (key === 'playerTimer') {
+                        tooltipText = tooltipText.replace('X', this.game?.player?.getAttackSpeed().toFixed(1) || '?');
+                    } else if (key === 'enemyTimer') {
+                        tooltipText = tooltipText.replace('X', this.game?.currentCombat?.enemy?.currentSpeed.toFixed(1) || '?');
+                    } else if (key === 'enemyBreathTimer') {
+                        tooltipText = tooltipText.replace('X', this.game?.currentCombat?.enemy?.breathAttackInterval?.toFixed(1) || '?');
+                    }
+
+                    this.showTooltip(tooltipText.replace(/\n/g, '<br>'), this.statTooltip, e);
+                };
+                const leaveHandler = () => {
+                    this.hideTooltip(this.statTooltip);
+                };
+
+                // Remove potential old listeners
+                el.removeEventListener('mouseenter', el._tooltipEnterHandler);
+                el.removeEventListener('mouseleave', el._tooltipLeaveHandler);
+
+                el.addEventListener('mouseenter', enterHandler);
+                el.addEventListener('mouseleave', leaveHandler);
+
+                // Store handlers for removal
+                el._tooltipEnterHandler = enterHandler;
+                el._tooltipLeaveHandler = leaveHandler;
+            } else {
+                console.warn(`Combat Tooltip Listener: Element for key '${key}' not found.`);
+            }
+        }
     }
 
     addStatTooltipListeners() {
@@ -675,24 +759,40 @@ class UI {
     }
 
     updateCombatStats(player, enemy) {
-        if (this.combatPlayerAtk) this.combatPlayerAtk.textContent = player.getAttack();
-        if (this.combatPlayerDef) this.combatPlayerDef.textContent = player.getDefense();
+        if (this.combatPlayerAtk) { 
+            this.combatPlayerAtk.textContent = player.getAttack();
+             // Remove tooltip reset logic
+             // const playerAtkParent = this.combatPlayerAtk.closest('span');
+             // if (playerAtkParent) playerAtkParent.dataset.tooltipTextDynamic = null; 
+        }
+        if (this.combatPlayerDef) {
+            this.combatPlayerDef.textContent = player.getDefense();
+            // Remove tooltip reset logic
+            // const playerDefParent = this.combatPlayerDef.closest('span');
+            // if (playerDefParent) playerDefParent.dataset.tooltipTextDynamic = null; 
+        }
         
         if (this.combatEnemyAtk) {
-            this.combatEnemyAtk.textContent = enemy.currentAttack; // Use currentAttack
-            // Add/remove enraged class based on current vs base attack
+            this.combatEnemyAtk.textContent = enemy.currentAttack; 
+            // const atkParent = this.combatEnemyAtk.closest('span'); // Remove tooltip logic
             if (enemy.currentAttack > enemy.attack) {
                 this.combatEnemyAtk.classList.add('enraged');
+                 // if (atkParent) atkParent.dataset.tooltipTextDynamic = "Enemy is ENRAGED! Attack is significantly higher.";
             } else {
                 this.combatEnemyAtk.classList.remove('enraged');
+                 // if (atkParent) atkParent.dataset.tooltipTextDynamic = null; 
             }
         }
+        
         if (this.combatEnemyDef) {
-            this.combatEnemyDef.textContent = enemy.currentDefense; // Use currentDefense
-            if (enemy.scalesHardened) { // Check the flag set in combat.js
+            this.combatEnemyDef.textContent = enemy.currentDefense; 
+            // const defParent = this.combatEnemyDef.closest('span'); // Remove tooltip logic
+            if (enemy.scalesHardened) { 
                 this.combatEnemyDef.classList.add('hardened');
+                 // if (defParent) defParent.dataset.tooltipTextDynamic = "Enemy scales are HARDENED! Defense is increased.";
             } else {
                 this.combatEnemyDef.classList.remove('hardened');
+                 // if (defParent) defParent.dataset.tooltipTextDynamic = null; 
             }
         }
     }

@@ -9,10 +9,10 @@ class Starting {
             name: 'Warrior',
             description: 'A balanced fighter.',
             stats: {
-                maxHealth: 200,
+                maxHealth: 20,
                 health: 15,
-                baseAttack: 10,
-                baseDefense: 10,
+                baseAttack: 2,
+                baseDefense: 1,
             },
             items: [
                 { id: 'wooden_sword', count: 1 },
@@ -191,7 +191,7 @@ class Starting {
             this.ui.renderAll();
             this.game.addLog("Game started with your chosen equipment.");
             this.ui.clearMainArea();
-            this.game.currentRound = 9;
+            // this.game.currentRound = 2;
             this.game.proceedToNextRound();
         }, 500);
     }
