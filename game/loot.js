@@ -104,6 +104,13 @@ class Loot {
             continueButton.onclick = () => this.game.continueLoot();
         }
 
-        this.ui.lootArea.classList.remove('hidden');
+        // Apply fade-in animation
+        this.ui.lootArea.classList.remove('hidden'); // Show it first
+        this.ui.lootArea.classList.add('loot-appearing');
+
+        // Remove the animation class after it finishes
+        setTimeout(() => {
+            this.ui.lootArea.classList.remove('loot-appearing');
+        }, 500); // Matches loot-fade-in duration
     }
 }

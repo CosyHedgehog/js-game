@@ -353,9 +353,31 @@ class Combat {
         let playerWon = false;
 
         if (this.enemy.health <= 0) {
-            combatEnded = true;
+            // Enemy defeated
+            this.game.addLog(`You defeated the ${this.enemy.name}!`);
+            clearInterval(this.intervalId); // Stop combat immediately
+            this.intervalId = null;
+            
+            // Delay start of fade-out to see splat
+            // setTimeout(() => {
+                // Start fade-out animation
+                if (this.ui.combatArea) {
+                    this.ui.combatArea.classList.add('combat-ending');
+                }
+                
+                // Wait for fade-out to finish before ending combat logic
+                setTimeout(() => {
+                    this.endCombat(true); // Call endCombat after fade-out
+                }, 800); // Matches combat-fade-out duration
+
+            // }, 300); // Initial delay to see the final hit
+            
+            combatEnded = true; 
             playerWon = true;
+            return combatEnded; // Return immediately as combat is over
+
         } else if (this.player.health <= 0) {
+            // Player defeated
             this.game.addLog(`You were defeated by the ${this.enemy.name}...`);
             clearInterval(this.intervalId); // Stop combat immediately
             this.intervalId = null;
@@ -367,11 +389,12 @@ class Combat {
             playerWon = false;
         }
 
-        // Only call endCombat if the player WON, otherwise game over is handled by timeout
-        if (combatEnded && playerWon) {
-            this.endCombat(true);
-        }
-        return combatEnded;
+        // This part is now only reached if player died (handled by its own timeout)
+        // or if neither died yet.
+        // if (combatEnded && playerWon) { // We moved the playerWon case into the setTimeout above
+        //     this.endCombat(true);
+        // }
+        return combatEnded; // Will be false unless player died this tick
     }
 
     handleRun() {
@@ -438,9 +461,8 @@ class Combat {
 
     endCombat(playerWon, ranAway = false) {
         this.player.resetCombatBuffs();
-        clearInterval(this.intervalId);
-        this.intervalId = null;
-        this.ui.hideCombatUI();
+        // Interval is already cleared 
+        // this.ui.hideCombatUI(); // Let animation handle hiding
 
         // Cleanup: Remove speed boost class if present
         const enemyTimerContainer = document.querySelector('.enemy-side .attack-timer:not(.breath-timer)');

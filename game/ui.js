@@ -722,7 +722,10 @@ class UI {
 
     clearMainArea() {
         this.choicesArea.classList.add('hidden');
-        this.combatArea.classList.add('hidden');
+        if (this.combatArea) {
+             this.combatArea.classList.add('hidden');
+             this.combatArea.classList.remove('combat-ending'); 
+        }
         this.shopArea.classList.add('hidden');
         this.restArea.classList.add('hidden');
         this.lootArea.classList.add('hidden');
