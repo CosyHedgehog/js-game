@@ -3667,3 +3667,18 @@ html {
   .enemy-scales-harden {
     animation: scales-harden-effect 1.5s ease-in-out; /* Match JS timeout */
   }
+
+/* Venfing Speed Boost Timer Indicator */
+.enemy-side .attack-timer.enemy-timer-speed-boost {
+    border: 2px solid #00e0ff; /* Bright cyan border */
+    box-shadow: 0 0 8px rgba(0, 224, 255, 0.6); /* Cyan glow */
+    border-radius: 10px; /* Match timer bar rounding */
+    animation: speed-boost-pulse 1.2s infinite ease-in-out;
+    margin-top: 3px; /* Adjust margin slightly due to border */
+    margin-bottom: 3px;
+}
+
+@keyframes speed-boost-pulse {
+    0%, 100% { box-shadow: 0 0 8px rgba(0, 224, 255, 0.6); }
+    50% { box-shadow: 0 0 14px rgba(0, 224, 255, 0.9); }
+}

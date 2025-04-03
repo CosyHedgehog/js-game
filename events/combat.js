@@ -129,17 +129,28 @@ class Combat {
                 isNowFast = false;
             }
 
+            // Get timer container element
+            const enemyTimerContainer = document.querySelector('.enemy-side .attack-timer:not(.breath-timer)');
+
             // Trigger speed animation ONLY when first becoming fast
             if (isNowFast && !wasFast) {
                 const enemySide = document.querySelector('.enemy-side');
                 if (enemySide) {
                     enemySide.classList.add('enemy-speed-enraged-pulse');
-                    // Remove the class after the animation duration (0.6s)
                     setTimeout(() => {
                         enemySide.classList.remove('enemy-speed-enraged-pulse');
                     }, 600); // Match animation duration
                 }
                 this.game.addLog("Ven'fing becomes faster!");
+            }
+            
+            // Add/Remove border class based on current speed state
+            if (enemyTimerContainer) {
+                if (isNowFast) {
+                    enemyTimerContainer.classList.add('enemy-timer-speed-boost');
+                } else {
+                    enemyTimerContainer.classList.remove('enemy-timer-speed-boost');
+                }
             }
         }
         
@@ -430,6 +441,12 @@ class Combat {
         clearInterval(this.intervalId);
         this.intervalId = null;
         this.ui.hideCombatUI();
+
+        // Cleanup: Remove speed boost class if present
+        const enemyTimerContainer = document.querySelector('.enemy-side .attack-timer:not(.breath-timer)');
+        if (enemyTimerContainer) {
+            enemyTimerContainer.classList.remove('enemy-timer-speed-boost');
+        }
 
         if (playerWon) {
             this.game.addLog(`You defeated the ${this.enemy.name}!`);
