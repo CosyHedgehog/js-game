@@ -27,6 +27,7 @@ class UI {
         this.cacheDynamicElements(); 
 
         this.equipTooltip = document.getElementById('equip-tooltip');
+        this.statTooltip = document.getElementById('stat-tooltip');
         this.statHealth = document.getElementById('stat-health-2');
         this.statMaxHealth = document.getElementById('stat-max-health-2');
         this.statAttack = document.getElementById('stat-attack-2');
@@ -64,10 +65,22 @@ class UI {
         else console.error("UI Error: Loot Take Button not found during constructor.");
         
         this.toggleLogButton = document.getElementById('toggle-log-button');
-        if (this.toggleLogButton) this.toggleLogButton.onclick = () => new Log(this.game, this).showLog();
+        if (this.toggleLogButton) this.toggleLogButton.onclick = () => {
+            if (this.game) { 
+                new Log(this.game, this).showLog();
+            } else {
+                console.error("Log button clicked but game object is not yet available on UI.");
+            }
+        };
 
         this.closeLogButton = document.getElementById('close-log-button');    
-        if (this.closeLogButton) this.closeLogButton.onclick = () => new Log(this.game, this).hideLog();
+        if (this.closeLogButton) this.closeLogButton.onclick = () => {
+            if (this.game) { 
+                new Log(this.game, this).hideLog();
+            } else {
+                console.error("Close log button clicked but game object is not yet available on UI.");
+            }
+        };
     }
 
     cacheDynamicElements() {
@@ -113,6 +126,59 @@ class UI {
                 console.error("CRITICAL FAILURE: Could not find #inventory-area even in cacheDynamicElements.");
             }
         }
+
+        // Cache stat elements needed for tooltips
+        this.statHealthElement = document.getElementById('stat-health-2')?.closest('.stat-item');
+        this.statAttackElement = document.getElementById('stat-attack-2')?.closest('.stat-item');
+        this.statDefenseElement = document.getElementById('stat-defense-2')?.closest('.stat-item');
+        this.statSpeedElement = document.getElementById('stat-speed-2')?.closest('.stat-item');
+        this.statGoldElement = document.getElementById('stat-gold-2')?.closest('#inventory-header'); // Find gold in its new parent
+        
+        // Cache stat tooltip element
+        this.statTooltip = document.getElementById('stat-tooltip');
+    }
+
+    addStatTooltipListeners() {
+        const statElements = {
+            hp: this.statHealthElement,
+            attack: this.statAttackElement,
+            defense: this.statDefenseElement,
+            speed: this.statSpeedElement,
+            gold: this.statGoldElement 
+        };
+
+        for (const key in statElements) {
+            const element = statElements[key];
+            
+            if (element && this.statTooltip) {
+                // Remove any old listeners first to prevent duplicates if called again
+                // Note: A more robust approach uses AbortController, but this is simpler for now
+                // element.removeEventListener('mouseenter', element._tooltipEnterHandler);
+                // element.removeEventListener('mouseleave', element._tooltipLeaveHandler);
+                
+                // Define handler functions to be attached
+                const enterHandler = (e) => {
+                    const tooltipText = element.dataset.tooltipText || "No description available."; // Read text from data attribute
+                    this.showTooltip(tooltipText.replace(/\\n/g, '<br>'), this.statTooltip, e); // Use statTooltip, replace \n
+                };
+                const leaveHandler = () => {
+                    this.hideTooltip(this.statTooltip);
+                };
+
+                element.addEventListener('mouseenter', enterHandler);
+                element.addEventListener('mouseleave', leaveHandler);
+                
+                // Optional: Store handlers on the element if you need to remove them specifically later
+                // element._tooltipEnterHandler = enterHandler;
+                // element._tooltipLeaveHandler = leaveHandler;
+
+            } else {
+                if (!element) console.warn(`Tooltip Listener: Element for stat '${key}' not found during listener attachment.`);
+                if (!this.statTooltip) console.warn(`Tooltip Listener: Stat tooltip element not found during listener attachment.`);
+            }
+        }
+        // Initial update of tooltip data attributes after attaching listeners
+        this.updatePlayerStats(); 
     }
 
     switchScreen(screenId) {
@@ -335,7 +401,7 @@ class UI {
                 itemDescription = item.description || 'No description';
                 isEquipped = true;
 
-                // Attach hover listener to the PARENT <p> element
+                // Attach hover listener for equipped item
                 parentPElement.onmouseenter = (e) => this.showTooltip(itemDescription, this.equipTooltip, e);
                 parentPElement.onmouseleave = () => this.hideTooltip(this.equipTooltip);
 
@@ -346,18 +412,23 @@ class UI {
                     this.hideTooltip(this.equipTooltip);
                 };
             } else {
-                // No item equipped, hide button and remove listeners
+                // No item equipped, hide button and ADD default tooltip
                 unequipButton.classList.add('hidden');
                 unequipButton.onclick = null;
+                
+                // ADD default tooltip for empty slot
+                const defaultText = "Slot empty - equip an item!";
+                parentPElement.onmouseenter = (e) => this.showTooltip(defaultText, this.equipTooltip, e);
+                parentPElement.onmouseleave = () => this.hideTooltip(this.equipTooltip);
             }
 
             // Add/remove 'equipped' class to the parent <p> AND the label span
             if (isEquipped) {
                 parentPElement.classList.add('equipped');
-                labelSpan.classList.add('equipped'); // Add class to label too
+                labelSpan.classList.add('equipped'); 
             } else {
                 parentPElement.classList.remove('equipped');
-                labelSpan.classList.remove('equipped'); // Remove class from label too
+                labelSpan.classList.remove('equipped'); 
             }
         }
     }
@@ -369,43 +440,64 @@ class UI {
         if (this.statHealth) this.statHealth.textContent = player.health;
         if (this.statMaxHealth) this.statMaxHealth.textContent = player.getMaxHealth();
         
-        let attackText = player.getAttack();
+        // Attack
+        let attackBase = player.baseAttack + (player.equipment.weapon !== null ? (this.game.player.inventory[player.equipment.weapon]?.stats?.attack || 0) : 0) + (player.equipment.ring !== null ? (this.game.player.inventory[player.equipment.ring]?.stats?.attack || 0) : 0);
+        let attackText = `${attackBase}`; 
+        let attackTooltip = "Maximum potential damage per attack.";
         if (player.tempAttack > 0) {
-            attackText += ` (+${player.tempAttack})`;
+            attackText += ` <span class="boosted-stat">(+${player.tempAttack})</span>`;
+            attackTooltip = `Maximum potential damage per attack.\nBoosted by +${player.tempAttack} (temporary, lasts until combat ends).`;
         }
-        if (this.statAttack) this.statAttack.textContent = attackText;
+        if (this.statAttack) this.statAttack.innerHTML = attackText; // Use innerHTML to render span
+        if (this.statAttackElement) this.statAttackElement.dataset.tooltipText = attackTooltip; // Store dynamic tooltip text
 
-        let defenseText = player.getDefense();
+        // Defense
+        let defenseBase = player.baseDefense;
+        Object.values(player.equipment).forEach(index => {
+             if (index !== null && this.game.player.inventory[index]?.stats?.defense) {
+                 defenseBase += this.game.player.inventory[index].stats.defense;
+             }
+         });
+        let defenseText = `${defenseBase}`;
+        let defenseTooltip = "Maximum potential damage blocked per hit.";
         if (player.tempDefense > 0) {
-            defenseText += ` (+${player.tempDefense})`;
+            defenseText += ` <span class="boosted-stat">(+${player.tempDefense})</span>`;
+            defenseTooltip = `Maximum potential damage blocked per hit.\nBoosted by +${player.tempDefense} (temporary, lasts until combat ends).`;
         }
-        if (this.statDefense) this.statDefense.textContent = defenseText;
+        if (this.statDefense) this.statDefense.innerHTML = defenseText; // Use innerHTML
+        if (this.statDefenseElement) this.statDefenseElement.dataset.tooltipText = defenseTooltip;
         
-        let speedValue = player.getAttackSpeed();
-        let speedText = `${speedValue.toFixed(1)}s`;
+        // Speed
+        const baseSpeed = player.equipment.weapon !== null ? (this.game.player.inventory[player.equipment.weapon]?.speed ?? player.defaultAttackSpeed) : player.defaultAttackSpeed;
+        let finalSpeed = Math.max(0.5, baseSpeed - player.tempSpeedReduction);
+        let speedText = `${finalSpeed.toFixed(1)}s`;
+        let speedTooltip = "Time between your attacks (lower is faster).";
         if (player.tempSpeedReduction > 0) {
-            speedText += ` (-${player.tempSpeedReduction.toFixed(1)}s)`;
+            speedText += ` <span class="boosted-stat">(-${player.tempSpeedReduction.toFixed(1)}s)</span>`;
+             speedTooltip = `Time between your attacks (lower is faster).\nBoosted by -${player.tempSpeedReduction.toFixed(1)}s (temporary, lasts until combat ends).`;
         }
-        if (this.statSpeed) this.statSpeed.textContent = speedText;
+        if (this.statSpeed) this.statSpeed.innerHTML = speedText; // Use innerHTML
+        if (this.statSpeedElement) this.statSpeedElement.dataset.tooltipText = speedTooltip;
 
+        // Gold & Round (Update normally, keep existing tooltip logic if needed)
         if (this.statGold) this.statGold.textContent = player.gold;
+        if (this.statGoldElement) this.statGoldElement.dataset.tooltipText = "Your current wealth."; // Update gold tooltip text
+        if (this.statHealthElement) this.statHealthElement.dataset.tooltipText = "Current Health / Maximum Health"; // Update HP tooltip text
         
-        // Update round and trigger animation if changed
         if (this.statRound && this.game) {
-            const currentRoundText = `${this.game.currentRound}`;
-            const roundAreaElement = document.getElementById('round-area')?.querySelector('.stat-item'); // Get the specific element to animate
+           const currentRoundText = `${this.game.currentRound}`;
+            const roundAreaElement = document.getElementById('round-area')?.querySelector('.stat-item'); 
             const maxRoundsElement = document.getElementById('stat-max-rounds');
             
             if (this.statRound.textContent !== currentRoundText) {
                 this.statRound.textContent = currentRoundText; 
                 if (roundAreaElement) { 
-                    roundAreaElement.classList.remove('round-pulsing'); // Remove first to re-trigger
-                    void roundAreaElement.offsetWidth; // Force reflow
+                    roundAreaElement.classList.remove('round-pulsing'); 
+                    void roundAreaElement.offsetWidth; 
                     roundAreaElement.classList.add('round-pulsing');
-                    // Optional: remove class after animation ends
                     setTimeout(() => {
                         roundAreaElement.classList.remove('round-pulsing');
-                    }, 600); // Match animation duration
+                    }, 700); // Match animation duration if changed
                 }
             }
             if (maxRoundsElement) maxRoundsElement.textContent = this.game.maxRounds;
@@ -614,8 +706,10 @@ class UI {
     }
 
     showTooltip(text, tooltipElement, event) {
-        if (!tooltipElement) return;
-
+        if (!tooltipElement) {
+            //console.warn("Attempted to show tooltip with null element.");
+            return; // Add safety check
+        }
         tooltipElement.innerHTML = text;
         tooltipElement.classList.remove('hidden');
 
@@ -635,7 +729,7 @@ class UI {
     }
 
     hideTooltip(tooltipElement) {
-        if (tooltipElement) {
+        if (tooltipElement) { // Check if element exists before hiding
             tooltipElement.classList.add('hidden');
         }
     }

@@ -76,8 +76,6 @@ body {
 
 #game-body {
     display: flex;
-    /* min-width: 400px; Remove min-width that might force wrapping */
-    flex-grow: 1; 
     max-width: 1600px; /* Keep max-width here or on container */
     margin: 0 auto; 
     position: relative; 
@@ -87,39 +85,47 @@ body {
     align-items: stretch; /* Make columns same height */
 }
 
-/* Main Area - Fixed width and centered */
+/* Main Area - Fixed height */
 #main-area {
-    width: 700px; /* Set a fixed width */
-    max-width: 700px; /* Redundant but safe */
-    flex-grow: 0; /* Do not allow growing */
-    flex-shrink: 0; /* Do not allow shrinking */
-    margin-left: auto; /* Center within flex container */
-    margin-right: auto; /* Center within flex container */
+    width: 700px; 
+    max-width: 700px; 
+    flex-grow: 0; 
+    flex-shrink: 0; 
+    margin-left: auto; 
+    margin-right: auto; 
+    
+    /* Set explicit height to match side columns max-height */
+    height: calc(100vh - 200px); 
+    /* max-height becomes redundant but keep for safety */
+    max-height: calc(100vh - 200px); 
     
     /* Keep existing styles */
     background-color: #222;
-    overflow-y: auto;
+    overflow-y: auto; /* Allow scrolling *within* main-area if content exceeds fixed height */
     position: relative;
     display: flex;
     flex-direction: column;
-    height: auto; 
-    max-height: calc(100vh - 20px); 
     border: 1px solid #444; 
     border-radius: 6px; 
     box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.5); 
 }
 
+/* Ensure main-content continues to fill main-area and scroll its own content */
 #main-content {
-    flex-grow: 1; /* Allow content to fill main-area */
+    flex-grow: 1; 
     display: flex;
-    flex-direction: column; /* Stack children vertically */
-    position: relative; /* Needed for absolute positioning inside */
+    flex-direction: column; 
+    position: relative; 
     background-color: #222;
+    overflow-y: auto; /* Scroll internal content */
+    height: 100%; /* Fill the fixed height of main-area */
+    min-height: 0; /* Allow shrinking if needed by flex */
+    padding: 10px; /* Add padding inside */
+    box-sizing: border-box;
 }
 
 /* Left Column - Ensure width and update backgrounds */
 #left-column {
-    width: 250px; 
     flex-shrink: 0; 
     display: flex;
     flex-direction: column;
@@ -2878,7 +2884,6 @@ html {
     box-shadow: none;
     transition: background-color 0.2s ease; /* Add transition for hover */
     position: relative; /* For button positioning */
-    justify-content: center; /* Center label and value within the row */
 }
 
 #equipment-text-display p:hover {
@@ -3205,11 +3210,11 @@ html {
 
 .stat-item span:not(.stat-label) { /* Grid item 2 */
     grid-column: 2;
-    justify-self: start; 
+    justify-self: end; /* Align grid item (the span) to the END */
     color: #fff;
     font-weight: 500;
     text-shadow: none; 
-    text-align: left;
+    text-align: right; /* Align text WITHIN the span to the right */
 }
 
 /* Special case for HP to span both columns if needed, or adjust structure */
@@ -3317,6 +3322,137 @@ html {
 
 .round-pulsing {
     animation: round-update-pulse 0.7s ease-out; /* Slightly longer duration */
+}
+
+/* ... existing code ... */
+
+/* Equipment Text Display - Prevent jump */
+#equipment-text-display p {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Keep space-between */
+    gap: 6px;
+    color: #ccc;
+    border-radius: 4px; 
+    font-size: 0.9em;
+    margin: 1px 0; 
+    padding: 2px 4px; 
+    white-space: nowrap;
+    overflow: visible;
+    text-overflow: clip;
+    border: none;
+    box-shadow: none;
+    transition: background-color 0.2s ease; 
+    position: relative; 
+    width: 100%; /* Ensure p takes full width */
+    box-sizing: border-box; /* Include padding in width calculation */
+}
+
+/* ... existing code ... */
+
+/* Player Stats Area - Use Flex Column */
+#player-stats-area-2 {
+    display: flex; /* Change to flex */
+    flex-direction: column; /* Stack items vertically */
+    gap: 5px; /* Gap between stat items */
+    padding: 12px; 
+    min-width: unset;
+    max-width: 100%; 
+    background-color: #222; 
+    border: 1px solid #484848; 
+    border-radius: 5px; 
+    box-shadow: none; 
+}
+
+/* Stats Grid - Remove grid properties */
+.stats-grid {
+   /* Remove display: grid and related properties */
+   /* Children (.stat-item) will now stack via parent flex */
+}
+
+/* Stat Items - Remove grid spanning */
+.stat-item {
+    /* grid-column: span 2; <-- REMOVE THIS */
+    display: grid; 
+    grid-template-columns: min-content 1fr; 
+    align-items: center; 
+    gap: 8px; 
+    background-color: transparent; 
+    border: none; 
+    box-shadow: none; 
+    padding: 3px 0px; 
+    border-radius: 4px; 
+    font-size: 0.9em; 
+    color: #ccc; 
+    min-width: unset; 
+    transition: background-color 0.2s ease; 
+    width: 100%; /* Ensure it takes full width of flex container */
+    box-sizing: border-box; /* Include padding in width */
+}
+
+
+/* ... existing code ... */
+
+/* ... existing code ... */
+
+/* Equipment Text Display - Match Stat Item Styling */
+#equipment-text-display p {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; 
+    gap: 8px; /* Match stat item gap */
+    color: #ccc;
+    border-radius: 4px; 
+    font-size: 0.9em; /* Match stat item font size */
+    margin: 1px 0; 
+    padding: 3px 0px; /* Match stat item padding */
+    white-space: nowrap;
+    overflow: visible;
+    text-overflow: clip;
+    border: none;
+    box-shadow: none;
+    transition: background-color 0.2s ease; 
+    position: relative; 
+    width: 100%; 
+    box-sizing: border-box; 
+}
+
+/* Equipment Label Styling - Base style matches stat label */
+#equipment-text-display p .equip-label {
+    /* Updated base styles */
+    color: #ddd; /* Match stat label color */
+    font-weight: bold; /* Match stat label weight */
+    background-color: #4a4a4a; /* Match stat label background */
+    
+    /* Keep existing layout styles */
+    margin-right: 0; 
+    flex-shrink: 0;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 1em; 
+    display: inline-block;
+    line-height: 1.2;
+    text-align: center;
+    white-space: nowrap;
+    transition: all 0.2s ease; 
+}
+
+/* Style for when an item IS equipped (keep distinct) */
+#equipment-text-display p .equip-label.equipped {
+    color: #e0e0e0; 
+    font-weight: bold;
+    background-color: #4CAF50; /* Keep green background */
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5); /* Keep green glow */
+}
+
+
+/* ... existing code ... */
+
+/* Style for boosted temporary stats */
+.boosted-stat {
+    color: #77dd77; /* Bright green */
+    font-weight: bold;
+    margin-left: 4px; /* Add a little space before the boost text */
 }
 
 /* ... existing code ... */
