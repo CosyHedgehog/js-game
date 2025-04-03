@@ -48,7 +48,14 @@ class Player {
     getAttackSpeed() {
         const weaponIndex = this.equipment.weapon;
         const baseSpeed = weaponIndex !== null ? (this.inventory[weaponIndex]?.speed ?? this.defaultAttackSpeed) : this.defaultAttackSpeed;
-        return Math.max(0.5, baseSpeed - this.tempSpeedReduction);
+        
+        let totalSpeedReduction = this.tempSpeedReduction;
+        const ringIndex = this.equipment.ring;
+        if (ringIndex !== null && this.inventory[ringIndex]?.stats?.speedReduction) {
+            totalSpeedReduction += this.inventory[ringIndex].stats.speedReduction;
+        }
+
+        return Math.max(0.5, baseSpeed - totalSpeedReduction);
     }
 
     getDefense() {

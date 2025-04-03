@@ -17,7 +17,7 @@ class Starting {
             items: [
                 { id: 'wooden_sword', count: 1 },
                 { id: 'wooden_shield', count: 1 },
-                { id: 'bread', count: 3 }
+                { id: 'bread', count: 3 },
             ]
         },
         fisher: {
