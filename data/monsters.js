@@ -81,7 +81,9 @@ const MONSTERS = {
         hasBreathAttack: true,
         breathAttackInterval: 12, // seconds
         breathAttackDamage: [5, 8], // Raw damage range
-        description: "A colossal beast of legend. Periodically unleashes devastating fiery breath.",
+        hardenThreshold: 0.25, // Hardens below 25% health
+        hardenDefenseBonus: 5, // Adds +5 Defense when hardened
+        description: "A colossal beast of legend. Periodically unleashes devastating fiery breath. Its scales harden significantly when wounded.",
         lootTable: [
             { itemId: 'dragon_ring', chance: 1.0 },
         ]

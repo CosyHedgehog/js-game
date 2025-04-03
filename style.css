@@ -1079,6 +1079,12 @@ button:disabled {
     text-shadow: 0 0 3px #ff4444;
 }
 
+.combat-stats #combat-enemy-def.hardened { /* NEW - Style for hardened enemy defense */
+    color: #63e6be; /* Teal/Cyan color */
+    font-weight: bold;
+    text-shadow: 0 0 3px #80ffdf; /* Subtle glow */
+}
+
 .attack-timer {
     height: 20px;
     background: rgba(0, 0, 0, 0.3);
@@ -3640,3 +3646,24 @@ html {
 .breath-timer.hidden {
     display: none;
 }
+
+@keyframes scales-harden-effect {
+    0%, 100% {
+      /* Normal appearance */
+      background: rgba(0, 0, 0, 0.3);
+      border-color: rgba(255, 255, 255, 0.1);
+      transform: scale(1);
+      filter: brightness(1);
+    }
+    50% {
+      /* Hardened appearance */
+      background: linear-gradient(135deg, #5a6a7a, #708090); /* Steel grey gradient */
+      border-color: #a0b0c0; /* Lighter grey border */
+      transform: scale(1.01); /* Slight pulse */
+      filter: brightness(1.1); /* Slight sheen */
+    }
+  }
+  
+  .enemy-scales-harden {
+    animation: scales-harden-effect 1.5s ease-in-out; /* Match JS timeout */
+  }

@@ -8,6 +8,8 @@ class Combat {
             attackTimer: 0,
             currentSpeed: enemy.speed,
             currentAttack: enemy.attack,
+            currentDefense: enemy.defense,
+            scalesHardened: false,
             breathAttackTimer: enemy.hasBreathAttack ? enemy.breathAttackInterval : null
         };
         this.game = game;
@@ -112,9 +114,10 @@ class Combat {
         }
 
         // --- Check for enemy dynamic changes BEFORE updating UI ---
-        // Dynamic Speed Check
+        const healthPercent = this.enemy.health / this.enemy.maxHealth;
+
+        // Dynamic Speed Check (Venfing)
         if (this.enemy.name === MONSTERS['venfing']?.name) {
-            const healthPercent = this.enemy.health / this.enemy.maxHealth;
             const wasFast = this.enemy.currentSpeed === 0.6; // Check previous state
             let isNowFast = false;
             
@@ -139,9 +142,36 @@ class Combat {
                 this.game.addLog("Ven'fing becomes faster!");
             }
         }
+        
+        // Harden Scales Check (Dragon)
+        if (this.enemy.hardenThreshold && this.enemy.hardenDefenseBonus) {
+            let shouldHarden = healthPercent < this.enemy.hardenThreshold;
+            
+            if (shouldHarden && !this.enemy.scalesHardened) {
+                // Harden the scales
+                this.enemy.currentDefense = this.enemy.defense + this.enemy.hardenDefenseBonus;
+                this.enemy.scalesHardened = true;
+                this.game.addLog(`<span style="color: #a0a0ff;">The ${this.enemy.name}'s scales harden! (+${this.enemy.hardenDefenseBonus} Defense)</span>`);
+                
+                // Trigger animation
+                const enemySide = document.querySelector('.enemy-side');
+                if (enemySide) {
+                    enemySide.classList.add('enemy-scales-harden');
+                    setTimeout(() => {
+                        enemySide.classList.remove('enemy-scales-harden');
+                    }, 800); // Animation duration (adjust CSS too)
+                }
+            } else if (!shouldHarden && this.enemy.scalesHardened) {
+                // Scales soften (if health goes back up - less likely but good to handle)
+                this.enemy.currentDefense = this.enemy.defense;
+                this.enemy.scalesHardened = false;
+                // Optional: Log softening?
+                // this.game.addLog(`The ${this.enemy.name}'s scales seem less rigid.`);
+            }
+        }
+
         // Enrage Attack Check (Before Enemy Attack)
         if (this.enemy.enrageThreshold && this.enemy.enrageAttackMultiplier) {
-            const healthPercent = this.enemy.health / this.enemy.maxHealth;
             const wasEnraged = this.enemy.currentAttack > this.enemy.attack; // Check previous state
             let isNowEnraged = false;
 
@@ -200,7 +230,7 @@ class Combat {
 
     playerAttack() {
         const playerAttackRoll = this.game.rollDamage(this.player.getAttack());
-        const enemyDefenseRoll = this.game.rollDamage(this.enemy.defense || 0);
+        const enemyDefenseRoll = this.game.rollDamage(this.enemy.currentDefense || 0);
         const actualBlocked = Math.min(playerAttackRoll, enemyDefenseRoll);
         const damageDealt = Math.max(0, playerAttackRoll - enemyDefenseRoll);
         

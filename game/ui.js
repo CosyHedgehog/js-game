@@ -687,7 +687,14 @@ class UI {
                 this.combatEnemyAtk.classList.remove('enraged');
             }
         }
-        if (this.combatEnemyDef) this.combatEnemyDef.textContent = enemy.defense;
+        if (this.combatEnemyDef) {
+            this.combatEnemyDef.textContent = enemy.currentDefense; // Use currentDefense
+            if (enemy.scalesHardened) { // Check the flag set in combat.js
+                this.combatEnemyDef.classList.add('hardened');
+            } else {
+                this.combatEnemyDef.classList.remove('hardened');
+            }
+        }
     }
 
     showCombatUI(player, enemy) {

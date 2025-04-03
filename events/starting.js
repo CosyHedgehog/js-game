@@ -11,7 +11,7 @@ class Starting {
             stats: {
                 maxHealth: 200,
                 health: 15,
-                baseAttack: 10,
+                baseAttack: 30,
                 baseDefense: 10,
             },
             items: [
