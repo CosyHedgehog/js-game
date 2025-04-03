@@ -20,21 +20,19 @@ class UI {
         this.playerStatsArea = document.getElementById('player-stats-area');
         this.inventoryGrid = document.getElementById('inventory-grid');
         this.itemTooltip = document.getElementById('item-tooltip');
-        this.equipmentTextDisplay = {
-            weapon: document.getElementById('equip-text-weapon'),
-            shield: document.getElementById('equip-text-shield'),
-            helm: document.getElementById('equip-text-helm'),
-            body: document.getElementById('equip-text-body'),
-            legs: document.getElementById('equip-text-legs'),
-            ring: document.getElementById('equip-text-ring')
-        };
+        
+        // Initialize equipmentTextDisplay as an empty object
+        this.equipmentTextDisplay = {}; 
+        // Select elements using data-slot in cacheDynamicElements or here
+        this.cacheDynamicElements(); 
+
         this.equipTooltip = document.getElementById('equip-tooltip');
-        this.statHealth = document.getElementById('stat-health');
-        this.statMaxHealth = document.getElementById('stat-max-health');
-        this.statAttack = document.getElementById('stat-attack');
-        this.statDefense = document.getElementById('stat-defense');
-        this.statSpeed = document.getElementById('stat-speed');
-        this.statGold = document.getElementById('stat-gold');
+        this.statHealth = document.getElementById('stat-health-2');
+        this.statMaxHealth = document.getElementById('stat-max-health-2');
+        this.statAttack = document.getElementById('stat-attack-2');
+        this.statDefense = document.getElementById('stat-defense-2');
+        this.statSpeed = document.getElementById('stat-speed-2');
+        this.statGold = document.getElementById('stat-gold-2');
         this.statRound = document.getElementById('stat-round');
         this.combatPlayerHp = document.getElementById('combat-player-hp');
         this.combatEnemyHp = document.getElementById('combat-enemy-hp');
@@ -61,8 +59,6 @@ class UI {
             }
         }, true);
         
-        this.cacheDynamicElements();
-
         if (this.game) this.game.ui = this;
         if (this.lootTakeButton) this.lootTakeButton.onclick = () => this.game.collectLoot();
         else console.error("UI Error: Loot Take Button not found during constructor.");
@@ -81,19 +77,35 @@ class UI {
         this.combatEnemyTimer = document.getElementById('combat-enemy-timer');
         this.shopItemsContainer = document.getElementById('shop-items');
         this.shopRerollButton = document.getElementById('shop-reroll-button');
-        this.equipmentTextDisplay = {
-            weapon: document.getElementById('equip-text-weapon'),
-            shield: document.getElementById('equip-text-shield'),
-            helm: document.getElementById('equip-text-helm'),
-            body: document.getElementById('equip-text-body'),
-            legs: document.getElementById('equip-text-legs'),
-            ring: document.getElementById('equip-text-ring')
-        };
-        this.statHealth = document.getElementById('stat-health');
-        this.statMaxHealth = document.getElementById('stat-max-health');
-        this.statAttack = document.getElementById('stat-attack');
-        this.statDefense = document.getElementById('stat-defense');
-        this.statGold = document.getElementById('stat-gold');
+        
+        // Populate equipmentTextDisplay using data-slot query
+        this.equipmentTextDisplay = {}; // Clear first
+        const equipmentDisplay = document.getElementById('equipment-text-display');
+        if (equipmentDisplay) {
+            const pElements = equipmentDisplay.querySelectorAll('p[data-slot]');
+            pElements.forEach(pElement => {
+                const slot = pElement.dataset.slot;
+                if (slot) {
+                    this.equipmentTextDisplay[slot] = pElement; // Store reference to the <p> element
+                }
+            });
+        } else {
+            console.error("Could not find #equipment-text-display to cache elements.");
+        }
+
+        this.lootGold = document.getElementById('loot-gold');
+        this.lootItemsContainer = document.getElementById('loot-items');
+        this.lootTakeButton = document.getElementById('loot-take-button');
+        if (this.lootTakeButton && !this.lootTakeButton.onclick) {
+            this.lootTakeButton.onclick = () => this.game.collectLoot();
+        }
+
+        this.statHealth = document.getElementById('stat-health-2');
+        this.statMaxHealth = document.getElementById('stat-max-health-2');
+        this.statAttack = document.getElementById('stat-attack-2');
+        this.statDefense = document.getElementById('stat-defense-2');
+        this.statSpeed = document.getElementById('stat-speed-2');
+        this.statGold = document.getElementById('stat-gold-2');
         this.statRound = document.getElementById('stat-round');
         if (!this.inventoryArea) {
             this.inventoryArea = document.getElementById('inventory-area');
@@ -294,79 +306,109 @@ class UI {
 
     renderEquipment() {
         for (const slotName in this.equipmentTextDisplay) {
-            const element = this.equipmentTextDisplay[slotName];
-            if (!element) {
-                console.warn(`UI renderEquipment: Text display element not found for ${slotName}`);
+            // Now, parentPElement is directly the element we stored
+            const parentPElement = this.equipmentTextDisplay[slotName]; 
+            if (!parentPElement) {
+                 console.warn(`UI renderEquipment: Parent <p> element reference missing for ${slotName}`);
+                 continue;
+            }
+            
+            // Find label and button within this <p> element
+            const labelSpan = parentPElement.querySelector('.equip-label'); 
+            const unequipButton = parentPElement.querySelector(`.unequip-button[data-slot="${slotName}"]`);
+            
+            if (!labelSpan || !unequipButton) {
+                console.warn(`UI renderEquipment: Label or Unequip button not found within parent P for ${slotName}`);
                 continue;
             }
 
             const equippedItemIndex = this.game.player.equipment[slotName];
-            let itemName = '';
             let itemDescription = '';
+            let isEquipped = false;
 
-            // Find the corresponding unequip button
-            const unequipButton = document.querySelector(`#equipment-text-display .unequip-button[data-slot="${slotName}"]`);
+            // Reset listeners on the <p> element
+            parentPElement.onmouseenter = null;
+            parentPElement.onmouseleave = null;
 
             if (equippedItemIndex !== null && this.game.player.inventory[equippedItemIndex]) {
                 const item = this.game.player.inventory[equippedItemIndex];
-                // itemName = item.name;
                 itemDescription = item.description || 'No description';
+                isEquipped = true;
 
-                element.onmouseenter = (e) => this.showTooltip(itemDescription, this.equipTooltip, e);
-                element.onmouseleave = () => this.hideTooltip(this.equipTooltip);
+                // Attach hover listener to the PARENT <p> element
+                parentPElement.onmouseenter = (e) => this.showTooltip(itemDescription, this.equipTooltip, e);
+                parentPElement.onmouseleave = () => this.hideTooltip(this.equipTooltip);
 
-                // Show and setup unequip button
-                if (unequipButton) {
-                    unequipButton.classList.remove('hidden');
-                    unequipButton.onclick = (e) => {
-                        e.stopPropagation(); // Prevent row hover effect if clicking button
-                        this.game.handleUnequipItem(equippedItemIndex); // Unequip using the item's index
-                    };
-                }
+                unequipButton.classList.remove('hidden');
+                unequipButton.onclick = (e) => {
+                    e.stopPropagation();
+                    this.game.handleUnequipItem(equippedItemIndex);
+                    this.hideTooltip(this.equipTooltip);
+                };
             } else {
-                element.onmouseenter = null;
-                element.onmouseleave = null;
-
-                // Hide unequip button
-                if (unequipButton) {
-                    unequipButton.classList.add('hidden');
-                    unequipButton.onclick = null; // Remove listener
-                }
+                // No item equipped, hide button and remove listeners
+                unequipButton.classList.add('hidden');
+                unequipButton.onclick = null;
             }
 
-            // Update the text content of the value span
-            element.textContent = itemName;
-            element.title = ''; // Keep removing browser tooltip
+            // Add/remove 'equipped' class to the parent <p> AND the label span
+            if (isEquipped) {
+                parentPElement.classList.add('equipped');
+                labelSpan.classList.add('equipped'); // Add class to label too
+            } else {
+                parentPElement.classList.remove('equipped');
+                labelSpan.classList.remove('equipped'); // Remove class from label too
+            }
         }
     }
 
     updatePlayerStats() {
         const player = this.game.player;
-        this.statHealth.textContent = player.health;
-        this.statMaxHealth.textContent = player.getMaxHealth();
+        const previousRound = this.statRound?.textContent; // Store previous round text
+
+        if (this.statHealth) this.statHealth.textContent = player.health;
+        if (this.statMaxHealth) this.statMaxHealth.textContent = player.getMaxHealth();
         
         let attackText = player.getAttack();
         if (player.tempAttack > 0) {
             attackText += ` (+${player.tempAttack})`;
         }
-        this.statAttack.textContent = attackText;
+        if (this.statAttack) this.statAttack.textContent = attackText;
 
         let defenseText = player.getDefense();
         if (player.tempDefense > 0) {
             defenseText += ` (+${player.tempDefense})`;
         }
-        this.statDefense.textContent = defenseText;
+        if (this.statDefense) this.statDefense.textContent = defenseText;
         
         let speedValue = player.getAttackSpeed();
         let speedText = `${speedValue.toFixed(1)}s`;
         if (player.tempSpeedReduction > 0) {
             speedText += ` (-${player.tempSpeedReduction.toFixed(1)}s)`;
         }
-        this.statSpeed.textContent = speedText;
+        if (this.statSpeed) this.statSpeed.textContent = speedText;
 
-        this.statGold.textContent = player.gold;
-        if (this.statRound) {
-            this.statRound.textContent = `${this.game.currentRound}/${this.game.maxRounds}`;
+        if (this.statGold) this.statGold.textContent = player.gold;
+        
+        // Update round and trigger animation if changed
+        if (this.statRound && this.game) {
+            const currentRoundText = `${this.game.currentRound}`;
+            const roundAreaElement = document.getElementById('round-area')?.querySelector('.stat-item'); // Get the specific element to animate
+            const maxRoundsElement = document.getElementById('stat-max-rounds');
+            
+            if (this.statRound.textContent !== currentRoundText) {
+                this.statRound.textContent = currentRoundText; 
+                if (roundAreaElement) { 
+                    roundAreaElement.classList.remove('round-pulsing'); // Remove first to re-trigger
+                    void roundAreaElement.offsetWidth; // Force reflow
+                    roundAreaElement.classList.add('round-pulsing');
+                    // Optional: remove class after animation ends
+                    setTimeout(() => {
+                        roundAreaElement.classList.remove('round-pulsing');
+                    }, 600); // Match animation duration
+                }
+            }
+            if (maxRoundsElement) maxRoundsElement.textContent = this.game.maxRounds;
         }
     }
 
@@ -512,21 +554,6 @@ class UI {
         }
         this.choicesArea.innerHTML = '';
         this.cacheDynamicElements();
-    }
-
-    cacheDynamicElements() {
-        this.combatPlayerHp = document.getElementById('combat-player-hp');
-        this.combatEnemyHp = document.getElementById('combat-enemy-hp');
-        this.combatPlayerTimer = document.getElementById('combat-player-timer');
-        this.combatEnemyTimer = document.getElementById('combat-enemy-timer');
-        this.shopItemsContainer = document.getElementById('shop-items');
-        this.shopRerollButton = document.getElementById('shop-reroll-button');
-        this.lootGold = document.getElementById('loot-gold');
-        this.lootItemsContainer = document.getElementById('loot-items');
-        this.lootTakeButton = document.getElementById('loot-take-button');
-        if (this.lootTakeButton && !this.lootTakeButton.onclick) {
-            this.lootTakeButton.onclick = () => this.game.collectLoot();
-        }
     }
 
     showCombatUI(player, enemy) {

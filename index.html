@@ -10,6 +10,45 @@
     <div id="game-container">
       <div id="game-screen" class="screen hidden">
         <div id="game-body">
+          <div id="left-column">
+            <div id="round-area">
+              <div class="stat-item"> 
+                <span class="stat-label">Round:</span><span id="stat-round">0</span><span class="round-separator">/</span><span id="stat-max-rounds">30</span>
+              </div>
+            </div>
+            <div id="player-stats-area-2">
+              <div class="stats-grid">
+                <div class="stat-item">
+                  <span class="stat-label">HP</span>
+                  <span><span id="stat-health-2">0</span>/<span id="stat-max-health-2">0</span></span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-label">Attack</span>
+                  <span id="stat-attack-2">0</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-label">Defense</span>
+                  <span id="stat-defense-2">0</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-label">Speed</span>
+                  <span id="stat-speed-2">0s</span>
+                </div>
+              </div>
+            </div>
+            <div id="equipment-area-2">
+              <div id="equipment-text-display">
+                <p data-slot="weapon"><span class="equip-label">Weapon:</span> <button class="unequip-button hidden" data-slot="weapon">×</button></p>
+                <p data-slot="shield"><span class="equip-label">Shield:</span> <button class="unequip-button hidden" data-slot="shield">×</button></p>
+                <p data-slot="helm"><span class="equip-label">Helm:</span> <button class="unequip-button hidden" data-slot="helm">×</button></p>
+                <p data-slot="body"><span class="equip-label">Body:</span> <button class="unequip-button hidden" data-slot="body">×</button></p>
+                <p data-slot="legs"><span class="equip-label">Legs:</span> <button class="unequip-button hidden" data-slot="legs">×</button></p>
+                <p data-slot="ring"><span class="equip-label">Ring:</span> <button class="unequip-button hidden" data-slot="ring">×</button></p>
+              </div>
+            </div>
+            <div id="equip-tooltip" class="tooltip hidden"></div>
+          </div>
+
           <div id="main-area">
             <div id="main-content">
               <div id="output-log-area" class="hidden">
@@ -82,90 +121,15 @@
               <div id="fishing-area" class="hidden"></div>
             </div>
           </div>
+
           <div id="right-column">
             <div id="inventory-area">
+               <div id="inventory-header">
+                 <span class="gold-label">Gold:</span> 
+                 <span id="stat-gold-2">0</span> 
+               </div>
               <div id="inventory-grid"></div>
               <div id="item-tooltip" class="tooltip hidden"></div>
-            </div>
-            <div id="bottom-panel-container">
-              <div id="bottom-panel">
-                <div id="equipment-area">
-                  <div id="equipment-text-display">
-                    <p data-slot="weapon">
-                      <span class="equip-label">Weapon</span>
-                      <span class="equip-value" id="equip-text-weapon"></span>
-                      <button class="unequip-button hidden" data-slot="weapon">
-                        ×
-                      </button>
-                    </p>
-                    <p data-slot="shield">
-                      <span class="equip-label">Shield</span>
-                      <span class="equip-value" id="equip-text-shield"></span>
-                      <button class="unequip-button hidden" data-slot="shield">
-                        ×
-                      </button>
-                    </p>
-                    <p data-slot="helm">
-                      <span class="equip-label">Helm</span>
-                      <span class="equip-value" id="equip-text-helm"></span>
-                      <button class="unequip-button hidden" data-slot="helm">
-                        ×
-                      </button>
-                    </p>
-                    <p data-slot="body">
-                      <span class="equip-label">Body</span>
-                      <span class="equip-value" id="equip-text-body"></span>
-                      <button class="unequip-button hidden" data-slot="body">
-                        ×
-                      </button>
-                    </p>
-                    <p data-slot="legs">
-                      <span class="equip-label">Legs</span>
-                      <span class="equip-value" id="equip-text-legs"></span>
-                      <button class="unequip-button hidden" data-slot="legs">
-                        ×
-                      </button>
-                    </p>
-                    <p data-slot="ring">
-                      <span class="equip-label">Ring</span>
-                      <span class="equip-value" id="equip-text-ring"></span>
-                      <button class="unequip-button hidden" data-slot="ring">
-                        ×
-                      </button>
-                    </p>
-                  </div>
-                </div>
-                <div id="player-stats-area-2">
-                  <div class="stat-item">
-                    <span class="stat-label">Health</span>
-                    <span id="stat-health"></span>/<span
-                      id="stat-max-health"
-                    >/</span>
-                  </div>
-                  <div class="stat-item">
-                    <span class="stat-label">Attack</span>
-                    <span id="stat-attack"></span>
-                  </div>
-                  <div class="stat-item">
-                    <span class="stat-label">Defence</span>
-                    <span id="stat-defense"></span>
-                  </div>
-                  <div class="stat-item">
-                    <span class="stat-label">Speed</span>
-                    <span id="stat-speed"></span>
-                  </div>
-                  <div class="stat-item">
-                    <span class="stat-label">Gold</span>
-                    <span id="stat-gold"></span>
-                  </div>
-                </div>
-              </div>
-              <!-- <div id="round-area"> -->
-                <!-- <div class="stat-item"> -->
-                  <!-- <span class="stat-label">Round</span> -->
-                  <!-- <span id="stat-round"></span> -->
-                <!-- </div> -->
-              <!-- </div> -->
             </div>
           </div>
         </div>
