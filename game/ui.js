@@ -39,6 +39,9 @@ class UI {
         this.combatEnemyHp = document.getElementById('combat-enemy-hp');
         this.combatPlayerTimer = document.getElementById('combat-player-timer');
         this.combatEnemyTimer = document.getElementById('combat-enemy-timer');
+        this.combatEnemyBreathTimerContainer = document.querySelector('.enemy-side .breath-timer'); 
+        this.combatEnemyBreathTimerText = document.getElementById('combat-enemy-breath-timer');
+        this.combatEnemyBreathTimerBar = document.querySelector('.enemy-breath-timer');
         this.shopItemsContainer = document.getElementById('shop-items');
         this.shopRerollButton = document.getElementById('shop-reroll-button');
         this.outputLogArea = document.getElementById('output-log-area');
@@ -726,23 +729,44 @@ class UI {
         }
     }
 
-    updateCombatTimers(playerTime, enemyTime, playerDelay = 0) {
+    updateCombatTimers(playerTime, enemyTime, playerDelay = 0, enemyBreathTime = null, enemyBreathInterval = null) {
+        // Player Timer Update (handle delay)
         this.combatPlayerTimer.textContent = playerDelay > 0 ? 
             `Delayed: ${playerDelay.toFixed(1)}s` : 
             playerTime.toFixed(1);
-        this.combatEnemyTimer.textContent = enemyTime.toFixed(1);
         const playerMaxTime = this.game.player.getAttackSpeed();
-        const enemyMaxTime = this.game.currentCombat.enemy.speed;
         const playerTimerBar = document.querySelector('.player-timer');
-        const enemyTimerBar = document.querySelector('.enemy-timer');
         if (playerDelay > 0) {
             playerTimerBar.style.width = `${(playerDelay / 2) * 100}%`;
-            playerTimerBar.style.backgroundColor = '#ffd700';
+            playerTimerBar.style.backgroundColor = '#ffd700'; // Gold color for delay
         } else {
-            playerTimerBar.style.width = `${(playerTime / playerMaxTime) * 100}%`;
-            playerTimerBar.style.backgroundColor = '';
+            playerTimerBar.style.width = `${(1 - (playerTime / playerMaxTime)) * 100}%`; // Fill up as timer decreases
+            playerTimerBar.style.backgroundColor = ''; // Reset to default
         }
-        enemyTimerBar.style.width = `${(enemyTime / enemyMaxTime) * 100}%`;
+
+        // Enemy Attack Timer Update
+        this.combatEnemyTimer.textContent = enemyTime.toFixed(1);
+        const enemyMaxTime = this.game.currentCombat.enemy.currentSpeed; // Use currentSpeed
+        const enemyTimerBar = document.querySelector('.enemy-timer');
+        enemyTimerBar.style.width = `${(1 - (enemyTime / enemyMaxTime)) * 100}%`; // Fill up
+
+        // Enemy Breath Timer Update (Conditional)
+        if (this.combatEnemyBreathTimerContainer && this.combatEnemyBreathTimerText && this.combatEnemyBreathTimerBar) {
+            if (enemyBreathTime !== null && enemyBreathInterval !== null) {
+                this.combatEnemyBreathTimerContainer.classList.remove('hidden');
+                this.combatEnemyBreathTimerText.textContent = enemyBreathTime.toFixed(1);
+                const breathPercentage = (1 - (enemyBreathTime / enemyBreathInterval)) * 100;
+                this.combatEnemyBreathTimerBar.style.width = `${breathPercentage}%`;
+            } else {
+                this.combatEnemyBreathTimerContainer.classList.add('hidden');
+            }
+        } else {
+            // Log error if elements aren't found, only once maybe?
+             if (!this._breathTimerErrorLogged) { // Prevent console spam
+                 console.error("UI Error: Breath timer elements not found during update.");
+                 this._breathTimerErrorLogged = true;
+             }
+        }
     }
 
     showTooltip(text, tooltipElement, event) {
