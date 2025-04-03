@@ -2846,7 +2846,7 @@ html {
     background-color: #3a3a3a; /* Highlight background on hover */
 }
 
-#equipment-text-display p:hover .unequip-button:not(.hidden) {
+#equipment-text-display .unequip-button:not(.hidden) {
     opacity: 1; /* Show button on row hover if item is equipped */
 }
 
@@ -2858,7 +2858,7 @@ html {
     background-color: #4a4a4a;
     padding: 2px 8px;
     border-radius: 12px;
-    font-size: 0.85em;
+    font-size: 1em;
     display: inline-block;
     line-height: 1.2;
     text-align: center;
@@ -2873,7 +2873,7 @@ html {
     background-color: #4a4a4a; /* Chip background */
     padding: 2px 8px;         /* Padding inside the chip */
     border-radius: 12px;      /* Rounded corners */
-    font-size: 0.85em;         /* Slightly smaller font */
+    font-size: 1em;         /* Slightly smaller font */
     display: inline-block;    /* Treat as a block for padding */
     line-height: 1.2;         /* Adjust line height if needed */
     text-align: center;
@@ -3084,7 +3084,6 @@ html {
     min-width: 50px; /* Minimum label width */
     text-align: center;
     text-align: right;
-    font-size: 0.85em;
 }
 
 #player-stats-area-2 {
@@ -3116,7 +3115,6 @@ html {
     background-color: #4a4a4a; /* Chip background */
     padding: 2px 8px;         /* Padding inside the chip */
     border-radius: 12px;      /* Rounded corners */
-    font-size: 0.85em;         /* Slightly smaller font */
     display: inline-block;    /* Treat as a block for padding */
     line-height: 1.2;         /* Adjust line height if needed */
     text-align: center;
@@ -3132,20 +3130,17 @@ html {
 #bottom-panel {
     display: flex; /* Use flexbox for layout */
     justify-content: space-between; /* Space out equipment and stats */
-    gap: 10px; /* Consistent gap between the two panels */
-    width: 100%;
+    gap: 15px; /* Consistent gap between the two panels */
 }
 
 #equipment-area, #player-stats-area-2 {
-    flex: 1; /* Allow both to grow and shrink equally */
     min-width: 0; /* Prevent overflow issues */
     border-radius: 4px;
     padding: 5px;
     box-sizing: border-box;
     min-height: 130px; /* Match height */
     border: 1px solid #444;
-    background-color: #222;
-
+    background-color: #2a2a2a;
 }
 
 #equipment-area {
@@ -3153,7 +3148,6 @@ html {
     flex-direction: column;
     gap: 6px; /* Match internal gap of stats area */
 }
-
 
 #bottom-panel-container {
     display: flex;
@@ -3180,10 +3174,10 @@ html {
     justify-content: space-between; /* Space out label/value */
     align-items: center; /* Center items vertically */
     color: #ccc; /* Match stat item color */
-    padding: 3px 0; /* Consistent vertical spacing */
     font-size: 0.9em; /* Match stat item font size */
     transition: background-color 0.2s ease;
     margin: 0; /* Remove default margin */
+    background-color: #2a2a2a;
 }
 
 #equipment-text-display p:last-child {
@@ -3201,7 +3195,6 @@ html {
     background-color: #4a4a4a; /* Chip background */
     padding: 2px 8px;         /* Padding inside the chip */
     border-radius: 12px;      /* Rounded corners */
-    font-size: 0.85em;         /* Slightly smaller font */
     display: inline-block;    /* Treat as a block for padding */
     line-height: 1.2;         /* Adjust line height if needed */
     text-align: center;
