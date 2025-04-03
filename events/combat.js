@@ -316,12 +316,19 @@ class Combat {
             playerWon = true;
         } else if (this.player.health <= 0) {
             this.game.addLog(`You were defeated by the ${this.enemy.name}...`);
+            clearInterval(this.intervalId); // Stop combat immediately
+            this.intervalId = null;
+            // Delay the game over screen
+            setTimeout(() => {
+                this.game.endGame(false); 
+            }, 1000); // 1000ms = 1 second delay
             combatEnded = true;
             playerWon = false;
         }
 
-        if (combatEnded) {
-            this.endCombat(playerWon);
+        // Only call endCombat if the player WON, otherwise game over is handled by timeout
+        if (combatEnded && playerWon) {
+            this.endCombat(true);
         }
         return combatEnded;
     }
