@@ -6,7 +6,8 @@ class Combat {
             health: enemy.health,
             maxHealth: enemy.health,
             attackTimer: 0,
-            currentSpeed: enemy.speed
+            currentSpeed: enemy.speed,
+            currentAttack: enemy.attack
         };
         this.game = game;
         this.ui = ui;
@@ -106,22 +107,51 @@ class Combat {
         }
         this.enemy.attackTimer = Math.max(0, this.enemy.attackTimer - this.timeScale);
 
+        // --- Check for enemy dynamic changes BEFORE updating UI ---
+        // Dynamic Speed Check
+        if (this.enemy.name === MONSTERS['venfing']?.name) {
+            const healthPercent = this.enemy.health / this.enemy.maxHealth;
+            if (healthPercent < 0.5) {
+                this.enemy.currentSpeed = 0.6;
+            } else {
+                this.enemy.currentSpeed = 1.2;
+            }
+        }
+        // Enrage Attack Check (Before Enemy Attack)
+        if (this.enemy.enrageThreshold && this.enemy.enrageAttackMultiplier) {
+            const healthPercent = this.enemy.health / this.enemy.maxHealth;
+            const wasEnraged = this.enemy.currentAttack > this.enemy.attack; // Check previous state
+            let isNowEnraged = false;
+
+            if (healthPercent < this.enemy.enrageThreshold) {
+                this.enemy.currentAttack = Math.round(this.enemy.attack * this.enemy.enrageAttackMultiplier);
+                isNowEnraged = true;
+            } else {
+                this.enemy.currentAttack = this.enemy.attack; 
+                isNowEnraged = false;
+            }
+
+            // Trigger animation ONLY when first becoming enraged
+            if (isNowEnraged && !wasEnraged) {
+                const enemySide = document.querySelector('.enemy-side');
+                if (enemySide) {
+                    enemySide.classList.add('enemy-enraged-pulse');
+                    // Remove the class after the animation duration (0.5s)
+                    setTimeout(() => {
+                        enemySide.classList.remove('enemy-enraged-pulse');
+                    }, 500);
+                }
+            }
+        }
+        
+        // --- Update UI Timers AND Stats --- 
         this.ui.updateCombatTimers(
             this.player.attackTimer,
             this.enemy.attackTimer,
             this.player.pendingActionDelay
         );
-
-        // --- Dynamic Speed Check (Before Enemy Attack) ---
-        if (this.enemy.name === MONSTERS['venfing']?.name) { // Check if it's Venfing
-            const healthPercent = this.enemy.health / this.enemy.maxHealth;
-            if (healthPercent < 0.5) {
-                this.enemy.currentSpeed = 0.6; // Enraged speed
-            } else {
-                this.enemy.currentSpeed = 1.2; // Normal speed
-            }
-        }
-        // -------------------------------------------------
+        this.ui.updateCombatStats(this.player, this.enemy); // Update stats every tick
+        // ---------------------------------
 
         if (!this.player.attackTimerPaused && this.player.attackTimer <= 0) {
             this.playerAttack();
@@ -133,7 +163,7 @@ class Combat {
         if (this.enemy.attackTimer <= 0) {
             this.enemyAttack();
             enemyActed = true;
-            this.enemy.attackTimer = this.enemy.currentSpeed; // Use currentSpeed
+            this.enemy.attackTimer = this.enemy.currentSpeed;
             if (this.checkCombatEnd()) return;
         }
     }
@@ -165,18 +195,24 @@ class Combat {
     }
 
     enemyAttack() {
-        const enemyAttackRoll = this.game.rollDamage(this.enemy.attack);
+        const enemyAttackRoll = this.game.rollDamage(this.enemy.currentAttack);
         const playerDefenseRoll = this.game.rollDamage(this.player.getDefense());
         const actualBlocked = Math.min(enemyAttackRoll, playerDefenseRoll);
         const damageDealt = Math.max(0, enemyAttackRoll - playerDefenseRoll);
         
         this.player.health = Math.max(0, this.player.health - damageDealt);
         
-        if (damageDealt === 0 && actualBlocked > 0) {
-            this.game.addLog(`${this.enemy.name} attacks but you block all ${actualBlocked} damage!`);
-        } else {
-            this.game.addLog(`${this.enemy.name} attacks you for ${damageDealt} damage. (${enemyAttackRoll} - ${actualBlocked} blocked)`);
+        let logMessage = `${this.enemy.name} attacks`;
+        if (this.enemy.currentAttack > this.enemy.attack) {
+            logMessage += ` <span style="color: #ff6b6b;">[ENRAGED]</span>`;
         }
+
+        if (damageDealt === 0 && actualBlocked > 0) {
+            logMessage += ` but you block all ${actualBlocked} damage!`;
+        } else {
+            logMessage += ` you for ${damageDealt} damage. (${enemyAttackRoll} - ${actualBlocked} blocked)`;
+        }
+        this.game.addLog(logMessage);
         
         this.ui.updateCombatantHealth(
             'player', 
@@ -208,6 +244,7 @@ class Combat {
                 this.ui.updatePlayerStats();
             }
             this.ui.renderInventory();
+            this.ui.updateCombatStats(this.player, this.enemy); // Update stats after item use
         } else {
             this.game.addLog(useResult.message);
         }

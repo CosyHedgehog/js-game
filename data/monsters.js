@@ -61,7 +61,14 @@ const MONSTERS = {
     // === Round 20 Mini-Boss ===
     'griznokt': {
         name: 'Griznokt [Ogre]', health: 50, attack: 4, defense: 8, speed: 2.5, goldDrop: [15, 30],
+        enrageThreshold: 0.3, // Enrages below 30% health
+        enrageAttackMultiplier: 2.5, // Attack becomes 4 * 2.5 = 10 when enraged
+        description: "A heavily armored ogre.\nBecomes enraged and hits harder below 30% health!",
         lootTable: [
+            // Add appropriate loot? e.g.:
+            { itemId: 'iron_greatsword', chance: 0.3 },
+            { itemId: 'steel_armor', chance: 0.2 }, 
+            { itemId: 'ring_of_resilience', chance: 0.05 } 
         ]
     },
 

@@ -81,6 +81,12 @@ class UI {
                 console.error("Close log button clicked but game object is not yet available on UI.");
             }
         };
+
+        // Cache new combat stat elements
+        this.combatPlayerAtk = document.getElementById('combat-player-atk');
+        this.combatPlayerDef = document.getElementById('combat-player-def');
+        this.combatEnemyAtk = document.getElementById('combat-enemy-atk');
+        this.combatEnemyDef = document.getElementById('combat-enemy-def');
     }
 
     cacheDynamicElements() {
@@ -665,6 +671,22 @@ class UI {
         this.cacheDynamicElements();
     }
 
+    updateCombatStats(player, enemy) {
+        if (this.combatPlayerAtk) this.combatPlayerAtk.textContent = player.getAttack();
+        if (this.combatPlayerDef) this.combatPlayerDef.textContent = player.getDefense();
+        
+        if (this.combatEnemyAtk) {
+            this.combatEnemyAtk.textContent = enemy.currentAttack; // Use currentAttack
+            // Add/remove enraged class based on current vs base attack
+            if (enemy.currentAttack > enemy.attack) {
+                this.combatEnemyAtk.classList.add('enraged');
+            } else {
+                this.combatEnemyAtk.classList.remove('enraged');
+            }
+        }
+        if (this.combatEnemyDef) this.combatEnemyDef.textContent = enemy.defense;
+    }
+
     showCombatUI(player, enemy) {
         this.clearMainArea();
         this.combatArea.classList.remove('hidden');
@@ -672,6 +694,7 @@ class UI {
         this.updateCombatantHealth('player', player.health, player.maxHealth);
         this.updateCombatantHealth('enemy', enemy.health, enemy.maxHealth);
         this.updateCombatTimers(player.attackTimer, enemy.attackTimer);
+        this.updateCombatStats(player, enemy); // Call the new function here
     }
 
     hideCombatUI() {
