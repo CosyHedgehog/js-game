@@ -9,33 +9,6 @@
   <body>
     <div id="game-container">
       <div id="game-screen" class="screen hidden">
-        <div id="player-stats-area">
-          <button id="toggle-log-button">Show Log</button>
-          <div class="stat-item">
-            <span class="stat-label">Health:</span>
-            <span id="stat-health"></span>/<span id="stat-max-health"></span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-label">Attack:</span>
-            <span id="stat-attack"></span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-label">Defence:</span>
-            <span id="stat-defense"></span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-label">Speed:</span>
-            <span id="stat-speed"></span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-label">Gold:</span>
-            <span id="stat-gold"></span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-label">Round:</span>
-            <span id="stat-round"></span>
-          </div>
-        </div>
         <div id="game-body">
           <div id="main-area">
             <div id="main-content">
@@ -46,8 +19,7 @@
                 </div>
                 <ul id="output-log"></ul>
               </div>
-              <div id="choices-area">
-              </div>
+              <div id="choices-area"></div>
               <div id="combat-area" class="hidden">
                 <div class="combat-container">
                   <div class="combatant player-side">
@@ -60,12 +32,14 @@
                     </div>
                     <div class="attack-timer">
                       <div class="timer-bar player-timer"></div>
-                      <div class="timer-text">Next Attack: <span id="combat-player-timer"></span>s</div>
+                      <div class="timer-text">
+                        Next Attack: <span id="combat-player-timer"></span>s
+                      </div>
                     </div>
                   </div>
-                  
+
                   <div class="combat-vs">VS</div>
-                  
+
                   <div class="combatant enemy-side">
                     <div class="combatant-name" id="combat-enemy-name"></div>
                     <div class="health-bar-container">
@@ -76,7 +50,9 @@
                     </div>
                     <div class="attack-timer">
                       <div class="timer-bar enemy-timer"></div>
-                      <div class="timer-text">Next Attack: <span id="combat-enemy-timer"></span>s</div>
+                      <div class="timer-text">
+                        Next Attack: <span id="combat-enemy-timer"></span>s
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -99,32 +75,97 @@
               <div id="loot-area" class="hidden">
                 <h3>Loot Found!</h3>
                 <p>Gold: <span id="loot-gold">0</span></p>
-                <div id="loot-items">
-                </div>
+                <div id="loot-items"></div>
                 <button id="loot-take-button">Take Loot</button>
               </div>
-              <div id="trap-area" class="hidden">
-              </div>
-              <div id="fishing-area" class="hidden">
-              </div>
+              <div id="trap-area" class="hidden"></div>
+              <div id="fishing-area" class="hidden"></div>
             </div>
           </div>
           <div id="right-column">
             <div id="inventory-area">
-              <div id="inventory-grid">
-              </div>
+              <div id="inventory-grid"></div>
               <div id="item-tooltip" class="tooltip hidden"></div>
             </div>
-            <div id="equipment-area">
-              <div id="equipment-text-display">
-                   <p data-slot="weapon"><span class="equip-label">Weapon:</span> <span class="equip-value" id="equip-text-weapon">-</span> <button class="unequip-button hidden" data-slot="weapon">×</button></p>
-                   <p data-slot="shield"><span class="equip-label">Shield:</span> <span class="equip-value" id="equip-text-shield">-</span> <button class="unequip-button hidden" data-slot="shield">×</button></p>
-                   <p data-slot="helm"><span class="equip-label">Helm:</span> <span class="equip-value" id="equip-text-helm">-</span> <button class="unequip-button hidden" data-slot="helm">×</button></p>
-                   <p data-slot="body"><span class="equip-label">Body:</span> <span class="equip-value" id="equip-text-body">-</span> <button class="unequip-button hidden" data-slot="body">×</button></p>
-                   <p data-slot="legs"><span class="equip-label">Legs:</span> <span class="equip-value" id="equip-text-legs">-</span> <button class="unequip-button hidden" data-slot="legs">×</button></p>
-                   <p data-slot="ring"><span class="equip-label">Ring:</span> <span class="equip-value" id="equip-text-ring">-</span> <button class="unequip-button hidden" data-slot="ring">×</button></p>
-               </div>
-              <!-- <div id="equip-tooltip" class="tooltip hidden"></div> -->
+            <div id="bottom-panel-container">
+              <div id="bottom-panel">
+                <div id="equipment-area">
+                  <div id="equipment-text-display">
+                    <p data-slot="weapon">
+                      <span class="equip-label">Weapon</span>
+                      <span class="equip-value" id="equip-text-weapon"></span>
+                      <button class="unequip-button hidden" data-slot="weapon">
+                        ×
+                      </button>
+                    </p>
+                    <p data-slot="shield">
+                      <span class="equip-label">Shield</span>
+                      <span class="equip-value" id="equip-text-shield"></span>
+                      <button class="unequip-button hidden" data-slot="shield">
+                        ×
+                      </button>
+                    </p>
+                    <p data-slot="helm">
+                      <span class="equip-label">Helm</span>
+                      <span class="equip-value" id="equip-text-helm"></span>
+                      <button class="unequip-button hidden" data-slot="helm">
+                        ×
+                      </button>
+                    </p>
+                    <p data-slot="body">
+                      <span class="equip-label">Body</span>
+                      <span class="equip-value" id="equip-text-body"></span>
+                      <button class="unequip-button hidden" data-slot="body">
+                        ×
+                      </button>
+                    </p>
+                    <p data-slot="legs">
+                      <span class="equip-label">Legs</span>
+                      <span class="equip-value" id="equip-text-legs"></span>
+                      <button class="unequip-button hidden" data-slot="legs">
+                        ×
+                      </button>
+                    </p>
+                    <p data-slot="ring">
+                      <span class="equip-label">Ring</span>
+                      <span class="equip-value" id="equip-text-ring"></span>
+                      <button class="unequip-button hidden" data-slot="ring">
+                        ×
+                      </button>
+                    </p>
+                  </div>
+                </div>
+                <div id="player-stats-area-2">
+                  <div class="stat-item">
+                    <span class="stat-label">Health</span>
+                    <span id="stat-health"></span><span
+                      id="stat-max-health"
+                    >/</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">Attack</span>
+                    <span id="stat-attack"></span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">Defence</span>
+                    <span id="stat-defense"></span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">Speed</span>
+                    <span id="stat-speed"></span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">Gold</span>
+                    <span id="stat-gold"></span>
+                  </div>
+                </div>
+              </div>
+              <!-- <div id="round-area"> -->
+                <!-- <div class="stat-item"> -->
+                  <!-- <span class="stat-label">Round</span> -->
+                  <!-- <span id="stat-round"></span> -->
+                <!-- </div> -->
+              <!-- </div> -->
             </div>
           </div>
         </div>

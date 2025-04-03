@@ -1,0 +1,19 @@
+.stat-item {
+    background-color: #3a3a3a;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.9em;
+    border: 1px solid #555;
+    white-space: nowrap;
+    flex-shrink: 0; /* Prevent chips from shrinking too much */
+}
+
+.stat-item span:not(.stat-label) {
+    color: #fff;
+    font-weight: bold;
+}
+
+.stat-label {
+    color: #aaa;
+    margin-right: 5px;
+}

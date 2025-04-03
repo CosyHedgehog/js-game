@@ -174,6 +174,7 @@ class UI {
                     clickHandler = (event) => {
                         event.stopPropagation();
                         this.game.handleSellItem(index);
+                        this.createDamageSplat(`.inventory-slot[data-index="${index}"]`, sellPrice + "G", 'sell');
                         this.hideTooltip(this.itemTooltip);
                     };
                     slot.classList.add('shop-sellable');
@@ -300,7 +301,7 @@ class UI {
             }
 
             const equippedItemIndex = this.game.player.equipment[slotName];
-            let itemName = '-';
+            let itemName = '';
             let itemDescription = '';
 
             // Find the corresponding unequip button
@@ -308,7 +309,7 @@ class UI {
 
             if (equippedItemIndex !== null && this.game.player.inventory[equippedItemIndex]) {
                 const item = this.game.player.inventory[equippedItemIndex];
-                itemName = item.name;
+                // itemName = item.name;
                 itemDescription = item.description || 'No description';
 
                 element.onmouseenter = (e) => this.showTooltip(itemDescription, this.equipTooltip, e);
@@ -670,10 +671,7 @@ class UI {
     }
 
     createDamageSplat(selector, amount, type = 'damage', blocked = 0, fullBlock = false) {
-        console.log(`[createDamageSplat] Called with selector: "${selector}", amount: ${amount}, type: ${type}`);
         const container = document.querySelector(selector);
-        console.log('[createDamageSplat] Found container:', container); // Log the result
-        
         if (!container) {
             console.error(`Damage splat container not found with selector: ${selector}`);
             return;
@@ -715,6 +713,8 @@ class UI {
         } else if (type === 'buff-speed') {
             // Speed buff is a reduction, so show as negative
             splat.textContent = `-${amount.toFixed(1)}s Spd`; 
+        } else {
+            splat.textContent = '+' + amount;
         }
 
         container.appendChild(splat);
