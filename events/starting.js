@@ -191,6 +191,7 @@ class Starting {
             this.ui.renderAll();
             this.game.addLog("Game started with your chosen equipment.");
             this.ui.clearMainArea();
+            this.game.currentRound = 9;
             this.game.proceedToNextRound();
         }, 500);
     }

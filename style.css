@@ -171,6 +171,7 @@ body {
     border-radius: 6px 6px 0 0; /* Round top corners */
     border-bottom: none; /* Remove bottom border to blend with inventory */
     flex-shrink: 0;
+    cursor: default; /* Keep default cursor */
 }
 
 #inventory-header .gold-label {
@@ -2191,7 +2192,7 @@ html {
     position: fixed;
     top: 50%;
     left: 50%;
-    transform: translate(-70%, -50%);
+    transform: translate(-50%, -50%);
     background-color: #2a2a2a;
     border: 2px solid #444;
     padding: 20px;
@@ -2720,6 +2721,7 @@ html {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    cursor: default; /* Keep default cursor */
 }
 
 #equipment-area {
@@ -3182,6 +3184,7 @@ html {
     color: #ccc; 
     min-width: unset; 
     transition: background-color 0.2s ease; /* Only transition background */
+    cursor: default; /* Keep default cursor */
 }
 
 .stat-item:hover {
@@ -3362,6 +3365,7 @@ html {
     border: 1px solid #484848; 
     border-radius: 5px; 
     box-shadow: none; 
+    cursor: default; /* Keep default cursor */
 }
 
 /* Stats Grid - Remove grid properties */
@@ -3453,6 +3457,46 @@ html {
     color: #77dd77; /* Bright green */
     font-weight: bold;
     margin-left: 4px; /* Add a little space before the boost text */
+}
+
+/* ... existing code ... */
+
+/* Style for boosted temporary stats - Increased Specificity */
+.stat-item .boosted-stat { /* Target within .stat-item */
+    color: #77dd77 !important; /* Bright green - Added !important for testing */
+    font-weight: bold;
+    margin-left: 4px; 
+}
+
+/* Remove the less specific rule if it exists elsewhere */
+/* Ensure the old .boosted-stat rule is removed if it wasn't overridden */
+
+/* ... existing code ... */
+
+/* --- Round Indicator Animations --- */
+
+/* Mini-Boss Glow */
+@keyframes miniboss-glow {
+    0% { box-shadow: 0 2px 5px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.15), 0 0 5px rgba(255, 165, 0, 0.5); border-color: #aa8800; }
+    50% { box-shadow: 0 2px 5px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.15), 0 0 12px rgba(255, 165, 0, 0.9); border-color: #ffcc44; }
+    100% { box-shadow: 0 2px 5px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.15), 0 0 5px rgba(255, 165, 0, 0.5); border-color: #aa8800; }
+}
+
+.round-miniboss {
+    animation: miniboss-glow 1.5s infinite ease-in-out;
+}
+
+/* Final Boss Epicness */
+@keyframes finalboss-flame {
+    0% { box-shadow: 0 2px 5px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.15), 0 0 8px rgba(255, 80, 0, 0.7), 0 0 4px rgba(255, 200, 0, 0.5); border-color: #ff5500; transform: scale(1); }
+    25% { box-shadow: 0 2px 5px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.15), 0 0 18px rgba(255, 50, 0, 1), 0 0 10px rgba(255, 220, 50, 0.7); border-color: #ff8833; transform: scale(1.05);}
+    50% { box-shadow: 0 2px 5px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.15), 0 0 12px rgba(255, 100, 0, 0.8), 0 0 6px rgba(255, 210, 30, 0.6); border-color: #ff6611; transform: scale(1.02); }
+    75% { box-shadow: 0 2px 5px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.15), 0 0 18px rgba(255, 50, 0, 1), 0 0 10px rgba(255, 220, 50, 0.7); border-color: #ff8833; transform: scale(1.05);}
+    100% { box-shadow: 0 2px 5px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.15), 0 0 8px rgba(255, 80, 0, 0.7), 0 0 4px rgba(255, 200, 0, 0.5); border-color: #ff5500; transform: scale(1); }
+}
+
+.round-finalboss {
+    animation: finalboss-flame 1.2s infinite ease-in-out;
 }
 
 /* ... existing code ... */

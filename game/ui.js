@@ -134,6 +134,9 @@ class UI {
         this.statSpeedElement = document.getElementById('stat-speed-2')?.closest('.stat-item');
         this.statGoldElement = document.getElementById('stat-gold-2')?.closest('#inventory-header'); // Find gold in its new parent
         
+        // Cache round element for tooltip and indicators
+        this.roundAreaElement = document.getElementById('round-area')?.querySelector('.stat-item'); 
+        
         // Cache stat tooltip element
         this.statTooltip = document.getElementById('stat-tooltip');
     }
@@ -144,41 +147,44 @@ class UI {
             attack: this.statAttackElement,
             defense: this.statDefenseElement,
             speed: this.statSpeedElement,
-            gold: this.statGoldElement 
+            gold: this.statGoldElement,
+            round: this.roundAreaElement
         };
 
         for (const key in statElements) {
             const element = statElements[key];
             
             if (element && this.statTooltip) {
-                // Remove any old listeners first to prevent duplicates if called again
-                // Note: A more robust approach uses AbortController, but this is simpler for now
-                // element.removeEventListener('mouseenter', element._tooltipEnterHandler);
-                // element.removeEventListener('mouseleave', element._tooltipLeaveHandler);
-                
-                // Define handler functions to be attached
                 const enterHandler = (e) => {
-                    const tooltipText = element.dataset.tooltipText || "No description available."; // Read text from data attribute
-                    this.showTooltip(tooltipText.replace(/\\n/g, '<br>'), this.statTooltip, e); // Use statTooltip, replace \n
+                    // ALWAYS read from dataset, which is updated by updatePlayerStats
+                    const tooltipText = element.dataset.tooltipText || "No description available."; 
+                    this.showTooltip(tooltipText.replace(/\\n/g, '<br>'), this.statTooltip, e); 
                 };
                 const leaveHandler = () => {
                     this.hideTooltip(this.statTooltip);
                 };
 
+                // Remove potential old listeners before adding new ones
+                // (Basic removal - might need more robust handling if issues persist)
+                element.removeEventListener('mouseenter', element._tooltipEnterHandler);
+                element.removeEventListener('mouseleave', element._tooltipLeaveHandler);
+
                 element.addEventListener('mouseenter', enterHandler);
                 element.addEventListener('mouseleave', leaveHandler);
                 
-                // Optional: Store handlers on the element if you need to remove them specifically later
-                // element._tooltipEnterHandler = enterHandler;
-                // element._tooltipLeaveHandler = leaveHandler;
+                // Store handlers on the element for potential future removal
+                element._tooltipEnterHandler = enterHandler;
+                element._tooltipLeaveHandler = leaveHandler;
 
             } else {
-                if (!element) console.warn(`Tooltip Listener: Element for stat '${key}' not found during listener attachment.`);
-                if (!this.statTooltip) console.warn(`Tooltip Listener: Stat tooltip element not found during listener attachment.`);
+                 if (!element) console.warn(`Tooltip Listener: Element for stat '${key}' not found during listener attachment.`);
+                 if (!this.statTooltip) console.warn(`Tooltip Listener: Stat tooltip element not found during listener attachment.`);
             }
         }
-        // Initial update of tooltip data attributes after attaching listeners
-        this.updatePlayerStats(); 
+        // Call updatePlayerStats once AFTER attaching all listeners to set initial data attributes
+        if (this.game && this.game.player) { 
+            this.updatePlayerStats(); 
+        }
     }
 
     switchScreen(screenId) {
@@ -484,23 +490,34 @@ class UI {
         if (this.statGoldElement) this.statGoldElement.dataset.tooltipText = "Your current wealth."; // Update gold tooltip text
         if (this.statHealthElement) this.statHealthElement.dataset.tooltipText = "Current Health / Maximum Health"; // Update HP tooltip text
         
-        if (this.statRound && this.game) {
-           const currentRoundText = `${this.game.currentRound}`;
-            const roundAreaElement = document.getElementById('round-area')?.querySelector('.stat-item'); 
-            const maxRoundsElement = document.getElementById('stat-max-rounds');
-            
-            if (this.statRound.textContent !== currentRoundText) {
-                this.statRound.textContent = currentRoundText; 
-                if (roundAreaElement) { 
-                    roundAreaElement.classList.remove('round-pulsing'); 
-                    void roundAreaElement.offsetWidth; 
-                    roundAreaElement.classList.add('round-pulsing');
-                    setTimeout(() => {
-                        roundAreaElement.classList.remove('round-pulsing');
-                    }, 700); // Match animation duration if changed
-                }
-            }
-            if (maxRoundsElement) maxRoundsElement.textContent = this.game.maxRounds;
+        if (this.statRound && this.game && this.roundAreaElement) { 
+           const currentRound = this.game.currentRound;
+           const currentRoundText = `${currentRound}`;
+           const maxRoundsElement = document.getElementById('stat-max-rounds');
+           
+           // --- Round Update & Animation --- 
+           if (this.statRound.textContent !== currentRoundText) {
+               this.statRound.textContent = currentRoundText; 
+               this.roundAreaElement.classList.remove('round-pulsing'); 
+               void this.roundAreaElement.offsetWidth; 
+               this.roundAreaElement.classList.add('round-pulsing');
+               setTimeout(() => {
+                   this.roundAreaElement.classList.remove('round-pulsing');
+               }, 700); 
+           }
+           if (maxRoundsElement) maxRoundsElement.textContent = this.game.maxRounds;
+           
+           // --- Boss Indicators & Dynamic Tooltip --- 
+           let roundTooltipText = `Current Round: ${currentRound} / ${this.game.maxRounds}`; // Default tooltip
+
+           if (currentRound === 10 || currentRound === 20) {
+               roundTooltipText = `MINI-BOSS APPROACHING! (Round ${currentRound})`; // Boss round tooltip
+           } else if (currentRound === 30) {
+               roundTooltipText = `FINAL BOSS! The Ancient Dragon awaits... (Round ${currentRound})`; // Final boss tooltip
+           }
+           
+           // Set the dynamic tooltip text
+           this.roundAreaElement.dataset.tooltipText = roundTooltipText;
         }
     }
 
@@ -600,7 +617,7 @@ class UI {
         }
 
         confirmButton.classList.add('confirm-button');
-        confirmButton.onclick = () => this.game.confirmChoice(index);
+        confirmButton.onclick = () => this.confirmChoice(index);
         if (buttonDisabled) {
             confirmButton.disabled = true;
         }
@@ -845,12 +862,25 @@ class UI {
     }
 
     confirmChoice(index) {
-        const selectedChoice = this.currentChoices[index];
+        const selectedChoice = this.game.currentChoices[index];
         const choicesArea = document.getElementById('choices-area');
-        choicesArea.classList.add('encounter-starting');
+        
+        // Remove boss indicator animations before starting
+        if (this.roundAreaElement) { 
+            this.roundAreaElement.classList.remove('round-miniboss', 'round-finalboss');
+        }
+
+        // Only add epic animation for boss rounds
+        if (this.game.currentRound === 10 || this.game.currentRound === 20 || this.game.currentRound === 30) {
+            choicesArea.classList.add('encounter-starting');
+        }
+        
+        // Delay slightly even without animation for smoother transition
+        const delay = (this.game.currentRound === 10 || this.game.currentRound === 20 || this.game.currentRound === 30) ? 500 : 50;
+
         setTimeout(() => {
-            choicesArea.classList.remove('encounter-starting');
-            this.startEncounter(selectedChoice.encounter);
-        }, 500);
+            choicesArea.classList.remove('encounter-starting'); // Remove class regardless (safe if not added)
+            this.game.startEncounter(selectedChoice.encounter); 
+        }, delay);
     }
 }

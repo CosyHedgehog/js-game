@@ -49,6 +49,16 @@ class Game {
         this.state = 'choosing';
         this.ui.clearMainArea();
 
+        // Apply boss round indicators
+        if (this.ui.roundAreaElement) {
+            this.ui.roundAreaElement.classList.remove('round-miniboss', 'round-finalboss'); // Clear previous
+            if (this.currentRound === 10 || this.currentRound === 20) {
+                this.ui.roundAreaElement.classList.add('round-miniboss');
+            } else if (this.currentRound === 30) {
+                this.ui.roundAreaElement.classList.add('round-finalboss');
+            }
+        }
+
         if (this.currentRound === 10) this.generateLevel10Boss();
         else if (this.currentRound === 20) this.generateLevel20Boss();
         else if (this.currentRound === 30) this.generateBossEvent();
