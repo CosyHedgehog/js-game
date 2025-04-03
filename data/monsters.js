@@ -1,91 +1,204 @@
-const COMMON_MONSTERS = ['rat', 'bandit', 'wolf', 'goblin_warrior', 'skeleton', 'armored_zombie'];
-const MINI_BOSSES = ['orc_warrior', 'troll', 'dark_knight'];
+const ROUND_1_10_COMMON_MONSTERS = ['giant_rat', 'large_spider', 'cave_bat'];
+const ROUND_11_20_COMMON_MONSTERS = ['giant_rat', 'large_spider', 'cave_bat'];
+const ROUND_21_30_COMMON_MONSTERS = ['giant_rat', 'large_spider', 'cave_bat'];
+const ROUND_10_MINI_BOSSES = ['venfing'];
+const ROUND_20_MINI_BOSSES = ['griznokt'];
 const FINAL_BOSS = 'dragon'
 
 const MONSTERS = {
-    'rat': {
-        name: 'Giant Rat', health: 10, attack: 2, defense: 1, speed: 1.5, goldDrop: [2, 4],
+
+    // === Rounds 1-10 Common ===
+    'giant_rat': { 
+        name: 'Giant Rat', health: 10, attack: 2, defense: 0, speed: 1.5, goldDrop: [1, 3],
         lootTable: [
-            { itemId: 'bread', chance: 0.5 },
-            { itemId: 'wooden_sword', chance: 0.1 },
-            { itemId: 'leather_helm', chance: 0.1 },
+            { itemId: 'bread', chance: 0.15 },
+            { itemId: 'small_fish', chance: 0.15 },
+            { itemId: 'medium_fish', chance: 0.10 },
+
+            { itemId: 'ring_of_the_dragon', chance: 0.01 }
         ]
     },
-    'bandit': {
-        name: 'Bandit', health: 15, attack: 3, defense: 2, speed: 1.8, goldDrop: [3, 6],
+    'large_spider': { // speed monster
+        name: 'Large Spider', health: 18, attack: 3, defense: 0, speed: 1.0, goldDrop: [2, 4],
         lootTable: [
-            { itemId: 'rusty_sword', chance: 0.15 },
-            { itemId: 'wooden_shield', chance: 0.15 },
-            { itemId: 'bread', chance: 0.3 },
+            { itemId: 'ring_of_speed', chance: 0.01 }
         ]
     },
-    'wolf': {
-        name: 'Dire Wolf', health: 10, attack: 4, defense: 1, speed: 0.8, goldDrop: [2, 5],
+    'cave_bat': { // defense monster
+        name: 'Cave bat', health: 15, attack: 3, defense: 2, speed: 2.5, goldDrop: [2, 8],
         lootTable: [
-            { itemId: 'cooked_meat', chance: 0.4 },
-            { itemId: 'leather_legs', chance: 0.15 },
+            { itemId: 'bread', chance: 0.15 },
+            { itemId: 'small_fish', chance: 0.15 },
+
+            { itemId: 'wooden_dagger', chance: 0.05 },
+            { itemId: 'wooden_sword', chance: 0.05 },
+            { itemId: 'wooden_hammer', chance: 0.05 },
+            { itemId: 'wooden_shield', chance: 0.05 },
+
+            { itemId: 'leather_armor', chance: 0.05 },
+            { itemId: 'leather_legs', chance: 0.05 },
+            { itemId: 'leather_helm', chance: 0.05 },
+
+            { itemId: 'ring_of_the_guardian', chance: 0.01 }
         ]
-    },
-    'goblin_warrior': {
-        name: 'Goblin Warrior', health: 20, attack: 5, defense: 2, speed: 1.8, goldDrop: [4, 8],
-        lootTable: [
-            { itemId: 'iron_sword', chance: 0.12 },
-            { itemId: 'iron_shield', chance: 0.12 },
-            { itemId: 'health_potion', chance: 0.2 },
-        ]
-    },
-    'skeleton': {
-        name: 'Skeleton Warrior', health: 20, attack: 6, defense: 1, speed: 2.0, goldDrop: [4, 7],
-        lootTable: [
-            { itemId: 'iron_helm', chance: 0.12 },
-            { itemId: 'iron_legs', chance: 0.12 },
-            { itemId: 'health_potion', chance: 0.15 },
-        ]
-    },
-    'armored_zombie': {
-        name: 'Armored Zombie', health: 25, attack: 2, defense: 5, speed: 2.5, goldDrop: [4, 8],
-        lootTable: [
-            { itemId: 'iron_armor', chance: 0.12 },
-            { itemId: 'iron_shield', chance: 0.12 },
-            { itemId: 'health_potion', chance: 0.2 },
-        ]
-    },
-    'orc_warrior': {
-        name: 'Orc Warrior', health: 30, attack: 6, defense: 2, speed: 2.5, goldDrop: [6, 10],
-        lootTable: [
-            { itemId: 'steel_sword', chance: 0.1 },
-            { itemId: 'steel_shield', chance: 0.1 },
-            { itemId: 'greater_health_potion', chance: 0.25 },
-        ]
-    },
-    'troll': {
-        name: 'Cave Troll', health: 50, attack: 7, defense: 5, speed: 2.8, goldDrop: [8, 12],
-        lootTable: [
-            { itemId: 'steel_greatsword', chance: 0.08 },
-            { itemId: 'steel_armor', chance: 0.08 },
-            { itemId: 'greater_health_potion', chance: 0.3 },
-        ]
-    },
-    'dark_knight': {
-        name: 'Dark Knight', health: 40, attack: 8, defense: 4, speed: 2.0, goldDrop: [8, 14],
-        lootTable: [
-            { itemId: 'steel_helm', chance: 0.1 },
-            { itemId: 'steel_legs', chance: 0.1 },
-            { itemId: 'greater_health_potion', chance: 0.25 },
-            { itemId: 'dragon_ring', chance: 0.05 }
-        ]
-    },
-    'dragon': {
-        name: 'Ancient Dragon', health: 120, attack: 12, defense: 6, speed: 2.5, goldDrop: [40, 60],
-        lootTable: []
     },
 
-    // fishing monsters
-    'river_troll': {
-        name: 'River Troll', health: 15, attack: 6, defense: 1, speed: 3, goldDrop: [4, 8],
+    // === Round 10 Mini-Boss ===
+    'venfing': {
+        name: 'Venfing [Spider]', health: 25, attack: 5, defense: 1, speed: 0.6, goldDrop: [1, 15],
         lootTable: [
-            { itemId: 'small_fish', chance: 0.4 },
+        ]
+    },
+
+    // === Rounds 11-20 Common ===
+
+
+    // === Round 20 Mini-Boss ===
+    'griznokt': {
+        name: 'Griznokt [Ogre]', health: 50, attack: 4, defense: 8, speed: 2.5, goldDrop: [15, 30],
+        lootTable: [
+        ]
+    },
+
+    // === Rounds 21-30 Common ===
+
+
+    // === Round 30 Final Boss ===
+    'dragon': {
+        name: 'Ancient Dragon', health: 100, attack: 10, defense: 10, speed: 4, goldDrop: [50, 75],
+        lootTable: [
+            { itemId: 'dragon_ring', chance: 1.0 },
+        ]
+    },
+
+    // === Misc Monsters
+    'river_troll': {
+        name: 'River Troll', health: 15, attack: 5, defense: 2, speed: 3.0, goldDrop: [4, 8],
+        lootTable: [
+            { itemId: 'medium_fish', chance: 0.4 },
             { itemId: 'leather_legs', chance: 0.15 },
+            { itemId: 'iron_helm', chance: 0.05 },
         ]
     }
 };
+
+
+
+
+
+
+// 'hobgoblin': {
+//     name: 'Hobgoblin Captain', health: 45, attack: 7, defense: 5, speed: 2.4, goldDrop: [8, 12],
+//     lootTable: [
+//         { itemId: 'steel_sword', chance: 0.12 },
+//         { itemId: 'steel_shield', chance: 0.1 },
+//         { itemId: 'greater_attack_potion', chance: 0.05 },
+//     ]
+// },
+// 'wraith': {
+//     name: 'Wraith', health: 35, attack: 8, defense: 3, speed: 1.8, goldDrop: [10, 15], // High attack, lower HP/Def
+//     lootTable: [
+//         { itemId: 'steel_dagger', chance: 0.1 },
+//         { itemId: 'speed_potion', chance: 0.15 },
+//     ]
+// },
+// 'ogre': {
+//     name: 'Ogre Brute', health: 60, attack: 8, defense: 4, speed: 3.0, goldDrop: [9, 14],
+//     lootTable: [
+//         { itemId: 'iron_greatsword', chance: 0.1 }, // Slightly lower tier weapon
+//         { itemId: 'steel_legs', chance: 0.15 },
+//         { itemId: 'cooked_meat', chance: 0.3 },
+//     ]
+// },
+// 'golem_guard': {
+//     name: 'Golem Guard', health: 55, attack: 6, defense: 7, speed: 4.0, goldDrop: [12, 18], // High defense, slow
+//     lootTable: [
+//         { itemId: 'steel_armor', chance: 0.1 },
+//         { itemId: 'greater_defense_potion', chance: 0.1 },
+//     ]
+// },
+// 'cultist': {
+//     name: 'Dark Cultist', health: 40, attack: 7, defense: 4, speed: 2.2, goldDrop: [10, 16],
+//     lootTable: [
+//         { itemId: 'steel_dagger', chance: 0.08 },
+//         { itemId: 'defense_potion', chance: 0.1 },
+//         { itemId: 'greater_health_potion', chance: 0.05 },
+//     ]
+// },
+
+
+// 'skeleton': {
+//     name: 'Skeleton Warrior', health: 25, attack: 4, defense: 2, speed: 2.0, goldDrop: [4, 7],
+//     lootTable: [
+//         { itemId: 'iron_sword', chance: 0.1 },
+//         { itemId: 'iron_shield', chance: 0.08 },
+//     ]
+// },
+// 'zombie': {
+//     name: 'Zombie', health: 35, attack: 3, defense: 1, speed: 3.5, goldDrop: [3, 6],
+//     lootTable: [
+//         { itemId: 'leather_armor', chance: 0.1 }, // Degraded armor
+//         { itemId: 'cooked_meat', chance: 0.15 }, // Questionable meat
+//     ]
+// },
+// 'orc_grunt': {
+//     name: 'Orc Grunt', health: 30, attack: 5, defense: 3, speed: 2.8, goldDrop: [5, 8],
+//     lootTable: [
+//         { itemId: 'iron_hammer', chance: 0.07 },
+//         { itemId: 'iron_legs', chance: 0.1 },
+//         { itemId: 'defense_potion', chance: 0.05 },
+//     ]
+// },
+// 'wolf': {
+//     name: 'Dire Wolf', health: 28, attack: 6, defense: 1, speed: 1.6, goldDrop: [4, 7],
+//     lootTable: [
+//         { itemId: 'cooked_meat', chance: 0.2 },
+//         { itemId: 'leather_legs', chance: 0.05 }, // Pelt
+//     ]
+// },
+// 'imp': {
+//     name: 'Fire Imp', health: 22, attack: 5, defense: 2, speed: 1.9, goldDrop: [6, 9],
+//     lootTable: [
+//         { itemId: 'iron_dagger', chance: 0.08 },
+//         { itemId: 'attack_potion', chance: 0.1 },
+//     ]
+// },
+
+// 'hobgoblin': {
+//     name: 'Hobgoblin Captain', health: 45, attack: 7, defense: 5, speed: 2.4, goldDrop: [8, 12],
+//     lootTable: [
+//         { itemId: 'steel_sword', chance: 0.12 },
+//         { itemId: 'steel_shield', chance: 0.1 },
+//         { itemId: 'greater_attack_potion', chance: 0.05 },
+//     ]
+// },
+// 'wraith': {
+//     name: 'Wraith', health: 35, attack: 8, defense: 3, speed: 1.8, goldDrop: [10, 15], // High attack, lower HP/Def
+//     lootTable: [
+//         { itemId: 'steel_dagger', chance: 0.1 },
+//         { itemId: 'speed_potion', chance: 0.15 },
+//     ]
+// },
+// 'ogre': {
+//     name: 'Ogre Brute', health: 60, attack: 8, defense: 4, speed: 3.0, goldDrop: [9, 14],
+//     lootTable: [
+//         { itemId: 'iron_greatsword', chance: 0.1 }, // Slightly lower tier weapon
+//         { itemId: 'steel_legs', chance: 0.15 },
+//         { itemId: 'cooked_meat', chance: 0.3 },
+//     ]
+// },
+// 'golem_guard': {
+//     name: 'Golem Guard', health: 55, attack: 6, defense: 7, speed: 4.0, goldDrop: [12, 18], // High defense, slow
+//     lootTable: [
+//         { itemId: 'steel_armor', chance: 0.1 },
+//         { itemId: 'greater_defense_potion', chance: 0.1 },
+//     ]
+// },
+// 'cultist': {
+//     name: 'Dark Cultist', health: 40, attack: 7, defense: 4, speed: 2.2, goldDrop: [10, 16],
+//     lootTable: [
+//         { itemId: 'steel_dagger', chance: 0.08 },
+//         { itemId: 'defense_potion', chance: 0.1 },
+//         { itemId: 'greater_health_potion', chance: 0.05 },
+//     ]
+// },

@@ -119,25 +119,6 @@ const ITEMS = {
         stats: { defense: 1 }, value: 4,
         description: 'Basic leg protection.\nDefense: +1'
     },
-    'dragon_ring': {
-        id: 'dragon_ring', 
-        name: 'Dragon Ring', 
-        type: 'armor', 
-        slot: 'ring',
-        stats: { attack: 2, defense: 2 }, 
-        value: 50,
-        description: 'A powerful ring imbued with dragon magic.\nAttack: +2\nDefense: +2'
-    },
-    'ring_of_the_berserker': {
-        id: 'ring_of_the_berserker', name: 'Ring of the Berserker', type: 'armor', slot: 'ring',
-        stats: { attack: 3, defense: -1 }, value: 45,
-        description: 'Favors offense over defense.\nAttack: +3\nDefense: -1'
-    },
-    'ring_of_the_guardian': {
-        id: 'ring_of_the_guardian', name: 'Ring of the Guardian', type: 'armor', slot: 'ring',
-        stats: { defense: 3, maxHealth: 5 }, value: 45,
-        description: 'A sturdy defensive ring.\nDefense: +3\nMax HP: +5'
-    },
     'bread': {
         id: 'bread', name: 'Bread', type: 'consumable', useAction: 'Eat',
         healAmount: 3, value: 2,
@@ -224,21 +205,36 @@ const ITEMS = {
         value: 3,
         description: 'A set of tools for delicate work.\nIncreases trap disarm chance by 20%.'
     },
-    'ring_of_speed': {
+
+    // === Rings ===
+    'ring_of_the_dragon': { // attack ring
+        id: 'ring_of_the_dragon', name: 'Dragon Ring', type: 'armor', slot: 'ring',
+        stats: { attack: 2, defense: 2 }, value: 50,
+        description: 'A powerful ring imbued with dragon magic.\nAttack: +2\nDefense: +2'
+    },
+    'ring_of_the_berserker': { // attack ring
+        id: 'ring_of_the_berserker', name: 'Ring of the Berserker', type: 'armor', slot: 'ring',
+        stats: { attack: 3, defense: -1 }, value: 45,
+        description: 'Favors offense over defense.\nAttack: +3\nDefense: -1'
+    },
+    'ring_of_the_guardian': { // defense ring
+        id: 'ring_of_the_guardian', name: 'Ring of the Guardian', type: 'armor', slot: 'ring',
+        stats: { defense: 3, maxHealth: 5 }, value: 45,
+        description: 'A sturdy defensive ring.\nDefense: +3\nMax HP: +5'
+    },
+    'ring_of_speed': { // speed ring
         id: 'ring_of_speed', name: 'Ring of Speed', type: 'armor', slot: 'ring',
-        stats: { speedReduction: 0.3 },
-        value: 55,
+        stats: { speedReduction: 0.3 }, value: 55,
         description: 'Increases attack speed slightly.\nSpeed: -0.3s'
     },
-    'ring_of_resilience': {
+    'ring_of_resilience': { // health ring
         id: 'ring_of_resilience', name: 'Ring of Resilience', type: 'armor', slot: 'ring',
         stats: { maxHealth: 10 }, value: 50,
         description: 'Significantly boosts maximum health.\nMax HP: +10'
     },
-    'ring_of_swift_strikes': {
-        id: 'ring_of_swift_strikes', name: 'Ring of Swift Strikes', type: 'armor', slot: 'ring',
-        stats: { attack: 1, speedReduction: 0.2, maxHealth: -5 },
-        value: 50,
-        description: 'Trade vitality for faster, slightly stronger attacks.\nAttack: +1\nSpeed: -0.2s\nMax HP: -5'
-    },
+    // 'ring_of_swift_strikes': { // attack ring
+    //     id: 'ring_of_swift_strikes', name: 'Ring of Swift Strikes', type: 'armor', slot: 'ring',
+    //     stats: { attack: 1, speedReduction: 0.2, maxHealth: -5 }, value: 50,
+    //     description: 'Trade vitality for faster, slightly stronger attacks.\nAttack: +1\nSpeed: -0.2s\nMax HP: -5'
+    // },
 };

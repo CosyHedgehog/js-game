@@ -145,7 +145,6 @@ class Game {
     generateEventChoices() {
         this.currentChoices = [];
         
-        // Determine number of choices (2-4)
         const roll = Math.random() * 100;
         let numChoices;
         if (roll < 5){
@@ -154,21 +153,18 @@ class Game {
             numChoices = 2;
         } else if (roll < 95) {
             numChoices = 3;
-        } else { // 15% chance for 4 choices
+        } else { 
             numChoices = 4;
         }
 
-        // Generate unique encounters
         const usedEncounters = new Set();
-        while (usedEncounters.size < numChoices) {
+        while (this.currentChoices.length < numChoices && usedEncounters.size < this.EVENT_PROBABILITY.length) { // Added check against total event types
             const encounter = this.getRandomEvent();
-            if (encounter.type === 'monster') {
-                encounter.monsterId = COMMON_MONSTERS[this.getRandomInt(0, COMMON_MONSTERS.length - 1)];
-            } else if (encounter.type === 'mini-boss') {
-                encounter.monsterId = MINI_BOSSES[this.getRandomInt(0, MINI_BOSSES.length - 1)];
-            }
-            // Create a unique key for the encounter to prevent duplicates
-            const encounterKey = encounter.type + (encounter.monsterId || '');
+            // Monster ID is now assigned within getRandomEvent
+            
+            // Create a unique key for the encounter type to prevent duplicates of non-monster events
+            // For monsters, the specific monsterId makes it unique
+            const encounterKey = encounter.type === 'monster' ? encounter.monsterId : encounter.type;
             
             if (!usedEncounters.has(encounterKey)) {
                 usedEncounters.add(encounterKey);
@@ -176,7 +172,21 @@ class Game {
                     text: this.getEncounterText(encounter), 
                     encounter: encounter 
                 });
-            }
+            } else if (usedEncounters.size >= this.EVENT_PROBABILITY.length) {
+                 // Safety break if we run out of unique event types 
+                 console.warn("Ran out of unique event types to generate choices.");
+                 break;
+            } 
+        }
+        
+        // Ensure at least one choice if loop fails (e.g., all weights 0 or error)
+        if (this.currentChoices.length === 0) {
+            console.warn("Failed to generate any event choices, defaulting to Rest.");
+            const defaultEncounter = { type: 'rest' };
+             this.currentChoices.push({ 
+                text: this.getEncounterText(defaultEncounter),
+                encounter: defaultEncounter
+            });
         }
 
         this.ui.renderChoices(this.currentChoices);
@@ -190,11 +200,40 @@ class Game {
         for (const encounter of this.EVENT_PROBABILITY) {
             if (randomRoll < encounter.weight) {
                 chosenEncounter = { type: encounter.type };
+                
+                // If it's a monster event, pick an appropriate monster based on round
+                if (chosenEncounter.type === 'monster') {
+                    let monsterPool = [];
+                    if (this.currentRound >= 1 && this.currentRound <= 9) {
+                        monsterPool = ROUND_1_10_COMMON_MONSTERS;
+                    } else if (this.currentRound >= 11 && this.currentRound <= 19) {
+                        monsterPool = ROUND_11_20_COMMON_MONSTERS;
+                    } else if (this.currentRound >= 21 && this.currentRound <= 29) {
+                        monsterPool = ROUND_21_30_COMMON_MONSTERS;
+                    } else {
+                        // Fallback for edge cases or testing (e.g., round 0?)
+                        monsterPool = ROUND_1_10_COMMON_MONSTERS;
+                        console.warn(`Unexpected round (${this.currentRound}) for common monster selection. Defaulting to Round 1-10 pool.`);
+                    }
+                    
+                    if (monsterPool.length > 0) {
+                        chosenEncounter.monsterId = monsterPool[this.getRandomInt(0, monsterPool.length - 1)];
+                    } else {
+                        console.error(`Monster pool empty for round ${this.currentRound}! Cannot select monster.`);
+                        // Handle error state? Maybe choose a default monster?
+                        chosenEncounter = { type: 'rest' }; // Default to rest if pool is empty
+                    }
+                }
                 break;
             }
             randomRoll -= encounter.weight;
         }
-
+        
+        // Fallback if somehow no encounter is chosen (shouldn't happen with weights)
+        if (!chosenEncounter) {
+             console.warn("No encounter chosen based on weights, defaulting to rest.");
+             chosenEncounter = { type: 'rest' };
+        }
 
         return chosenEncounter;
     }
@@ -202,13 +241,13 @@ class Game {
     getEncounterText(encounter) {
         switch (encounter.type) {
             case 'monster':
-                return `Fight ${MONSTERS[encounter.monsterId]?.name || 'Monster'}`;
+                // Make sure monsterId exists before trying to access MONSTERS
+                return `Fight ${MONSTERS[encounter.monsterId]?.name || 'Unknown Monster'}`;
             case 'rest':
                 return 'Rest Site';
             case 'shop':
                 return 'Shop';
-            case 'mini-boss':
-                return `Fight ${MONSTERS[encounter.monsterId]?.name}`;
+            // Removed mini-boss case
             case 'fishing':
                 return 'Go Fishing!';
             case 'blacksmith':
@@ -547,7 +586,8 @@ class Game {
             if (this.isAllLootCollected()) {
                 this.continueLoot();
             } else {
-                this.ui.showLootUI(this.pendingLoot);
+                // Re-render the loot UI using the Loot class handler
+                new Loot(this, this.ui).handle(this.pendingLoot);
             }
         } else if (type === 'item' && this.pendingLoot.items[index]) {
             const item = this.pendingLoot.items[index];
@@ -635,22 +675,38 @@ class Game {
     }
 
     generateLevel10Boss() {
-        this.currentChoices = [{
-            text: `Fight ${MONSTERS['orc_warrior'].name} (Mini-Boss)`,
-            encounter: { type: 'mini-boss', monsterId: 'orc_warrior' }
-        }];
-        
-        this.addLog(`A powerful enemy approaches...`);
+        const miniBossId = ROUND_10_MINI_BOSSES[0]; // Should be 'venfing'
+        const monsterData = MONSTERS[miniBossId];
+
+        if (!monsterData) {
+            console.error(`Error: Monster data not found for ID: ${miniBossId} in generateLevel10Boss. MONSTERS object:`, MONSTERS);
+            this.addLog("Error: Failed to load mini-boss data. Defaulting to Rest.");
+            this.currentChoices = [{ text: 'Rest Site', encounter: { type: 'rest' } }];
+        } else {
+            this.currentChoices = [{
+                text: `Fight ${monsterData.name} (Mini-Boss)`,
+                encounter: { type: 'mini-boss', monsterId: miniBossId }
+            }];
+            this.addLog(`A powerful enemy approaches...`);
+        }
         this.ui.renderChoices(this.currentChoices);
     }
 
     generateLevel20Boss() {
-        this.currentChoices = [{
-            text: `Fight ${MONSTERS['troll'].name} (Mini-Boss)`,
-            encounter: { type: 'mini-boss', monsterId: 'troll' }
-        }];
-        
-        this.addLog(`A powerful enemy approaches...`);
+        const miniBossId = ROUND_20_MINI_BOSSES[0]; // Should be 'griznokt'
+        const monsterData = MONSTERS[miniBossId];
+
+        if (!monsterData) {
+            console.error(`Error: Monster data not found for ID: ${miniBossId} in generateLevel20Boss. MONSTERS object:`, MONSTERS);
+            this.addLog("Error: Failed to load mini-boss data. Defaulting to Rest.");
+            this.currentChoices = [{ text: 'Rest Site', encounter: { type: 'rest' } }];
+        } else {
+            this.currentChoices = [{
+                text: `Fight ${monsterData.name} (Mini-Boss)`,
+                encounter: { type: 'mini-boss', monsterId: miniBossId }
+            }];
+            this.addLog(`A powerful enemy approaches...`);
+        }
         this.ui.renderChoices(this.currentChoices);
     }
 

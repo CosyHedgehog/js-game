@@ -196,7 +196,6 @@ class Combat {
                 this.ui.updatePlayerStats();
             }
             this.ui.renderInventory();
-            this.ui.hideContextMenu();
         } else {
             this.game.addLog(useResult.message);
         }
