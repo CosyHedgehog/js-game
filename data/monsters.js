@@ -78,6 +78,10 @@ const MONSTERS = {
     // === Round 30 Final Boss ===
     'dragon': {
         name: 'Ancient Dragon', health: 100, attack: 10, defense: 10, speed: 4, goldDrop: [50, 75],
+        hasBreathAttack: true,
+        breathAttackInterval: 12, // seconds
+        breathAttackDamage: [5, 8], // Raw damage range
+        description: "A colossal beast of legend. Periodically unleashes devastating fiery breath.",
         lootTable: [
             { itemId: 'dragon_ring', chance: 1.0 },
         ]

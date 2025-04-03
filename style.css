@@ -3582,3 +3582,43 @@ html {
 .enemy-speed-enraged-pulse { /* Class for Venfing's speed boost */
     animation: speed-enrage-pulse 0.5s ease-in-out;
 }
+
+/* Fiery Breath Hit Animation */
+@keyframes breath-hit-effect {
+  0% {
+    transform: translateX(0);
+    box-shadow: 0 0 0 rgba(255, 100, 0, 0); /* No initial glow */
+    background-color: rgba(40, 40, 40, 0.8); /* Normal background */
+  }
+  25% {
+    transform: translateX(-5px) rotate(-1deg);
+    box-shadow: 0 0 25px 10px rgba(255, 140, 0, 0.7); /* Intense orange glow */
+    background-color: rgba(200, 50, 0, 0.5); /* Fiery background flash */
+  }
+  50% {
+    transform: translateX(5px) rotate(1deg);
+    box-shadow: 0 0 15px 5px rgba(255, 165, 0, 0.5); /* Fading orange glow */
+    background-color: rgba(150, 40, 0, 0.3);
+  }
+  75% {
+    transform: translateX(-3px) rotate(-0.5deg);
+    box-shadow: 0 0 10px 3px rgba(255, 165, 0, 0.3);
+    background-color: rgba(100, 30, 0, 0.2);
+  }
+  100% {
+    transform: translateX(0) rotate(0);
+    box-shadow: 0 0 0 rgba(255, 100, 0, 0); /* Fade out glow */
+    background-color: rgba(40, 40, 40, 0.8); /* Return to normal */
+  }
+}
+
+.player-breath-hit {
+  animation: breath-hit-effect 1.0s ease-in-out; /* Match JS timeout */
+}
+
+/* Existing Enrage Shake Animation */
+@keyframes enrage-shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}

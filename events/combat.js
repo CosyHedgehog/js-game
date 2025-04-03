@@ -7,7 +7,8 @@ class Combat {
             maxHealth: enemy.health,
             attackTimer: 0,
             currentSpeed: enemy.speed,
-            currentAttack: enemy.attack
+            currentAttack: enemy.attack,
+            breathAttackTimer: enemy.hasBreathAttack ? enemy.breathAttackInterval : null
         };
         this.game = game;
         this.ui = ui;
@@ -106,6 +107,9 @@ class Combat {
             }
         }
         this.enemy.attackTimer = Math.max(0, this.enemy.attackTimer - this.timeScale);
+        if (this.enemy.breathAttackTimer !== null) {
+            this.enemy.breathAttackTimer = Math.max(0, this.enemy.breathAttackTimer - this.timeScale);
+        }
 
         // --- Check for enemy dynamic changes BEFORE updating UI ---
         // Dynamic Speed Check
@@ -178,6 +182,12 @@ class Combat {
             if (this.checkCombatEnd()) return;
         }
 
+        if (this.enemy.breathAttackTimer !== null && this.enemy.breathAttackTimer <= 0) {
+            this.enemyBreathAttack();
+            if (this.checkCombatEnd()) return;
+            this.enemy.breathAttackTimer = this.enemy.breathAttackInterval;
+        }
+
         if (this.enemy.attackTimer <= 0) {
             this.enemyAttack();
             enemyActed = true;
@@ -242,6 +252,33 @@ class Combat {
             damageDealt === 0 && actualBlocked > 0
         );
         this.ui.updatePlayerStats();
+    }
+
+    enemyBreathAttack() {
+        const damage = this.game.getRandomInt(this.enemy.breathAttackDamage[0], this.enemy.breathAttackDamage[1]);
+        this.player.takeRawDamage(damage);
+        
+        const logMessage = `<span style="color: #ff8c00;">The ${this.enemy.name} breathes fire, engulfing you for ${damage} damage!</span>`;
+        this.game.addLog(logMessage);
+        
+        this.ui.updateCombatantHealth(
+            'player', 
+            this.player.health, 
+            this.player.getMaxHealth(), 
+            damage, 
+            0,
+            false, 
+            false 
+        );
+        this.ui.updatePlayerStats();
+        
+        const playerSide = document.querySelector('.player-side');
+        if (playerSide) {
+            playerSide.classList.add('player-breath-hit');
+            setTimeout(() => {
+                playerSide.classList.remove('player-breath-hit');
+            }, 1000);
+        }
     }
 
     handlePlayerItemUse(useResult) {
