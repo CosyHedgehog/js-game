@@ -6,6 +6,7 @@ class Combat {
             health: enemy.health,
             maxHealth: enemy.health,
             attackTimer: 0,
+            currentSpeed: enemy.speed
         };
         this.game = game;
         this.ui = ui;
@@ -111,6 +112,17 @@ class Combat {
             this.player.pendingActionDelay
         );
 
+        // --- Dynamic Speed Check (Before Enemy Attack) ---
+        if (this.enemy.name === MONSTERS['venfing']?.name) { // Check if it's Venfing
+            const healthPercent = this.enemy.health / this.enemy.maxHealth;
+            if (healthPercent < 0.5) {
+                this.enemy.currentSpeed = 0.6; // Enraged speed
+            } else {
+                this.enemy.currentSpeed = 1.2; // Normal speed
+            }
+        }
+        // -------------------------------------------------
+
         if (!this.player.attackTimerPaused && this.player.attackTimer <= 0) {
             this.playerAttack();
             playerActed = true;
@@ -121,7 +133,7 @@ class Combat {
         if (this.enemy.attackTimer <= 0) {
             this.enemyAttack();
             enemyActed = true;
-            this.enemy.attackTimer = this.enemy.speed;
+            this.enemy.attackTimer = this.enemy.currentSpeed; // Use currentSpeed
             if (this.checkCombatEnd()) return;
         }
     }

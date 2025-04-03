@@ -300,10 +300,15 @@ class Game {
             case 'boss': {
                 const monster = MONSTERS[encounter.monsterId];
                 if (!monster) return "Error: Monster data not found.";
-                return `${monster.name}\n` +
+                // Construct the details string, including the description if available
+                let details = `${monster.name}\n` +
                        `Health: ${monster.health} // Attack: ${monster.attack} // Defense: ${monster.defense} // Attack Speed: ${monster.speed}s // ` +
-                       `Gold Drop: ${monster.goldDrop[0]}-${monster.goldDrop[1]}\n\n` +
-                       `This will start a combat encounter. Are you ready to fight?`;
+                       `Gold Drop: ${monster.goldDrop[0]}-${monster.goldDrop[1]}\n\n`;
+                if (monster.description) {
+                    details += `${monster.description}\n\n`; // Add the description
+                }
+                details += `This will start a combat encounter. Are you ready to fight?`;
+                return details;
             }
             case 'rest':
                 return `Rest at this site to recover 20-70% of your maximum health (${Math.floor(this.player.maxHealth * 0.2)}-${Math.floor(this.player.maxHealth * 0.7)} HP).\n` +

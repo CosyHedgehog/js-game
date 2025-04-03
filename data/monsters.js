@@ -45,8 +45,13 @@ const MONSTERS = {
 
     // === Round 10 Mini-Boss ===
     'venfing': {
-        name: 'Venfing [Spider]', health: 25, attack: 5, defense: 1, speed: 0.6, goldDrop: [1, 15],
+        name: 'Venfing [Spider]', health: 25, attack: 5, defense: 1, speed: 1.2,
+        goldDrop: [1, 15],
+        description: "A swift and venomous spider.\nAttacks much faster when below 50% health!",
         lootTable: [
+            { itemId: 'speed_potion', chance: 0.4 },
+            { itemId: 'iron_dagger', chance: 0.2 },
+            { itemId: 'ring_of_speed', chance: 0.05 }
         ]
     },
 
