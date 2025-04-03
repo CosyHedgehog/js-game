@@ -3564,3 +3564,21 @@ html {
     margin-top: 5px;
     color: #ddd;
 }
+
+/* NEW Speed Enrage Pulse Animation */
+@keyframes speed-enrage-pulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 5px rgba(0, 200, 255, 0.5); /* Cyan glow */
+        border-color: rgba(0, 200, 255, 0.5);
+    }
+    50% {
+        transform: scale(1.03);
+        box-shadow: 0 0 15px rgba(0, 200, 255, 0.8); /* Brighter cyan glow */
+        border-color: rgba(0, 220, 255, 1);
+    }
+}
+
+.enemy-speed-enraged-pulse { /* Class for Venfing's speed boost */
+    animation: speed-enrage-pulse 0.5s ease-in-out;
+}

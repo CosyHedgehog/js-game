@@ -111,10 +111,28 @@ class Combat {
         // Dynamic Speed Check
         if (this.enemy.name === MONSTERS['venfing']?.name) {
             const healthPercent = this.enemy.health / this.enemy.maxHealth;
+            const wasFast = this.enemy.currentSpeed === 0.6; // Check previous state
+            let isNowFast = false;
+            
             if (healthPercent < 0.5) {
                 this.enemy.currentSpeed = 0.6;
+                isNowFast = true;
             } else {
                 this.enemy.currentSpeed = 1.2;
+                isNowFast = false;
+            }
+
+            // Trigger speed animation ONLY when first becoming fast
+            if (isNowFast && !wasFast) {
+                const enemySide = document.querySelector('.enemy-side');
+                if (enemySide) {
+                    enemySide.classList.add('enemy-speed-enraged-pulse');
+                    // Remove the class after the animation duration (0.6s)
+                    setTimeout(() => {
+                        enemySide.classList.remove('enemy-speed-enraged-pulse');
+                    }, 600); // Match animation duration
+                }
+                this.game.addLog("Ven'fing becomes faster!");
             }
         }
         // Enrage Attack Check (Before Enemy Attack)
