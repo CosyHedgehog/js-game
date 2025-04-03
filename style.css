@@ -1175,8 +1175,17 @@ button:disabled {
 }
 
 #combat-run-button:active {
-    background-color: #700000;
-    transform: translateY(1px);
+    background-color: #b33e3e; /* Slightly darker red when active */
+    border-color: #993333;
+}
+
+/* Ensure disabled run button is clearly greyed out */
+#combat-run-button:disabled {
+    background-color: #5a5a5a; /* Darker grey */
+    border-color: #444;
+    color: #999; /* Lighter grey text */
+    cursor: default; /* Change cursor back to default */
+    opacity: 0.6; /* Make it slightly transparent */
 }
 
 /* Update encounter confirmation styling */

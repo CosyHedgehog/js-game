@@ -44,6 +44,49 @@ class Combat {
         this.player.attackTimer = this.player.getAttackSpeed();
         this.enemy.attackTimer = this.enemy.speed;
 
+        // --- Disable Run Button for Bosses --- 
+        const runButton = document.getElementById('combat-run-button');
+        if (runButton) {
+            const isBossRound = [10, 20, 30].includes(this.game.currentRound);
+            let tooltipText = "";
+            
+            if (isBossRound) {
+                runButton.disabled = true;
+                // Set specific tooltip based on boss round
+                if (this.game.currentRound === 30) {
+                    tooltipText = "No escape!";
+                } else { // Rounds 10 or 20
+                    tooltipText = "To the death!";
+                }
+                runButton.textContent = "Run (Disabled)";
+                runButton.onclick = null; // Explicitly remove click handler
+            } else {
+                runButton.disabled = false;
+                const minDamage = Math.floor(this.enemy.attack * 1);
+                const maxDamage = Math.floor(this.enemy.attack * 3);
+                tooltipText = `Attempt to flee, taking ${minDamage}-${maxDamage} damage.`;
+                runButton.textContent = `Run (${minDamage}-${maxDamage} damage)`;
+                runButton.onclick = () => this.handleRun(); // Restore click handler
+            }
+
+            // Add/Update Tooltip Listeners
+            runButton.removeEventListener('mouseenter', runButton._tooltipEnterHandler);
+            runButton.removeEventListener('mouseleave', runButton._tooltipLeaveHandler);
+
+            const enterHandler = (e) => {
+                this.ui.showTooltip(tooltipText.replace(/\n/g, '<br>'), this.ui.statTooltip, e);
+            };
+            const leaveHandler = () => {
+                this.ui.hideTooltip(this.ui.statTooltip);
+            };
+
+            runButton.addEventListener('mouseenter', enterHandler);
+            runButton.addEventListener('mouseleave', leaveHandler);
+            runButton._tooltipEnterHandler = enterHandler; // Store for removal
+            runButton._tooltipLeaveHandler = leaveHandler; // Store for removal
+        }
+        // --------------------------------------
+
         this.intervalId = setInterval(() => this.tick(), this.tickRate);
     }
 
@@ -277,14 +320,6 @@ class Combat {
         } else {
             this.game.addLog(`You were defeated by the ${this.enemy.name}...`);
             this.game.endGame(false);
-        }
-    }
-
-    checkBossWinAndProceed() {
-        if (this.enemy.name === MONSTERS[FINAL_BOSS]?.name) {
-            this.game.endGame(true);
-        } else {
-            this.game.proceedToNextRound();
         }
     }
 
