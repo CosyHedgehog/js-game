@@ -27,22 +27,21 @@ class Blacksmith {
         blacksmithArea.innerHTML = `
             <h3>Blacksmith's Forge</h3>
             ${hammerWarning}
-            <p>Drag two items of the same type (weapon or armor) into the slots below to combine their power.</p> <!-- Updated Text -->
+            <p>Place two compatible items below to forge them into a stronger version.</p>
             <div class="forge-container">
-                <div class="forge-slot" id="forge-slot-1">
-                    <div class="forge-slot-label">Item 1</div>
-                    <div class="forge-slot-content">Drag item here</div> <!-- Updated Text -->
-            </div>
-                <div class="forge-symbol">+</div>
-                <div class="forge-slot" id="forge-slot-2">
-                    <div class="forge-slot-label">Item 2</div>
-                    <div class="forge-slot-content">Drag item here</div> <!-- Updated Text -->
+                <div class="forge-slots-area">
+                    <div class="forge-slot" id="forge-slot-1">
+                        <div class="forge-slot-label">Item 1</div>
+                        <div class="forge-slot-content">Drag item here</div>
+                    </div>
+                    <div class="forge-symbol">+</div>
+                    <div class="forge-slot" id="forge-slot-2">
+                        <div class="forge-slot-label">Item 2</div>
+                        <div class="forge-slot-content">Drag item here</div>
+                    </div>
                 </div>
-                <div class="forge-symbol">=</div>
-                <div class="forge-result">
-                    <button id="forge-button" disabled>Forge Items</button>
-                    <div id="forge-preview" class="hidden"></div>
-                </div>
+                <div id="forge-preview" class="hidden"></div>
+                <button id="forge-button" disabled>Forge Items</button>
             </div>
             <button id="blacksmith-leave-button">Leave Forge</button>
         `;
@@ -195,12 +194,32 @@ class Blacksmith {
 
         if (canForge && item1 && item2) { // Use new variables
             const previewItem = this.previewForgedItem(item1, item2);
+
+            // *** Generate detailed preview HTML ***
+            let previewHTML = ``;
+            const formatStats = (item, label) => {
+                let statsStr = `<strong>${label}:</strong> ${item.name}<br>`;
+                statsStr += `&nbsp;&nbsp;Atk: ${item.stats?.attack || 0} / Def: ${item.stats?.defense || 0}`; 
+                if (item.stats?.maxHealth) statsStr += ` / MaxHP: +${item.stats.maxHealth}`;
+                if (item.speed) statsStr += ` / Spd: ${item.speed.toFixed(1)}s`;
+                return statsStr + '<br>';
+            };
+
+            previewHTML += formatStats(item1, "Item 1");
+            previewHTML += formatStats(item2, "Item 2");
+
             if (previewItem) {
-                forgePreview.textContent = `Result: ${previewItem.name}`;
+                let resultStatsStr = `<strong>Result:</strong> ${previewItem.name}<br>`;
+                resultStatsStr += `&nbsp;&nbsp;Atk: ${previewItem.stats?.attack || 0} / Def: ${previewItem.stats?.defense || 0}`;
+                if (previewItem.stats?.maxHealth) resultStatsStr += ` / MaxHP: +${previewItem.stats.maxHealth}`;
+                if (previewItem.speed) resultStatsStr += ` / Spd: ${previewItem.speed.toFixed(1)}s`;
+                previewHTML += resultStatsStr;
+
+                forgePreview.innerHTML = previewHTML; // Use innerHTML for breaks
                 forgePreview.classList.remove('hidden');
             } else {
                 forgeButton.disabled = true;
-                forgePreview.textContent = "Cannot forge these items.";
+                forgePreview.textContent = "Error generating preview."; // More specific error
                 forgePreview.classList.remove('hidden');
             }
         } else {
