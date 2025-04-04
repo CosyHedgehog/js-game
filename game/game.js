@@ -18,16 +18,14 @@ class Game {
 
     EVENT_PROBABILITY = [
         { type: 'monster', weight: 30 },
-        { type: 'rest', weight: 10 },
+        { type: 'rest', weight: 10 }, // 
         { type: 'shop', weight: 5 },
         { type: 'alchemist', weight: 5 },
-        { type: 'treasure_chest', weight: 100 },
-        { type: 'fishing', weight: 10 },
-        { type: 'sharpen', weight: 10 },
-        { type: 'armorsmith', weight: 10 },
+        { type: 'treasure_chest', weight: 100 }, //
+        { type: 'forge', weight: 100 }, // NEW Forge Event
+        { type: 'fishing', weight: 10 }, //
         { type: 'trap', weight: 10 }
     ];
-    // { type: 'blacksmith', weight: 5 }, removed for now
 
     startGame() {
         this.ui.renderAll();
@@ -253,7 +251,8 @@ class Game {
                 return 'Rest Site';
             case 'shop':
                 return 'Shop';
-            // Removed mini-boss case
+            case 'forge':
+                return 'Forge';
             case 'fishing':
                 return 'Go Fishing!';
             case 'blacksmith':
@@ -363,6 +362,8 @@ class Game {
             case 'treasure_chest':
                 return "You find a sturdy-looking treasure chest.\n\n" +
                        "Open it?";
+            case 'forge':
+                return "Visit the Forge to combine items into stronger versions.";
             default:
                 return "Unknown encounter type.";
         }
@@ -405,6 +406,9 @@ class Game {
                 break;
             case 'treasure_chest':
                 new Treasure(this, this.ui).handle();
+                break;
+            case 'forge':
+                new Forge(this, this.ui).handle();
                 break;
             default:
                 this.addLog("Unknown encounter type selected.");
