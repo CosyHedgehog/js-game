@@ -107,6 +107,10 @@ class Combat {
             this.player.pendingActionDelay = Math.max(0, this.player.pendingActionDelay - this.timeScale);
             if (this.player.pendingActionDelay === 0) {
                 this.player.attackTimerPaused = false;
+                this.player.isStunned = false; // Clear the stun flag when delay ends
+                
+                // Re-render inventory to remove stun effect from food
+                this.ui.renderInventory(); 
             }
         }
         this.enemy.attackTimer = Math.max(0, this.enemy.attackTimer - this.timeScale);
@@ -141,7 +145,7 @@ class Combat {
         const healthPercent = this.enemy.health / this.enemy.maxHealth;
 
         // Dynamic Speed Check (Venfing)
-        if (this.enemy.name === MONSTERS['venfing']?.name) {
+        if (this.enemy.name === MONSTERS['swiftmaw']?.name) {
             const wasFast = this.enemy.currentSpeed === 0.6; // Check previous state
             let isNowFast = false;
             
@@ -323,6 +327,30 @@ class Combat {
             }
         }
 
+        // Check for Stunning Slam
+        if (this.enemy.hasStunningSlam && damageDealt > 0 && Math.random() < this.enemy.stunChance) {
+             // Apply stun effect to player
+             this.player.attackTimerPaused = true;
+             this.player.pendingActionDelay = this.enemy.stunDuration;
+             this.player.isStunned = true; // Set the stun flag
+             this.game.addLog(`<span style="color: #ffff99;">Ogmor slams the ground, stunning you! (Attack delayed ${this.enemy.stunDuration}s)</span>`);
+             
+             // Trigger visual effect
+             const playerSide = document.querySelector('.player-side');
+             if (playerSide) {
+                 playerSide.classList.add('player-stunned-visual');
+                 // Remove class after animation (0.4s * 2 = 0.8s)
+                 setTimeout(() => {
+                     playerSide.classList.remove('player-stunned-visual');
+                 }, 800); 
+             }
+             // Create Stun splat
+             this.ui.createDamageSplat('.player-side', 'Stunned!', 'stun');
+             
+             // Re-render inventory to show stun effect on food
+             this.ui.renderInventory(); 
+        }
+
         this.ui.updateCombatantHealth(
             'player', 
             this.player.health, 
@@ -392,9 +420,7 @@ class Combat {
 
         if (this.enemy.health <= 0) {
             // Enemy defeated
-            this.game.addLog(`You defeated the ${this.enemy.name}!`);
-            clearInterval(this.intervalId); // Stop combat immediately
-            this.intervalId = null;
+
             
             // Delay start of fade-out to see splat
             // setTimeout(() => {
@@ -402,11 +428,16 @@ class Combat {
                 if (this.ui.combatArea) {
                     this.ui.combatArea.classList.add('combat-ending');
                 }
+
+                this.game.addLog(`You defeated the ${this.enemy.name}!`);
+                clearInterval(this.intervalId); // Stop combat immediately
+                this.intervalId = null;
                 
                 // Wait for fade-out to finish before ending combat logic
                 setTimeout(() => {
+
                     this.endCombat(true); // Call endCombat after fade-out
-                }, 800); // Matches combat-fade-out duration
+                }, 700); // Matches combat-fade-out duration
 
             // }, 300); // Initial delay to see the final hit
             

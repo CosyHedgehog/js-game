@@ -3702,7 +3702,7 @@ html {
 }
 
 .loot-appearing {
-   animation: loot-fade-in 0.5s ease-out;
+   animation: loot-fade-in 0.7s ease-out;
 }
 
 /* Player Poisoned Indicator */
@@ -3745,4 +3745,169 @@ html {
 .damage-splat.zero-damage {
     color: #80bfff; /* Light blue color */
     font-style: normal; /* Ensure it's not italic like poison */
+}
+
+/* Stunned Effect Animation */
+@keyframes player-stunned-shake {
+  0%, 100% { transform: translateX(0) rotate(0); }
+  20%, 60% { transform: translateX(-4px) rotate(-1deg); }
+  40%, 80% { transform: translateX(4px) rotate(1deg); }
+}
+
+.player-stunned-visual {
+  animation: player-stunned-shake 0.4s ease-in-out 2; /* Play shake twice */
+  filter: grayscale(50%); /* Slight desaturation */
+}
+
+/* Stun Splat Style */
+.damage-splat.stun {
+    color: #ffff99; /* Pale yellow */
+    font-weight: bold;
+    font-style: italic;
+    font-size: 1.6em; /* Slightly smaller than damage */
+}
+
+/* Inventory item unusable due to stun */
+.inventory-slot.food-stunned {
+    filter: grayscale(80%) brightness(0.7); /* Greyed out and dimmed */
+    box-shadow: inset 0 0 8px rgba(255, 0, 0, 0.5); /* Subtle red inner glow */
+    cursor: default;
+}
+
+/* Boss Encounter Display Area */
+.boss-encounter-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; /* Center content vertically */
+    padding: 20px 15px; /* Reduced padding (Top/Bottom 20px, Left/Right 15px) */
+    /* border: 2px solid #7a0000; Slightly less intense red border */
+    /* background: radial-gradient(ellipse at center, #280808 0%, #150505 100%); Darker, less saturated gradient */
+    border-radius: 8px; /* Slightly smaller radius */
+    /* box-shadow: 0 0 15px rgba(100, 0, 0, 0.4), inset 0 0 10px rgba(0, 0, 0, 0.4); Reduced shadow */
+    text-align: center;
+    width: 100%; /* Keep taking full width of parent */
+    box-sizing: border-box;
+    cursor: default; /* Set default cursor for the container itself */
+}
+
+/* Set default cursor for all children, override for button later */
+.boss-encounter-display * {
+    cursor: default;
+}
+
+.boss-encounter-title {
+    color: #ff5555; /* Slightly less bright red */
+    font-size: 2.0em; /* Reduced font size */
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px; /* Reduced letter spacing */
+    text-shadow: 0 0 3px #cc0000, 0 0 6px #a00000; /* Reduced glow */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Back to standard font */
+}
+
+.boss-info {
+    background-color: rgba(0, 0, 0, 0.4); /* Slightly more transparent */
+    padding: 15px;
+    border-radius: 6px;
+    border: 2px solid #500000; /* Darker border */
+    margin-bottom: 20px; /* Slightly reduced margin */
+    max-width: 600px; /* Fixed max-width for the info box */
+    width: 90%; /* Allow it to shrink gracefully on very narrow screens */
+    box-sizing: border-box; /* Ensure padding is included in width */
+}
+
+.boss-encounter-name {
+    color: #ffcccc; /* Slightly adjusted color */
+    font-size: 1.5em; /* Reduced font size */
+    margin-top: 0;
+    margin-bottom: 10px;
+    text-shadow: 1px 1px 2px #000; /* Reduced shadow */
+}
+
+.boss-encounter-description {
+    color: #cccccc;
+    font-size: 1em;
+    line-height: 1.5;
+    margin-bottom: 0;
+    white-space: pre-line;
+}
+
+/* Boss Engage Button */
+.boss-engage-button {
+    padding: 12px 35px; /* Reduced padding */
+    font-size: 1.3em; /* Reduced font size */
+    font-weight: bold;
+    color: #ffffff;
+    background: linear-gradient(to bottom, #7a0000, #500000); /* Subtler gradient */
+    border: 2px solid #cc4444; /* Less bright border */
+    border-radius: 6px; /* Slightly smaller radius */
+    cursor: pointer; /* <<< Ensure button keeps pointer cursor */
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 100, 100, 0.2); /* Reduced shadow */
+    transition: all 0.2s ease;
+}
+
+.boss-engage-button:hover {
+    background: linear-gradient(to bottom, #8b0000, #600000); /* Slightly brighter hover */
+    border-color: #dd5555;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(255, 120, 120, 0.3); /* Slightly reduced hover shadow */
+    transform: translateY(-1px); /* Less movement */
+}
+
+.boss-engage-button:active {
+    background: linear-gradient(to bottom, #600000, #400000);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), inset 0 1px 2px rgba(0, 0, 0, 0.4); /* Reduced active shadow */
+    transform: translateY(0px); /* No movement on active */
+}
+
+/* Boss Stats Styling */
+.boss-stats {
+    display: flex; /* Arrange stats horizontally */
+    justify-content: space-around; /* Space them out evenly */
+    align-items: center;
+    margin-top: 15px; /* Space above the stats */
+    padding-top: 10px; /* Space between description and stats */
+    border-top: 2px solid #500000; /* Separator line */
+    width: 100%; /* Take full width within boss-info */
+}
+
+.boss-stat-item {
+    display: inline-flex; /* Keep label and value together */
+    align-items: baseline; /* Align text nicely */
+    color: #cccccc; /* Base color for label */
+    font-size: 0.95em;
+}
+
+.boss-stat-item .boss-stat-value {
+    color: #ffffff; /* White color for the value */
+    font-weight: bold;
+    margin-left: 6px; /* Space between label (e.g., "HP:") and value */
+    font-size: 1.1em; /* Make value slightly larger */
+}
+
+/* Specific stat value colors (Optional but nice) */
+.boss-stats span:nth-child(1) .boss-stat-value { /* HP */
+    color: #77dd77; /* Green */
+}
+.boss-stats span:nth-child(2) .boss-stat-value { /* ATK */
+    color: #ff8888; /* Red */
+}
+.boss-stats span:nth-child(3) .boss-stat-value { /* DEF */
+    color: #88aaff; /* Blue */
+}
+.boss-stats span:nth-child(4) .boss-stat-value { /* SPD */
+    color: #ffdd77; /* Yellow/Gold */
+}
+
+
+/* Animation for starting boss fight */
+@keyframes boss-engage-zoom {
+    from { transform: scale(1); opacity: 1; }
+    to { transform: scale(1.5); opacity: 0; }
+}
+
+.boss-engage-start {
+    animation: boss-engage-zoom 0.5s ease-in forwards;
 }

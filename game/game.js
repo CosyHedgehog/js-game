@@ -59,10 +59,16 @@ class Game {
             }
         }
 
-        if (this.currentRound === 10) this.generateLevel10Boss();
-        else if (this.currentRound === 20) this.generateLevel20Boss();
-        else if (this.currentRound === 30) this.generateBossEvent();
-        else this.generateEventChoices();
+        // Call appropriate generation function based on round
+        if (this.currentRound === 10) {
+            this.generateLevel10Boss(); 
+        } else if (this.currentRound === 20) {
+            this.generateLevel20Boss();
+        } else if (this.currentRound === 30) {
+            this.generateBossEvent();
+        } else {
+            this.generateEventChoices(); // Generate normal choices
+        }
 
         this.ui.updatePlayerStats();
         this.ui.renderEquipment();
@@ -268,12 +274,14 @@ class Game {
     }
 
     generateBossEvent() {
-        this.addLog("The air grows heavy... The Final Boss appears!");
-        this.currentChoices = [{
-            text: `Fight ${MONSTERS[FINAL_BOSS].name} (Final Boss)`,
-            encounter: { type: 'boss', monsterId: FINAL_BOSS }
-        }];
-        this.ui.renderChoices(this.currentChoices);
+        const bossId = FINAL_BOSS;
+        const bossData = MONSTERS[bossId];
+        if (bossData) {
+             this.ui.renderBossEncounter(bossData, "FINAL BOSS!"); // Call new UI function
+        } else {
+             console.error("Could not find boss data for Final Boss:", bossId);
+            this.generateEventChoices(); // Fallback
+        }
     }
 
     selectChoice(index) {
@@ -679,42 +687,55 @@ class Game {
         this.ui.renderChoices(this.currentChoices);
     }
 
+    // --- Boss Encounter Generation --- 
     generateLevel10Boss() {
-        const miniBossIndex = this.getRandomInt(0, ROUND_10_MINI_BOSSES.length - 1);
-        const miniBossId = ROUND_10_MINI_BOSSES[miniBossIndex];
-        const monsterData = MONSTERS[miniBossId];
-
-        if (!monsterData) {
-            console.error(`Error: Monster data not found for ID: ${miniBossId} in generateLevel10Boss. MONSTERS object:`, MONSTERS);
-            this.addLog("Error: Failed to load mini-boss data. Defaulting to Rest.");
-            this.currentChoices = [{ text: 'Rest Site', encounter: { type: 'rest' } }];
+        // ** Randomly select Boss ID **
+        const bossId = ROUND_10_MINI_BOSSES[this.getRandomInt(0, ROUND_10_MINI_BOSSES.length - 1)];
+        const bossEntry = Object.entries(MONSTERS).find(([key, boss]) => key === bossId);
+        if (bossEntry) {
+            const [key, bossData] = bossEntry;
+            // *** Add the ID to the boss data object ***
+            const bossDataWithId = { ...bossData, id: key }; 
+            console.log(`[Game] Found Level 10 Boss: ${bossDataWithId.name} with ID: ${bossDataWithId.id}`);
+            this.ui.renderBossEncounter(bossDataWithId);
         } else {
-            this.currentChoices = [{
-                text: `Fight ${monsterData.name} (Mini-Boss)`,
-                encounter: { type: 'mini-boss', monsterId: miniBossId }
-            }];
-            this.addLog(`A powerful enemy approaches...`);
+            console.error(`[Game] Could not find boss data for ID: ${bossId}`);
+            this.generateEventChoices(); // Fallback
         }
-        this.ui.renderChoices(this.currentChoices);
     }
-
+    
     generateLevel20Boss() {
-        const miniBossId = ROUND_20_MINI_BOSSES[0]; // Should be 'griznokt'
-        const monsterData = MONSTERS[miniBossId];
-
-        if (!monsterData) {
-            console.error(`Error: Monster data not found for ID: ${miniBossId} in generateLevel20Boss. MONSTERS object:`, MONSTERS);
-            this.addLog("Error: Failed to load mini-boss data. Defaulting to Rest.");
-            this.currentChoices = [{ text: 'Rest Site', encounter: { type: 'rest' } }];
+        // ** Randomly select Boss ID **
+        const bossId = ROUND_20_MINI_BOSSES[this.getRandomInt(0, ROUND_20_MINI_BOSSES.length - 1)];
+        const bossEntry = Object.entries(MONSTERS).find(([key, boss]) => key === bossId);
+        if (bossEntry) {
+            const [key, bossData] = bossEntry;
+            // *** Add the ID to the boss data object ***
+            const bossDataWithId = { ...bossData, id: key };
+            console.log(`[Game] Found Level 20 Boss: ${bossDataWithId.name} with ID: ${bossDataWithId.id}`);
+            this.ui.renderBossEncounter(bossDataWithId);
         } else {
-            this.currentChoices = [{
-                text: `Fight ${monsterData.name} (Mini-Boss)`,
-                encounter: { type: 'mini-boss', monsterId: miniBossId }
-            }];
-            this.addLog(`A powerful enemy approaches...`);
+            console.error(`[Game] Could not find boss data for ID: ${bossId}`);
+            this.generateEventChoices(); // Fallback
         }
-        this.ui.renderChoices(this.currentChoices);
     }
+
+    generateBossEvent() {
+        const bossId = 'ancient_dragon';
+        const titleText = "FINAL BOSS: Round 30";
+        const bossEntry = Object.entries(MONSTERS).find(([key, boss]) => key === bossId);
+        if (bossEntry) {
+            const [key, bossData] = bossEntry;
+            // *** Add the ID to the boss data object ***
+            const bossDataWithId = { ...bossData, id: key }; 
+            console.log(`[Game] Found Final Boss: ${bossDataWithId.name} with ID: ${bossDataWithId.id}`);
+            this.ui.renderBossEncounter(bossDataWithId, titleText);
+        } else {
+            console.error(`[Game] Could not find boss data for ID: ${bossId}`);
+            this.generateEventChoices(); // Fallback
+        }
+    }
+    // -------------------------------
 
     getRandomInt(min, max) {
         min = Math.ceil(min);

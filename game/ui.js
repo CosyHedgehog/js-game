@@ -337,14 +337,15 @@ class UI {
             slot.classList.add('inventory-slot');
             slot.dataset.index = index;
             
+            // --- Unconditional Drop Target Listeners (for ALL slots) ---
             slot.addEventListener('dragover', (event) => {
                 event.preventDefault();
-            });
-            slot.addEventListener('dragenter', (event) => {
-                event.preventDefault();
-                if (!slot.classList.contains('dragging')) {
+                if (!slot.classList.contains('dragging')) { // Prevent self-drop visual
                     slot.classList.add('drag-over');
                 }
+            });
+            slot.addEventListener('dragenter', (event) => {
+                event.preventDefault(); // Necessary for drop to work
             });
             slot.addEventListener('dragleave', () => {
                 slot.classList.remove('drag-over');
@@ -354,18 +355,39 @@ class UI {
                 slot.classList.remove('drag-over');
                 const sourceIndex = event.dataTransfer.getData('text/plain');
                 const targetIndex = slot.dataset.index;
-                if (sourceIndex === null || sourceIndex === undefined || targetIndex === null || targetIndex === undefined) return;
+                if (sourceIndex === null || sourceIndex === undefined || targetIndex === null || targetIndex === undefined || sourceIndex === targetIndex) return;
                 this.game.handleInventorySwap(sourceIndex, targetIndex);
             });
-            slot.classList.remove('slot-empty', 'slot-filled', 'dragging', 'equipped');
+            // ------------------------------------------------------------
+
+            slot.classList.remove('slot-empty', 'slot-filled', 'dragging', 'equipped', 'food-stunned'); 
 
             if (item) {
                 slot.textContent = item.name;
                 slot.classList.add('slot-filled');
-                slot.draggable = true;
+                slot.draggable = true; // Only filled slots are draggable
+
+                // --- Draggable Source Listener (for FILLED slots only) ---
+                slot.addEventListener('dragstart', (event) => {
+                    event.dataTransfer.setData('text/plain', index.toString());
+                    event.dataTransfer.effectAllowed = 'move';
+                    this.draggedItemIndex = index;
+                    this.draggedItem = item;
+                    setTimeout(() => slot.classList.add('dragging'), 0);
+                    this.hideTooltip(this.itemTooltip); // Hide tooltips during drag
+                    this.hideTooltip(this.equipTooltip);
+                });
+                slot.addEventListener('dragend', () => {
+                    slot.classList.remove('dragging');
+                    // Clean up any lingering drag-over styles on ALL slots
+                    this.inventoryGrid.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+                    this.draggedItemIndex = null;
+                    this.draggedItem = null;
+                });
+                // -------------------------------------------------------
                 
-                let clickHandler = null;
-                let actionText = '';
+                let originalClickHandler = null; 
+                let originalActionText = '';   
                 let isEquipped = false;
                 for (const slotName in this.game.player.equipment) {
                     if (this.game.player.equipment[slotName] === index) {
@@ -376,29 +398,18 @@ class UI {
 
                 if (this.game.state === 'shop') {
                     const sellPrice = item.value || 0;
-                    actionText = `[Sell: ${sellPrice} Gold]`;
-                    clickHandler = (event) => {
+                    originalActionText = `[Sell: ${sellPrice} Gold]`;
+                    originalClickHandler = (event) => {
                         event.stopPropagation();
                         this.game.handleSellItem(index);
                         this.createDamageSplat(`.inventory-slot[data-index="${index}"]`, sellPrice + "G", 'sell');
                         this.hideTooltip(this.itemTooltip);
-                    };
+                     };
                     slot.classList.add('shop-sellable');
-
-                    let tooltipHTML = '';
-                    if (actionText) {
-                        tooltipHTML += `<span class="tooltip-action">${actionText}</span><br>`;
-                    }
-                    tooltipHTML += item.description || 'No description';
-
-                    slot.addEventListener('mouseenter', (e) => { 
-                        this.showTooltip(tooltipHTML, this.itemTooltip, e)
-                    }); 
-                    slot.addEventListener('mouseleave', () => this.hideTooltip(this.itemTooltip));         
                 } else {
                     if (item.type === 'weapon' || item.type === 'armor') {
-                        actionText = isEquipped ? '[Unequip]' : '[Equip]';
-                        clickHandler = (event) => {
+                        originalActionText = isEquipped ? '[Unequip]' : '[Equip]';
+                        originalClickHandler = (event) => {
                             event.stopPropagation();
                             if (isEquipped) {
                                 this.game.handleUnequipItem(index);
@@ -408,20 +419,20 @@ class UI {
                             this.hideTooltip(this.itemTooltip);
                         };
                     } else if (item.type === 'consumable' && item.useAction) {
-                        actionText = `[${item.useAction}]`;
-                        clickHandler = (event) => {
+                        originalActionText = `[${item.useAction}]`;
+                        originalClickHandler = (event) => {
                             event.stopPropagation();
                             this.game.handleUseItem(index);
                             this.hideTooltip(this.itemTooltip);
                         };
                     } else {
-                        actionText = '[No Action]';
+                        originalActionText = '[No Action]';
                         slot.style.cursor = 'default';
                     }
                     
                     let tooltipHTML = '';
-                    if (actionText) {
-                        tooltipHTML += `<span class="tooltip-action">${actionText}</span><br>`;
+                    if (originalActionText) {
+                        tooltipHTML += `<span class="tooltip-action">${originalActionText}</span><br>`;
                     }
                     tooltipHTML += item.description || 'No description';
 
@@ -439,25 +450,61 @@ class UI {
                     }
                 }
 
-                slot.addEventListener('dragstart', (event) => {
-                    event.dataTransfer.setData('text/plain', index.toString());
-                    event.dataTransfer.effectAllowed = 'move';
-                    this.draggedItemIndex = index;
-                    this.draggedItem = item;
-                    setTimeout(() => slot.classList.add('dragging'), 0);
-                    this.hideTooltip(this.itemTooltip);
-                    this.hideTooltip(this.equipTooltip);
-                });
-                slot.addEventListener('dragend', () => {
-                    slot.classList.remove('dragging');
-                    this.inventoryGrid.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
-                    this.draggedItemIndex = null;
-                    this.draggedItem = null;
-                });
-                if (clickHandler) {
-                    slot.addEventListener('click', clickHandler);
+                // --- Stun Check & Visuals --- 
+                let isStunnedAndFood = false;
+                if (this.game.state === 'combat' && this.game.player.isStunned && item.useAction === 'Eat') {
+                    isStunnedAndFood = true;
+                    slot.classList.add('food-stunned');
+                    slot.style.cursor = 'default'; // Set cursor back to default
+                    slot.dataset.isStunnedFood = 'true'; // Set data attribute
+                } else {
+                    slot.classList.remove('food-stunned'); 
+                    delete slot.dataset.isStunnedFood; // Remove data attribute
                 }
+                // ---------------------------
+
+                // --- Dynamic Tooltip Listener --- 
+                slot.removeEventListener('mouseenter', slot._tooltipEnterHandler);
+                slot.removeEventListener('mouseleave', slot._tooltipLeaveHandler);
                 
+                const enterHandler = (e) => {
+                    let currentActionText = originalActionText;
+                    // Check data attribute *inside* the handler
+                    if (slot.dataset.isStunnedFood === 'true') {
+                        currentActionText = "[You are stunned!]";
+                    }
+                    
+                    let tooltipHTML = '';
+                    if (currentActionText) {
+                        tooltipHTML += `<span class="tooltip-action">${currentActionText}</span><br>`;
+                    }
+                    tooltipHTML += item.description || 'No description';
+                    this.showTooltip(tooltipHTML, this.itemTooltip, e);
+                };
+                const leaveHandler = () => {
+                     this.hideTooltip(this.itemTooltip);
+                };
+                
+                slot.addEventListener('mouseenter', enterHandler);
+                slot.addEventListener('mouseleave', leaveHandler);
+                slot._tooltipEnterHandler = enterHandler;
+                slot._tooltipLeaveHandler = leaveHandler;
+                // -----------------------------
+
+                // --- Click Handler Attachment --- 
+                slot.removeEventListener('click', slot._clickHandler); // Remove previous click listener if any
+                if (originalClickHandler && !isStunnedAndFood) { // Attach click handler ONLY if it exists AND not stunned food
+                    slot.addEventListener('click', originalClickHandler);
+                    slot._clickHandler = originalClickHandler; // Store reference for removal
+                    slot.style.cursor = 'pointer'; // Ensure clickable cursor if handler is attached
+                } else if (!isStunnedAndFood) {
+                    // Ensure default cursor if no handler and not stunned food
+                    slot.style.cursor = 'default'; 
+                }
+                // else: cursor is already set to default by stun check block if isStunnedAndFood
+                // ----------------------------
+
+                // --- Equipped Chip etc. --- 
                 if (isEquipped) {
                     slot.classList.add('equipped');
                     const chip = document.createElement('span');
@@ -492,7 +539,7 @@ class UI {
             } else {
                 slot.textContent = '';
                 slot.classList.add('slot-empty');
-                slot.draggable = false;
+                slot.draggable = false; // Empty slots aren't draggable
             }
             this.inventoryGrid.appendChild(slot);
         });
@@ -1099,4 +1146,57 @@ class UI {
             this.game.startEncounter(selectedChoice.encounter); 
         }, delay);
     }
+
+    // --- NEW Boss Encounter Rendering ---
+    renderBossEncounter(bossData) {
+        this.clearMainArea();
+        this.choicesArea.classList.remove('hidden');
+        this.choicesArea.innerHTML = ''; // Clear previous content
+
+        const bossEncounterDiv = document.createElement('div');
+        bossEncounterDiv.className = 'boss-encounter-display';
+
+        // Simplified access to stats
+        const hp = bossData.health;
+        const attack = bossData.attack;
+        const defense = bossData.defense;
+        const speed = bossData.speed; // Get speed stat
+        // <h2 class="boss-encounter-title">${bossData.name}</h2>
+
+        bossEncounterDiv.innerHTML = `
+            <div class="boss-info">
+                <h3 class="boss-encounter-name">${bossData.name}</h3>
+                <p class="boss-encounter-description">${bossData.description || 'No description available.'}</p>
+                <p class="boss-encounter-mechanics">${bossData.mechanics || 'No mechanics available.'}</p>
+                <div class="boss-stats">
+                    <span class="boss-stat-item">HP: <span class="boss-stat-value">${hp}</span></span>
+                    <span class="boss-stat-item">ATK: <span class="boss-stat-value">${attack}</span></span>
+                    <span class="boss-stat-item">DEF: <span class="boss-stat-value">${defense}</span></span>
+                    <span class="boss-stat-item">SPD: <span class="boss-stat-value">${speed}</span></span>
+                </div>
+            </div>
+            <button id="boss-engage-button" class="boss-engage-button">ENGAGE</button>
+        `;
+
+        this.choicesArea.appendChild(bossEncounterDiv);
+
+        // Add listener to the new button
+        const engageButton = this.choicesArea.querySelector('#boss-engage-button');
+        if (engageButton) {
+            engageButton.onclick = () => {
+                console.log("[UI] Engage button clicked. Preparing to start combat..."); // Log click
+                console.log("[UI] Boss Data ID:", bossData.id); // Log the ID
+                // Add animation class, then start combat after delay
+                bossEncounterDiv.classList.add('boss-engage-start');
+                setTimeout(() => {
+                    console.log("[UI] Starting encounter via game.startEncounter..."); // Log before calling startEncounter
+                    this.choicesArea.classList.add('hidden'); // Hide choices area
+                    this.game.startEncounter({ type: 'monster', monsterId: bossData.id });
+                }, 500); // Match animation duration
+            };
+        } else {
+            console.error("Could not find engage button");
+        }
+    }
+    // ---------------------------------
 }

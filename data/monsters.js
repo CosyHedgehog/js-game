@@ -1,8 +1,8 @@
 const ROUND_1_10_COMMON_MONSTERS = ['giant_rat', 'large_spider', 'cave_bat'];
 const ROUND_11_20_COMMON_MONSTERS = ['giant_rat', 'large_spider', 'cave_bat'];
 const ROUND_21_30_COMMON_MONSTERS = ['giant_rat', 'large_spider', 'cave_bat'];
-const ROUND_10_MINI_BOSSES = ['venfing', 'venzid'];
-const ROUND_20_MINI_BOSSES = ['griznokt'];
+const ROUND_10_MINI_BOSSES = ['swiftmaw', 'venox'];
+const ROUND_20_MINI_BOSSES = ['shockstone_colossus', 'rok'];
 const FINAL_BOSS = 'dragon'
 
 const MONSTERS = {
@@ -44,27 +44,25 @@ const MONSTERS = {
     },
 
     // === Round 10 Mini-Boss ===
-    'venfing': {
-        name: 'Venfing [Spider]', health: 25, attack: 5, defense: 1, speed: 1.2,
+    'swiftmaw': {
+        name: 'Swiftmaw [Rapid Wolf]', health: 25, attack: 5, defense: 1, speed: 1.2,
         goldDrop: [1, 15],
-        description: "A swift and venomous spider.\nAttacks much faster when below 50% health!",
+        description: "A swift and agile wolf",
+        mechanics: "Attacks 50% faster when below 50% health.",
         lootTable: [
             { itemId: 'speed_potion', chance: 0.4 },
             { itemId: 'iron_dagger', chance: 0.2 },
             { itemId: 'ring_of_speed', chance: 0.05 }
         ]
     },
-    'venzid': {
-        name: 'Venzid [Spider]', 
-        health: 20, 
-        attack: 2,
-        defense: 4,
-        speed: 1.8, 
+    'venox': {
+        name: 'Venox [Venomous Spider]', health: 20, attack: 2, defense: 4, speed: 1.8, 
         goldDrop: [10, 20],
         appliesPoison: true,
         poisonDamage: [1, 2],
         poisonDuration: 10,
-        description: "A patient spider that coats its fangs in venom. Its attacks inflict poison, dealing variable damage over time.",
+        description: "A patient spider that coats its fangs in venom.",
+        mechanics: "Inflicts poison on successful attacks, dealing damage over time. Lasts 10s.",
         lootTable: [
             { itemId: 'health_potion', chance: 0.5 }, 
             { itemId: 'leather_armor', chance: 0.2 },
@@ -76,29 +74,31 @@ const MONSTERS = {
 
 
     // === Round 20 Mini-Boss ===
-    'griznokt': {
-        name: 'Griznokt [Ogre]', health: 50, attack: 4, defense: 8, speed: 2.5, goldDrop: [15, 30],
-        enrageThreshold: 0.3, // Enrages below 30% health
-        enrageAttackMultiplier: 2.5, // Attack becomes 4 * 2.5 = 10 when enraged
-        description: "A heavily armored ogre.\nBecomes enraged and hits harder below 30% health!",
+    'rok': {
+        name: 'Rok [Ogre]', health: 50, attack: 5, defense: 6, speed: 2.5, goldDrop: [15, 30],
+        enrageThreshold: 0.4,
+        enrageAttackMultiplier: 3,
+        description: "A heavily armored ogre.",
+        mechanics: "Becomes enraged below 40% health!",
         lootTable: [
-            // Add appropriate loot? e.g.:
             { itemId: 'iron_greatsword', chance: 0.3 },
             { itemId: 'steel_armor', chance: 0.2 }, 
             { itemId: 'ring_of_resilience', chance: 0.05 } 
         ]
     },
 
-    'ogmor': {
-        name: 'Ogmor [Ogre]', health: 50, attack: 4, defense: 8, speed: 2.5, goldDrop: [15, 30],
-        enrageThreshold: 0.3, // Enrages below 30% health
-        enrageAttackMultiplier: 2.5, // Attack becomes 4 * 2.5 = 10 when enraged
-        description: "A heavily armored ogre.\nBecomes enraged and hits harder below 30% health!",
+    'shockstone_colossus': {
+        name: 'Shockstone Colossus [Golem]', health: 60, attack: 5, defense: 8, speed: 3.0,
+        goldDrop: [20, 35],
+        hasStunningSlam: true,
+        stunChance: 0.25, // 25% chance on hit
+        stunDuration: 4, // Player attack delayed 2.5s
+        description: "A massive golem formed from enchanted rock.",
+        mechanics: "25% chance to stun on attack!",
         lootTable: [
-            // Add appropriate loot? e.g.:
-            { itemId: 'iron_greatsword', chance: 0.3 },
-            { itemId: 'steel_armor', chance: 0.2 }, 
-            { itemId: 'ring_of_resilience', chance: 0.05 } 
+            { itemId: 'greater_defense_potion', chance: 0.4 }, 
+            { itemId: 'iron_hammer', chance: 0.2 },
+            { itemId: 'ring_of_the_guardian', chance: 0.05 } 
         ]
     },
 
@@ -110,7 +110,7 @@ const MONSTERS = {
         name: 'Ancient Dragon', health: 100, attack: 10, defense: 10, speed: 4, goldDrop: [50, 75],
         hasBreathAttack: true,
         breathAttackInterval: 12, // seconds
-        breathAttackDamage: [5, 8], // Raw damage range
+        breathAttackDamage: [5, 10], // Raw damage range
         hardenThreshold: 0.25, // Hardens below 25% health
         hardenDefenseBonus: 5, // Adds +5 Defense when hardened
         description: "A colossal beast of legend. Periodically unleashes devastating fiery breath. Its scales harden significantly when wounded.",

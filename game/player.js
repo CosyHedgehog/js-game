@@ -22,6 +22,7 @@ class Player {
         this.tempSpeedReduction = 0;
         // Track active effects (like poison)
         this.activeEffects = {}; // Example: { poison: { damage: 1, duration: 6, timer: 6 } }
+        this.isStunned = false;
     }
 
     getMaxHealth() {
@@ -193,6 +194,11 @@ class Player {
         }
         const item = this.inventory[index];
 
+        // Check if player is specifically stunned and trying to eat food during combat
+        if (this.isStunned && item.useAction === 'Eat' && game && game.state === 'combat') { 
+            return { success: false, message: "You are stunned and cannot eat!" };
+        }
+
         if (item.type === 'consumable' && item.healAmount) {
             const healed = this.heal(item.healAmount);
             if (healed > 0 || item.healAmount === 0) {
@@ -252,7 +258,7 @@ class Player {
         this.tempAttack = 0;
         this.tempDefense = 0;
         this.tempSpeedReduction = 0;
-        // Clear active effects like poison
         this.activeEffects = {}; 
+        this.isStunned = false;
     }
 }
