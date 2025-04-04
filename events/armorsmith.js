@@ -153,7 +153,7 @@ class Armoury {
 
                     let previewHTML = `Current: Def ${currentDefense} / Max HP +${currentMaxHealth}<br>`;
                     if (isAlreadyReinforced && isAlreadyFortified) {
-                        previewHTML += `<span style="color: #aaa;">Fully Enhanced!</span>`;
+                        previewHTML += `<span style="color: #FF0000;">Fully Enhanced!</span>`;
                     } else if (isAlreadyReinforced) {
                         previewHTML += `Reinforce: <span style="color: #aaa;">Already Reinforced</span><br>`;
                         previewHTML += `Fortify:   Def ${currentDefense} / Max HP +${newMaxHealth}`;

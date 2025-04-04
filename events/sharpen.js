@@ -150,7 +150,7 @@ class Sharpen {
 
                     let previewHTML = `Current: Atk ${currentAttack} / Spd ${currentSpeed.toFixed(1)}s<br>`;
                     if (isAlreadySharpened && isAlreadyHoned) {
-                        previewHTML += `<span style="color: #aaa;">Fully Enhanced!</span>`;
+                        previewHTML += `<span style="color: #FF0000;">Fully Enhanced!</span>`;
                     } else if (isAlreadySharpened) {
                         previewHTML += `Sharpen: <span style="color: #aaa;">Already Sharpened</span><br>`;
                         previewHTML += `Hone:    Atk ${currentAttack} / Spd ${newSpeedValue.toFixed(1)}s`;

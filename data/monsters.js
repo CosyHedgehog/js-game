@@ -1,7 +1,7 @@
 const ROUND_1_10_COMMON_MONSTERS = ['giant_rat', 'large_spider', 'cave_bat'];
 const ROUND_11_20_COMMON_MONSTERS = ['giant_rat', 'large_spider', 'cave_bat'];
 const ROUND_21_30_COMMON_MONSTERS = ['giant_rat', 'large_spider', 'cave_bat'];
-const ROUND_10_MINI_BOSSES = ['Scrix', 'venox'];
+const ROUND_10_MINI_BOSSES = ['scrix', 'venox'];
 const ROUND_20_MINI_BOSSES = ['krug', 'grog'];
 const FINAL_BOSS = 'ancient_dragon';
 
@@ -9,33 +9,31 @@ const MONSTERS = {
 
     // === Rounds 1-10 Common ===
     'giant_rat': { 
-        name: 'Giant Rat', health: 15, attack: 1, defense: 0, speed: 1.5, goldDrop: [1, 3],
+        name: 'Giant Rat', health: 10, attack: 1, defense: 0, speed: 1.5, goldDrop: [1, 3],
         lootTable: [
-
+            { itemTier: 'commonFood', chance: 0.5 },
+            { itemTier: 'uncommonFood', chance: 0.3 },
+            { itemTier: 'commonItem', chance: 0.2 },
+            { itemTier: 'uncommonItem', chance: 0.05 },
         ]
     },
     'cave_bat': { // defense monster
-        name: 'Cave bat', health: 12, attack: 1, defense: 2, speed: 2, goldDrop: [2, 8],
+        name: 'Cave bat', health: 15, attack: 1, defense: 2, speed: 2, goldDrop: [2, 4],
         lootTable: [
-            { itemId: 'bread', chance: 0.15 },
-            { itemId: 'small_fish', chance: 0.15 },
-
-            { itemId: 'wooden_dagger', chance: 0.05 },
-            { itemId: 'wooden_sword', chance: 0.05 },
-            { itemId: 'wooden_hammer', chance: 0.05 },
-            { itemId: 'wooden_shield', chance: 0.05 },
-
-            { itemId: 'leather_armor', chance: 0.05 },
-            { itemId: 'leather_legs', chance: 0.05 },
-            { itemId: 'leather_helm', chance: 0.05 },
-
-            { itemId: 'ring_of_the_guardian', chance: 0.01 }
+            { itemTier: 'commonFood', chance: 0.4 },
+            { itemTier: 'uncommonFood', chance: 0.4 },
+            { itemTier: 'commonItem', chance: 0.3 },
+            { itemTier: 'uncommonItem', chance: 0.06 },
         ]
     },
     'large_spider': { // speed monster
         name: 'Large Spider', health: 15, attack: 2, defense: 1, speed: 1.4, goldDrop: [2, 4],
         lootTable: [
-            { itemId: 'ring_of_speed', chance: 0.01 }
+            { itemTier: 'commonFood', chance: 0.4 },
+            { itemTier: 'uncommonFood', chance: 0.6 },
+            { itemTier: 'rareFood', chance: 0.1 },
+            { itemTier: 'commonItem', chance: 0.35 },
+            { itemTier: 'uncommonItem', chance: 0.07 },
         ]
     },
 
@@ -47,7 +45,7 @@ const MONSTERS = {
         mechanics: "Attacks 50% faster when below 50% health.",
         lootTable: [
             { itemId: 'speed_potion', chance: 0.4 },
-            { itemId: 'iron_dagger', chance: 0.2 },
+            { itemTier: 'uncommonItem', chance: 0.2 },
             { itemId: 'ring_of_speed', chance: 0.05 }
         ]
     },
@@ -61,7 +59,7 @@ const MONSTERS = {
         mechanics: "Inflicts poison on successful attacks, dealing damage over time. Lasts 10s.",
         lootTable: [
             { itemId: 'health_potion', chance: 0.5 }, 
-            { itemId: 'leather_armor', chance: 0.2 },
+            { itemTier: 'commonItem', chance: 0.2 },
             { itemId: 'antidote_potion', chance: 0.1 } // Potential new item?
         ]
     },
@@ -77,8 +75,8 @@ const MONSTERS = {
         description: "An angry ogre.",
         mechanics: "Becomes enraged below 40% health!",
         lootTable: [
-            { itemId: 'iron_greatsword', chance: 0.3 },
-            { itemId: 'steel_armor', chance: 0.2 }, 
+            { itemTier: 'uncommonItem', chance: 0.3 },
+            { itemTier: 'rareItem', chance: 0.1 },
             { itemId: 'ring_of_resilience', chance: 0.05 } 
         ]
     },
@@ -93,7 +91,7 @@ const MONSTERS = {
         mechanics: "25% chance to stun on attack!",
         lootTable: [
             { itemId: 'greater_defense_potion', chance: 0.4 }, 
-            { itemId: 'iron_hammer', chance: 0.2 },
+            { itemTier: 'uncommonItem', chance: 0.2 },
             { itemId: 'ring_of_the_guardian', chance: 0.05 } 
         ]
     },
@@ -117,6 +115,7 @@ const MONSTERS = {
         lootTable: [
             { itemId: 'dragon_scale', chance: 0.8 }, 
             { itemId: 'dragon_heart', chance: 0.3 }, 
+            { itemTier: 'rareItem', chance: 0.2 },
             { itemId: 'gold', quantity: [500, 1000], chance: 1.0 }
         ],
     },
@@ -125,9 +124,9 @@ const MONSTERS = {
     'river_troll': {
         name: 'River Troll', health: 15, attack: 5, defense: 2, speed: 3.0, goldDrop: [4, 8],
         lootTable: [
-            { itemId: 'medium_fish', chance: 0.4 },
-            { itemId: 'leather_legs', chance: 0.15 },
-            { itemId: 'iron_helm', chance: 0.05 },
+            { itemTier: 'uncommonFood', chance: 0.4 },
+            { itemTier: 'commonItem', chance: 0.15 },
+            { itemTier: 'uncommonItem', chance: 0.05 }
         ]
     }
 };

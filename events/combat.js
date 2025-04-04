@@ -591,11 +591,43 @@ class Combat {
             const droppedItems = [];
             if (this.enemy.lootTable && this.enemy.lootTable.length > 0) {
                 this.enemy.lootTable.forEach(loot => {
+                    if (loot.itemId === 'gold') return; // Skip gold entries here, handled separately
+
                     if (Math.random() < loot.chance) {
-                        const item = this.game.createItem(loot.itemId);
-                        if (item) {
-                            item.selected = true;
-                            droppedItems.push(item);
+                        let chosenItemId = null;
+
+                        if (loot.itemTier) {
+                            // Select item ID from tier list
+                            let tierList;
+                            switch (loot.itemTier) {
+                                case 'commonItem': tierList = COMMON_ITEMS; break;
+                                case 'uncommonItem': tierList = UNCOMMON_ITEMS; break;
+                                case 'rareItem': tierList = RARE_ITEMS; break;
+                                case 'commonFood': tierList = COMMON_FOOD; break;
+                                case 'uncommonFood': tierList = UNCOMMON_FOOD; break;
+                                case 'rareFood': tierList = RARE_FOOD; break;
+                                default: tierList = []; console.warn("Unknown itemTier:", loot.itemTier);
+                            }
+                            // Filter out potential null/undefined entries in tier lists
+                            const validItems = tierList.filter(id => id);
+                            if (validItems.length > 0) {
+                                chosenItemId = validItems[this.game.getRandomInt(0, validItems.length - 1)];
+                            } else {
+                                console.warn(`Item tier list '${loot.itemTier}' is empty or contains invalid entries.`);
+                            }
+                        } else if (loot.itemId) {
+                            // Use specific item ID
+                            chosenItemId = loot.itemId;
+                        }
+
+                        if (chosenItemId) {
+                            const item = this.game.createItem(chosenItemId);
+                            if (item) {
+                                item.selected = true;
+                                droppedItems.push(item);
+                            } else {
+                                console.error(`Failed to create item with ID: ${chosenItemId}`);
+                            }
                         }
                     }
                 });

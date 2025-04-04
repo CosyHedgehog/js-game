@@ -1,4 +1,4 @@
-const COMMON_ITEMS = ['wooden_dagger', 'wooden_sword', 'wooden_hammer', 'wooden_shield', 'leather_helm', 'leather_armor', 'leather_legs', , ]
+const COMMON_ITEMS = ['wooden_dagger', 'wooden_sword', 'wooden_hammer', 'wooden_shield', 'leather_helm', 'leather_armor', 'leather_legs']
 const UNCOMMON_ITEMS = ['iron_dagger', 'iron_sword', 'iron_hammer', 'iron_helm', 'iron_armor', 'iron_legs']
 const RARE_ITEMS = ['steel_dagger', 'steel_sword', 'steel_hammer', 'steel_helm', 'steel_armor', 'steel_legs', 'steel_shield']
 
