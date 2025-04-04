@@ -40,7 +40,7 @@ class Blacksmith {
                         <div class="forge-slot-content">Drag item here</div>
                     </div>
                 </div>
-                <div id="forge-preview" class="hidden"></div>
+                <div id="forge-preview">Place two compatible items to forge.</div>
                 <button id="forge-button" disabled>Forge Items</button>
             </div>
             <button id="blacksmith-leave-button">Leave Forge</button>
