@@ -21,24 +21,26 @@ class Forge {
         const hammerRequirementArmorer = !hasHammer ? '<span class="requirement-missing">(Requires Blacksmith Hammer)</span>' : '';
         const hammerRequirementBlacksmith = !hasHammer ? '<span class="requirement-missing">(Requires Blacksmith Hammer)</span>' : '';
 
+        // <p class="forge-prompt">Choose a station to use:</p>
+
+
         forgeArea.innerHTML = `
             <div class="forge-container">
-                 <h3>The Forge</h3>
-                 <p class="forge-prompt">Choose a station to use:</p>
+                 <h3>Blacksmith Workshop</h3>
                  <div class="forge-choices">
                      <div class="forge-card">
-                         <h4>Sharpening Stone</h4>
-                         <p>Enhance a weapon's Attack (+1) or Speed (-0.2s).</p>
+                         <h4>Weapon Station</h4>
+                         <p>Sharpen a weapon Attack (+1) or hone to increase its Speed (-0.2s).</p>
                          <button id="forge-sharpen-button">Use Stone</button>
                      </div>
                      <div class="forge-card">
-                         <h4>Armourer Station</h4>
+                         <h4>Armour Station</h4>
                          ${hammerRequirementArmorer}
                          <p>Reinforce armor's Defense (+1) or Fortify its Max Health (+3).</p>
                          <button id="forge-armorer-button" ${!hasHammer ? 'disabled' : ''}>Use Station</button>
                      </div>
                      <div class="forge-card">
-                         <h4>Blacksmith Anvil</h4>
+                         <h4>Forge</h4>
                          ${hammerRequirementBlacksmith}
                          <p>Combine two identical items (weapon or armor) into a stronger version.</p>
                          <button id="forge-blacksmith-button" ${!hasHammer ? 'disabled' : ''}>Use Anvil</button>
@@ -61,7 +63,7 @@ class Forge {
 
         const leaveButton = document.getElementById('forge-leave-button');
         leaveButton.onclick = () => {
-            this.game.addLog("You leave the forge without using it.");
+            this.game.addLog("You leave the workshop without using it.");
             this.ui.clearMainArea();
             this.game.proceedToNextRound();
         }

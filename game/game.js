@@ -19,11 +19,11 @@ class Game {
     EVENT_PROBABILITY = [
         { type: 'monster', weight: 30 },
         { type: 'rest', weight: 10 }, // 
-        { type: 'shop', weight: 5 },
-        { type: 'alchemist', weight: 5 },
-        { type: 'treasure_chest', weight: 100 }, //
-        { type: 'forge', weight: 100 }, // NEW Forge Event
-        { type: 'fishing', weight: 100 }, //
+        { type: 'shop', weight: 10 },
+        { type: 'alchemist', weight: 10 },
+        { type: 'treasure_chest', weight: 10 }, //
+        { type: 'forge', weight: 10 }, // NEW Forge Event
+        { type: 'fishing', weight: 10 }, //
         { type: 'trap', weight: 10 }
     ];
 
@@ -252,7 +252,7 @@ class Game {
             case 'shop':
                 return 'Shop';
             case 'forge':
-                return 'Forge';
+                return 'Blacksmith Workshop';
             case 'fishing':
                 return 'Go Fishing!';
             case 'blacksmith':
@@ -363,7 +363,9 @@ class Game {
                 return "You find a sturdy-looking treasure chest.\n\n" +
                        "Open it?";
             case 'forge':
-                return "Visit the Forge to combine items into stronger versions.";
+                return "Visit the Blacksmith Workshop to enhance or combine your gear using various stations.\n\n" +
+                       "Some stations may require a Blacksmith Hammer.\n\n" +
+                       "Enter the workshop?"
             default:
                 return "Unknown encounter type.";
         }

@@ -10,14 +10,14 @@ class Trap {
             description: 'A simple trap with low risk and low reward.',
             disarmChance: 0.7,
             damageRange: [1, 2],
-            itemPool: ['bread', 'cooked_meat', 'wooden_shield', 'leather_helm', 'rusty_sword']
+            itemPool: ['bread', 'cooked_meat', 'wooden_shield', 'leather_helm']
         },
         risky: {
             name: 'Risky Trap',
             description: 'A dangerous trap with high damage but good disarm chance.',
             disarmChance: 0.4,
             damageRange: [1, 4],
-            itemPool: ['leather_armor', 'leather_legs', 'quick_dagger', 'health_potion']
+            itemPool: ['leather_armor', 'leather_legs', 'health_potion']
         },
         challenging: {
             name: 'Challenging Trap',

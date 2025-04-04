@@ -1,48 +1,74 @@
+const COMMON_ITEMS = ['wooden_dagger', 'wooden_sword', 'wooden_hammer', 'wooden_shield', 'leather_helm', 'leather_armor', 'leather_legs', , ]
+const UNCOMMON_ITEMS = ['iron_dagger', 'iron_sword', 'iron_hammer', 'iron_helm', 'iron_armor', 'iron_legs']
+const RARE_ITEMS = ['steel_dagger', 'steel_sword', 'steel_hammer', 'steel_helm', 'steel_armor', 'steel_legs', 'steel_shield']
+
+const COMMON_FOOD = ['bread', 'small_fish']
+const UNCOMMON_FOOD = ['medium_fish', 'cooked_meat']
+const RARE_FOOD = ['large_fish']
+
+const COMMON_TOOLS = ['fishing_rod', 'blacksmith_hammer', 'thief_tools']
+
+const COMMON_POTIONS = ['health_potion', 'attack_potion', 'defense_potion', 'speed_potion']
+const UNCOMMON_POTIONS = ['greater_health_potion', 'greater_attack_potion', 'greater_defense_potion', 'greater_speed_potion']
+
+
 const ITEMS = {
+    // wooden items // leather
     'rusty_sword': {
-        id: 'rusty_sword', name: 'Rusty Sword', type: 'weapon', slot: 'weapon', hands: 2,
-        stats: { attack: 1 }, speed: 2.0, value: 3,
-        description: 'An old, somewhat effective sword.\nAttack: +1\nSpeed: 2.0s\n2-Handed'
+        id: 'rusty_sword', name: 'Rusty Sword', type: 'weapon', slot: 'weapon', hands: 1,
+        stats: { attack: 1 }, speed: 2.0, value: 4,
+        description: 'A somewhat rusted sword.\nAttack: +1\nSpeed: 2.0s\n1-Handed'
     },
     'wooden_dagger': {
         id: 'wooden_dagger', name: 'Wooden Dagger', type: 'weapon', slot: 'weapon', hands: 1,
-        stats: { attack: 1 }, speed: 1.5, value: 4,
-        description: 'A lightweight wooden dagger.\nAttack: +1\nSpeed: 1.2s\n1-Handed'
-    },
-    'wooden_hammer': {
-        id: 'wooden_hammer', name: 'Wooden Hammer', type: 'weapon', slot: 'weapon', hands: 2,
-        stats: { attack: 3 }, speed: 4, value: 6,
-        description: 'A heavy wooden hammer.\nAttack: +3\nSpeed: 4.0s\n2-Handed'
+        stats: { attack: 1 }, speed: 1.4, value: 4,
+        description: 'A lightweight wooden dagger.\nAttack: +1\nSpeed: 1.4s\n1-Handed'
     },
     'wooden_sword': {
         id: 'wooden_sword', name: 'Wooden Sword', type: 'weapon', slot: 'weapon', hands: 1,
         stats: { attack: 2 }, speed: 2.0, value: 5,
         description: 'A simple sword made of wood.\nAttack: +2\nSpeed: 2.0s\n1-Handed'
     },
+    'wooden_hammer': {
+        id: 'wooden_hammer', name: 'Wooden Hammer', type: 'weapon', slot: 'weapon', hands: 2,
+        stats: { attack: 4 }, speed: 3.0, value: 6,
+        description: 'A heavy wooden hammer.\nAttack: +4\nSpeed: 3.0s\n2-Handed'
+    },
     'wooden_shield': {
         id: 'wooden_shield', name: 'Wooden Shield', type: 'armor', slot: 'shield',
         stats: { defense: 1 }, value: 4,
         description: 'A basic shield.\nDefense: +1'
     },
-    'iron_sword': {
-        id: 'iron_sword', name: 'Iron Sword', type: 'weapon', slot: 'weapon', hands: 1,
-        stats: { attack: 3 }, speed: 1.8, value: 10,
-        description: 'A reliable iron sword.\nAttack: +3\nSpeed: 1.8s\n1-Handed'
+    'leather_helm': {
+        id: 'leather_helm', name: 'Leather Helm', type: 'armor', slot: 'helm',
+        stats: { defense: 1 }, value: 4,
+        description: 'Basic head protection.\nDefense: +1'
     },
+    'leather_armor': {
+        id: 'leather_armor', name: 'Leather Armor', type: 'armor', slot: 'body',
+        stats: { defense: 2 }, value: 5,
+        description: 'Simple body armor.\nDefense: +2'
+    },
+    'leather_legs': {
+        id: 'leather_legs', name: 'Leather Legs', type: 'armor', slot: 'legs',
+        stats: { defense: 1 }, value: 4,
+        description: 'Basic leg protection.\nDefense: +1'
+    },
+    // iron items
     'iron_dagger': {
         id: 'iron_dagger', name: 'Iron Dagger', type: 'weapon', slot: 'weapon', hands: 1,
-        stats: { attack: 2 }, speed: 1.1, value: 9,
-        description: 'A standard iron dagger.\nAttack: +2\nSpeed: 1.1s\n1-Handed'
+        stats: { attack: 2 }, speed: 1.4, value: 9,
+        description: 'A standard iron dagger.\nAttack: +2\nSpeed: 1.4s\n1-Handed'
+    },
+    'iron_sword': {
+        id: 'iron_sword', name: 'Iron Sword', type: 'weapon', slot: 'weapon', hands: 1,
+        stats: { attack: 3 }, speed: 2.0, value: 10,
+        description: 'A reliable iron sword.\nAttack: +3\nSpeed: 2.0s\n1-Handed'
     },
     'iron_hammer': {
         id: 'iron_hammer', name: 'Iron Hammer', type: 'weapon', slot: 'weapon', hands: 2,
-        stats: { attack: 5 }, speed: 3.8, value: 14,
-        description: 'A weighty iron hammer.\nAttack: +5\nSpeed: 3.8s\n2-Handed'
-    },
-    'iron_greatsword': {
-        id: 'iron_greatsword', name: 'Iron Greatsword', type: 'weapon', slot: 'weapon', hands: 2,
-        stats: { attack: 6 }, speed: 2.5, value: 13,
-        description: 'A heavy two-handed sword.\nAttack: +6\nSpeed: 2.5s\n2-Handed'
+        stats: { attack: 5 }, speed: 3.0, value: 14,
+        description: 'A weighty iron hammer.\nAttack: +5\nSpeed: 3.0s\n2-Handed'
     },
     'iron_helm': {
         id: 'iron_helm', name: 'Iron Helm', type: 'armor', slot: 'helm',
@@ -64,25 +90,21 @@ const ITEMS = {
         stats: { defense: 2 }, value: 10,
         description: 'A solid metal shield.\nDefense: +2'
     },
-    'steel_sword': {
-        id: 'steel_sword', name: 'Steel Sword', type: 'weapon', slot: 'weapon', hands: 1,
-        stats: { attack: 4 }, speed: 1.8, value: 15,
-        description: 'A well-crafted steel sword.\nAttack: +4\nSpeed: 1.8s\n1-Handed'
-    },
+    // steel items
     'steel_dagger': {
         id: 'steel_dagger', name: 'Steel Dagger', type: 'weapon', slot: 'weapon', hands: 1,
-        stats: { attack: 3 }, speed: 1.0, value: 14,
-        description: 'A fine steel dagger.\nAttack: +3\nSpeed: 1.0s\n1-Handed'
+        stats: { attack: 3 }, speed: 1.4, value: 14,
+        description: 'A fine steel dagger.\nAttack: +3\nSpeed: 1.4s\n1-Handed'
+    },
+    'steel_sword': {
+        id: 'steel_sword', name: 'Steel Sword', type: 'weapon', slot: 'weapon', hands: 1,
+        stats: { attack: 4 }, speed: 2.0, value: 15,
+        description: 'A well-crafted steel sword.\nAttack: +4\nSpeed: 2.0s\n1-Handed'
     },
     'steel_hammer': {
         id: 'steel_hammer', name: 'Steel Hammer', type: 'weapon', slot: 'weapon', hands: 2,
-        stats: { attack: 7 }, speed: 3.6, value: 20,
-        description: 'A powerful steel hammer.\nAttack: +7\nSpeed: 3.6s\n2-Handed'
-    },
-    'steel_greatsword': {
-        id: 'steel_greatsword', name: 'Steel Greatsword', type: 'weapon', slot: 'weapon', hands: 2,
-        stats: { attack: 8 }, speed: 2.5, value: 22,
-        description: 'A mighty two-handed sword.\nAttack: +8\nSpeed: 2.5s\n2-Handed'
+        stats: { attack: 6 }, speed: 3.0, value: 20,
+        description: 'A powerful steel hammer.\nAttack: +6\nSpeed: 3.0s\n2-Handed'
     },
     'steel_helm': {
         id: 'steel_helm', name: 'Steel Helm', type: 'armor', slot: 'helm',
@@ -104,21 +126,7 @@ const ITEMS = {
         stats: { defense: 3 }, value: 17,
         description: 'A superior shield.\nDefense: +3'
     },
-    'leather_helm': {
-        id: 'leather_helm', name: 'Leather Helm', type: 'armor', slot: 'helm',
-        stats: { defense: 1 }, value: 4,
-        description: 'Basic head protection.\nDefense: +1'
-    },
-    'leather_armor': {
-        id: 'leather_armor', name: 'Leather Armor', type: 'armor', slot: 'body',
-        stats: { defense: 2 }, value: 5,
-        description: 'Simple body armor.\nDefense: +2'
-    },
-    'leather_legs': {
-        id: 'leather_legs', name: 'Leather Legs', type: 'armor', slot: 'legs',
-        stats: { defense: 1 }, value: 4,
-        description: 'Basic leg protection.\nDefense: +1'
-    },
+    // food
     'bread': {
         id: 'bread', name: 'Bread', type: 'consumable', useAction: 'Eat',
         healAmount: 3, value: 2,
@@ -129,6 +137,23 @@ const ITEMS = {
         healAmount: 8, value: 3,
         description: 'A piece of cooked meat.\nHeals 8 HP.'
     },
+    'small_fish': {
+        id: 'small_fish', name: 'Small Fish', type: 'consumable', useAction: 'Eat',
+        healAmount: 3, value: 1,
+        description: 'A tiny fish.\nHeals 2 HP.'
+    },
+    'medium_fish': {
+        id: 'medium_fish', name: 'Medium Fish', type: 'consumable', useAction: 'Eat',
+        healAmount: 5, value: 2,
+        description: 'A decent-sized fish.\nHeals 5 HP.'
+    },
+    'large_fish': {
+        id: 'large_fish', name: 'Large Fish', type: 'consumable', useAction: 'Eat',
+        healAmount: 8, value: 4,
+        description: 'An impressive fish.\nHeals 8 HP.'
+    },
+
+    // potions
     'health_potion': {
         id: 'health_potion', name: 'Health Potion', type: 'consumable', useAction: 'Drink',
         healAmount: 15, value: 8, isPotion: true,
@@ -169,40 +194,18 @@ const ITEMS = {
         stats: { tempSpeed: 0.4 }, value: 15, isPotion: true,
         description: 'A fizzing yellow potion.\nReduces attack time by 0.4s. Removed after combat.\nNo combat delay.'
     },
-    'small_fish': {
-        id: 'small_fish', name: 'Small Fish', type: 'consumable', useAction: 'Eat',
-        healAmount: 2, value: 1,
-        description: 'A tiny fish.\nHeals 2 HP.'
-    },
-    'medium_fish': {
-        id: 'medium_fish', name: 'Medium Fish', type: 'consumable', useAction: 'Eat',
-        healAmount: 5, value: 2,
-        description: 'A decent-sized fish.\nHeals 5 HP.'
-    },
-    'large_fish': {
-        id: 'large_fish', name: 'Large Fish', type: 'consumable', useAction: 'Eat',
-        healAmount: 8, value: 4,
-        description: 'An impressive fish.\nHeals 8 HP.'
-    },
+
+    // tools
     'fishing_rod': {
-        id: 'fishing_rod', 
-        name: 'Fishing Rod', 
-        type: 'tool',
-        value: 2,
+        id: 'fishing_rod', name: 'Fishing Rod', type: 'tool', value: 2,
         description: 'A simple fishing rod.\nRequired for fishing.'
     },
     'blacksmith_hammer': {
-        id: 'blacksmith_hammer',
-        name: 'Blacksmith Hammer',
-        type: 'tool',
-        value: 2,
+        id: 'blacksmith_hammer', name: 'Blacksmith Hammer',type: 'tool', value: 2,
         description: 'A sturdy hammer.\nRequired for blacksmithing and armoury.'
     },
     'thief_tools': {
-        id: 'thief_tools',
-        name: "Thief's Tools",
-        type: 'tool',
-        value: 3,
+        id: 'thief_tools', name: "Thief's Tools", type: 'tool', value: 3,
         description: 'A set of tools for delicate work.\nIncreases trap disarm chance by 20%.'
     },
 
@@ -211,30 +214,5 @@ const ITEMS = {
         id: 'ring_of_the_dragon', name: 'Dragon Ring', type: 'armor', slot: 'ring',
         stats: { attack: 2, defense: 2 }, value: 50,
         description: 'A powerful ring imbued with dragon magic.\nAttack: +2\nDefense: +2'
-    },
-    'ring_of_the_berserker': { // attack ring
-        id: 'ring_of_the_berserker', name: 'Ring of the Berserker', type: 'armor', slot: 'ring',
-        stats: { attack: 3, defense: -1 }, value: 45,
-        description: 'Favors offense over defense.\nAttack: +3\nDefense: -1'
-    },
-    'ring_of_the_guardian': { // defense ring
-        id: 'ring_of_the_guardian', name: 'Ring of the Guardian', type: 'armor', slot: 'ring',
-        stats: { defense: 3, maxHealth: 5 }, value: 45,
-        description: 'A sturdy defensive ring.\nDefense: +3\nMax HP: +5'
-    },
-    'ring_of_speed': { // speed ring
-        id: 'ring_of_speed', name: 'Ring of Speed', type: 'armor', slot: 'ring',
-        stats: { speedReduction: 0.3 }, value: 55,
-        description: 'Increases attack speed slightly.\nSpeed: -0.3s'
-    },
-    'ring_of_resilience': { // health ring
-        id: 'ring_of_resilience', name: 'Ring of Resilience', type: 'armor', slot: 'ring',
-        stats: { maxHealth: 10 }, value: 50,
-        description: 'Significantly boosts maximum health.\nMax HP: +10'
-    },
-    // 'ring_of_swift_strikes': { // attack ring
-    //     id: 'ring_of_swift_strikes', name: 'Ring of Swift Strikes', type: 'armor', slot: 'ring',
-    //     stats: { attack: 1, speedReduction: 0.2, maxHealth: -5 }, value: 50,
-    //     description: 'Trade vitality for faster, slightly stronger attacks.\nAttack: +1\nSpeed: -0.2s\nMax HP: -5'
-    // },
+    }
 };

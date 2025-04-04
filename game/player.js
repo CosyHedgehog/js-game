@@ -20,7 +20,6 @@ class Player {
         this.tempAttack = 0;
         this.tempDefense = 0;
         this.tempSpeedReduction = 0;
-        // Track active effects (like poison)
         this.activeEffects = {}; // Example: { poison: { damage: 1, duration: 6, timer: 6 } }
         this.isStunned = false;
     }

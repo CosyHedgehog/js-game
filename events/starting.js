@@ -11,7 +11,7 @@ class Starting {
             stats: {
                 maxHealth: 20,
                 health: 15,
-                baseAttack: 10,
+                baseAttack: 2,
                 baseDefense: 1,
             },
             items: [
@@ -49,11 +49,7 @@ class Starting {
             items: [
                 { id: 'wooden_hammer', count: 1 },
                 { id: 'blacksmith_hammer', count: 1 },
-                // { id: 'leather_armor', count: 7 },
-                { id: 'iron_armor', count: 1 },
                 { id: 'cooked_meat', count: 2 },
-                { id: 'wooden_hammer', count: 6 },
-                { id: 'iron_hammer', count: 1 },
             ]
         },
         thief: {

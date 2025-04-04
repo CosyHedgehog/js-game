@@ -38,7 +38,6 @@ class Treasure {
                 <button id="treasure-leave-button">Leave Chest</button>
             `;
         }
-
         treasureArea.innerHTML = `
             <div class="treasure-container locked">
                 <h3>Locked Treasure Chest</h3>
@@ -79,14 +78,8 @@ class Treasure {
         treasureContainer.classList.add('picklocking');
         this.game.addLog("Attempting to pick the lock..."); // Log the attempt start
 
-        // Wait for animation to finish (match CSS duration)
         setTimeout(() => {
             treasureContainer.classList.remove('picklocking');
-
-            // Re-enable buttons (optional, as the screen changes anyway)
-            // if (picklockButton) picklockButton.disabled = false;
-            // if (leaveButton) leaveButton.disabled = false;
-
             // Assuming picklock always succeeds for now
             this.game.addLog("Click! The lock springs open."); // Log success after animation
             this.openUnlockedChest(); // Proceed to open the now unlocked chest
@@ -100,7 +93,6 @@ class Treasure {
     }
 
     openUnlockedChest() {
-        // Original logic for opening an unlocked chest
         this.game.state = 'looting'; // Set state for loot screen
         const goldFound = this.game.getRandomInt(5, 25); // Slightly increased gold range
         this.game.addLog(`You open it and find ${goldFound} gold!`);
