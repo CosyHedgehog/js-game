@@ -33,17 +33,17 @@ class Rest {
                  <h3>A Moment's Respite</h3>
                  <p class="rest-prompt">The warmth of the fire is inviting. What will you do?</p>
                  <div class="rest-choices">
-                     <div class="rest-choice">
+                     <div class="rest-card">
                          <h4>Rest by the Fire</h4>
                          <p>Recover a good portion of health (${minHealAmount}-${maxHealAmount} HP).</p>
                          <button id="rest-heal-button">Heal</button>
                      </div>
-                     <div class="rest-choice">
+                     <div class="rest-card">
                          <h4>Sleep Soundly</h4>
                          <p>Bolster your constitution, increasing maximum health by 3.</p>
                          <button id="rest-sleep-button">Increase Max HP</button>
                      </div>
-                     <div class="rest-choice">
+                     <div class="rest-card">
                          <h4>Meditate by the Flames</h4>
                          <p>Focus your inner strength. Max HP +1, recover some health (${minMeditateHealAmount}-${maxMeditateHealAmount} HP).</p>
                          <button id="rest-meditate-button">Meditate</button>
@@ -130,14 +130,7 @@ class Rest {
         this.ui.updatePlayerStats();
         
         // 5. Show splat(s) over the new UI (with delays)
-        setTimeout(() => {
-            this.ui.createDamageSplat('#rest-area .rest-campfire-container', actualHealed, 'heal');
-
-            // Show separate splat for Max HP increase after a further delay
-            setTimeout(() => {
-                this.ui.createDamageSplat('#rest-area .rest-campfire-container', `+${maxHpIncrease} Max HP`, 'max-hp');
-            }, 500); // Delay for Max HP splat relative to heal splat
-        }, 50); // Small initial delay
+        this.ui.createDamageSplat('#rest-area .rest-campfire-container', `${maxHpIncrease} Max HP`, 'max-hp');
         
         // 6. Add Continue button
         this.addContinueButton();
@@ -181,7 +174,7 @@ class Rest {
 
             // Show separate splat for Max HP increase after a further delay
             setTimeout(() => {
-                this.ui.createDamageSplat('#rest-area .rest-campfire-container', `+${maxHpIncrease} Max HP`, 'max-hp');
+                this.ui.createDamageSplat('#rest-area .rest-campfire-container', `${maxHpIncrease} Max HP`, 'max-hp');
             }, 500); // Delay for Max HP splat relative to heal splat
         }, 50); // Small initial delay
   
