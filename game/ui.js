@@ -178,6 +178,35 @@ class UI {
             enemyBreathTimer: { el: this.combatEnemyBreathTimerContainer, text: "Firebreath every X seconds." }
         };
 
+        // --- Add listener for player health bar for POISON tooltip --- 
+        const playerHealthBarContainer = document.querySelector('.player-side .health-bar-container');
+        
+        const poisonEnterHandler = (e) => {
+            if (this.game?.player?.activeEffects?.poison) { // Only show if poisoned
+                 this.showTooltip("You are poisoned!", this.statTooltip, e);
+            }
+        };
+        const poisonLeaveHandler = () => {
+            this.hideTooltip(this.statTooltip);
+        };
+
+        // Attach listeners ONLY to the health bar container
+        if (playerHealthBarContainer) {
+            // Remove potential old listeners
+            playerHealthBarContainer.removeEventListener('mouseenter', playerHealthBarContainer._tooltipEnterHandler);
+            playerHealthBarContainer.removeEventListener('mouseleave', playerHealthBarContainer._tooltipLeaveHandler);
+            // Attach new listeners
+            playerHealthBarContainer.addEventListener('mouseenter', poisonEnterHandler);
+            playerHealthBarContainer.addEventListener('mouseleave', poisonLeaveHandler);
+            // Store handlers for removal
+            playerHealthBarContainer._tooltipEnterHandler = poisonEnterHandler;
+            playerHealthBarContainer._tooltipLeaveHandler = poisonLeaveHandler;
+        } else {
+            console.warn("Combat Tooltip Listener: Player health bar container not found.");
+        }
+        // -------------------------------------------------------------
+
+        // Loop for other combat tooltips (timers, enemy stats)
         for (const key in combatElements) {
             const { el, text } = combatElements[key];
             if (el) {
@@ -798,6 +827,16 @@ class UI {
                  // if (defParent) defParent.dataset.tooltipTextDynamic = null; 
             }
         }
+
+        // Update player poisoned status visual
+        const playerSide = document.querySelector('.player-side');
+        if (playerSide) {
+            if (player.activeEffects.poison) {
+                playerSide.classList.add('player-poisoned');
+            } else {
+                playerSide.classList.remove('player-poisoned');
+            }
+        }
     }
 
     showCombatUI(player, enemy) {
@@ -816,6 +855,8 @@ class UI {
 
     updateCombatantHealth(who, current, max, damage = 0, blocked = 0, isHeal = false, fullBlock = false) {
         const percentage = (current / max) * 100;
+        let splatType = isHeal ? 'heal' : 'damage';
+
         if (who === 'player') {
             this.combatPlayerHp.textContent = `${current}/${max}`;
             const healthBar = document.querySelector('.player-health');
@@ -824,7 +865,7 @@ class UI {
             void healthBar.offsetWidth;
             healthBar.classList.add('damage-taken');
             if (damage > 0 || fullBlock) {
-                this.createDamageSplat('.player-side', damage, isHeal ? 'heal' : 'damage', blocked, fullBlock);
+                this.createDamageSplat('.player-side', damage, splatType, blocked, fullBlock);
             }
         } else if (who === 'enemy') {
             this.combatEnemyHp.textContent = `${current}/${max}`;
@@ -834,7 +875,7 @@ class UI {
             void healthBar.offsetWidth;
             healthBar.classList.add('damage-taken');
             if (damage > 0 || fullBlock) {
-                this.createDamageSplat('.enemy-side', damage, isHeal ? 'heal' : 'damage', blocked, fullBlock);
+                this.createDamageSplat('.enemy-side', damage, splatType, blocked, fullBlock);
             }
         }
     }
@@ -994,13 +1035,13 @@ class UI {
         if (type === 'damage') {
             if (fullBlock) {
                 splat.innerHTML = `<span style="color: #aaaaaa">BLOCKED ${blocked}</span>`;
-            } else if (blocked > 0) {
-                splat.textContent = amount;
             } else {
                 splat.textContent = amount;
             }
         } else if (type === 'heal' || type === 'potion-heal') { 
             splat.textContent = '+' + amount;
+        } else if (type === 'poison') { // New poison type
+             splat.textContent = amount; // Show poison damage amount
         } else if (type === 'buff-attack') {
             splat.textContent = `+${amount} Atk`;
         } else if (type === 'buff-defense') {

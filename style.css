@@ -1176,7 +1176,7 @@ button:disabled {
     }
     100% {
         opacity: 0;
-        transform: translateY(-40px) translateX(-50%); /* Reduced upward movement slightly */
+        transform: translateY(-60px) translateX(-50%); /* Increased upward movement from -40px */
     }
 }
 
@@ -3155,7 +3155,7 @@ html {
     }
     100% {
         opacity: 0;
-        transform: translateY(-40px) translateX(-50%);
+        transform: translateY(-60px) translateX(-50%); /* Increased upward movement from -40px */
     }
 }
 
@@ -3705,4 +3705,40 @@ html {
 
 .loot-appearing {
    animation: loot-fade-in 0.5s ease-out;
+}
+
+/* Player Poisoned Indicator */
+.player-poisoned {
+    border: 2px solid #8f00ff !important; /* Purple border */
+    box-shadow: 0 0 10px rgba(143, 0, 255, 0.7); /* Purple glow */
+    /* Removed animation from main panel */
+}
+
+/* Poisoned Health Bar Animation */
+@keyframes poisoned-health-bar-drip {
+    0%, 100% {
+        background: linear-gradient(to right, #2ecc71, #27ae60); /* Normal Green */
+        filter: brightness(1);
+    }
+    50% {
+        background: linear-gradient(to right, #55ae7f, #3f8f5f); /* Sickly Green */
+        filter: brightness(0.85) saturate(0.7);
+    }
+}
+
+/* Apply animation to the health bar itself when panel is poisoned */
+.player-poisoned .player-health {
+    animation: poisoned-health-bar-drip 1.5s infinite ease-in-out;
+}
+
+/* Poison Pulse Animation (Keep for border/glow if needed, or remove if redundant) */
+@keyframes poison-pulse {
+    0%, 100% { box-shadow: 0 0 10px rgba(143, 0, 255, 0.7); }
+    50% { box-shadow: 0 0 15px rgba(143, 0, 255, 1.0); }
+}
+
+/* Poison Damage Splat */
+.damage-splat.poison {
+    color: #ab47bc; /* Purple color */
+    font-style: italic;
 }

@@ -1,7 +1,7 @@
 const ROUND_1_10_COMMON_MONSTERS = ['giant_rat', 'large_spider', 'cave_bat'];
 const ROUND_11_20_COMMON_MONSTERS = ['giant_rat', 'large_spider', 'cave_bat'];
 const ROUND_21_30_COMMON_MONSTERS = ['giant_rat', 'large_spider', 'cave_bat'];
-const ROUND_10_MINI_BOSSES = ['venfing'];
+const ROUND_10_MINI_BOSSES = ['venzid'];
 const ROUND_20_MINI_BOSSES = ['griznokt'];
 const FINAL_BOSS = 'dragon'
 
@@ -54,6 +54,23 @@ const MONSTERS = {
             { itemId: 'ring_of_speed', chance: 0.05 }
         ]
     },
+    'venzid': {
+        name: 'Venzid [Spider]', 
+        health: 20, 
+        attack: 1,
+        defense: 4,
+        speed: 1.2, 
+        goldDrop: [10, 20],
+        appliesPoison: true,
+        poisonDamage: [1, 2],
+        poisonDuration: 10,
+        description: "A patient spider that coats its fangs in venom. Its attacks inflict poison, dealing variable damage over time.",
+        lootTable: [
+            { itemId: 'health_potion', chance: 0.5 }, 
+            { itemId: 'leather_armor', chance: 0.2 },
+            { itemId: 'antidote_potion', chance: 0.1 } // Potential new item?
+        ]
+    },
 
     // === Rounds 11-20 Common ===
 
@@ -61,6 +78,19 @@ const MONSTERS = {
     // === Round 20 Mini-Boss ===
     'griznokt': {
         name: 'Griznokt [Ogre]', health: 50, attack: 4, defense: 8, speed: 2.5, goldDrop: [15, 30],
+        enrageThreshold: 0.3, // Enrages below 30% health
+        enrageAttackMultiplier: 2.5, // Attack becomes 4 * 2.5 = 10 when enraged
+        description: "A heavily armored ogre.\nBecomes enraged and hits harder below 30% health!",
+        lootTable: [
+            // Add appropriate loot? e.g.:
+            { itemId: 'iron_greatsword', chance: 0.3 },
+            { itemId: 'steel_armor', chance: 0.2 }, 
+            { itemId: 'ring_of_resilience', chance: 0.05 } 
+        ]
+    },
+
+    'ogmor': {
+        name: 'Ogmor [Ogre]', health: 50, attack: 4, defense: 8, speed: 2.5, goldDrop: [15, 30],
         enrageThreshold: 0.3, // Enrages below 30% health
         enrageAttackMultiplier: 2.5, // Attack becomes 4 * 2.5 = 10 when enraged
         description: "A heavily armored ogre.\nBecomes enraged and hits harder below 30% health!",

@@ -98,6 +98,7 @@ class Combat {
     tick() {
         let playerActed = false;
         let enemyActed = false;
+        let poisonDamageThisTick = 0;
 
         if (!this.player.attackTimerPaused) {
             this.player.attackTimer = Math.max(0, this.player.attackTimer - this.timeScale);
@@ -111,6 +112,29 @@ class Combat {
         this.enemy.attackTimer = Math.max(0, this.enemy.attackTimer - this.timeScale);
         if (this.enemy.breathAttackTimer !== null) {
             this.enemy.breathAttackTimer = Math.max(0, this.enemy.breathAttackTimer - this.timeScale);
+        }
+
+        // Handle Player Poison Effect
+        if (this.player.activeEffects.poison) {
+            const poison = this.player.activeEffects.poison;
+            poison.timer = Math.max(0, poison.timer - this.timeScale); // Decrement total duration timer
+            poison.tickCooldown = Math.max(0, poison.tickCooldown - this.timeScale); // Decrement tick cooldown
+            
+            // Deal damage when tick cooldown reaches zero
+            if (poison.tickCooldown <= 0 && poison.timer > 0) { 
+                 // Roll damage within the stored range
+                 const damageDealt = this.game.getRandomInt(poison.damageRange[0], poison.damageRange[1]);
+                 poisonDamageThisTick = damageDealt; // Track for potential future use
+                 this.player.takeRawDamage(damageDealt); 
+                 this.game.addLog(`<span style="color: #ab47bc;">You take ${damageDealt} poison damage.</span>`);
+                 this.ui.createDamageSplat('.player-side', damageDealt, 'poison'); 
+                 poison.tickCooldown = 1.5; // Reset the cooldown
+            }
+
+            if (poison.timer <= 0) {
+                this.game.addLog("The poison wears off.");
+                delete this.player.activeEffects.poison;
+            }
         }
 
         // --- Check for enemy dynamic changes BEFORE updating UI ---
@@ -285,6 +309,20 @@ class Combat {
         }
         this.game.addLog(logMessage);
         
+        // Apply Poison if applicable
+        if (this.enemy.appliesPoison && damageDealt > 0) { // Only apply if damage was dealt
+            if (!this.player.activeEffects.poison) { // Don't stack duration if already poisoned
+                 this.player.activeEffects.poison = {
+                    // Store the damage range, not a single value
+                    damageRange: this.enemy.poisonDamage, 
+                    duration: this.enemy.poisonDuration,
+                    timer: this.enemy.poisonDuration, 
+                    tickCooldown: 1.5 
+                };
+                this.game.addLog(`<span style="color: #ab47bc;">You have been poisoned!</span>`);
+            }
+        }
+
         this.ui.updateCombatantHealth(
             'player', 
             this.player.health, 
