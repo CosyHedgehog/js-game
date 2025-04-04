@@ -261,17 +261,15 @@ class Sharpen {
         let successMessage = "";
         const originalName = item.name.replace(/^Sharpened |^Honed /i, ''); // Get base name
 
+        // Use current name for messages and prepending
+        const currentName = item.name;
+
         if (type === 'attack') {
             item.isSharpened = true; // Set the flag
             const currentAttack = item.stats.attack || 0;
             item.stats.attack = currentAttack + 1;
-            successMessage = `Sharpened ${originalName}! Attack +1.`;
-            // Update name based on whether it was already honed
-            if (item.isHoned) {
-                item.name = `Sharpened Honed ${originalName}`;
-            } else {
-                item.name = `Sharpened ${originalName}`;
-            }
+            successMessage = `Sharpened ${currentName}! Attack +1.`;
+            item.name = `Sharpened ${currentName}`; // Prepend
             item.description = item.description.replace(/Attack: \+\d+/, `Attack: +${item.stats.attack}`);
         } else if (type === 'speed') {
             item.isHoned = true; // Set the flag
@@ -282,13 +280,8 @@ class Sharpen {
                 return; // Exit if speed can't be reduced further
             } else {
                 item.speed = newSpeed;
-                successMessage = `Honed ${originalName}! Speed -0.2s.`;
-                // Update name based on whether it was already sharpened
-                if (item.isSharpened) {
-                    item.name = `Honed Sharpened ${originalName}`;
-                } else {
-                    item.name = `Honed ${originalName}`;
-                }
+                successMessage = `Honed ${currentName}! Speed -0.2s.`;
+                item.name = `Honed ${currentName}`; // Prepend
                 item.description = item.description.replace(/Speed: [\d.]+s/, `Speed: ${item.speed.toFixed(1)}s`);
                 if (!item.description.includes("Speed:")) {
                     item.description += `\nSpeed: ${item.speed.toFixed(1)}s`;

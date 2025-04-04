@@ -263,24 +263,22 @@ class Armoury {
             this.game.addLog(`${item.name} has already been reinforced.`);
             return;
         }
-        if (type === 'health' && item.isFortified === true) {
-            this.game.addLog(`${item.name} has already been fortified.`);
-            return;
-        }
+
+        // Flags for naming logic
+        const wasForged = item.isForged === true;
+        const wasFortified = item.isFortified === true;
+        const wasReinforced = item.isReinforced === true;
 
         let successMessage = "";
-        const originalName = item.name.replace(/^Reinforced |^Fortified /i, ''); // Get base name
+        // Get base name by removing all potential prefixes
+        const originalName = item.name.replace(/^(Forged |Reinforced |Fortified )+/i, '');
 
         if (type === 'defense') {
             item.isReinforced = true; // Set flag
             item.stats.defense = (item.stats.defense || 0) + 1;
-            successMessage = `Reinforced ${originalName}! Defense +1.`;
-            // Update name based on whether it was already fortified
-            if (item.isFortified) {
-                item.name = `Reinforced Fortified ${originalName}`;
-            } else {
-                item.name = `Reinforced ${originalName}`;
-            }
+            successMessage = `Reinforced ${item.name}! Defense +1.`;
+            item.name = `Reinforced ${item.name}`;
+
             const defenseMatch = item.description.match(/Defense: \+\d+/);
             if (defenseMatch) {
                 item.description = item.description.replace(/Defense: \+\d+/, `Defense: +${item.stats.defense}`);
@@ -290,13 +288,9 @@ class Armoury {
         } else if (type === 'health') {
             item.isFortified = true; // Set flag
             item.stats.maxHealth = (item.stats.maxHealth || 0) + 3;
-            successMessage = `Fortified ${originalName}! Max HP +3`;
-            // Update name based on whether it was already reinforced
-            if (item.isReinforced) {
-                item.name = `Fortified Reinforced ${originalName}`;
-            } else {
-                item.name = `Fortified ${originalName}`;
-            }
+            successMessage = `Fortified ${item.name}! Max HP +3`;
+            item.name = `Fortified ${item.name}`;
+
             const maxHpMatch = item.description.match(/Max HP: \+\d+/);
             if (maxHpMatch) {
                 const currentBonus = parseInt(maxHpMatch[0].match(/\d+/)[0]);

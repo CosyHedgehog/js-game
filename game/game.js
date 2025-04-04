@@ -755,7 +755,9 @@ class Game {
             return null;
         }
         // Simple deep copy for plain objects; use structuredClone for more complex objects if needed
-        return JSON.parse(JSON.stringify(template));
+        const newItem = JSON.parse(JSON.stringify(template));
+        newItem.baseId = itemId; // Add baseId tracking
+        return newItem;
     }
 
 }
