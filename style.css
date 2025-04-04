@@ -2903,10 +2903,13 @@ html {
     color: #777;
     cursor: default;
     position: relative; /* Base for absolute children */
-    /* overflow: hidden; */
-    text-overflow: ellipsis;
-    white-space: normal;
-    overflow: visible;
+    overflow: hidden; /* CORRECT - We want this */
+    text-overflow: ellipsis; /* This only affects the slot's own text, not children */
+    white-space: normal;    /* CONFLICT? - Tells slot's text to wrap */
+    /* overflow: visible; -- Was removed correctly */
+    /* ... other styles ... */
+    word-wrap: break-word; /* CONFLICT? - Tells slot's text how to break */
+    /* ... other styles ... */
     z-index: 1; /* Base stacking context */
     box-sizing: border-box; /* Ensure padding/border included */
     word-wrap: break-word; /* Help prevent long item names causing overflow */
@@ -4851,4 +4854,16 @@ html {
 #blacksmith-leave-button:hover {
     background-color: #6a6a6a;
     transform: translateY(-1px);
+}
+
+/* Find and modify the rule for item names in inventory slots */
+.inventory-slot .item-name {
+    /* ... existing styles ... */
+    display: block;         /* Or inline-block, depending on layout */
+    white-space: nowrap;    /* Prevent text from wrapping */
+    overflow: hidden;       /* Hide overflow */
+    text-overflow: ellipsis; /* Add ellipsis (...) */
+    max-width: 100%;        /* Ensure it doesn't overflow parent */
+    /* You might also consider a slightly smaller default font size: */
+    /* font-size: 0.85em; */
 }

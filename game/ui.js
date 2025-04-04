@@ -360,8 +360,16 @@ class UI {
             slot.classList.remove('slot-empty', 'slot-filled', 'dragging', 'equipped', 'food-stunned'); 
 
             if (item) {
-                slot.textContent = item.name;
+                slot.classList.remove('slot-empty');
                 slot.classList.add('slot-filled');
+                // Apply truncation logic and set text content
+                const MAX_NAME_LENGTH = 18; // Adjust this character limit as desired
+                let displayName = item.name;
+                if (item.name.length > MAX_NAME_LENGTH) {
+                    displayName = item.name.substring(0, MAX_NAME_LENGTH - 1) + '…'; // Truncate and add ellipsis
+                }
+                // Set the truncated or full name directly as the slot's text content
+                slot.textContent = displayName;
                 slot.draggable = true; // Only filled slots are draggable
 
                 // --- Draggable Source Listener (for FILLED slots only) ---
@@ -427,16 +435,26 @@ class UI {
                         slot.style.cursor = 'default';
                     }
                     
-                    let tooltipHTML = '';
+                    let tooltipContent = '';
                     if (originalActionText) {
-                        tooltipHTML += `<span class="tooltip-action">${originalActionText}</span><br>`;
+                        tooltipContent += `<div class="tooltip-action">${originalActionText}</div>`;
                     }
-                    tooltipHTML += item.description || 'No description';
+                    tooltipContent += `<div class="tooltip-item-name">${item.name}</div>`;
+                    tooltipContent += item.description || 'No description';
 
-                    slot.addEventListener('mouseenter', (e) => { 
-                        this.showTooltip(tooltipHTML, this.itemTooltip, e)
-                    }); 
-                    slot.addEventListener('mouseleave', () => this.hideTooltip(this.itemTooltip));                 
+                    // Add event listeners for tooltip
+                    slot.addEventListener('mouseenter', (e) => { // 'e' is defined here
+                        // Construct tooltip content *inside* the listener
+                        let currentTooltipContent = '';
+                        if (currentActionText) {
+                            currentTooltipContent += `<div class="tooltip-action">${currentActionText}</div>`;
+                        }
+                        currentTooltipContent += `<div class="tooltip-item-name">${item.name}</div>`;
+                        currentTooltipContent += item.description || 'No description';
+
+                        // Call showTooltip here
+                        this.showTooltip(currentTooltipContent.replace(/\n/g, '<br>'), this.itemTooltip, e);
+                    });
                     
                     if (this.game.state === 'blacksmith' && (item.type === 'weapon' || item.type === 'armor')) {
                         slot.classList.add('blacksmith-valid');
@@ -471,12 +489,15 @@ class UI {
                         currentActionText = "[You are stunned!]";
                     }
                     
-                    let tooltipHTML = '';
+                    let tooltipContent = '';
                     if (currentActionText) {
-                        tooltipHTML += `<span class="tooltip-action">${currentActionText}</span><br>`;
+                        tooltipContent += `<div class="tooltip-action">${currentActionText}</div>`;
                     }
-                    tooltipHTML += item.description || 'No description';
-                    this.showTooltip(tooltipHTML, this.itemTooltip, e);
+                    tooltipContent += `<div class="tooltip-item-name">${item.name}</div>`;
+                    tooltipContent += item.description || 'No description';
+
+                    // Show tooltip
+                    this.showTooltip(tooltipContent.replace(/\n/g, '<br>'), this.itemTooltip, e);
                 };
                 const leaveHandler = () => {
                      this.hideTooltip(this.itemTooltip);
