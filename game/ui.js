@@ -95,6 +95,10 @@ class UI {
         this.combatPlayerTimerContainer = document.querySelector('.player-side .attack-timer:not(.breath-timer)');
         this.combatEnemyTimerContainer = document.querySelector('.enemy-side .attack-timer:not(.breath-timer)');
         // Note: Breath timer container already cached
+
+        this.roundAreaElement = document.getElementById('round-area');
+        // Cache Area Description Element
+        this.areaDescriptionElement = document.getElementById('area-description'); 
     }
 
     cacheDynamicElements() {
@@ -261,7 +265,8 @@ class UI {
             defense: this.statDefenseElement,
             speed: this.statSpeedElement,
             gold: this.statGoldElement,
-            round: this.roundAreaElement
+            round: this.roundAreaElement,
+            area: this.areaDescriptionElement
         };
 
         for (const key in statElements) {
@@ -678,6 +683,27 @@ class UI {
            
            // Set the dynamic tooltip text
            this.roundAreaElement.dataset.tooltipText = roundTooltipText;
+        }
+
+        // *** Update Area Description ***
+        if (this.areaDescriptionElement) {
+            let areaName = "";
+            let areaTooltip = "";
+            const round = this.game.currentRound;
+
+            if (round <= 10) {
+                areaName = "[Spider Cave]";
+                areaTooltip = "You are exploring the spider cave";
+            } else if (round <= 20) {
+                areaName = "[Ogre Pass]";
+                areaTooltip = "You adventure through the ogre pass";
+            } else {
+                areaName = "[Dragon Nest]";
+                areaTooltip = "You brave the dragon nest";
+            }
+
+            this.areaDescriptionElement.textContent = areaName;
+            this.areaDescriptionElement.dataset.tooltipText = areaTooltip;
         }
     }
 

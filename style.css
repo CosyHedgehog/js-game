@@ -3940,3 +3940,22 @@ html {
         /* border-color: rgba(255, 140, 0, 0.7); */
     }
 }
+
+/* Area Description Styling */
+#area-description {
+    font-size: 0.9em;      /* Slightly smaller than round display */
+    color: #a0a0a0;        /* Greyish color */
+    margin-top: 4px;       /* Small space below round display */
+    text-align: center;    /* Center the text */
+    font-style: italic;    /* Italicize for flavor */
+    height: 1.2em;         /* Prevent layout shift if text changes */
+    line-height: 1.2em;
+    cursor: default;       /* Default cursor on hover */
+    transition: color 0.2s;
+}
+
+#area-description:hover {
+    color: #cccccc;       /* Slightly brighter on hover */
+}
+
+/* Tooltip Styling */
