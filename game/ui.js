@@ -20,7 +20,7 @@ class UI {
         this.playerStatsArea = document.getElementById('player-stats-area');
         this.inventoryGrid = document.getElementById('inventory-grid');
         this.itemTooltip = document.getElementById('item-tooltip');
-        
+        this.treasureArea = document.getElementById('treasure-area');
         // Initialize equipmentTextDisplay as an empty object
         this.equipmentTextDisplay = {}; 
         // Select elements using data-slot in cacheDynamicElements or here
@@ -824,6 +824,7 @@ class UI {
         this.lootArea.classList.add('hidden');
         this.fishingArea.classList.add('hidden');
         this.outputLogArea.classList.add('hidden');
+        this.treasureArea.classList.add('hidden');
         if (this.toggleLogButton) this.toggleLogButton.textContent = 'Show Log';
 
         const trapArea = document.getElementById('trap-area');
