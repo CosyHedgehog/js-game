@@ -18,16 +18,16 @@ class Game {
 
     EVENT_PROBABILITY = [
         { type: 'monster', weight: 30 },
-        { type: 'rest', weight: 10 },
-        { type: 'shop', weight: 100 },
-        { type: 'alchemist', weight: 10 },
+        { type: 'rest', weight: 100 },
+        { type: 'shop', weight: 5 },
+        { type: 'alchemist', weight: 5 },
         { type: 'treasure_chest', weight: 10 },
         { type: 'fishing', weight: 10 },
-        { type: 'blacksmith', weight: 5 },
         { type: 'sharpen', weight: 10 },
-        { type: 'armorsmith', weight: 5 },
-        { type: 'trap', weight: 5 }
+        { type: 'armorsmith', weight: 10 },
+        { type: 'trap', weight: 10 }
     ];
+    // { type: 'blacksmith', weight: 5 }, removed for now
 
     startGame() {
         this.ui.renderAll();
