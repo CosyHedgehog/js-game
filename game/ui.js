@@ -762,20 +762,6 @@ class UI {
         let buttonDisabled = false;
         let requirementHTML = '';
         
-        const hasFishingRod = this.game.player.inventory.some(item => item && item.id === 'fishing_rod');
-        const hasHammer = this.game.player.inventory.some(item => item && item.id === 'blacksmith_hammer');
-
-        if (choice.encounter.type === 'fishing') {
-            if (!hasFishingRod) {
-                requirementHTML = '<div style="color: #ff4444; margin-bottom: 10px;">Requires: Fishing Rod</div>';
-                buttonDisabled = true;
-            }
-        } else if (choice.encounter.type === 'blacksmith' || choice.encounter.type === 'armorsmith') {
-            if (!hasHammer) {
-                requirementHTML = '<div style="color: #ff4444; margin-bottom: 10px;">Requires: Blacksmith Hammer</div>';
-                buttonDisabled = true;
-            }
-        }
         details.innerHTML = requirementHTML + this.game.getEncounterDetails(choice.encounter);
         confirmationBox.appendChild(details);
 
