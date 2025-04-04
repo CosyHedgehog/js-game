@@ -140,19 +140,32 @@ class Sharpen {
                     sharpenSlot.classList.add('crafting-slot-filled');
 
                     const previewElement = document.getElementById('sharpen-preview');
+                    const isAlreadySharpened = removedItem.isSharpened === true;
+                    const isAlreadyHoned = removedItem.isHoned === true;
+
                     const currentAttack = (removedItem.stats.attack || 0);
                     const newAttack = currentAttack + 1;
                     const currentSpeed = (removedItem.speed ?? this.game.player.defaultAttackSpeed);
                     const newSpeedValue = Math.max(0.1, currentSpeed - 0.2);
 
-                    previewElement.innerHTML = `
-                        Current: Atk ${currentAttack} / Spd ${currentSpeed.toFixed(1)}s <br>
-                        Sharpen: Atk ${newAttack} / Spd ${currentSpeed.toFixed(1)}s <br>
-                        Hone:    Atk ${currentAttack} / Spd ${newSpeedValue.toFixed(1)}s
-                    `;
+                    let previewHTML = `Current: Atk ${currentAttack} / Spd ${currentSpeed.toFixed(1)}s<br>`;
+                    if (isAlreadySharpened && isAlreadyHoned) {
+                        previewHTML += `<span style="color: #aaa;">Fully Enhanced!</span>`;
+                    } else if (isAlreadySharpened) {
+                        previewHTML += `Sharpen: <span style="color: #aaa;">Already Sharpened</span><br>`;
+                        previewHTML += `Hone:    Atk ${currentAttack} / Spd ${newSpeedValue.toFixed(1)}s`;
+                    } else if (isAlreadyHoned) {
+                        previewHTML += `Sharpen: Atk ${newAttack} / Spd ${currentSpeed.toFixed(1)}s<br>`;
+                        previewHTML += `Hone:    <span style="color: #aaa;">Already Honed</span>`;
+                    } else {
+                        previewHTML += `Sharpen: Atk ${newAttack} / Spd ${currentSpeed.toFixed(1)}s <br>`;
+                        previewHTML += `Hone:    Atk ${currentAttack} / Spd ${newSpeedValue.toFixed(1)}s`;
+                    }
 
-                    document.getElementById('sharpen-attack-button').disabled = false;
-                    document.getElementById('sharpen-speed-button').disabled = false;
+                    previewElement.innerHTML = previewHTML;
+
+                    document.getElementById('sharpen-attack-button').disabled = isAlreadySharpened;
+                    document.getElementById('sharpen-speed-button').disabled = isAlreadyHoned || newSpeedValue === currentSpeed;
 
                     this.ui.renderInventory();
                     this.ui.renderEquipment();
@@ -235,32 +248,46 @@ class Sharpen {
             return;
         }
 
+        // Check if already enhanced with the selected type
+        if (type === 'attack' && item.isSharpened === true) {
+            this.game.addLog(`${item.name} has already been sharpened.`);
+            return;
+        }
+        if (type === 'speed' && item.isHoned === true) {
+            this.game.addLog(`${item.name} has already been honed.`);
+            return;
+        }
+
         let successMessage = "";
-        let alreadyEnhanced = false;
+        const originalName = item.name.replace(/^Sharpened |^Honed /i, ''); // Get base name
 
         if (type === 'attack') {
+            item.isSharpened = true; // Set the flag
             const currentAttack = item.stats.attack || 0;
             item.stats.attack = currentAttack + 1;
-            successMessage = `Sharpened ${item.name}! Attack +1.`;
-            if (!item.name.startsWith("Honed ") && !item.name.startsWith("Sharpened ")) {
-                item.name = `Sharpened ${item.name}`;
-            } else if (item.name.startsWith("Honed ")) {
-                item.name = item.name.replace("Honed", "Sharpened");
+            successMessage = `Sharpened ${originalName}! Attack +1.`;
+            // Update name based on whether it was already honed
+            if (item.isHoned) {
+                item.name = `Sharpened Honed ${originalName}`;
+            } else {
+                item.name = `Sharpened ${originalName}`;
             }
             item.description = item.description.replace(/Attack: \+\d+/, `Attack: +${item.stats.attack}`);
         } else if (type === 'speed') {
+            item.isHoned = true; // Set the flag
             const currentSpeed = (item.speed ?? this.game.player.defaultAttackSpeed);
             const newSpeed = Math.max(0.1, currentSpeed - 0.2);
             if (newSpeed === currentSpeed) {
-                alreadyEnhanced = true;
                 this.game.addLog(`Cannot hone ${item.name} further (minimum 0.1s speed).`);
+                return; // Exit if speed can't be reduced further
             } else {
                 item.speed = newSpeed;
-                successMessage = `Honed ${item.name}! Speed -0.2s.`;
-                if (!item.name.startsWith("Honed ") && !item.name.startsWith("Sharpened ")) {
-                    item.name = `Honed ${item.name}`;
-                } else if (item.name.startsWith("Sharpened ")) {
-                    item.name = item.name.replace("Sharpened", "Honed");
+                successMessage = `Honed ${originalName}! Speed -0.2s.`;
+                // Update name based on whether it was already sharpened
+                if (item.isSharpened) {
+                    item.name = `Honed Sharpened ${originalName}`;
+                } else {
+                    item.name = `Honed ${originalName}`;
                 }
                 item.description = item.description.replace(/Speed: [\d.]+s/, `Speed: ${item.speed.toFixed(1)}s`);
                 if (!item.description.includes("Speed:")) {
@@ -271,8 +298,6 @@ class Sharpen {
             this.game.addLog("Unknown enhancement type.");
             return;
         }
-
-        if (alreadyEnhanced) return;
 
         item.value = Math.floor(item.value * 1.2);
 

@@ -1660,130 +1660,162 @@ html {
 }
 
 #sharpen-area {
-    padding: 20px;
+    background-color: #4a4a4a; /* Medium grey background */
+    border: 1px solid #666;
+    border-radius: 8px;
+    padding: 25px;
+    max-width: 450px; /* Constrain width */
+    margin: 20px auto; /* Center it */
+    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
     text-align: center;
 }
 
+#sharpen-area h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #e5e5e5; /* Light grey */
+    font-size: 1.5em;
+    text-shadow: 1px 1px 2px #222;
+}
+
+#sharpen-area p {
+    color: #c0c0c0; /* Lighter grey text */
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+/* Container for the slot if needed, otherwise style slot directly */
 .sharpen-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 20px 0;
+    margin-bottom: 20px;
 }
 
 .sharpen-slot {
-    width: 120px;
-    height: 80px;
-    border: 2px solid #666;
-    border-radius: 5px;
-    padding: 10px;
-    cursor: pointer;
-    background: #2a2a2a;
-    transition: all 0.2s;
-}
-
-.sharpen-slot:hover {
-    background-color: #555;
-}
-
-/* Styles for drag-over feedback */
-.sharpen-slot.drag-over-valid {
-    border: 2px dashed #4CAF50;
-    background-color: rgba(76, 175, 80, 0.1);
-}
-
-.sharpen-slot.drag-over-invalid {
-    border: 2px dashed #f44336;
-    background-color: rgba(244, 67, 54, 0.1);
+    background-color: #333; /* Dark slot background */
+    border: 2px dashed #555; /* Dashed border */
+    border-radius: 6px;
+    padding: 20px;
+    min-height: 60px; /* Ensure decent height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.2s, border-color 0.2s;
+    margin: 0 auto 15px auto; /* Center slot */
+    max-width: 300px; /* Limit slot width */
 }
 
 .sharpen-slot-label {
     font-size: 0.8em;
     color: #888;
     margin-bottom: 5px;
+    text-transform: uppercase;
+    display: none; /* Hide label by default */
+}
+.sharpen-slot.crafting-slot-filled .sharpen-slot-label {
+    display: block; /* Show label when filled */
 }
 
+
 .sharpen-slot-content {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #888;
+    color: #999;
+    font-style: italic;
 }
 
 .sharpen-slot.crafting-slot-filled .sharpen-slot-content {
-    color: white;
+    color: #e0e0e0; /* Light text for item name */
+    font-style: normal;
+    font-weight: bold;
+    font-size: 1.1em;
 }
 
-.sharpen-selection-menu {
-    position: absolute;
-    background: #1a1a1a;
-    border: 1px solid #444;
-    border-radius: 5px;
-    padding: 10px;
-    z-index: 1000;
-    max-height: 300px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
+.sharpen-slot:hover {
+    background-color: #3a3a3a;
+    border-color: #777;
 }
 
-.sharpen-item-option {
-    padding: 8px 12px;
-    background: none;
-    border: 1px solid #444;
-    color: white;
-    text-align: left;
-    cursor: pointer;
-    border-radius: 3px;
+.sharpen-slot.drag-over-valid {
+    background-color: #3a5a3a; /* Greenish tint */
+    border-color: #6a8a6a;
+    border-style: solid;
 }
 
-.sharpen-item-option:hover {
-    background: #333;
+.sharpen-slot.drag-over-invalid {
+    background-color: #5a3a3a; /* Reddish tint */
+    border-color: #8a6a6a;
+    border-style: solid;
 }
 
+/* Preview Area */
 #sharpen-preview {
+    background-color: #383838;
+    border: 1px solid #505050;
+    border-radius: 4px;
+    padding: 10px 15px;
+    margin-bottom: 20px;
+    color: #b0b0b0;
     font-size: 0.9em;
-    color: #aaa;
-    padding: 15px;
-    margin: 10px 0;
+    line-height: 1.6;
+    min-height: 50px; /* Ensure space */
 }
 
-#sharpen-button {
-    padding: 10px 20px;
-    background: #4a4a4a;
-    border: none;
+/* Button Container */
+#sharpen-area .button-container { /* Use a specific container if you added one, otherwise target buttons directly */
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+/* Action Buttons */
+#sharpen-attack-button,
+#sharpen-speed-button {
+    background-color: #6a6a6a; /* Slightly lighter grey */
+    color: #fff;
+    border: 1px solid #888;
+    padding: 10px 18px;
     border-radius: 5px;
-    color: white;
+    font-size: 0.95em;
     cursor: pointer;
-    margin: 10px;
+    transition: background-color 0.2s, transform 0.1s;
 }
 
-#sharpen-button:hover:not(:disabled) {
-    background: #5a5a5a;
+#sharpen-attack-button:hover:not(:disabled),
+#sharpen-speed-button:hover:not(:disabled) {
+    background-color: #7a7a7a;
+    transform: translateY(-1px);
 }
 
-#sharpen-button:disabled {
-    background: #333;
-    cursor: not-allowed;
+#sharpen-attack-button:disabled,
+#sharpen-speed-button:disabled {
+    background-color: #404040;
+    color: #888;
+    border-color: #555;
+    cursor: default; /* Change to default cursor */
 }
 
+/* Leave Button */
 #sharpen-leave-button {
-    margin-top: 10px;
+    background-color: #5a5a5a; /* Darker grey, distinct from actions */
+    color: #ddd;
+    border: 1px solid #777;
     padding: 10px 20px;
-    background: #333;
-    border: none;
     border-radius: 5px;
-    color: white;
+    font-size: 0.95em;
     cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    display: block; /* Center it */
+    margin: 15px auto 0 auto; /* Add space above and center */
+    width: fit-content;
 }
 
 #sharpen-leave-button:hover {
-    background: #444;
+    background-color: #6a6a6a;
+    transform: translateY(-1px);
 }
 
-/* Add these styles */
+
+
 #armourer-area {
     text-align: center;
     padding: 20px;
@@ -3307,18 +3339,6 @@ html {
     text-align: right; /* Align text WITHIN the span to the right */
 }
 
-/* Special case for HP to span both columns if needed, or adjust structure */
-/* Example: If HP should be centered on its own line: */
-/* 
-.stats-grid > .stat-item:first-child { 
-    grid-column: 1 / -1; 
-    justify-self: center; 
-    display: inline-flex; 
-    grid-template-columns: auto auto; 
-}
-*/
-
-/* ... existing code ... */
 
 #equip-tooltip {
     position: fixed; /* Change to fixed positioning */
@@ -4218,13 +4238,9 @@ html {
     cursor:default;
 }
 
-#forge-area {
-    padding: 20px;
-}
-
 .forge-container {
     background-color: #2c2c2e; /* Darker grey */
-    padding: 10px;
+    padding: 5px;
     border-radius: 8px;
     border: 1px solid #444;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
