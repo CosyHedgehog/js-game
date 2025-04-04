@@ -479,13 +479,11 @@ class Game {
                    const slotSelector = `.inventory-slot[data-index="${inventoryIndex}"]`;
                    const amountToShow = useResult.healedAmount || 0; // Show +0 if full health
                    const splatType = useResult.item?.isPotion ? 'potion-heal' : 'heal'; 
-                   console.log(`Attempting to create splat. Selector: "${slotSelector}", Amount: ${amountToShow}, Type: ${splatType}`); 
                    this.ui.createDamageSplat(slotSelector, amountToShow, splatType); // Pass the specific type
                 } else if (useResult.buffType) { // NEW: Check for buffs
                     const slotSelector = `.inventory-slot[data-index="${inventoryIndex}"]`;
                     const buffAmount = useResult.buffAmount;
                     const buffSplatType = `buff-${useResult.buffType}`; // e.g., buff-attack
-                    console.log(`Attempting to create splat. Selector: "${slotSelector}", Amount: ${buffAmount}, Type: ${buffSplatType}`); 
                     this.ui.createDamageSplat(slotSelector, buffAmount, buffSplatType);
                 }
 
@@ -696,7 +694,6 @@ class Game {
             const [key, bossData] = bossEntry;
             // *** Add the ID to the boss data object ***
             const bossDataWithId = { ...bossData, id: key }; 
-            console.log(`[Game] Found Level 10 Boss: ${bossDataWithId.name} with ID: ${bossDataWithId.id}`);
             this.ui.renderBossEncounter(bossDataWithId);
         } else {
             console.error(`[Game] Could not find boss data for ID: ${bossId}`);
@@ -712,7 +709,6 @@ class Game {
             const [key, bossData] = bossEntry;
             // *** Add the ID to the boss data object ***
             const bossDataWithId = { ...bossData, id: key };
-            console.log(`[Game] Found Level 20 Boss: ${bossDataWithId.name} with ID: ${bossDataWithId.id}`);
             this.ui.renderBossEncounter(bossDataWithId);
         } else {
             console.error(`[Game] Could not find boss data for ID: ${bossId}`);
@@ -728,7 +724,6 @@ class Game {
             const [key, bossData] = bossEntry;
             // *** Add the ID to the boss data object ***
             const bossDataWithId = { ...bossData, id: key }; 
-            console.log(`[Game] Found Final Boss: ${bossDataWithId.name} with ID: ${bossDataWithId.id}`);
             this.ui.renderBossEncounter(bossDataWithId, titleText);
         } else {
             console.error(`[Game] Could not find boss data for ID: ${bossId}`);

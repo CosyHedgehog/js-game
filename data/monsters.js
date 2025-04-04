@@ -3,7 +3,7 @@ const ROUND_11_20_COMMON_MONSTERS = ['giant_rat', 'large_spider', 'cave_bat'];
 const ROUND_21_30_COMMON_MONSTERS = ['giant_rat', 'large_spider', 'cave_bat'];
 const ROUND_10_MINI_BOSSES = ['swiftmaw', 'venox'];
 const ROUND_20_MINI_BOSSES = ['shockstone_colossus', 'rok'];
-const FINAL_BOSS = 'dragon'
+const FINAL_BOSS = 'ancient_dragon';
 
 const MONSTERS = {
 
@@ -106,17 +106,23 @@ const MONSTERS = {
 
 
     // === Round 30 Final Boss ===
-    'dragon': {
+    'ancient_dragon': {
         name: 'Ancient Dragon', health: 100, attack: 10, defense: 10, speed: 4, goldDrop: [50, 75],
         hasBreathAttack: true,
         breathAttackInterval: 12, // seconds
-        breathAttackDamage: [5, 10], // Raw damage range
+        breathAttackDamage: [4, 8], // Raw damage range
         hardenThreshold: 0.25, // Hardens below 25% health
         hardenDefenseBonus: 5, // Adds +5 Defense when hardened
-        description: "A colossal beast of legend. Periodically unleashes devastating fiery breath. Its scales harden significantly when wounded.",
+        description: "A colossal beast of legend.",
+        mechanics: "Unleashes devastating firebreath every 12 seconds,  dealing 4-8 damage that cannot be blocked and burns the player for 4 seconds.\n When critically wounded (below 25% health), its scales harden, boosting defense by 5.",
+        breathDotDamage: 1, // Damage per tick
+        breathDotDuration: 5, // Total duration in seconds add + 1 second
+        breathDotTickInterval: 1, // Seconds between ticks
         lootTable: [
-            { itemId: 'dragon_ring', chance: 1.0 },
-        ]
+            { itemId: 'dragon_scale', chance: 0.8 }, 
+            { itemId: 'dragon_heart', chance: 0.3 }, 
+            { itemId: 'gold', quantity: [500, 1000], chance: 1.0 }
+        ],
     },
 
     // === Misc Monsters

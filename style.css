@@ -3911,3 +3911,32 @@ html {
 .boss-engage-start {
     animation: boss-engage-zoom 0.5s ease-in forwards;
 }
+
+.damage-splat.burn {
+    color: #ff8c00; /* Dark Orange */
+    text-shadow: 0 0 3px #ff4500, 0 0 5px #ff0000; /* Orange/Red Glow */
+    /* You can adjust font-size or other properties if needed */
+}
+
+/* Style for when player is burning */
+.player-side.player-burning {
+    /* box-shadow: 0 0 15px 5px rgba(255, 100, 0, 0.7); <-- REMOVE static shadow */
+    /* border: 2px solid #ff8c00; */
+    animation: burning-pulse 1.2s infinite ease-in-out; /* APPLY the animation */
+}
+
+/* NEW: Keyframes for burning pulse animation */
+@keyframes burning-pulse {
+    0% {
+        box-shadow: 0 0 8px 3px rgba(255, 100, 0, 0.6); /* Less intense glow */
+        /* border-color: rgba(255, 140, 0, 0.7); */
+    }
+    50% {
+        box-shadow: 0 0 18px 7px rgba(255, 80, 0, 0.8); /* More intense glow */
+        /* border-color: rgba(255, 100, 0, 1.0); */
+    }
+    100% {
+        box-shadow: 0 0 8px 3px rgba(255, 100, 0, 0.6); /* Back to less intense */
+        /* border-color: rgba(255, 140, 0, 0.7); */
+    }
+}

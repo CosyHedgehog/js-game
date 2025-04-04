@@ -24,6 +24,8 @@ class Combat {
         this.enemy.attackTimer = 0;
         this.player.pendingActionDelay = 0;
         this.player.attackTimerPaused = false;
+        
+        this.player.activeEffects = {};
 
         const runButton = document.getElementById('combat-run-button');
         if (runButton) {
@@ -37,6 +39,8 @@ class Combat {
     start() {
         this.game.addLog(`Combat started: Player vs ${this.enemy.name}!`);
         
+        this.player.activeEffects = {};
+
         const playerSide = document.querySelector('.player-side');
         if (playerSide) {
             playerSide.classList.remove('player-escape-animation');
@@ -93,9 +97,20 @@ class Combat {
         // --------------------------------------
 
         this.intervalId = setInterval(() => this.tick(), this.tickRate);
+
+        // *** Stop round indicator animation ***
+        if (this.game.ui.roundAreaElement) {
+            this.game.ui.roundAreaElement.classList.remove('round-miniboss', 'round-finalboss');
+        }
+        this.game.addLog(`You encounter a ${this.enemy.name}!`);
     }
 
     tick() {
+        const now = Date.now();
+        const delta = now - this.lastTickTime;
+        this.lastTickTime = now;
+        const tickSeconds = delta / 1000; // *** Use actual elapsed time ***
+
         let playerActed = false;
         let enemyActed = false;
         let poisonDamageThisTick = 0;
@@ -121,8 +136,8 @@ class Combat {
         // Handle Player Poison Effect
         if (this.player.activeEffects.poison) {
             const poison = this.player.activeEffects.poison;
-            poison.timer = Math.max(0, poison.timer - this.timeScale); // Decrement total duration timer
-            poison.tickCooldown = Math.max(0, poison.tickCooldown - this.timeScale); // Decrement tick cooldown
+            poison.timer = Math.max(0, poison.timer - tickSeconds); // Use tickSeconds
+            poison.tickCooldown = Math.max(0, poison.tickCooldown - tickSeconds); // Use tickSeconds
             
             // Deal damage when tick cooldown reaches zero
             if (poison.tickCooldown <= 0 && poison.timer > 0) { 
@@ -138,6 +153,29 @@ class Combat {
             if (poison.timer <= 0) {
                 this.game.addLog("The poison wears off.");
                 delete this.player.activeEffects.poison;
+            }
+        }
+
+        // *** Handle Player Burning Effect ***
+        if (this.player.activeEffects.burning) {
+            const burn = this.player.activeEffects.burning;
+            // *** Decrement using actual elapsed time ***
+            burn.timeRemaining = Math.max(0, burn.timeRemaining - tickSeconds); 
+            burn.timeUntilNextTick = Math.max(0, burn.timeUntilNextTick - tickSeconds);
+
+            // Deal damage when tick cooldown reaches zero
+            if (burn.timeUntilNextTick <= 0) { 
+                 const burnDmg = burn.damage; 
+                 this.player.takeRawDamage(burnDmg); 
+                 this.game.addLog(`<span style="color: #ff8c00;">You take ${burnDmg} burn damage!</span>`);
+                 this.ui.createDamageSplat('.player-side', burnDmg, 'burn'); 
+                 burn.timeUntilNextTick = burn.tickInterval; // Reset cooldown
+            }
+
+            // Expiry check (runs AFTER potential damage tick)
+            if (burn.timeRemaining <= 0) {
+                this.game.addLog("The fire subsides.");
+                delete this.player.activeEffects.burning;
             }
         }
 
@@ -364,29 +402,34 @@ class Combat {
     }
 
     enemyBreathAttack() {
+        // *** Calculate and apply INSTANT damage ***
         const damage = this.game.getRandomInt(this.enemy.breathAttackDamage[0], this.enemy.breathAttackDamage[1]);
         this.player.takeRawDamage(damage);
         
+        // *** Update log message to include instant damage ***
         const logMessage = `<span style="color: #ff8c00;">The ${this.enemy.name} breathes fire, engulfing you for ${damage} damage!</span>`;
         this.game.addLog(logMessage);
         
-        this.ui.updateCombatantHealth(
-            'player', 
-            this.player.health, 
-            this.player.getMaxHealth(), 
-            damage, 
-            0,
-            false, 
-            false 
-        );
-        this.ui.updatePlayerStats();
+        // *** Create splat for the instant damage ***
+        this.ui.createDamageSplat('.player-side', damage, 'burn'); // Re-use burn style for splat
         
-        const playerSide = document.querySelector('.player-side');
-        if (playerSide) {
-            playerSide.classList.add('player-breath-hit');
-            setTimeout(() => {
-                playerSide.classList.remove('player-breath-hit');
-            }, 1000);
+        // Visual effect for the breath hit (Shake animation)
+        this.ui.playPlayerAnimation('player-breath-hit', 1000);
+
+        // Apply the DoT effect (remains unchanged)
+        if (this.enemy.breathDotDamage && this.enemy.breathDotDuration && this.enemy.breathDotTickInterval) {
+            if (!this.player.activeEffects.burning) { 
+                 this.player.activeEffects.burning = {
+                    damage: this.enemy.breathDotDamage,
+                    duration: this.enemy.breathDotDuration,
+                    tickInterval: this.enemy.breathDotTickInterval,
+                    timeRemaining: this.enemy.breathDotDuration,
+                    timeUntilNextTick: this.enemy.breathDotTickInterval 
+                 };
+                 this.game.addLog("You are set ablaze!"); // Keep separate log for DoT application
+            }
+        } else {
+             console.warn(`[Combat] ${this.enemy.name} hasBreathAttack but no DoT properties defined.`);
         }
     }
 
@@ -532,6 +575,8 @@ class Combat {
         this.player.resetCombatBuffs();
         // Interval is already cleared 
         // this.ui.hideCombatUI(); // Let animation handle hiding
+        
+        this.player.activeEffects = {};
 
         // Cleanup: Remove speed boost class if present
         const enemyTimerContainer = document.querySelector('.enemy-side .attack-timer:not(.breath-timer)');

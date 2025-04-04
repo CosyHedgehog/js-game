@@ -224,15 +224,6 @@ class UI {
                         tooltipText = combatElements[key]?.text || "No description available."; 
                     }
                     
-                    // --- DEBUG LOGGING --- 
-                    console.log(`Tooltip Enter: Key=${key}`);
-                    console.log(`  Element:`, el);
-                    console.log(`  Base Text:`, el.dataset.tooltipTextBase);
-                    console.log(`  Dynamic Text:`, el.dataset.tooltipTextDynamic);
-                    console.log(`  Tooltip Text After Assignment:`, tooltipText); // Log after assignment
-                    // ---------------------
-
-                    // Replace placeholder X with actual speed value for timers
                     if (key === 'playerTimer') {
                         tooltipText = tooltipText.replace('X', this.game?.player?.getAttackSpeed().toFixed(1) || '?');
                     } else if (key === 'enemyTimer') {
@@ -838,43 +829,51 @@ class UI {
     }
 
     updateCombatStats(player, enemy) {
+        // --- Player Stats ---
         if (this.combatPlayerAtk) { 
             this.combatPlayerAtk.textContent = player.getAttack();
-             // Remove tooltip reset logic
-             // const playerAtkParent = this.combatPlayerAtk.closest('span');
-             // if (playerAtkParent) playerAtkParent.dataset.tooltipTextDynamic = null; 
         }
         if (this.combatPlayerDef) {
             this.combatPlayerDef.textContent = player.getDefense();
-            // Remove tooltip reset logic
-            // const playerDefParent = this.combatPlayerDef.closest('span');
-            // if (playerDefParent) playerDefParent.dataset.tooltipTextDynamic = null; 
         }
-        
-        if (this.combatEnemyAtk) {
-            this.combatEnemyAtk.textContent = enemy.currentAttack; 
-            // const atkParent = this.combatEnemyAtk.closest('span'); // Remove tooltip logic
-            if (enemy.currentAttack > enemy.attack) {
-                this.combatEnemyAtk.classList.add('enraged');
-                 // if (atkParent) atkParent.dataset.tooltipTextDynamic = "Enemy is ENRAGED! Attack is significantly higher.";
-            } else {
-                this.combatEnemyAtk.classList.remove('enraged');
-                 // if (atkParent) atkParent.dataset.tooltipTextDynamic = null; 
+        // *** ADD: Update Player Health Display in Combat UI ***
+        if (this.combatPlayerHp) { 
+            const playerMaxHp = player.getMaxHealth();
+            this.combatPlayerHp.textContent = `${Math.ceil(player.health)}/${playerMaxHp}`;
+            const playerHealthBar = document.querySelector('.player-health');
+            if (playerHealthBar) {
+                playerHealthBar.style.width = `${(player.health / playerMaxHp) * 100}%`;
             }
         }
         
+        // --- Enemy Stats ---
+        if (this.combatEnemyAtk) {
+            this.combatEnemyAtk.textContent = enemy.currentAttack; 
+            if (enemy.currentAttack > enemy.attack) {
+                this.combatEnemyAtk.classList.add('enraged');
+            } else {
+                this.combatEnemyAtk.classList.remove('enraged');
+            }
+        }
         if (this.combatEnemyDef) {
             this.combatEnemyDef.textContent = enemy.currentDefense; 
-            // const defParent = this.combatEnemyDef.closest('span'); // Remove tooltip logic
             if (enemy.scalesHardened) { 
                 this.combatEnemyDef.classList.add('hardened');
-                 // if (defParent) defParent.dataset.tooltipTextDynamic = "Enemy scales are HARDENED! Defense is increased.";
             } else {
                 this.combatEnemyDef.classList.remove('hardened');
-                 // if (defParent) defParent.dataset.tooltipTextDynamic = null; 
+            }
+        }
+        // *** ADD: Update Enemy Health Display in Combat UI ***
+        if (this.combatEnemyHp) { 
+            const enemyMaxHp = enemy.maxHealth;
+            this.combatEnemyHp.textContent = `${Math.ceil(enemy.health)}/${enemyMaxHp}`;
+            const enemyHealthBar = document.querySelector('.enemy-health');
+            if (enemyHealthBar) {
+                 enemyHealthBar.style.width = `${(enemy.health / enemyMaxHp) * 100}%`;
             }
         }
 
+        // --- Status Effects Visuals ---
         // Update player poisoned status visual
         const playerSide = document.querySelector('.player-side');
         if (playerSide) {
@@ -882,6 +881,10 @@ class UI {
                 playerSide.classList.add('player-poisoned');
             } else {
                 playerSide.classList.remove('player-poisoned');
+            }
+            // *** ADD: Update player burning status visual ***
+            if (!player.activeEffects.burning) {
+                 playerSide.classList.remove('player-burning');
             }
         }
     }
@@ -1105,7 +1108,7 @@ class UI {
             }
         } else if (type === 'heal' || type === 'potion-heal') { 
             splat.textContent = '+' + amount;
-        } else if (type === 'poison') { // New poison type
+        } else if (type === 'poison' || type === 'burn') { // New poison type
              splat.textContent = amount; // Show poison damage amount
         } else if (type === 'buff-attack') {
             splat.textContent = `+${amount} Atk`;
@@ -1119,8 +1122,6 @@ class UI {
         }
 
         container.appendChild(splat);
-        console.log("[createDamageSplat] Damage splat appended:", splat);
-        // Re-enable removal
         setTimeout(() => splat.remove(), 2000);
     }
 
@@ -1184,12 +1185,8 @@ class UI {
         const engageButton = this.choicesArea.querySelector('#boss-engage-button');
         if (engageButton) {
             engageButton.onclick = () => {
-                console.log("[UI] Engage button clicked. Preparing to start combat..."); // Log click
-                console.log("[UI] Boss Data ID:", bossData.id); // Log the ID
-                // Add animation class, then start combat after delay
                 bossEncounterDiv.classList.add('boss-engage-start');
                 setTimeout(() => {
-                    console.log("[UI] Starting encounter via game.startEncounter..."); // Log before calling startEncounter
                     this.choicesArea.classList.add('hidden'); // Hide choices area
                     this.game.startEncounter({ type: 'monster', monsterId: bossData.id });
                 }, 500); // Match animation duration
@@ -1199,4 +1196,32 @@ class UI {
         }
     }
     // ---------------------------------
+
+    // NEW Method to play a temporary animation on the player combat area
+    playPlayerAnimation(animationClass, duration) {
+        const playerSide = document.querySelector('.player-side');
+        if (!playerSide) return;
+
+        // Remove the class if it's already there (e.g., rapid hits)
+        playerSide.classList.remove(animationClass);
+        
+        // Force reflow to restart animation if class is re-added quickly
+        void playerSide.offsetWidth;
+
+        // Add the animation class
+        playerSide.classList.add(animationClass);
+
+        // Set timeout to remove the class AND potentially add burning class
+        setTimeout(() => {
+            if (!playerSide) return; // Guard against element disappearing
+            
+            playerSide.classList.remove(animationClass); // Remove the hit animation class
+
+            // Check if player is burning AFTER hit animation finishes
+            if (this.game && this.game.player && this.game.player.activeEffects.burning) {
+                 playerSide.classList.add('player-burning'); // Start the pulse
+            }
+            
+        }, duration);
+    }
 }
