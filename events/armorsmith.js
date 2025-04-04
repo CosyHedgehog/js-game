@@ -43,6 +43,10 @@ class Armoury {
             <div class="armourer-slot-content">Drag armor here</div>
         `;    
         
+        const previewArea = document.createElement('div');
+        previewArea.id = 'armourer-preview';
+        previewArea.innerHTML = 'Place armor in the slot to see enhancement options';
+        
         const buttonContainer = document.createElement('div');
         buttonContainer.style.display = 'flex';
         buttonContainer.style.gap = '10px';
@@ -70,6 +74,7 @@ class Armoury {
         
         slotContainer.appendChild(armorSlot);
         armourerArea.appendChild(slotContainer);
+        armourerArea.appendChild(previewArea);
         buttonContainer.appendChild(enhanceDefenseButton);
         buttonContainer.appendChild(enhanceHealthButton);
         armourerArea.appendChild(buttonContainer);
@@ -137,8 +142,32 @@ class Armoury {
                         }
                     };    
 
-                    document.getElementById('armourer-defense-button').disabled = false;
-                    document.getElementById('armourer-health-button').disabled = false;
+                    const isAlreadyReinforced = removedItem.isReinforced === true;
+                    const isAlreadyFortified = removedItem.isFortified === true;
+
+                    const previewElement = document.getElementById('armourer-preview');
+                    const currentDefense = (removedItem.stats.defense || 0);
+                    const newDefense = currentDefense + 1;
+                    const currentMaxHealth = (removedItem.stats.maxHealth || 0);
+                    const newMaxHealth = currentMaxHealth + 3;
+
+                    let previewHTML = `Current: Def ${currentDefense} / Max HP +${currentMaxHealth}<br>`;
+                    if (isAlreadyReinforced && isAlreadyFortified) {
+                        previewHTML += `<span style="color: #aaa;">Fully Enhanced!</span>`;
+                    } else if (isAlreadyReinforced) {
+                        previewHTML += `Reinforce: <span style="color: #aaa;">Already Reinforced</span><br>`;
+                        previewHTML += `Fortify:   Def ${currentDefense} / Max HP +${newMaxHealth}`;
+                    } else if (isAlreadyFortified) {
+                        previewHTML += `Reinforce: Def ${newDefense} / Max HP +${currentMaxHealth}<br>`;
+                        previewHTML += `Fortify:   <span style="color: #aaa;">Already Fortified</span>`;
+                    } else {
+                        previewHTML += `Reinforce: Def ${newDefense} / Max HP +${currentMaxHealth}<br>`;
+                        previewHTML += `Fortify:   Def ${currentDefense} / Max HP +${newMaxHealth}`;
+                    }
+                    previewElement.innerHTML = previewHTML;
+
+                    document.getElementById('armourer-defense-button').disabled = isAlreadyReinforced;
+                    document.getElementById('armourer-health-button').disabled = isAlreadyFortified;
                     
                     this.ui.renderInventory();
                     this.ui.renderEquipment();
@@ -191,6 +220,11 @@ class Armoury {
         if (enhanceDefenseButton) enhanceDefenseButton.disabled = true;
         if (enhanceHealthButton) enhanceHealthButton.disabled = true;
 
+        const previewArea = document.getElementById('armourer-preview');
+        if (previewArea) {
+            previewArea.innerHTML = 'Place armor in the slot to see enhancement options';
+        }
+
         this.ui.renderInventory();
         this.ui.renderEquipment();
     }
@@ -224,15 +258,28 @@ class Armoury {
             return;
         }
 
+        // Check if already enhanced with the selected type
+        if (type === 'defense' && item.isReinforced === true) {
+            this.game.addLog(`${item.name} has already been reinforced.`);
+            return;
+        }
+        if (type === 'health' && item.isFortified === true) {
+            this.game.addLog(`${item.name} has already been fortified.`);
+            return;
+        }
+
         let successMessage = "";
+        const originalName = item.name.replace(/^Reinforced |^Fortified /i, ''); // Get base name
 
         if (type === 'defense') {
+            item.isReinforced = true; // Set flag
             item.stats.defense = (item.stats.defense || 0) + 1;
-            successMessage = `Reinforced ${item.name}! Defense +1.`;
-            if (!item.name.startsWith("Fortified ") && !item.name.startsWith("Reinforced ")) {
-                item.name = `Reinforced ${item.name}`;
-            } else if (item.name.startsWith("Fortified ")) {
-                item.name = item.name.replace("Fortified", "Reinforced");
+            successMessage = `Reinforced ${originalName}! Defense +1.`;
+            // Update name based on whether it was already fortified
+            if (item.isFortified) {
+                item.name = `Reinforced Fortified ${originalName}`;
+            } else {
+                item.name = `Reinforced ${originalName}`;
             }
             const defenseMatch = item.description.match(/Defense: \+\d+/);
             if (defenseMatch) {
@@ -241,12 +288,14 @@ class Armoury {
                 item.description += `\nDefense: +${item.stats.defense}`;
             }
         } else if (type === 'health') {
+            item.isFortified = true; // Set flag
             item.stats.maxHealth = (item.stats.maxHealth || 0) + 3;
-            successMessage = `Fortified ${item.name}! Max HP +3`;
-            if (!item.name.startsWith("Fortified ") && !item.name.startsWith("Reinforced ")) {
-                item.name = `Fortified ${item.name}`;
-            } else if (item.name.startsWith("Reinforced ")) {
-                item.name = item.name.replace("Reinforced", "Fortified");
+            successMessage = `Fortified ${originalName}! Max HP +3`;
+            // Update name based on whether it was already reinforced
+            if (item.isReinforced) {
+                item.name = `Fortified Reinforced ${originalName}`;
+            } else {
+                item.name = `Fortified ${originalName}`;
             }
             const maxHpMatch = item.description.match(/Max HP: \+\d+/);
             if (maxHpMatch) {

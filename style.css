@@ -4477,3 +4477,30 @@ html {
     max-width: 350px;
   }
 }
+
+/* Add this rule to style.css */
+
+#armourer-defense-button:disabled,
+#armourer-health-button:disabled {
+    opacity: 0.5;
+    cursor: default; /* Use default cursor */
+}
+
+/* Add this rule to style.css */
+
+#armourer-preview {
+    background-color: #383838; /* Match sharpen preview */
+    border: 1px solid #505050;
+    border-radius: 4px;
+    padding: 10px 15px;
+    margin-bottom: 20px; /* Space before buttons */
+    color: #b0b0b0;
+    font-size: 0.9em;
+    line-height: 1.6;
+    min-height: 50px; /* Ensure space */
+    text-align: center;
+    width: 80%; /* Example width, adjust as needed */
+    max-width: 350px; /* Limit width */
+    margin-left: auto; /* Center */
+    margin-right: auto;
+}

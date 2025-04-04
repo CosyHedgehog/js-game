@@ -49,6 +49,7 @@ class Starting {
             items: [
                 { id: 'wooden_hammer', count: 1 },
                 { id: 'blacksmith_hammer', count: 1 },
+                { id: 'leather_armor', count: 1 },
                 { id: 'cooked_meat', count: 2 },
             ]
         },
