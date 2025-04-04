@@ -1,7 +1,7 @@
 const ROUND_1_10_COMMON_MONSTERS = ['giant_rat', 'large_spider', 'cave_bat'];
 const ROUND_11_20_COMMON_MONSTERS = ['giant_rat', 'large_spider', 'cave_bat'];
 const ROUND_21_30_COMMON_MONSTERS = ['giant_rat', 'large_spider', 'cave_bat'];
-const ROUND_10_MINI_BOSSES = ['swiftmaw', 'venox'];
+const ROUND_10_MINI_BOSSES = ['blackfang', 'venox'];
 const ROUND_20_MINI_BOSSES = ['shockstone_colossus', 'rok'];
 const FINAL_BOSS = 'ancient_dragon';
 
@@ -44,10 +44,10 @@ const MONSTERS = {
     },
 
     // === Round 10 Mini-Boss ===
-    'swiftmaw': {
-        name: 'Swiftmaw [Rapid Wolf]', health: 25, attack: 5, defense: 1, speed: 1.2,
+    'Scrix': {
+        name: 'Scrix [Swift Spider]', health: 25, attack: 5, defense: 1, speed: 1.2,
         goldDrop: [1, 15],
-        description: "A swift and agile wolf",
+        description: "A swift and agile spider.",
         mechanics: "Attacks 50% faster when below 50% health.",
         lootTable: [
             { itemId: 'speed_potion', chance: 0.4 },
@@ -74,11 +74,11 @@ const MONSTERS = {
 
 
     // === Round 20 Mini-Boss ===
-    'rok': {
-        name: 'Rok [Ogre]', health: 50, attack: 5, defense: 6, speed: 2.5, goldDrop: [15, 30],
+    'krug': {
+        name: 'Krug [Ogre]', health: 50, attack: 5, defense: 6, speed: 2.5, goldDrop: [15, 30],
         enrageThreshold: 0.4,
         enrageAttackMultiplier: 3,
-        description: "A heavily armored ogre.",
+        description: "An angry ogre.",
         mechanics: "Becomes enraged below 40% health!",
         lootTable: [
             { itemId: 'iron_greatsword', chance: 0.3 },
@@ -87,13 +87,13 @@ const MONSTERS = {
         ]
     },
 
-    'shockstone_colossus': {
-        name: 'Shockstone Colossus [Golem]', health: 60, attack: 5, defense: 8, speed: 3.0,
+    'grog': {
+        name: 'Grog [Ogre]', health: 60, attack: 5, defense: 8, speed: 3.0,
         goldDrop: [20, 35],
         hasStunningSlam: true,
         stunChance: 0.25, // 25% chance on hit
         stunDuration: 4, // Player attack delayed 2.5s
-        description: "A massive golem formed from enchanted rock.",
+        description: "An armored ogre with a large club.",
         mechanics: "25% chance to stun on attack!",
         lootTable: [
             { itemId: 'greater_defense_potion', chance: 0.4 }, 

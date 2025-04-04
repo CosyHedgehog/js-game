@@ -1250,4 +1250,117 @@ class UI {
             
         }, duration);
     }
+
+    renderLoot(lootItems, goldAmount) {
+        this.clearMainArea(); // Hide other areas
+        this.lootArea.innerHTML = ''; // Clear previous loot
+        this.lootArea.classList.remove('hidden');
+        
+        // *** Trigger the fade-in animation ***
+        this.lootArea.classList.remove('animate-loot-in'); // Remove class if it lingered
+        void this.lootArea.offsetWidth; // Force reflow to restart animation
+        this.lootArea.classList.add('animate-loot-in');
+        setTimeout(() => {
+            if (this.lootArea) { // Check if element still exists
+                this.lootArea.classList.remove('animate-loot-in');
+            }
+        }, 500); // Remove class after animation duration (500ms)
+        
+        // Build the loot display HTML
+        let lootHTML = `<h3>Loot Dropped</h3>`;
+        const lootDisplayArea = document.createElement('div');
+        lootDisplayArea.className = 'loot-display-area';
+
+        const itemsContainer = document.createElement('div');
+        itemsContainer.className = 'loot-items-container';
+
+        const descriptionBox = document.createElement('div');
+        descriptionBox.id = 'loot-item-description';
+        descriptionBox.textContent = 'Hover over an item to see details.';
+
+        if (goldAmount > 0) {
+            const goldContainer = document.createElement('div');
+            goldContainer.className = 'loot-gold-container';
+            goldContainer.innerHTML = `<span><i class="fas fa-coins"></i> Gold: ${goldAmount}</span>`;
+            const takeGoldButton = document.createElement('button');
+            takeGoldButton.textContent = 'Take Gold';
+            takeGoldButton.className = 'loot-gold-button';
+            takeGoldButton.onclick = () => {
+                this.game.player.addGold(goldAmount);
+                this.game.addLog(`Took ${goldAmount} gold.`);
+                goldContainer.remove(); // Remove gold display after taking
+                this.updatePlayerStats();
+            };
+            goldContainer.appendChild(takeGoldButton);
+            itemsContainer.appendChild(goldContainer); // Add gold to items container for now
+        }
+
+        if (lootItems.length === 0 && goldAmount <= 0) {
+            itemsContainer.innerHTML += '<p class="loot-empty-message">No loot dropped.</p>';
+        } else {
+            lootItems.forEach((item, index) => {
+                if (!item) return; // Skip null items if any
+                const itemElement = document.createElement('div');
+                itemElement.className = 'loot-item';
+                itemElement.dataset.lootIndex = index;
+                itemElement.innerHTML = `
+                    <span>${item.name} ${item.quantity > 1 ? `(x${item.quantity})` : ''}</span>
+                    <button class="loot-item-button">Take</button>
+                `;
+
+                // Add hover listener for description
+                itemElement.addEventListener('mouseenter', () => {
+                    descriptionBox.textContent = item.description || 'No description available.';
+                    itemElement.classList.add('selected');
+                });
+                itemElement.addEventListener('mouseleave', () => {
+                    // Optionally clear description or set back to default?
+                    // descriptionBox.textContent = 'Hover over an item to see details.'; 
+                    itemElement.classList.remove('selected');
+                });
+
+                // Add click listener to take item
+                const takeButton = itemElement.querySelector('.loot-item-button');
+                takeButton.onclick = (event) => {
+                    event.stopPropagation(); // Prevent triggering hover again if mouse moves slightly
+                    const added = this.game.player.addItem(item);
+                    if (added) {
+                        this.game.addLog(`Took ${item.name}.`);
+                        itemElement.remove(); // Remove item from loot list
+                        this.renderInventory(); // Update inventory display
+                        // Check if description box needs update if the hovered item was taken
+                        if (descriptionBox.textContent === (item.description || 'No description available.')) {
+                             descriptionBox.textContent = 'Hover over an item to see details.';
+                        }
+                    } else {
+                        this.game.addLog('Inventory is full!');
+                        // Maybe flash the button red or provide other feedback?
+                    }
+                };
+                itemsContainer.appendChild(itemElement);
+            });
+        }
+        
+        lootDisplayArea.appendChild(itemsContainer);
+        lootDisplayArea.appendChild(descriptionBox);
+        lootHTML += lootDisplayArea.outerHTML; // Add the display area HTML
+        
+        // Buttons at the bottom
+        lootHTML += `
+            <div class="loot-buttons">
+                <button id="loot-take-all-button">Take All</button>
+                <button id="loot-continue-button">Continue</button>
+            </div>
+        `;
+
+        this.lootArea.innerHTML = lootHTML;
+
+        // Add listeners for Take All and Continue buttons
+        document.getElementById('loot-take-all-button')?.addEventListener('click', () => this.handleTakeAllLoot());
+        document.getElementById('loot-continue-button')?.addEventListener('click', () => this.game.proceedToNextRound());
+    }
+
+    handleTakeAllLoot() {
+        // Implementation of handleTakeAllLoot method
+    }
 }

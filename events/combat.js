@@ -183,7 +183,7 @@ class Combat {
         const healthPercent = this.enemy.health / this.enemy.maxHealth;
 
         // Dynamic Speed Check (Venfing)
-        if (this.enemy.name === MONSTERS['swiftmaw']?.name) {
+        if (this.enemy.name === MONSTERS['scrix']?.name) {
             const wasFast = this.enemy.currentSpeed === 0.6; // Check previous state
             let isNowFast = false;
             

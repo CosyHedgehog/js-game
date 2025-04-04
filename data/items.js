@@ -6,7 +6,7 @@ const ITEMS = {
     },
     'wooden_dagger': {
         id: 'wooden_dagger', name: 'Wooden Dagger', type: 'weapon', slot: 'weapon', hands: 1,
-        stats: { attack: 1 }, speed: 1.2, value: 4,
+        stats: { attack: 1 }, speed: 1.5, value: 4,
         description: 'A lightweight wooden dagger.\nAttack: +1\nSpeed: 1.2s\n1-Handed'
     },
     'wooden_hammer': {

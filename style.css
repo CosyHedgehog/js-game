@@ -3701,9 +3701,14 @@ html {
   to { opacity: 1; transform: translateY(0); }
 }
 
-.loot-appearing {
-   animation: loot-fade-in 0.7s ease-out;
-}
+/* .loot-appearing {
+   animation: loot-fade-in 0.4s ease-out;
+} */
+
+    /* Apply animation ONLY when this class is present */
+    #loot-area.animate-loot-in {
+        animation: loot-fade-in 0.5s ease-out forwards;
+    }
 
 /* Player Poisoned Indicator */
 .player-poisoned {
