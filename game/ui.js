@@ -843,10 +843,24 @@ class UI {
         this.clearMainArea();
         this.combatArea.classList.remove('hidden');
         document.getElementById('combat-enemy-name').textContent = enemy.name;
-        this.updateCombatantHealth('player', player.health, player.maxHealth);
-        this.updateCombatantHealth('enemy', enemy.health, enemy.maxHealth);
+
+        // --- Set Initial Health Display Directly --- 
+        const initialPlayerPercentage = (player.health / player.getMaxHealth()) * 100;
+        if (this.combatPlayerHp) this.combatPlayerHp.textContent = `${player.health}/${player.getMaxHealth()}`;
+        const playerHealthBar = document.querySelector('.player-health');
+        if (playerHealthBar) playerHealthBar.style.width = `${initialPlayerPercentage}%`;
+
+        const initialEnemyPercentage = (enemy.health / enemy.maxHealth) * 100;
+        if (this.combatEnemyHp) this.combatEnemyHp.textContent = `${enemy.health}/${enemy.maxHealth}`;
+        const enemyHealthBar = document.querySelector('.enemy-health');
+        if (enemyHealthBar) enemyHealthBar.style.width = `${initialEnemyPercentage}%`;
+        // -------------------------------------------
+        
+        // Keep calls for initial timer and stats display
+        // this.updateCombatantHealth('player', player.health, player.maxHealth); // REMOVE
+        // this.updateCombatantHealth('enemy', enemy.health, enemy.maxHealth); // REMOVE
         this.updateCombatTimers(player.attackTimer, enemy.attackTimer);
-        this.updateCombatStats(player, enemy); // Call the new function here
+        this.updateCombatStats(player, enemy); 
     }
 
     hideCombatUI() {
@@ -864,9 +878,8 @@ class UI {
             healthBar.classList.remove('damage-taken');
             void healthBar.offsetWidth;
             healthBar.classList.add('damage-taken');
-            if (damage > 0 || fullBlock) {
-                this.createDamageSplat('.player-side', damage, splatType, blocked, fullBlock);
-            }
+            this.createDamageSplat('.player-side', damage, splatType, blocked, fullBlock);
+            
         } else if (who === 'enemy') {
             this.combatEnemyHp.textContent = `${current}/${max}`;
             const healthBar = document.querySelector('.enemy-health');
@@ -874,9 +887,8 @@ class UI {
             healthBar.classList.remove('damage-taken');
             void healthBar.offsetWidth;
             healthBar.classList.add('damage-taken');
-            if (damage > 0 || fullBlock) {
-                this.createDamageSplat('.enemy-side', damage, splatType, blocked, fullBlock);
-            }
+            this.createDamageSplat('.enemy-side', damage, splatType, blocked, fullBlock);
+            
         }
     }
 
@@ -1032,11 +1044,17 @@ class UI {
             const y = Math.random() * 60 - 20;
             splat.style.top = `calc(30% + ${y}px)`;
         }
+        // Use type for class and text formatting
+        splat.classList.add(type); // Add class based on type (damage, heal, poison, etc.)
+        
         if (type === 'damage') {
             if (fullBlock) {
                 splat.innerHTML = `<span style="color: #aaaaaa">BLOCKED ${blocked}</span>`;
+            } else if (amount === 0) { // NEW: Check for zero damage
+                 splat.textContent = "0";
+                 splat.classList.add('zero-damage'); // Add specific class for styling
             } else {
-                splat.textContent = amount;
+                splat.textContent = amount; // Display the numeric damage amount > 0
             }
         } else if (type === 'heal' || type === 'potion-heal') { 
             splat.textContent = '+' + amount;

@@ -680,7 +680,8 @@ class Game {
     }
 
     generateLevel10Boss() {
-        const miniBossId = ROUND_10_MINI_BOSSES[0]; // Should be 'venfing'
+        const miniBossIndex = this.getRandomInt(0, ROUND_10_MINI_BOSSES.length - 1);
+        const miniBossId = ROUND_10_MINI_BOSSES[miniBossIndex];
         const monsterData = MONSTERS[miniBossId];
 
         if (!monsterData) {
@@ -723,7 +724,8 @@ class Game {
     
     rollDamage(maxAttack) {
         if (maxAttack <= 0) return 0;
-        return this.getRandomInt(1, maxAttack);
+        // Roll between 0 and maxAttack (inclusive)
+        return this.getRandomInt(0, maxAttack);
     }
     
     createItem(itemId) {

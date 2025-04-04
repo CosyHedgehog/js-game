@@ -1,7 +1,7 @@
 const ROUND_1_10_COMMON_MONSTERS = ['giant_rat', 'large_spider', 'cave_bat'];
 const ROUND_11_20_COMMON_MONSTERS = ['giant_rat', 'large_spider', 'cave_bat'];
 const ROUND_21_30_COMMON_MONSTERS = ['giant_rat', 'large_spider', 'cave_bat'];
-const ROUND_10_MINI_BOSSES = ['venzid'];
+const ROUND_10_MINI_BOSSES = ['venfing', 'venzid'];
 const ROUND_20_MINI_BOSSES = ['griznokt'];
 const FINAL_BOSS = 'dragon'
 
@@ -57,9 +57,9 @@ const MONSTERS = {
     'venzid': {
         name: 'Venzid [Spider]', 
         health: 20, 
-        attack: 1,
+        attack: 2,
         defense: 4,
-        speed: 1.2, 
+        speed: 1.8, 
         goldDrop: [10, 20],
         appliesPoison: true,
         poisonDamage: [1, 2],
