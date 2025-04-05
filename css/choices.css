@@ -1,8 +1,13 @@
 .choices-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    /* grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); */
+    grid-template-columns: repeat(2, 1fr); /* Force 2 columns */
+    grid-auto-rows: 1fr; /* Make rows equal height */
     gap: 15px;
     padding: 10px;
+    width: 100%; /* Fill width */
+    height: 100%; /* Fill height */
+    box-sizing: border-box; /* Include padding in height/width */
 }
 
 .choice-card {
@@ -15,6 +20,8 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    height: 100%; /* Fill grid cell height */
+    box-sizing: border-box; /* Include padding */
 }
 
 .choice-card:hover {

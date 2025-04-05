@@ -4,6 +4,10 @@ body {
     font-family: Arial, sans-serif;
     background: #1a1a1a;
     color: #fff;
+    height: 100vh; /* Fill viewport height */
+    display: flex;
+    align-items: center; /* Vertically center */
+    justify-content: center; /* Horizontally center */
 }
 
 html {
