@@ -597,6 +597,11 @@
     font-weight: normal;
 }
 
+/* Set default cursor for all spans inside round area */
+#round-area span {
+    cursor: default;
+}
+
 .round-pulsing {
     animation: round-update-pulse 0.7s ease-out; /* Slightly longer duration */
 }

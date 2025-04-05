@@ -1572,9 +1572,9 @@ class UI {
         startButton.className = 'choice-start-button';
         // *** Set button text based on tags ***
         if (isFinalBoss) {
-            startButton.textContent = 'Fight Final Boss';
+            startButton.textContent = 'Fight';
         } else if (isMiniBoss) {
-            startButton.textContent = 'Fight Mini-Boss';
+            startButton.textContent = 'Fight';
         } else {
             startButton.textContent = 'Fight'; // Fallback
         }

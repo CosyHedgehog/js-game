@@ -207,7 +207,6 @@ html {
 
 #equipment-area-2, #player-stats-area-2 {
     flex: 0;
-    padding: 12px;
     min-width: unset;
     max-width: 100%;
     background-color: #222;
