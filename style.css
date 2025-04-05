@@ -3387,10 +3387,12 @@ html {
 
 /* Stats Grid - Explicit Columns */
 .stats-grid {
-    display: grid; 
-    grid-template-columns: repeat(2, 1fr); /* Two equal columns */
-    gap: 5px 15px; /* Row gap, Column gap */
-    justify-items: start; /* Align items to the start of their cell */
+    display: grid;
+    grid-template-columns: auto 1fr; /* Label | Value */
+    gap: 4px 10px; /* Row gap | Column gap */
+    align-items: center;
+    /* Example: If you had 2 rows before, change to 3 */
+    grid-template-rows: repeat(3, auto); /* Explicitly 3 rows */
 }
 
 /* Stat Items - Span full width */

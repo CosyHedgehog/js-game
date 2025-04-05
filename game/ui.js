@@ -100,6 +100,9 @@ class UI {
         this.roundAreaElement = document.getElementById('round-area');
         // Cache Area Description Element
         this.areaDescriptionElement = document.getElementById('area-description'); 
+
+        // DPS Stat
+        this.statDps = document.getElementById('stat-dps-2');
     }
 
     cacheDynamicElements() {
@@ -151,6 +154,7 @@ class UI {
         this.statAttackElement = document.getElementById('stat-attack-2')?.closest('.stat-item');
         this.statDefenseElement = document.getElementById('stat-defense-2')?.closest('.stat-item');
         this.statSpeedElement = document.getElementById('stat-speed-2')?.closest('.stat-item');
+        this.statDpsElement = document.getElementById('stat-dps-2')?.closest('.stat-item');
         this.statGoldElement = document.getElementById('stat-gold-2')?.closest('#inventory-header'); // Find gold in its new parent
         
         // Cache round element for tooltip and indicators
@@ -266,6 +270,7 @@ class UI {
             defense: this.statDefenseElement,
             speed: this.statSpeedElement,
             gold: this.statGoldElement,
+            dps: this.statDpsElement,
             round: this.roundAreaElement,
             area: this.areaDescriptionElement
         };
@@ -671,11 +676,12 @@ class UI {
         }
         if (this.statSpeed) this.statSpeed.innerHTML = speedText; // Use innerHTML
         if (this.statSpeedElement) this.statSpeedElement.dataset.tooltipText = speedTooltip;
-
+        if (this.statDpsElement) this.statDpsElement.dataset.tooltipText = "Damage Per Second";
         // Gold & Round (Update normally, keep existing tooltip logic if needed)
         if (this.statGold) this.statGold.textContent = player.gold;
         if (this.statGoldElement) this.statGoldElement.dataset.tooltipText = "Your current wealth."; // Update gold tooltip text
         if (this.statHealthElement) this.statHealthElement.dataset.tooltipText = "Current Health / Maximum Health"; // Update HP tooltip text
+        if (this.statDps) this.statDps.textContent = (player.getAttack() / player.getAttackSpeed()).toFixed(1);
         
         if (this.statRound && this.game && this.roundAreaElement) { 
            const currentRound = this.game.currentRound;
@@ -727,6 +733,14 @@ class UI {
             this.areaDescriptionElement.textContent = areaName;
             this.areaDescriptionElement.dataset.tooltipText = areaTooltip;
         }
+
+        // Calculate DPS
+        const attack = this.game.player.getAttack();
+        const speed = this.game.player.getAttackSpeed();
+        const dps = speed > 0 ? (attack / speed) : 0; // Avoid division by zero
+
+        // Update DPS element
+        this.statDps.textContent = dps.toFixed(1);
     }
 
     renderChoices(choices) {
