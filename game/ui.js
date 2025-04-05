@@ -690,7 +690,7 @@ class UI {
              if (index !== null && this.game.player.inventory[index]?.stats?.defense) {
                  defenseBase += this.game.player.inventory[index].stats.defense;
              }
-        });
+         });
         let defenseText = `${defenseBase}`;
         
         // Check cache for defense tooltip
@@ -803,21 +803,17 @@ class UI {
            this.roundAreaElement.dataset.tooltipText = roundTooltipText;
         }
 
-        // *** Update Area Description ***
+        // Update Area Description
         if (this.areaDescriptionElement) {
             let areaName = "";
             let areaTooltip = "";
-            const round = this.game.currentRound;
 
-            if (round <= 10) {
+            if (this.game.currentArea === 'spider_cave') {
                 areaName = "Spider Cave";
-                areaTooltip = "You are exploring the spider cave";
-            } else if (round <= 20) {
-                areaName = "Ogre Pass";
-                areaTooltip = "You adventure through the ogre pass";
+                areaTooltip = "A dark cave filled with various species of giant spiders. Watch out for their poison!";
             } else {
-                areaName = "Dragon Nest";
-                areaTooltip = "You brave the dragon nest";
+                areaName = "Wolf Den";
+                areaTooltip = "A dangerous den inhabited by fierce wolves. Be wary of their swift attacks!";
             }
 
             this.areaDescriptionElement.textContent = areaName;
@@ -848,7 +844,7 @@ class UI {
                 card.classList.add('selected');
                 setTimeout(() => this.game.selectChoice(0), 0);
             }
-
+            
             // Get encounter details and difficulty
             const encounter = choice.encounter;
             let difficultyText = '';
@@ -963,7 +959,7 @@ class UI {
             const difficultyBadge = document.createElement('div');
             difficultyBadge.className = 'difficulty-badge';
             if (choice.type === 'combat') {
-                const playerAttack = this.game.player.getAttack();
+            const playerAttack = this.game.player.getAttack();
                 const monsterDefense = choice.monster.defense;
                 let difficulty;
                 
@@ -973,7 +969,7 @@ class UI {
                 } else if (playerAttack >= monsterDefense) {
                     difficulty = 'medium';
                     difficultyBadge.style.backgroundColor = '#ff9800';
-                } else {
+            } else {
                     difficulty = 'hard';
                     difficultyBadge.style.backgroundColor = '#f44336';
                 }
@@ -1413,12 +1409,12 @@ class UI {
                         <span class="stat-icon">❤️ Health</span>
                         <span class="stat-value">${bossData.health}</span>
                         <span class="stat-label">Health</span>
-                    </div>
+                </div>
                     <div class="monster-stat">
                         <span class="stat-icon">⚔️ Attack</span>
                         <span class="stat-value">${bossData.attack}</span>
                         <span class="stat-label">Attack</span>
-                    </div>
+            </div>
                     <div class="monster-stat">
                         <span class="stat-icon">🛡️ Defense</span>
                         <span class="stat-value">${bossData.defense}</span>
@@ -1441,9 +1437,9 @@ class UI {
         startButton.textContent = 'Fight Boss';
         startButton.onclick = () => {
             card.classList.add('boss-engage-start');
-            setTimeout(() => {
+                setTimeout(() => {
                 this.choicesArea.classList.add('hidden');
-                this.game.startEncounter({ type: 'monster', monsterId: bossData.id });
+                    this.game.startEncounter({ type: 'monster', monsterId: bossData.id });
             }, 500);
         };
         cardContent.appendChild(startButton);

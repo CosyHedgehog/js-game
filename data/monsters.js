@@ -1,11 +1,106 @@
-const ROUND_1_10_COMMON_MONSTERS = ['giant_rat', 'large_spider', 'cave_bat'];
+const SPIDER_CAVE_MONSTERS = ['giant_spider', 'web_weaver', 'poison_crawler'];
+const WOLF_DEN_MONSTERS = ['dire_wolf', 'wolf_pup', 'feral_hunter'];
 const ROUND_11_20_COMMON_MONSTERS = ['giant_rat', 'large_spider', 'cave_bat'];
 const ROUND_21_30_COMMON_MONSTERS = ['giant_rat', 'large_spider', 'cave_bat'];
-const ROUND_10_MINI_BOSSES = ['silverfang', 'venox'];
+const ROUND_10_MINI_BOSSES = { 'spider_cave': 'venox', 'wolf_den': 'silverfang' };
 const ROUND_20_MINI_BOSSES = ['krug', 'grog'];
 const FINAL_BOSS = 'ancient_dragon';
 
 const MONSTERS = {
+    // === Spider Cave Monsters ===
+    'giant_spider': {
+        name: 'Giant Spider', health: 15, attack: 2, defense: 1, speed: 1.4, goldDrop: [2, 4],
+        description: "A large arachnid with powerful fangs.",
+        lootTable: [
+            { itemTier: 'commonFood', chance: 0.4 },
+            { itemTier: 'uncommonFood', chance: 0.6 },
+            { itemTier: 'rareFood', chance: 0.1 },
+            { itemTier: 'commonItem', chance: 0.35 },
+            { itemTier: 'uncommonItem', chance: 0.07 },
+        ]
+    },
+    'web_weaver': {
+        name: 'Web Weaver', health: 12, attack: 1, defense: 3, speed: 1.8, goldDrop: [2, 5],
+        description: "A cunning spider that specializes in defensive tactics.",
+        lootTable: [
+            { itemTier: 'commonFood', chance: 0.5 },
+            { itemTier: 'uncommonFood', chance: 0.4 },
+            { itemTier: 'commonItem', chance: 0.3 },
+            { itemTier: 'uncommonItem', chance: 0.06 },
+        ]
+    },
+    'poison_crawler': {
+        name: 'Poison Crawler', health: 10, attack: 3, defense: 1, speed: 1.6, goldDrop: [3, 6],
+        appliesPoison: true,
+        poisonDamage: [1, 1],
+        poisonDuration: 5,
+        description: "A small but deadly spider with toxic venom.",
+        mechanics: "Has a chance to poison on hit.",
+        lootTable: [
+            { itemTier: 'commonFood', chance: 0.4 },
+            { itemTier: 'uncommonFood', chance: 0.3 },
+            { itemId: 'antidote_potion', chance: 0.15 },
+            { itemTier: 'commonItem', chance: 0.2 },
+        ]
+    },
+
+    // === Wolf Den Monsters ===
+    'dire_wolf': {
+        name: 'Dire Wolf', health: 18, attack: 3, defense: 1, speed: 1.3, goldDrop: [3, 5],
+        description: "A large, powerful wolf with sharp fangs.",
+        lootTable: [
+            { itemTier: 'commonFood', chance: 0.6 },
+            { itemTier: 'uncommonFood', chance: 0.4 },
+            { itemTier: 'commonItem', chance: 0.3 },
+            { itemTier: 'uncommonItem', chance: 0.08 },
+        ]
+    },
+    'wolf_pup': {
+        name: 'Wolf Pup', health: 8, attack: 1, defense: 1, speed: 1.0, goldDrop: [1, 3],
+        description: "A young wolf, quick but not very strong.",
+        lootTable: [
+            { itemTier: 'commonFood', chance: 0.7 },
+            { itemTier: 'uncommonFood', chance: 0.2 },
+            { itemTier: 'commonItem', chance: 0.1 },
+        ]
+    },
+    'feral_hunter': {
+        name: 'Feral Hunter', health: 14, attack: 2, defense: 2, speed: 1.5, goldDrop: [2, 6],
+        description: "A skilled wolf that hunts in precise strikes.",
+        lootTable: [
+            { itemTier: 'commonFood', chance: 0.5 },
+            { itemTier: 'uncommonFood', chance: 0.5 },
+            { itemTier: 'commonItem', chance: 0.25 },
+            { itemTier: 'uncommonItem', chance: 0.1 },
+        ]
+    },
+
+    // === Mini-Bosses ===
+    'silverfang': {
+        name: 'Silverfang [Alpha Wolf]', health: 30, attack: 5, defense: 1, speed: 1.2,
+        goldDrop: [10, 20],
+        description: "The alpha wolf of the den, known for its lightning-fast strikes.",
+        mechanics: "Attacks 50% faster when below 50% health.",
+        lootTable: [
+            { itemId: 'speed_potion', chance: 0.4 },
+            { itemTier: 'uncommonItem', chance: 0.2 },
+            { itemId: 'ring_of_speed', chance: 0.05 }
+        ]
+    },
+    'venox': {
+        name: 'Venox [Brood Mother]', health: 25, attack: 2, defense: 4, speed: 1.8, 
+        goldDrop: [10, 20],
+        appliesPoison: true,
+        poisonDamage: [1, 2],
+        poisonDuration: 10,
+        description: "The spider brood mother, her venom is particularly potent.",
+        mechanics: "Inflicts poison on successful attacks, dealing damage over time. Lasts 10s.",
+        lootTable: [
+            { itemId: 'health_potion', chance: 0.5 }, 
+            { itemTier: 'commonItem', chance: 0.2 },
+            { itemId: 'antidote_potion', chance: 0.1 }
+        ]
+    },
 
     // === Rounds 1-10 Common ===
     'giant_rat': { 
@@ -34,33 +129,6 @@ const MONSTERS = {
             { itemTier: 'rareFood', chance: 0.1 },
             { itemTier: 'commonItem', chance: 0.35 },
             { itemTier: 'uncommonItem', chance: 0.07 },
-        ]
-    },
-
-    // === Round 10 Mini-Boss ===
-    'silverfang': {
-        name: 'Silverfang', health: 30, attack: 5, defense: 1, speed: 1.2,
-        goldDrop: [1, 15],
-        description: "A swift and agile wolf.",
-        mechanics: "Attacks 50% faster when below 50% health.",
-        lootTable: [
-            { itemId: 'speed_potion', chance: 0.4 },
-            { itemTier: 'uncommonItem', chance: 0.2 },
-            { itemId: 'ring_of_speed', chance: 0.05 }
-        ]
-    },
-    'venox': {
-        name: 'Venox', health: 20, attack: 2, defense: 4, speed: 1.8, 
-        goldDrop: [10, 20],
-        appliesPoison: true,
-        poisonDamage: [1, 2],
-        poisonDuration: 10,
-        description: "A venomous spider.",
-        mechanics: "Inflicts poison on successful attacks, dealing damage over time. Lasts 10s.",
-        lootTable: [
-            { itemId: 'health_potion', chance: 0.5 }, 
-            { itemTier: 'commonItem', chance: 0.2 },
-            { itemId: 'antidote_potion', chance: 0.1 } // Potential new item?
         ]
     },
 

@@ -12,6 +12,7 @@ class Game {
         this.currentShopItems = [];
         this.shopCanReroll = false;
         this.pendingLoot = null; // Will hold { gold: number, items: [] }
+        this.currentArea = Math.random() < 0.5 ? 'spider_cave' : 'wolf_den';
 
         if (this.ui) { this.ui.game = this; }
     }
@@ -199,27 +200,25 @@ class Game {
             if (randomRoll < encounter.weight) {
                 chosenEncounter = { type: encounter.type };
                 
-                // If it's a monster event, pick an appropriate monster based on round
+                // If it's a monster event, pick an appropriate monster based on area
                 if (chosenEncounter.type === 'monster') {
                     let monsterPool = [];
                     if (this.currentRound >= 1 && this.currentRound <= 9) {
-                        monsterPool = ROUND_1_10_COMMON_MONSTERS;
+                        monsterPool = this.currentArea === 'spider_cave' ? SPIDER_CAVE_MONSTERS : WOLF_DEN_MONSTERS;
                     } else if (this.currentRound >= 11 && this.currentRound <= 19) {
                         monsterPool = ROUND_11_20_COMMON_MONSTERS;
                     } else if (this.currentRound >= 21 && this.currentRound <= 29) {
                         monsterPool = ROUND_21_30_COMMON_MONSTERS;
                     } else {
-                        // Fallback for edge cases or testing (e.g., round 0?)
-                        monsterPool = ROUND_1_10_COMMON_MONSTERS;
-                        console.warn(`Unexpected round (${this.currentRound}) for common monster selection. Defaulting to Round 1-10 pool.`);
+                        console.warn(`Unexpected round (${this.currentRound}) for common monster selection.`);
+                        monsterPool = this.currentArea === 'spider_cave' ? SPIDER_CAVE_MONSTERS : WOLF_DEN_MONSTERS;
                     }
                     
                     if (monsterPool.length > 0) {
                         chosenEncounter.monsterId = monsterPool[this.getRandomInt(0, monsterPool.length - 1)];
                     } else {
                         console.error(`Monster pool empty for round ${this.currentRound}! Cannot select monster.`);
-                        // Handle error state? Maybe choose a default monster?
-                        chosenEncounter = { type: 'rest' }; // Default to rest if pool is empty
+                        chosenEncounter = { type: 'rest' };
                     }
                 }
                 break;
@@ -684,17 +683,15 @@ class Game {
 
     // --- Boss Encounter Generation --- 
     generateLevel10Boss() {
-        // ** Randomly select Boss ID **
-        const bossId = ROUND_10_MINI_BOSSES[this.getRandomInt(0, ROUND_10_MINI_BOSSES.length - 1)];
+        const bossId = ROUND_10_MINI_BOSSES[this.currentArea];
         const bossEntry = Object.entries(MONSTERS).find(([key, boss]) => key === bossId);
         if (bossEntry) {
             const [key, bossData] = bossEntry;
-            // *** Add the ID to the boss data object ***
-            const bossDataWithId = { ...bossData, id: key }; 
+            const bossDataWithId = { ...bossData, id: key };
             this.ui.renderBossEncounter(bossDataWithId);
         } else {
             console.error(`[Game] Could not find boss data for ID: ${bossId}`);
-            this.generateEventChoices(); // Fallback
+            this.generateEventChoices();
         }
     }
     
