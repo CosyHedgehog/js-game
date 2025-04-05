@@ -21,32 +21,26 @@ class Forge {
         const hammerRequirementArmorer = !hasHammer ? '<span class="requirement-missing">(Requires Blacksmith Hammer)</span>' : '';
         const hammerRequirementBlacksmith = !hasHammer ? '<span class="requirement-missing">(Requires Blacksmith Hammer)</span>' : '';
 
-        // <p class="forge-prompt">Choose a station to use:</p>
-
-
         forgeArea.innerHTML = `
-            <div class="forge-container">
-                 <h3>Blacksmith Workshop</h3>
-                 <div class="forge-choices">
-                     <div class="forge-card">
-                         <h4>Weapon Station</h4>
-                         <p>Sharpen a weapon Attack (+1) or hone to increase its Speed (-0.2s).</p>
-                         <button id="forge-sharpen-button">Use Stone</button>
+            <div class="forge-container"> 
+                     <div class="choice-card"> 
+                         <h4 class="choice-title">Weapon Station</h4>
+                         <p class="choice-description">Sharpen a weapon Attack (+1) or hone to increase its Speed (-0.2s).</p>
+                         <button id="forge-sharpen-button" class="choice-start-button">Use Stone</button> 
                      </div>
-                     <div class="forge-card">
-                         <h4>Armour Station</h4>
+                     <div class="choice-card">
+                         <h4 class="choice-title">Armour Station</h4>
                          ${hammerRequirementArmorer}
-                         <p>Reinforce armor's Defense (+1) or Fortify its Max Health (+3).</p>
-                         <button id="forge-armorer-button" ${!hasHammer ? 'disabled' : ''}>Use Station</button>
+                         <p class="choice-description">Reinforce armor's Defense (+1) or Fortify its Max Health (+3).</p>
+                         <button id="forge-armorer-button" class="choice-start-button" ${!hasHammer ? 'disabled' : ''}>Use Station</button>
                      </div>
-                     <div class="forge-card">
-                         <h4>Forge</h4>
+                     <div class="choice-card">
+                         <h4 class="choice-title">Forge</h4>
                          ${hammerRequirementBlacksmith}
-                         <p>Combine two identical items (weapon or armor) into a stronger version.</p>
-                         <button id="forge-blacksmith-button" ${!hasHammer ? 'disabled' : ''}>Use Anvil</button>
+                         <p class="choice-description">Combine two identical items (weapon or armor) into a stronger version.</p>
+                         <button id="forge-blacksmith-button" class="choice-start-button" ${!hasHammer ? 'disabled' : ''}>Use Anvil</button>
                      </div>
-                 </div>
-                 <button id="forge-leave-button">Leave Forge</button>
+                 
             </div>
         `;
 
@@ -60,13 +54,6 @@ class Forge {
 
         const blacksmithButton = document.getElementById('forge-blacksmith-button');
         blacksmithButton.onclick = () => this.goToBlacksmith();
-
-        const leaveButton = document.getElementById('forge-leave-button');
-        leaveButton.onclick = () => {
-            this.game.addLog("You leave the workshop without using it.");
-            this.ui.clearMainArea();
-            this.game.proceedToNextRound();
-        }
     }
 
     goToSharpen() {

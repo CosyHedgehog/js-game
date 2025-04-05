@@ -18,6 +18,7 @@ class Starting {
                 { id: 'wooden_sword', count: 1 },
                 { id: 'wooden_shield', count: 1 },
                 { id: 'bread', count: 3 },
+                { id: 'blacksmith_hammer', count: 1 },
             ]
         },
         // fisher: {
