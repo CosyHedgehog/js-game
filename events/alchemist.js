@@ -75,10 +75,8 @@ class Alchemist {
                 <div class="item-description"> 
                     Click a potion to see its description
                 </div>
-                <div class="shop-buttons">
-                    <button id="alchemist-leave-button" class="shop-leave-button">Leave Shop</button>
-                </div>
-            </div>
+            </div> 
+            <button id="alchemist-leave-button" class="shop-leave-button">Leave Shop</button> 
         `;
 
         const existingArea = document.getElementById('alchemist-area');

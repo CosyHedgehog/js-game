@@ -50,9 +50,7 @@ class Shop {
                 </div>
                 <div class="item-description"></div>
             </div>
-            <div class="shop-buttons">
-                <button id="shop-leave-button">Leave Shop</button>
-            </div>
+            <button id="shop-leave-button" class="shop-leave-button">Leave Shop</button>
         `;
 
         shopArea.innerHTML = shopContent;
