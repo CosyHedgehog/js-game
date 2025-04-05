@@ -95,6 +95,9 @@ class UI {
         // Cache combat timer containers
         this.combatPlayerTimerContainer = document.querySelector('.player-side .attack-timer:not(.breath-timer)');
         this.combatEnemyTimerContainer = document.querySelector('.enemy-side .attack-timer:not(.breath-timer)');
+        // Add Speed elements
+        this.combatPlayerSpd = document.getElementById('combat-player-spd'); 
+        this.combatEnemySpd = document.getElementById('combat-enemy-spd');
         // Note: Breath timer container already cached
 
         this.roundAreaElement = document.getElementById('round-area');
@@ -1070,10 +1073,14 @@ class UI {
     updateCombatStats(player, enemy) {
         // --- Player Stats ---
         if (this.combatPlayerAtk) { 
-            this.combatPlayerAtk.textContent = player.getAttack();
+            this.combatPlayerAtk.textContent = `⚔️ ${player.getAttack()}`;
         }
         if (this.combatPlayerDef) {
-            this.combatPlayerDef.textContent = player.getDefense();
+            this.combatPlayerDef.textContent = `🛡️ ${player.getDefense()}`;
+        }
+        // Add Player Speed
+        if (this.combatPlayerSpd) { 
+            this.combatPlayerSpd.textContent = `⚡️ ${player.getAttackSpeed().toFixed(1)}s`;
         }
         // *** ADD: Update Player Health Display in Combat UI ***
         if (this.combatPlayerHp) { 
@@ -1087,7 +1094,7 @@ class UI {
         
         // --- Enemy Stats ---
         if (this.combatEnemyAtk) {
-            this.combatEnemyAtk.textContent = enemy.currentAttack; 
+            this.combatEnemyAtk.textContent = `⚔️ ${enemy.currentAttack}`;
             if (enemy.currentAttack > enemy.attack) {
                 this.combatEnemyAtk.classList.add('enraged');
             } else {
@@ -1095,7 +1102,7 @@ class UI {
             }
         }
         if (this.combatEnemyDef) {
-            this.combatEnemyDef.textContent = enemy.currentDefense; 
+            this.combatEnemyDef.textContent = `🛡️ ${enemy.currentDefense}`;
             if (enemy.scalesHardened) { 
                 this.combatEnemyDef.classList.add('hardened');
             } else if (enemy.packTacticsActive) {
@@ -1103,6 +1110,12 @@ class UI {
             } else {
                 this.combatEnemyDef.classList.remove('hardened');
             }
+        }
+        // Add Enemy Speed
+        if (this.combatEnemySpd) { 
+            this.combatEnemySpd.textContent = `⚡️ ${enemy.currentSpeed.toFixed(1)}s`;
+            // Add visual indicator if speed boosted?
+            // if (enemy.currentSpeed < enemy.speed) { ... }
         }
         // *** ADD: Update Enemy Health Display in Combat UI ***
         if (this.combatEnemyHp) { 
@@ -1318,13 +1331,19 @@ class UI {
 
         const splat = document.createElement('div');
         splat.className = `damage-splat ${type}`;
-        splat.style.position = 'absolute'; // Ensure absolute positioning
+        splat.style.position = 'absolute'; 
         
-        const x = Math.random() * 60 - 20;
-        splat.style.left = `calc(50% + ${x}px)`;
+        splat.style.left = '50%';
+
+        if (!selector.startsWith('.inventory-slot')) {
+            const x = Math.random() * 60 - 20;
+            splat.style.setProperty('--splat-offset-x', `${x}px`);
+        }
         
-        if (selector.includes('.inventory-slot')) { 
+        // Check if the splat is for an inventory slot and add specific class
+        if (selector.startsWith('.inventory-slot')) { 
             splat.style.top = '25%'; // Start higher within inventory slot
+            splat.classList.add('inventory-splat'); // Add specific class
         } else if (selector.includes('.trap-area-option')) { 
             splat.style.top = '30%'; // Position within the trap card
         } else if (selector === '#rest-area .rest-campfire-container') {
@@ -1620,13 +1639,13 @@ function createChoiceCard(choice) {
         difficultyBadge.textContent = difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
         content.appendChild(difficultyBadge);
 
-        const eventIcon = document.createElement('div');
+        const eventIcon = document.createElement('span');
         eventIcon.className = 'event-icon';
         eventIcon.textContent = '⚔️';
         content.appendChild(eventIcon);
 
-        const title = document.createElement('div');
-        title.className = 'choice-title';
+        const title = document.createElement('h3');
+        title.classList.add('choice-title');
         title.textContent = monster.name;
         content.appendChild(title);
 
@@ -1648,7 +1667,7 @@ function createChoiceCard(choice) {
             { icon: '❤️', value: monster.health, label: 'HP' },
             { icon: '⚔️', value: monster.attack, label: 'ATK' },
             { icon: '🛡️', value: monster.defense, label: 'DEF' },
-            { icon: '💨', value: monster.speed, label: 'SPD' }
+            { icon: '⚡', value: monster.speed, label: 'SPD' }
         ];
 
         stats.forEach(stat => {

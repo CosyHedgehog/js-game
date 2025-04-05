@@ -7,6 +7,8 @@
     position: relative;
     margin-top: auto;    /* Center vertically */
     margin-bottom: auto; /* Center vertically */
+    width: 100%; /* Ensure full width */
+    box-sizing: border-box; /* Include padding in width */
 }
 
 #round-indicator-area {
@@ -37,7 +39,7 @@
 .combat-container {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
     gap: 20px;
     margin: 20px 0;
     position: relative;
@@ -50,7 +52,8 @@
     align-items: center;
     gap: 10px;
     padding: 20px;
-    background: rgba(0, 0, 0, 0.2);
+    /* background: rgba(0, 0, 0, 0.2); */
+    background: #2a2a2a; /* Updated background color */
     border-radius: 8px;
     position: relative;
     border: 1px solid #333;
@@ -118,13 +121,24 @@
     width: 100%;
 }
 
-.combat-stats span {
+.combat-stats div {
     text-align: center;
     font-size: 0.9em;
     color: #ccc;
     background: rgba(0, 0, 0, 0.2);
     padding: 5px;
     border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3em;
+}
+
+/* Set default cursor for enemy stats */
+#combat-enemy-atk,
+#combat-enemy-def,
+#combat-enemy-spd {
+    cursor: default;
 }
 
 .combat-stats #combat-enemy-atk.enraged {
@@ -178,8 +192,9 @@
     border-radius: 4px;
     animation: splat-animation 1s ease-out forwards;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-    z-index: 10;
+    z-index: 1000;
     left: 50%;
+    font-size: 1.5em;
 }
 
 .damage-splat.damage {
@@ -545,6 +560,16 @@
 
 #loot-area.animate-loot-in {
     animation: loot-fade-in 0.5s ease-out forwards;
+}
+
+/* Make inventory splats much larger */
+.damage-splat.inventory-splat {
+    font-size: 2em; 
+    animation: inventory-splat-animation 1s ease-out forwards; /* Use specific animation */
+}
+
+.damage-splat.damage {
+    color: #f44336;
 }
 
 

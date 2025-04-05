@@ -32,7 +32,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 20px;
-  width: 100%;
+  justify-content: center;
 }
 
 .pack-option {
@@ -45,7 +45,9 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  align-items: center;
   min-height: 400px;
+  max-width: 250px;
 }
 
 .pack-option:hover {
@@ -59,11 +61,6 @@
   text-shadow: 0 0 15px rgba(255, 235, 59, 0.5);
 }
 
-.pack-option:hover .pack-stats {
-  border-color: #666;
-  background: rgba(0, 0, 0, 0.4);
-}
-
 .pack-option li {
   padding: 8px 12px;
   color: #ccc;
@@ -73,6 +70,12 @@
   background: rgba(0, 0, 0, 0.2);
   border: 1px solid #444;
   font-size: 0.9em;
+}
+
+.pack-option h4 {
+  text-align: center;
+  margin-bottom: 15px;
+  color: #eee;
 }
 
 .pack-option button {
@@ -146,10 +149,11 @@
 .pack-option ul {
   list-style: none;
   padding: 0;
-  text-align: left;
+  text-align: center;
   margin: 15px 0;
   display: grid;
   gap: 6px;
+  width: 100%;
 }
 
 .pack-item-description {

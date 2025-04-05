@@ -107,11 +107,11 @@
 @keyframes splat-animation {
     0% {
         opacity: 1;
-        transform: translateY(0) translateX(-50%);
+        transform: translateY(0) translateX(calc(-50% + var(--splat-offset-x, 0px)));
     }
     100% {
         opacity: 0;
-        transform: translateY(-60px) translateX(-50%);
+        transform: translateY(-60px) translateX(calc(-50% + var(--splat-offset-x, 0px)));
     }
 }
 
@@ -357,6 +357,18 @@
     100% {
         transform: scale(1);
         filter: brightness(1);
+    }
+}
+
+/* New animation for inventory splats with less vertical movement */
+@keyframes inventory-splat-animation {
+    0% {
+        opacity: 1;
+        transform: translateY(0) translateX(calc(-50% + var(--splat-offset-x, 0px)));
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-25px) translateX(calc(-50% + var(--splat-offset-x, 0px)));
     }
 }
 
