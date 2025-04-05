@@ -1,0 +1,131 @@
+.boss-encounter-display {
+    background: rgba(0, 0, 0, 0.4);
+    border: 2px solid #ff5722;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(255, 87, 34, 0.2);
+}
+
+.boss-encounter-title {
+    color: #ff5722;
+    font-size: 1.8em;
+    text-align: center;
+    margin-bottom: 15px;
+    text-shadow: 0 0 10px rgba(255, 87, 34, 0.3);
+}
+
+.boss-info {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+}
+
+.boss-encounter-name {
+    font-size: 1.4em;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 0 0 5px rgba(255, 87, 34, 0.5);
+}
+
+.boss-encounter-description {
+    color: #ccc;
+    text-align: center;
+    line-height: 1.5;
+    margin: 10px 0;
+    font-style: italic;
+}
+
+.boss-engage-button {
+    background: linear-gradient(135deg, #ff5722 0%, #f44336 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 4px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.boss-engage-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(244, 67, 54, 0.4);
+    background: linear-gradient(135deg, #ff7043 0%, #ff5722 100%);
+}
+
+.boss-engage-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(244, 67, 54, 0.4);
+}
+
+.boss-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin: 15px 0;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+}
+
+.boss-stat-item {
+    text-align: center;
+    padding: 8px;
+}
+
+.boss-stat-item .boss-stat-value {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-top: 5px;
+    display: block;
+}
+
+.boss-stats span:nth-child(1) .boss-stat-value { color: #4CAF50; }
+.boss-stats span:nth-child(2) .boss-stat-value { color: #f44336; }
+.boss-stats span:nth-child(3) .boss-stat-value { color: #2196F3; }
+.boss-stats span:nth-child(4) .boss-stat-value { color: #FF9800; }
+
+
+
+.boss-engage-start {
+    animation: boss-engage-zoom 0.5s ease-out;
+}
+
+.choice-card.boss-card {
+    background: linear-gradient(135deg, #2a1a1a 0%, #1a0a0a 100%);
+    border: 2px solid #f44336;
+    box-shadow: 0 0 20px rgba(244, 67, 54, 0.2);
+    transform: scale(1.02);
+}
+
+.choice-card.boss-card:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 8px 16px rgba(244, 67, 54, 0.3);
+    border-color: #ff5722;
+}
+
+.choice-card.boss-card .choice-title {
+    color: #ff5722;
+    font-size: 1.3em;
+    text-shadow: 0 0 10px rgba(255, 87, 34, 0.3);
+}
+
+.choice-card.boss-card .monster-stat {
+    background: rgba(244, 67, 54, 0.1);
+    border: 1px solid rgba(244, 67, 54, 0.2);
+}
+
+.choice-card.boss-card .monster-special {
+    background: rgba(255, 87, 34, 0.1);
+    border: 1px solid rgba(255, 87, 34, 0.3);
+    color: #ff5722;
+} 

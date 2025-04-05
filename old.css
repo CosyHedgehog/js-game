@@ -271,62 +271,7 @@ body {
     border-bottom: none;
 }
 
-/* Responsive Adjustments */
-@media (max-width: 800px) {
-    #game-body {
-        flex-direction: column; /* Stack main and right column */
-        flex-grow: 1; /* Ensure game-body takes remaining space after stats bar */
-        min-height: 0; /* Allow shrinking if needed, prevents overflow */
-    }
 
-    #right-column {
-        flex-direction: column; /* Stack inventory/equipment vertically again */
-        width: 100%;
-        height: auto; /* Let content determine height */
-        min-height: 200px; /* Minimum height for inventory area */
-        border-left: none;
-        border-top: 1px solid #444;
-        flex-grow: 1; /* Allow growing */
-    }
-
-    #main-area {
-        min-width: unset;
-        border-bottom: 1px solid #444;
-        flex: 1 1 50%; /* Allow main area to take ~60% vertical space */
-        min-height: 0; /* Allow shrinking */
-    }
-
-    #inventory-area {
-        height: 100%;
-        width: 100%;
-        border-bottom: none;
-        border-right: none;
-        /* overflow: hidden; */ /* Remove this to allow splat visibility */
-    }
-
-    #equipment-area {
-        display: none; /* Hide equipment area */
-        overflow: visible;
-    }
-
-    #inventory-grid {
-        height: calc(100% - 45px); /* Explicit height */
-        overflow-y: auto; /* Enable vertical scroll *within* the grid */
-        padding: 5px;
-        gap: 3px;
-        grid-template-columns: repeat(6, 1fr);
-        grid-template-rows: repeat(3, 1fr);
-    }
-
-    #inventory-area .inventory-slot {
-        font-size: 0.75em;
-    }
-
-    #inventory-area .inventory-slot .equipped-slot-chip {
-        font-size: 0.6em;
-        padding: 1px 4px;
-    }
-}
 
 
 /* --- Buttons (Keep Flat Style) --- */
@@ -1479,18 +1424,7 @@ html {
     background: #404040;
 }
 
-/* Responsive adjustments */
-@media (max-width: 1200px) {
-    #game-screen:not(.hidden) {
-        grid-template-columns: minmax(350px, 1fr) 300px; /* Adjusted for smaller screens */
-    }
-}
 
-@media (max-width: 900px) {
-    #game-screen:not(.hidden) {
-        grid-template-columns: minmax(300px, 1fr) 280px;
-    }
-}
 
 /* Update inventory and equipment headers alignment */
 #inventory-area h3,
@@ -1731,29 +1665,6 @@ html {
     transform: translateY(-1px);
 }
 
-/* Responsive adjustments */
-@media (max-width: 680px) {
-    .forge-slots-area {
-        flex-direction: column; /* Stack slots vertically */
-        gap: 10px;
-    }
-    .forge-symbol {
-        line-height: normal; /* Reset line height */
-        transform: rotate(90deg); /* Rotate symbols */
-    }
-    .forge-symbol:last-of-type {
-        display: none; /* Hide the equals sign */
-    }
-    #blacksmith-area {
-        max-width: 400px; /* Narrower on small screens */
-    }
-    .forge-slot {
-        width: 250px; /* Adjust width */
-    }
-    #forge-preview {
-        width: 50%;
-    }
-}
 
 #sharpen-area {
     background-color: #4a4a4a; /* Medium grey background */
@@ -2742,14 +2653,6 @@ html {
     background-color: #5a6268;
 }
 
-/* Responsive adjustments if needed */
-@media (max-width: 600px) {
-  .fishing-area-option {
-    /* width: calc(100% - 20px); <-- This is fine for 1 column */
-    width: 95%; /* Simpler approach for small screens */
-    max-width: 350px;
-  }
-}
 
 .trap-areas-container {
     display: grid;
@@ -2832,12 +2735,6 @@ html {
 
 .trap-area-option[data-risk="deadly"] {
     border-color: #D32F2F;
-}
-
-@media (max-width: 768px) {
-    .trap-areas-container {
-        grid-template-columns: 1fr;
-    }
 }
 
 @keyframes shopGlow {
@@ -4191,25 +4088,6 @@ html {
     background-color: #6a6a6a;
   }
   
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
-    .rest-card {
-      width: calc(50% - 20px); /* 2 cards per row on medium screens */
-    }
-  }
-  
-  @media (max-width: 480px) {
-    .rest-choices {
-      flex-direction: column; /* Stack cards vertically */
-      align-items: center;
-    }
-    .rest-card {
-      width: 90%; /* Make cards wider on small screens */
-      max-width: 300px;
-    }
-  }
-
-  /* Add these styles to your style.css */
 
 #treasure-area {
     display: flex;
@@ -4449,25 +4327,8 @@ html {
     background-color: #5a6268;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .forge-card {
-    width: calc(50% - 20px);
-  }
-}
 
-@media (max-width: 480px) {
-  .forge-choices {
-    flex-direction: column;
-    align-items: center;
-  }
-  .forge-card {
-    width: 90%;
-    max-width: 350px;
-  }
-}
 
-/* Add/Adapt these to style.css */
 
 .fishing-areas-container {
   display: flex;
@@ -4568,15 +4429,6 @@ html {
 
 #fishing-leave-button:hover {
     background-color: #5a6268;
-}
-
-/* Responsive adjustments if needed */
-@media (max-width: 600px) {
-  .fishing-area-option {
-    /* width: calc(100% - 20px); <-- This is fine for 1 column */
-    width: 95%; /* Simpler approach for small screens */
-    max-width: 350px;
-  }
 }
 
 /* Add this rule to style.css */
@@ -5100,20 +4952,6 @@ html {
     border: 1px solid #d32f2f;
 }
 
-@media (max-width: 768px) {
-    .choices-container {
-        grid-template-columns: 1fr;
-    }
-    
-    .choice-card {
-        height: 250px;
-    }
-    
-    .choice-description {
-        max-height: 120px;
-    }
-}
-
 .monster-description {
     display: flex;
     flex-direction: column;
@@ -5159,52 +4997,11 @@ html {
     display: none;
 }
 
-@media (max-width: 768px) {
-    .monster-stats-grid {
-        gap: 0.25rem;
-    }
-    
-    .monster-stat {
-        padding: 0.2rem 0.4rem;
-    }
-    
-    .monster-stat .stat-icon {
-        font-size: 0.85rem;
-    }
-    
-    .monster-stat .stat-value {
-        font-size: 0.85rem;
-    }
-}
-
 .monster-special {
     color: #ff6666;
     margin-top: 0.5rem;
     font-style: italic;
     text-align: center;
-}
-
-@media (max-width: 768px) {
-    .monster-stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.5rem;
-    }
-    
-    .monster-stat {
-        padding: 0.4rem;
-    }
-    
-    .monster-stat .stat-icon {
-        font-size: 1rem;
-    }
-    
-    .monster-stat .stat-value {
-        font-size: 1rem;
-    }
-    
-    .monster-stat .stat-label {
-        font-size: 0.7rem;
-    }
 }
 
 .choice-card.boss-card {

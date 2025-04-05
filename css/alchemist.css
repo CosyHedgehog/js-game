@@ -1,0 +1,22 @@
+#alchemist-area {
+    padding: 20px;
+    background-color: #333;
+    border-radius: 6px;
+    padding: 20px;
+    margin: 10px auto;
+    width: 90%;
+    max-width: 600px;
+}
+
+.potion-description {
+    padding: 12px;
+    background: #2a2a2a;
+    border: 1px solid #404040;
+    border-radius: 4px;
+    font-size: 0.9em;
+    min-height: 60px;
+    width: 95%;
+    white-space: pre-line;
+    text-align: left;
+    color: #ccc;
+} 

@@ -1,0 +1,426 @@
+#combat-area {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 10px 0;
+    position: relative;
+}
+
+#round-indicator-area {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+.round-orb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #2c3e50;
+    border: 1px solid #34495e;
+}
+
+.round-orb.current-round {
+    background-color: #3498db;
+    border-color: #2980b9;
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.3);
+}
+
+.combat-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin: 20px 0;
+    position: relative;
+}
+
+.combatant {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    position: relative;
+}
+
+.combatant-name {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #fff;
+    text-align: center;
+    margin-bottom: 10px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.combat-vs {
+    font-size: 2em;
+    font-weight: bold;
+    color: #666;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.health-bar-container {
+    width: 100%;
+    height: 20px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+}
+
+.health-bar {
+    height: 100%;
+    transition: width 0.3s ease-out;
+    border-radius: 10px;
+}
+
+.player-health {
+    background: linear-gradient(to right, #4CAF50, #81C784);
+}
+
+.enemy-health {
+    background: linear-gradient(to right, #f44336, #E57373);
+}
+
+.health-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    font-size: 0.8em;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    white-space: nowrap;
+}
+
+.combat-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 10px;
+    width: 100%;
+}
+
+.combat-stats span {
+    text-align: center;
+    font-size: 0.9em;
+    color: #ccc;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 5px;
+    border-radius: 4px;
+}
+
+.combat-stats #combat-enemy-atk.enraged {
+    color: #f44336;
+    font-weight: bold;
+}
+
+.combat-stats #combat-enemy-def.hardened {
+    color: #2196F3;
+    font-weight: bold;
+}
+
+.attack-timer {
+    width: 100%;
+    height: 10px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
+    overflow: hidden;
+    position: relative;
+    margin-top: 10px;
+}
+
+.timer-bar {
+    height: 100%;
+    background: linear-gradient(to right, #FFC107, #FFB300);
+    transition: width 0.1s linear;
+}
+
+.timer-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    font-size: 0.7em;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.damage-splat-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.damage-splat {
+    position: absolute;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 4px;
+    animation: splat-animation 1s ease-out forwards;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    z-index: 10;
+}
+
+.damage-splat.damage {
+    color: #f44336;
+}
+
+.damage-splat.blocked {
+    color: #2196F3;
+}
+
+.damage-splat.heal {
+    color: #4CAF50;
+}
+
+.damage-splat.sell {
+    color: #ffd700;
+}
+
+.damage-splat.potion-heal {
+    color: #9C27B0;
+}
+
+.damage-splat.buff-attack {
+    color: #f44336;
+}
+
+.damage-splat.buff-defense {
+    color: #2196F3;
+}
+
+.damage-splat.buff-speed {
+    color: #FF9800;
+}
+
+.damage-splat.poison {
+    color: #8BC34A;
+}
+
+.damage-splat.zero-damage {
+    color: #9E9E9E;
+    font-size: 0.9em;
+}
+
+.damage-splat.stun {
+    color: #9C27B0;
+}
+
+.damage-splat.burn {
+    color: #FF5722;
+}
+
+.combat-controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+#combat-run-button {
+    background: #f44336;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+#combat-run-button:hover:not(:disabled) {
+    background: #d32f2f;
+    transform: translateY(-2px);
+}
+
+#combat-run-button:active {
+    background: #b71c1c;
+    transform: translateY(0);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+}
+
+#combat-run-button:disabled {
+    background: #666;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.enemy-pack-tactics {
+    animation: packTacticsActivate 0.5s ease-out;
+}
+
+.enemy-side[data-pack-tactics="active"] .monster-stat {
+    border: 1px solid #ff9800;
+    box-shadow: 0 0 10px rgba(255, 152, 0, 0.3);
+}
+
+.enemy-enraged-pulse {
+    animation: enrage-shake 0.5s ease-in-out infinite;
+}
+
+.enemy-speed-enraged-pulse {
+    animation: speed-enrage-pulse 1s ease-in-out infinite;
+}
+
+.enemy-scales-harden {
+    animation: scales-harden-effect 1s ease-out forwards;
+}
+
+.player-breath-hit {
+    animation: breath-hit-effect 0.5s ease-out;
+}
+
+.player-stunned-visual {
+    animation: player-stunned-shake 0.5s ease-in-out;
+}
+
+.player-poisoned .player-health {
+    animation: poisoned-health-bar-drip 2s linear infinite;
+}
+
+.player-side.player-burning {
+    animation: burning-pulse 1s ease-in-out infinite;
+}
+
+/* Encounter Styles */
+.encounter-confirmation {
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 600px;
+    text-align: center;
+}
+
+.encounter-details {
+    margin: 20px 0;
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    text-align: left;
+}
+
+.confirmation-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.confirm-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.confirm-button.difficulty-easy {
+    background: #4CAF50;
+}
+
+.confirm-button.difficulty-medium {
+    background: #FF9800;
+}
+
+.confirm-button.difficulty-hard {
+    background-color: #f44336 !important;
+}
+
+.confirm-button:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+}
+
+.confirm-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        120deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+    );
+    transition: 0.5s;
+}
+
+.confirm-button:hover::before {
+    left: 100%;
+}
+
+.encounter-starting {
+    animation: encounterStart 0.5s ease-out forwards;
+}
+
+@keyframes encounterStart {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.5;
+    }
+    100% {
+        transform: scale(0);
+        opacity: 0;
+    }
+}
+
+.encounter-details::-webkit-scrollbar {
+    width: 8px;
+}
+
+.encounter-details::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+.encounter-details::-webkit-scrollbar-thumb {
+    background: #666;
+    border-radius: 4px;
+}
+
+.encounter-details::-webkit-scrollbar-thumb:hover {
+    background: #777;
+}
+
+#combat-area p {
+    margin: 10px 0;
+    line-height: 1.5;
+    color: #ddd;
+}
+
+.damage-taken {
+    /* Apply the damage-flash animation */
+    animation: damage-flash 0.3s ease-out;
+}
+
+
