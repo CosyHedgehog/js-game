@@ -1,20 +1,37 @@
 #shop-area {
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid #444;
-    border-radius: 8px;
+    /* background: rgba(0, 0, 0, 0.2); */
+    background: #333; /* Match alchemist */
+    /* border: 1px solid #444; */
+    /* border: 1px solid #555; */ /* Removed */
+    /* border-radius: 8px; */ /* Removed */
     padding: 20px;
-    margin: 10px 0;
-    margin-top: auto;
-    margin-bottom: auto;
+    /* margin: 10px 0; */ /* Removed */
+    margin: 0; /* Ensure no margin */
+    /* margin-top: auto; */ /* Removed */
+    /* margin-bottom: auto; */ /* Removed */
     position: relative;
+    /* max-width: 600px; */ /* Removed to allow full width */
+    width: 100%; /* Ensure full width */
+    height: 100%; /* Add full height */
+    box-sizing: border-box; /* Ensure padding included */
+    display: flex; /* Add flex */
+    flex-direction: column; /* Add flex direction */
 }
 
 #shop-area h3 {
     color: #ffd700;
-    text-align: center;
+    text-align: center; /* Center align */
     margin-bottom: 20px;
     font-size: 1.4em;
     text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+    flex-shrink: 0; /* Prevent shrinking */
+}
+
+/* Add shop emoji */
+#shop-area h3::before {
+    content: "💰 "; /* Gold bag emoji */
+    margin-right: 0.3em;
+    font-size: 1em;
 }
 
 .shop-content {
@@ -22,13 +39,16 @@
     flex-direction: column;
     gap: 20px;
     margin-top: 20px;
+    flex-grow: 1; /* Allow content to fill space */
+    min-height: 0; /* Prevent flex overflow issues */
 }
 
 .shop-items-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 15px;
-    margin-bottom: 20px;
+    /* margin-bottom: 20px; */ /* Let flex gap handle */
+    overflow-y: auto; /* Allow item scrolling */
 }
 
 .shop-item {
@@ -57,17 +77,24 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 10px; /* Add some gap */
 }
 
 .shop-item-name {
     color: #fff;
     font-weight: bold;
     font-size: 1.1em;
+    flex-shrink: 1; /* Allow name to shrink */
+    overflow: hidden; /* Hide overflow */
+    text-overflow: ellipsis; /* Add ellipsis if name too long */
+    white-space: nowrap; /* Keep name on one line initially */
 }
 
 .shop-item-price {
     color: #ffd700;
     font-weight: bold;
+    flex-shrink: 0; /* Prevent price from shrinking */
+    white-space: nowrap; /* Keep price and 'gold' together */
 }
 
 .shop-item-button {
@@ -112,6 +139,7 @@
     justify-content: center;
     gap: 15px;
     margin-top: 20px;
+    flex-shrink: 0; /* Prevent shrinking */
 }
 
 #shop-reroll-button {
@@ -162,14 +190,32 @@
 }
 
 .item-description {
-    color: #ccc;
-    font-size: 0.9em;
-    line-height: 1.4;
-    margin-top: 10px;
+    /* color: #ccc; */ /* Text color handled by children */
+    /* font-size: 0.9em; */ /* Font size handled by children */
+    /* line-height: 1.4; */ /* Line height handled by children */
     background-color: #2a2a2a;
     border: 1px solid #404040;
-    padding: 10px;
+    padding: 12px; /* Adjusted padding */
     border-radius: 4px;
+    display: flex; /* Use flex */
+    flex-direction: column; /* Stack name and text */
+    gap: 8px; /* Space between name and text */
+    overflow-y: auto; /* Allow scroll if content overflows */
+    min-height: 80px; /* Give it some default height */
+}
+
+.item-desc-name {
+    font-weight: bold;
+    font-size: 1.1em;
+    color: #ffffff;
+    margin-bottom: 4px; /* Small space below name */
+}
+
+.item-desc-text {
+    font-size: 0.9em;
+    color: #cccccc;
+    line-height: 1.5;
+    white-space: pre-line; /* Respect newlines in description */
 }
 
 .inventory-slot.shop-sellable {

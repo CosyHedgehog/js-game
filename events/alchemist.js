@@ -53,6 +53,7 @@ class Alchemist {
         alchemistArea.id = 'alchemist-area';
         alchemistArea.innerHTML = `
             <h3>Alchemist's Shop</h3>
+            <p class="shop-info">Potions brewed fresh (mostly).</p> 
             <div class="shop-content">
                 <div class="shop-items-container">
                     ${items.map((item, index) => {
@@ -71,7 +72,7 @@ class Alchemist {
                     `}).join('')}
                     ${items.length === 0 ? '<div class="shop-empty-message">No more potions available!</div>' : ''}
                 </div>
-                <div id="potion-description" class="potion-description">
+                <div class="item-description"> 
                     Click a potion to see its description
                 </div>
                 <div class="shop-buttons">
@@ -90,17 +91,22 @@ class Alchemist {
 
         if (items && items.length > 0) {
             const firstItemDiv = alchemistArea.querySelector('.shop-item');
-            const descriptionBox = alchemistArea.querySelector('#potion-description');
+            const descriptionBox = alchemistArea.querySelector('#alchemist-area .item-description');
             if (firstItemDiv && descriptionBox) {
                 firstItemDiv.classList.add('selected');
-                descriptionBox.textContent = items[0].description || 'No description available.';
+                const name = items[0].name || 'Unknown Potion';
+                const desc = items[0].description || 'No description available.';
+                descriptionBox.innerHTML = `
+                    <div class="item-desc-name">${name}</div>
+                    <div class="item-desc-text">${desc}</div>
+                `;
             }
         }
     }
 
     setupAlchemistEventListeners(items) {
         const potionItems = document.querySelectorAll('.shop-item');
-        const descriptionBox = document.getElementById('potion-description');
+        const descriptionBox = document.querySelector('#alchemist-area .item-description');
 
         potionItems.forEach(item => {
             const itemId = item.getAttribute('data-item-id');
@@ -108,7 +114,12 @@ class Alchemist {
 
             item.addEventListener('click', () => {
                 if (itemData) {
-                    descriptionBox.textContent = itemData.description;
+                    const name = itemData.name || 'Unknown Potion';
+                    const desc = itemData.description || 'No description available.';
+                    descriptionBox.innerHTML = `
+                        <div class="item-desc-name">${name}</div>
+                        <div class="item-desc-text">${desc}</div>
+                    `;
                     potionItems.forEach(i => i.classList.remove('selected'));
                     item.classList.add('selected');
                 }

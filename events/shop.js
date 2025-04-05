@@ -51,21 +51,13 @@ class Shop {
                 <div class="item-description"></div>
             </div>
             <div class="shop-buttons">
-                <button id="shop-reroll-button" ${!this.game.canReroll || this.game.player.gold < this.SHOP_REROLL_COST ? 'disabled' : ''}>
-                    Reroll (${this.SHOP_REROLL_COST} Gold)
-                </button>
                 <button id="shop-leave-button">Leave Shop</button>
             </div>
         `;
 
         shopArea.innerHTML = shopContent;
 
-        const rerollButton = document.getElementById('shop-reroll-button');
         const leaveButton = document.getElementById('shop-leave-button');
-
-        if (rerollButton) {
-            rerollButton.onclick = () => this.handleRerollShop();
-        }
         if (leaveButton) {
             leaveButton.onclick = () => {
                 this.ui.clearMainArea();
@@ -86,19 +78,29 @@ class Shop {
             shopItem.addEventListener('click', () => {
                 shopItems.forEach(item => item.classList.remove('selected'));
                 shopItem.classList.add('selected');
-                const descriptionArea = document.querySelector('.item-description');
+                const descriptionArea = document.querySelector('#shop-area .item-description');
                 if (descriptionArea && items[index]) {
-                    descriptionArea.textContent = items[index].description || 'No description available.';
+                    const name = items[index].name || 'Unknown Item';
+                    const desc = items[index].description || 'No description available.';
+                    descriptionArea.innerHTML = `
+                        <div class="item-desc-name">${name}</div>
+                        <div class="item-desc-text">${desc}</div>
+                    `;
                 }
             });
         });
 
         if (items && items.length > 0) {
             const firstShopItem = shopArea.querySelector('.shop-item[data-index="0"]');
-            const descriptionArea = shopArea.querySelector('.item-description');
+            const descriptionArea = shopArea.querySelector('#shop-area .item-description');
             if (firstShopItem && descriptionArea) {
                 firstShopItem.classList.add('selected');
-                descriptionArea.textContent = items[0].description || 'No description available.';
+                const name = items[0].name || 'Unknown Item';
+                const desc = items[0].description || 'No description available.';
+                descriptionArea.innerHTML = `
+                    <div class="item-desc-name">${name}</div>
+                    <div class="item-desc-text">${desc}</div>
+                `;
             }
         }
 

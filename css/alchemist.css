@@ -1,13 +1,19 @@
 #alchemist-area {
-    padding: 20px;
-    background-color: #333;
-    border-radius: 6px;
-    padding: 20px;
-    margin: 10px auto;
-    margin-top: auto;
-    margin-bottom: auto;
-    width: 90%;
-    max-width: 600px;
+    /* padding: 20px; */ /* Apply padding below */
+    background-color: #333; /* Match shop background */
+    /* border-radius: 6px; */ /* Removed */
+    padding: 20px; /* Keep padding */
+    /* margin: 10px auto; */ /* Removed */
+    margin: 0; /* Reset margin */
+    /* margin-top: auto; */ /* Removed */
+    /* margin-bottom: auto; */ /* Removed */
+    /* width: 90%; */ /* Removed */
+    /* max-width: 600px; */ /* Removed */
+    width: 100%; /* Set full width */
+    height: 100%; /* Set full height */
+    box-sizing: border-box; /* Add box-sizing */
+    display: flex; /* Add flex */
+    flex-direction: column; /* Add flex direction */
 }
 
 /* Add rule to center the h3 title */
@@ -17,6 +23,7 @@
     margin-bottom: 20px; /* Add some space below */
     font-size: 1.4em; /* Match shop title size */
     text-shadow: 0 0 10px rgba(255, 215, 0, 0.3); /* Match shop title shadow */
+    flex-shrink: 0; /* Add flex-shrink */
 }
 
 /* Add potion emoji */
@@ -26,15 +33,36 @@
     font-size: 1em; /* Ensure emoji size matches text */
 }
 
-.potion-description {
-    padding: 12px;
-    background: #2a2a2a;
-    border: 1px solid #404040;
-    border-radius: 4px;
-    font-size: 0.9em;
-    min-height: 60px;
-    width: 95%;
-    white-space: pre-line;
-    text-align: left;
-    color: #ccc;
-} 
+/* Add styles for content area within alchemist */
+#alchemist-area .shop-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 20px; /* Keep margin-top */
+    flex-grow: 1; /* Add flex-grow */
+    min-height: 0; /* Add min-height */
+}
+
+/* Add styles for items container within alchemist */
+#alchemist-area .shop-items-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    overflow-y: auto; /* Add overflow */
+}
+
+/* REMOVED .potion-description style */
+/* Add styles for buttons container within alchemist */
+#alchemist-area .shop-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+    flex-shrink: 0; /* Add flex-shrink */
+}
+
+/* Style specific leave button if needed, but it uses shop-leave-button class */
+#alchemist-leave-button {
+    /* Styles are inherited from .shop-leave-button in base.css */
+    /* Can add specific overrides here if necessary */
+}
