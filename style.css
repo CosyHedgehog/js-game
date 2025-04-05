@@ -351,15 +351,12 @@ button:disabled {
 
 #choices-area button {
     width: 100%;
-    padding: 15px 20px;
     font-size: 1.1em;
     background-color: #505050;
     color: #ffffff;
     border: 1px solid #3a3a3a;
-    padding: 18px 35px;
     font-size: 1.2em;
     font-weight: bold;
-    min-width: 320px;
     text-align: center;
     border-radius: 5px;
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 1px rgba(0, 0, 0, 0.2);
@@ -1344,7 +1341,6 @@ button:disabled {
 .choice-button.selected {
     background-color: #404040;
     border-color: #505050;
-    box-shadow: 0 0 15px rgba(52, 152, 219, 0.5);
     transform: scale(1.05);
     position: relative;
 }
@@ -1356,9 +1352,7 @@ button:disabled {
     left: -2px;
     right: -2px;
     bottom: -2px;
-    border: 2px solid #3498db;
     border-radius: 6px;
-    animation: pulse 1.5s infinite;
 }
 
 /* Add pulse animation for selected button */
@@ -4971,4 +4965,234 @@ html {
     max-width: 100%;        /* Ensure it doesn't overflow parent */
     /* You might also consider a slightly smaller default font size: */
     /* font-size: 0.85em; */
+}
+
+.choices-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+    max-width: 100%;
+}
+
+.choice-card {
+    position: relative;
+    background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+    max-width: 100%;
+    height: 280px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.choice-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    border-color: #4a9eff;
+}
+
+.choice-card.selected {
+}
+
+.choice-start-button {
+    margin-top: auto;
+    padding: 0.5rem;
+    border: none;
+    border-radius: 4px;
+    background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: calc(100% - 1rem);
+    max-width: 200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.choice-start-button:hover {
+    background: linear-gradient(135deg, #333 0%, #222 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.choice-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    height: 100%;
+}
+
+.choice-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #fff;
+    margin-bottom: 0.5rem;
+    padding-right: 60px;
+}
+
+.choice-description {
+    font-size: 0.9rem;
+    color: #ccc;
+    margin-bottom: 0.5rem;
+    overflow-y: auto;
+    max-height: 150px;
+    padding-right: 0.5rem;
+    scrollbar-width: thin;
+}
+
+.choice-description::-webkit-scrollbar {
+    width: 6px;
+}
+
+.choice-description::-webkit-scrollbar-track {
+    background: #1a1a1a;
+    border-radius: 3px;
+}
+
+.choice-description::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 3px;
+}
+
+.event-icon {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.5rem;
+}
+
+.difficulty-badge {
+    position: absolute;
+    top: 0.5rem;
+    right: 3rem;
+    font-size: 0.8rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    color: #fff;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.choice-start-button {
+    margin-top: auto;
+    padding: 0.5rem;
+    border: none;
+    border-radius: 4px;
+    background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.choice-start-button:hover {
+    background: linear-gradient(135deg, #333 0%, #222 100%);
+}
+
+@media (max-width: 768px) {
+    .choices-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .choice-card {
+        height: 250px;
+    }
+    
+    .choice-description {
+        max-height: 120px;
+    }
+}
+
+.monster-description {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.monster-description p {
+    margin: 0;
+    color: #ccc;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.monster-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.monster-stat {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    transition: transform 0.2s;
+}
+
+.monster-stat:hover {
+    transform: translateY(-2px);
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.monster-stat .stat-icon {
+    font-size: 1.2rem;
+}
+
+.monster-stat .stat-value {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #fff;
+}
+
+.monster-stat .stat-label {
+    font-size: 0.8rem;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.monster-special {
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    background: rgba(255, 215, 0, 0.1);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    border-radius: 4px;
+    color: #ffd700;
+    font-size: 0.9rem;
+    line-height: 1.3;
+}
+
+@media (max-width: 768px) {
+    .monster-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+    }
+    
+    .monster-stat {
+        padding: 0.4rem;
+    }
+    
+    .monster-stat .stat-icon {
+        font-size: 1rem;
+    }
+    
+    .monster-stat .stat-value {
+        font-size: 1rem;
+    }
+    
+    .monster-stat .stat-label {
+        font-size: 0.7rem;
+    }
 }

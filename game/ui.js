@@ -838,91 +838,186 @@ class UI {
         this.choicesArea.classList.remove('hidden');
         this.choicesArea.innerHTML = '';
 
-        const buttonsContainer = document.createElement('div');
-        buttonsContainer.style.display = 'flex';
-        buttonsContainer.style.flexWrap = 'wrap';
-        buttonsContainer.style.justifyContent = 'center';
-        buttonsContainer.style.gap = '15px';
-        buttonsContainer.style.width = '100%';
-        buttonsContainer.style.padding = '10px';
-        buttonsContainer.style.maxWidth = '500px'
+        const choicesContainer = document.createElement('div');
+        choicesContainer.classList.add('choices-container');
 
         choices.forEach((choice, index) => {
-            const button = document.createElement('button');
-            button.textContent = choice.text;
-            button.classList.add('choice-button');
-            button.style.flex = '0 1 auto';
-            button.style.minWidth = '200px';
-            button.style.maxWidth = '300px';
+            const card = document.createElement('div');
+            card.classList.add('choice-card');
             if (index === 0) {
-                button.classList.add('selected');
+                card.classList.add('selected');
                 setTimeout(() => this.game.selectChoice(0), 0);
             }
+
+            // Get encounter details and difficulty
+            const encounter = choice.encounter;
+            let difficultyText = '';
+            let difficultyClass = '';
             
-            button.addEventListener('click', () => {
-                this.choicesArea.querySelectorAll('.choice-button').forEach(btn => {
-                    btn.classList.remove('selected');
+            if (encounter.type === 'monster' || encounter.type === 'mini-boss' || encounter.type === 'boss') {
+                const monster = MONSTERS[encounter.monsterId];
+                const playerAttack = this.game.player.getAttack();
+                if (monster.defense >= playerAttack) {
+                    difficultyClass = 'difficulty-hard';
+                    difficultyText = 'HARD';
+                } else if (monster.defense >= playerAttack - 2) {
+                    difficultyClass = 'difficulty-medium';
+                    difficultyText = 'DIFFICULT';
+                } else {
+                    difficultyClass = 'difficulty-easy';
+                    difficultyText = 'EASY';
+                }
+            }
+
+            // Create card content
+            const cardContent = document.createElement('div');
+            cardContent.classList.add('choice-card-content');
+
+            // Add difficulty badge if it exists
+            if (difficultyText) {
+                const difficultyBadge = document.createElement('div');
+                difficultyBadge.className = 'difficulty-badge';
+                difficultyBadge.textContent = difficultyText;
+                cardContent.appendChild(difficultyBadge);
+            }
+
+            // Add event type icon
+            const eventIcon = document.createElement('span');
+            eventIcon.className = 'event-icon';
+            if (choice.encounter.type === 'monster') {
+                const monster = MONSTERS[choice.encounter.monsterId];
+                eventIcon.textContent = monster.icon || '⚔️'; // Use monster's icon if available, fallback to sword
+            } else {
+                switch (choice.encounter.type) {
+                    case 'rest': eventIcon.textContent = '🏕️'; break;
+                    case 'shop': eventIcon.textContent = '🏪'; break;
+                    case 'forge': eventIcon.textContent = '⚒️'; break;
+                    case 'fishing': eventIcon.textContent = '🎣'; break;
+                    case 'blacksmith': eventIcon.textContent = '🔨'; break;
+                    case 'sharpen': eventIcon.textContent = '⚔️'; break;
+                    case 'armorsmith': eventIcon.textContent = '🛡️'; break;
+                    case 'alchemist': eventIcon.textContent = '⚗️'; break;
+                    case 'trap': eventIcon.textContent = '⚡'; break;
+                    case 'treasure_chest': eventIcon.textContent = '💎'; break;
+                    default: eventIcon.textContent = '❓';
+                }
+            }
+            cardContent.appendChild(eventIcon);
+
+            // Add title and description
+            const title = document.createElement('h3');
+            title.classList.add('choice-title');
+            title.textContent = choice.text;
+            cardContent.appendChild(title);
+
+            const description = document.createElement('div');
+            description.classList.add('choice-description');
+            if (choice.type === 'combat') {
+                const monster = choice.monster;
+                description.innerHTML = `
+                    <div class="monster-description">
+                        <p>${monster.description || 'No description available.'}</p>
+                        <div class="monster-stats-grid">
+                            <div class="monster-stat">
+                                <span class="stat-icon">❤️</span>
+                                <span class="stat-value">${monster.health}</span>
+                                <span class="stat-label">Health</span>
+                            </div>
+                            <div class="monster-stat">
+                                <span class="stat-icon">⚔️</span>
+                                <span class="stat-value">${monster.attack}</span>
+                                <span class="stat-label">Attack</span>
+                            </div>
+                            <div class="monster-stat">
+                                <span class="stat-icon">🛡️</span>
+                                <span class="stat-value">${monster.defense}</span>
+                                <span class="stat-label">Defense</span>
+                            </div>
+                            <div class="monster-stat">
+                                <span class="stat-icon">⚡</span>
+                                <span class="stat-value">${monster.speed}s</span>
+                                <span class="stat-label">Speed</span>
+                            </div>
+                        </div>
+                        ${monster.special ? `<div class="monster-special">Special: ${monster.special}</div>` : ''}
+                    </div>
+                `;
+            } else {
+                description.innerHTML = this.game.getEncounterDetails(encounter);
+            }
+            cardContent.appendChild(description);
+
+            // Add start button
+            const startButton = document.createElement('button');
+            startButton.className = 'choice-start-button';
+            startButton.textContent = choice.type === 'combat' ? 'Fight' : 'Start';
+
+            const difficultyBadge = document.createElement('div');
+            difficultyBadge.className = 'difficulty-badge';
+            if (choice.type === 'combat') {
+                const playerAttack = this.game.player.getAttack();
+                const monsterDefense = choice.monster.defense;
+                let difficulty;
+                
+                if (playerAttack >= monsterDefense + 3) {
+                    difficulty = 'easy';
+                    difficultyBadge.style.backgroundColor = '#4CAF50';
+                } else if (playerAttack >= monsterDefense) {
+                    difficulty = 'medium';
+                    difficultyBadge.style.backgroundColor = '#ff9800';
+                } else {
+                    difficulty = 'hard';
+                    difficultyBadge.style.backgroundColor = '#f44336';
+                }
+                difficultyBadge.textContent = difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
+                cardContent.appendChild(difficultyBadge);
+            }
+
+            cardContent.appendChild(startButton);
+
+            card.appendChild(cardContent);
+            
+            // Add click handlers
+            card.addEventListener('click', () => {
+                this.choicesArea.querySelectorAll('.choice-card').forEach(c => {
+                    c.classList.remove('selected');
                 });
-                button.classList.add('selected');
+                card.classList.add('selected');
                 this.game.selectChoice(index);
             });
-            buttonsContainer.appendChild(button);
+
+            startButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.confirmChoice(index);
+            });
+
+            choicesContainer.appendChild(card);
         });
 
-        this.choicesArea.appendChild(buttonsContainer);
+        this.choicesArea.appendChild(choicesContainer);
     }
 
-    showEncounterConfirmation(choice, index) {
-        const existingConfirmation = this.choicesArea.querySelector('.encounter-confirmation');
-        if (existingConfirmation) {
-            existingConfirmation.remove();
+    confirmChoice(index) {
+        const selectedChoice = this.game.currentChoices[index];
+        const choicesArea = document.getElementById('choices-area');
+        
+        // Remove boss indicator animations before starting
+        if (this.roundAreaElement) { 
+            this.roundAreaElement.classList.remove('round-miniboss', 'round-finalboss');
         }
 
-        const confirmationBox = document.createElement('div');
-        confirmationBox.classList.add('encounter-confirmation');
-
-        const details = document.createElement('div');
-        details.classList.add('encounter-details');
-        
-        let buttonDisabled = false;
-        let requirementHTML = '';
-        
-        details.innerHTML = requirementHTML + this.game.getEncounterDetails(choice.encounter);
-        confirmationBox.appendChild(details);
-
-        const buttonsContainer = document.createElement('div');
-        buttonsContainer.classList.add('confirmation-buttons');
-
-        const confirmButton = document.createElement('button');
-        let difficultyText = '';
-        
-        if (choice.encounter.type === 'monster' || choice.encounter.type === 'mini-boss' || choice.encounter.type === 'boss') {
-            const monster = MONSTERS[choice.encounter.monsterId];
-            const playerAttack = this.game.player.getAttack();
-            if (monster.defense >= playerAttack) {
-                confirmButton.classList.add('difficulty-hard');
-                difficultyText = 'HARD';
-            } else if (monster.defense >= playerAttack - 2) {
-                confirmButton.classList.add('difficulty-medium');
-                difficultyText = 'DIFFICULT';
-            } else {
-                confirmButton.classList.add('difficulty-easy');
-                difficultyText = 'EASY';
-            }
-            confirmButton.textContent = `Start (${difficultyText})`;
-        } else {
-            confirmButton.textContent = 'Start';
+        // Only add epic animation for boss rounds
+        if (this.game.currentRound === 10 || this.game.currentRound === 20 || this.game.currentRound === 30) {
+            choicesArea.classList.add('encounter-starting');
         }
+        
+        // Delay slightly even without animation for smoother transition
+        const delay = (this.game.currentRound === 10 || this.game.currentRound === 20 || this.game.currentRound === 30) ? 500 : 50;
 
-        confirmButton.classList.add('confirm-button');
-        confirmButton.onclick = () => this.confirmChoice(index);
-        if (buttonDisabled) {
-            confirmButton.disabled = true;
-        }
-        buttonsContainer.appendChild(confirmButton);
-        confirmationBox.appendChild(buttonsContainer);
-
-        this.choicesArea.appendChild(confirmationBox);
+        setTimeout(() => {
+            choicesArea.classList.remove('encounter-starting'); // Remove class regardless (safe if not added)
+            this.game.startEncounter(selectedChoice.encounter); 
+        }, delay);
     }
 
     clearMainArea() {
@@ -1263,29 +1358,6 @@ class UI {
 
         container.appendChild(splat);
         setTimeout(() => splat.remove(), 2000);
-    }
-
-    confirmChoice(index) {
-        const selectedChoice = this.game.currentChoices[index];
-        const choicesArea = document.getElementById('choices-area');
-        
-        // Remove boss indicator animations before starting
-        if (this.roundAreaElement) { 
-            this.roundAreaElement.classList.remove('round-miniboss', 'round-finalboss');
-        }
-
-        // Only add epic animation for boss rounds
-        if (this.game.currentRound === 10 || this.game.currentRound === 20 || this.game.currentRound === 30) {
-            choicesArea.classList.add('encounter-starting');
-        }
-        
-        // Delay slightly even without animation for smoother transition
-        const delay = (this.game.currentRound === 10 || this.game.currentRound === 20 || this.game.currentRound === 30) ? 500 : 50;
-
-        setTimeout(() => {
-            choicesArea.classList.remove('encounter-starting'); // Remove class regardless (safe if not added)
-            this.game.startEncounter(selectedChoice.encounter); 
-        }, delay);
     }
 
     // --- NEW Boss Encounter Rendering ---

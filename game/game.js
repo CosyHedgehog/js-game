@@ -281,10 +281,7 @@ class Game {
         if (this.state !== 'choosing' || index < 0 || index >= this.currentChoices.length) {
             return;
         }
-        
-        // Instead of starting encounter immediately, show confirmation
-        const selectedChoice = this.currentChoices[index];
-        this.ui.showEncounterConfirmation(selectedChoice, index);
+        // Just select the choice, the UI will handle showing details in the card
     }
 
     // Add new method to handle final confirmation
