@@ -1804,7 +1804,7 @@ html {
     align-items: center;
     transition: background-color 0.2s, border-color 0.2s;
     margin: 0 auto 15px auto; /* Center slot */
-    max-width: 300px; /* Limit slot width */
+    max-width: 100px; /* Limit slot width */
 }
 
 .sharpen-slot-label {

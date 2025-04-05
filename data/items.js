@@ -26,8 +26,8 @@ const ITEMS = {
     },
     'wooden_sword': {
         id: 'wooden_sword', name: 'Wooden Sword', type: 'weapon', slot: 'weapon', hands: 1,
-        stats: { attack: 2 }, speed: 2.0, value: 5,
-        description: 'A simple sword made of wood.\nAttack: +2\nSpeed: 2.0s\n1-Handed'
+        stats: { attack: 2 }, speed: 1.5, value: 5,
+        description: 'A simple sword made of wood.\nAttack: +2\nSpeed: 1.5s\n1-Handed'
     },
     'wooden_hammer': {
         id: 'wooden_hammer', name: 'Wooden Hammer', type: 'weapon', slot: 'weapon', hands: 2,

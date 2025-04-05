@@ -13,6 +13,7 @@ class Sharpen {
     showSharpenUI() {
         this.ui.clearMainArea();
         this.ui.renderInventory();
+        this.ui.updatePlayerStats();
 
         const mainContent = document.getElementById('main-content');
 
@@ -20,7 +21,7 @@ class Sharpen {
         sharpenArea.id = 'sharpen-area';
         sharpenArea.innerHTML = `
             <h3>Sharpening Stone</h3>
-            <p>Drag a weapon onto the stone to enhance its Attack (+1) or Speed (-0.2s).</p> <!-- Updated text -->
+            <p>Drag a weapon onto the stone to enhance its Attack (+1) or Speed (-0.5s).</p> <!-- Updated text -->
         `;
 
         const slotContainer = document.createElement('div');
@@ -50,7 +51,7 @@ class Sharpen {
 
         const sharpenSpeedButton = document.createElement('button');
         sharpenSpeedButton.id = 'sharpen-speed-button';
-        sharpenSpeedButton.textContent = 'Hone (-0.2s Speed)';
+        sharpenSpeedButton.textContent = 'Hone (-0.5s Speed)';
         sharpenSpeedButton.disabled = true;
         sharpenSpeedButton.onclick = () => this.handleSharpen('speed');
 
@@ -146,20 +147,26 @@ class Sharpen {
                     const currentAttack = (removedItem.stats.attack || 0);
                     const newAttack = currentAttack + 1;
                     const currentSpeed = (removedItem.speed ?? this.game.player.defaultAttackSpeed);
-                    const newSpeedValue = Math.max(0.1, currentSpeed - 0.2);
+                    const newSpeedValue = Math.max(0.1, currentSpeed - 0.5); // Flat -0.5s, min 0.1
 
-                    let previewHTML = `Current: Atk ${currentAttack} / Spd ${currentSpeed.toFixed(1)}s<br>`;
+                    // Calculate DPS values
+                    const currentDPS = currentSpeed > 0 ? (currentAttack / currentSpeed) : 0;
+                    const sharpenedDPS = currentSpeed > 0 ? (newAttack / currentSpeed) : 0;
+                    const honedDPS = newSpeedValue > 0 ? (currentAttack / newSpeedValue) : 0;
+
+                    // Build preview with formatting and DPS
+                    let previewHTML = `<strong>Current:</strong> Atk ${currentAttack} / Spd ${currentSpeed.toFixed(1)}s / DPS ${currentDPS.toFixed(1)}<br>`;
                     if (isAlreadySharpened && isAlreadyHoned) {
                         previewHTML += `<span style="color: #FF0000;">Fully Enhanced!</span>`;
                     } else if (isAlreadySharpened) {
-                        previewHTML += `Sharpen: <span style="color: #aaa;">Already Sharpened</span><br>`;
-                        previewHTML += `Hone:    Atk ${currentAttack} / Spd ${newSpeedValue.toFixed(1)}s`;
+                        previewHTML += `<strong>Sharpen:</strong> <span style="color: #aaa;">Already Sharpened</span><br>`;
+                        previewHTML += `<strong>Hone (-0.5s):</strong> Atk ${currentAttack} / Spd ${newSpeedValue.toFixed(1)}s / DPS ${honedDPS.toFixed(1)}`;
                     } else if (isAlreadyHoned) {
-                        previewHTML += `Sharpen: Atk ${newAttack} / Spd ${currentSpeed.toFixed(1)}s<br>`;
-                        previewHTML += `Hone:    <span style="color: #aaa;">Already Honed</span>`;
+                        previewHTML += `<strong>Sharpen:</strong> Atk ${newAttack} (+1) / Spd ${currentSpeed.toFixed(1)}s / DPS ${sharpenedDPS.toFixed(1)}<br>`;
+                        previewHTML += `<strong>Hone (-0.5s):</strong> <span style="color: #aaa;">Already Honed</span>`;
                     } else {
-                        previewHTML += `Sharpen: Atk ${newAttack} / Spd ${currentSpeed.toFixed(1)}s <br>`;
-                        previewHTML += `Hone:    Atk ${currentAttack} / Spd ${newSpeedValue.toFixed(1)}s`;
+                        previewHTML += `<strong>Sharpen:</strong> Atk ${newAttack} (+1) / Spd ${currentSpeed.toFixed(1)}s / DPS ${sharpenedDPS.toFixed(1)}<br>`;
+                        previewHTML += `<strong>Hone (-0.5s):</strong> Atk ${currentAttack} / Spd ${newSpeedValue.toFixed(1)}s / DPS ${honedDPS.toFixed(1)}`;
                     }
 
                     previewElement.innerHTML = previewHTML;
@@ -168,6 +175,7 @@ class Sharpen {
                     document.getElementById('sharpen-speed-button').disabled = isAlreadyHoned || newSpeedValue === currentSpeed;
 
                     this.ui.renderInventory();
+                    this.ui.updatePlayerStats();
                     this.ui.renderEquipment();
 
                 } else {
@@ -224,6 +232,7 @@ class Sharpen {
 
         this.ui.renderInventory();
         this.ui.renderEquipment();
+        this.ui.updatePlayerStats();
     }
 
     handleSharpen(type) {
@@ -274,28 +283,27 @@ class Sharpen {
         } else if (type === 'speed') {
             item.isHoned = true; // Set the flag
             const currentSpeed = (item.speed ?? this.game.player.defaultAttackSpeed);
-            const newSpeed = Math.max(0.1, currentSpeed - 0.2);
+            const newSpeed = Math.max(0.1, currentSpeed - 0.5); // Flat -0.5s, min 0.1
+
             if (newSpeed === currentSpeed) {
                 this.game.addLog(`Cannot hone ${item.name} further (minimum 0.1s speed).`);
                 return; // Exit if speed can't be reduced further
             } else {
                 item.speed = newSpeed;
-                successMessage = `Honed ${currentName}! Speed -0.2s.`;
+                successMessage = `Honed ${currentName}! Speed reduced by 0.5s (Now ${newSpeed.toFixed(1)}s).`;
                 item.name = `Honed ${currentName}`; // Prepend
                 item.description = item.description.replace(/Speed: [\d.]+s/, `Speed: ${item.speed.toFixed(1)}s`);
                 if (!item.description.includes("Speed:")) {
-                    item.description += `\nSpeed: ${item.speed.toFixed(1)}s`;
+                    item.description += ` Speed: ${item.speed.toFixed(1)}s`;
                 }
             }
-        } else {
-            this.game.addLog("Unknown enhancement type.");
-            return;
         }
 
+        // Ensure the rest of the function is complete and syntax is correct
         item.value = Math.floor(item.value * 1.2);
 
         if (!this.game.player.addItem(item)) {
-            this.game.addLog(`Inventory full! Could not add enhanced ${item.name}.`);
+            this.game.addLog("Inventory full! Cannot return the sharpened item.");
             return;
         }
 
