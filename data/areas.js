@@ -37,17 +37,23 @@ const AREA_CONFIG = [
             },
         }
     },
-    // Tier 3 (Rounds 21-29) - Placeholder example
+    // Tier 3 (Rounds 21-29) - Corrected Structure
     {
-        startRound: 20,
-        endRound: 30,
+        startRound: 21,
+        endRound: 29,
         areas: {
-            'placeholder_area_3a': { 
-                name: "Placeholder 3A", 
-                tooltip: "...", 
-                monsters: [],
-                finalBoss: 'ancient_dragon'
-            },
+            'dragon_peak': { 
+                name: "Dragon Peak", 
+                tooltip: "A treacherous peak shrouded in smoke, leading to the dragon's lair.", 
+                monsters: ['flame_whelp', 'stone_drake', 'obsidian_sentinel']
+                // No mini-boss for round 29 in this setup
+            }
         }
+    },
+    // Final Boss Tier (Round 30) - Corrected Structure
+    {
+        startRound: 30,
+        endRound: 30,
+        finalBoss: 'ancient_dragon' // Final boss ID for this specific round
     }
 ];

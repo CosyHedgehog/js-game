@@ -27,7 +27,7 @@ const WOLF_DEN_MONSTER_DATA = {
         packTactics: true,
         packDamageBonus: 2,
         packDefenseBonus: 1,
-        mechanics: "Pack Tactics: Gains +2 attack and +1 defense when below 50% health, representing desperate pack survival instincts.",
+        mechanics: "Pack Tactics: Gains +2 attack and +1 defense when below 50% health.",
         lootTable: [
             { itemTier: 'commonFood', chance: 0.5 },
             { itemTier: 'uncommonFood', chance: 0.5 },

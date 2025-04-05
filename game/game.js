@@ -13,7 +13,6 @@ class Game {
         this.shopCanReroll = false;
         this.pendingLoot = null; // Will hold { gold: number, items: [] }
         this.currentArea = Math.random() < 0.5 ? 'spider_cave' : 'wolf_den';
-        // Math.random() < 0.5 ? 'spider_cave' : 'wolf_den';
 
         if (this.ui) { this.ui.game = this; }
     }
@@ -43,6 +42,12 @@ class Game {
 
     // Ensure proceedToNextRound correctly sets state and clears UI
     proceedToNextRound() {
+        // *** Add check to prevent proceeding after win/loss ***
+        if (this.state === 'win' || this.state === 'game_over') {
+            console.log("Game already ended, not proceeding to next round.");
+            return; 
+        }
+
         this.currentRound++;
         this.addLog(`--- Round ${this.currentRound} ---`);
         console.log("Current round:", this.currentRound);
@@ -53,20 +58,23 @@ class Game {
             // Check if the *start* of a new tier has been reached
             if (this.currentRound === tier.startRound) {
                 const previousArea = this.currentArea;
-                // Get area IDs from the current tier
-                const availableAreaIds = Object.keys(tier.areas);
-                if (availableAreaIds.length > 0) {
-                    // Select a random area ID from the new tier's list
-                    const newAreaIndex = Math.floor(Math.random() * availableAreaIds.length);
-                    this.currentArea = availableAreaIds[newAreaIndex];
-                    if (this.currentArea !== previousArea) { 
-                         this.addLog(`You venture into the ${AREA_CONFIG[tierIndex]?.areas[this.currentArea]?.name || this.currentArea.replace('_', ' ')}!`); // Use name from config
+                // *** Check if the new tier actually defines areas before selecting ***
+                if (tier.areas) { 
+                    const availableAreaIds = Object.keys(tier.areas);
+                    if (availableAreaIds.length > 0) {
+                        // Select a random area ID from the new tier's list
+                        const newAreaIndex = Math.floor(Math.random() * availableAreaIds.length);
+                        this.currentArea = availableAreaIds[newAreaIndex];
+                        if (this.currentArea !== previousArea) { 
+                             this.addLog(`You venture into the ${tier.areas[this.currentArea]?.name || this.currentArea.replace('_', ' ')}!`);
+                        }
+                        newAreaSelected = true;
+                    } else {
+                        console.warn(`No areas defined for tier starting round ${tier.startRound}`);
                     }
-                    newAreaSelected = true;
-                } else {
-                    console.warn(`No areas defined for tier starting round ${tier.startRound}`);
-                }
-                break; // Stop checking tiers once a match is found
+                } // else: This tier doesn't define areas (e.g., final boss tier), so no area change needed.
+                
+                break; // Stop checking tiers once the correct startRound is found
             }
         }
         // Initialize area on round 1 if not set by progression
@@ -349,7 +357,7 @@ class Game {
 
         if (bossId && MONSTERS[bossId]) {
             const bossData = MONSTERS[bossId];
-            this.ui.renderBossEncounter(bossData);
+            this.ui.renderBossEncounter(bossData, bossId);
         } else {
             console.error(`Could not determine or find boss data for round ${this.currentRound} in area ${this.currentArea}.`);
             this.generateEventChoices(); // Fallback to regular choices
