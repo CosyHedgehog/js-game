@@ -196,13 +196,13 @@
 
 @keyframes burning-pulse {
     0% {
-        box-shadow: 0 0 8px 3px rgba(255, 100, 0, 0.6); /* Less intense glow */
+        box-shadow: 0 0 8px 3px rgba(255, 100, 0, 0.6); 
     }
     50% {
-        box-shadow: 0 0 18px 7px rgba(255, 80, 0, 0.8); /* More intense glow */
+        box-shadow: 0 0 18px 7px rgba(255, 80, 0, 0.8); 
     }
     100% {
-        box-shadow: 0 0 8px 3px rgba(255, 100, 0, 0.6); /* Back to less intense */
+        box-shadow: 0 0 8px 3px rgba(255, 100, 0, 0.6); 
     }
 }
 
@@ -290,7 +290,7 @@
 @keyframes combatFadeIn {
     from {
         opacity: 0;
-        transform: translateY(10px); /* Example effect */
+        transform: translateY(10px); 
     }
     to {
         opacity: 1;

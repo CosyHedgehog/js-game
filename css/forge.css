@@ -1,12 +1,11 @@
 #blacksmith-area {
-    /* background: rgba(0, 0, 0, 0.2); */
-    background-color: #4a4a4a; /* Medium grey background */
+    background-color: #4a4a4a; 
     border: 1px solid #666;
     border-radius: 8px;
-    /* padding: 20px; */
-    padding: 25px 30px; /* More horizontal padding */
-    max-width: 650px; /* Wider to accommodate side-by-side */
-    margin: 20px auto; /* Center it */
+    
+    padding: 25px 30px; 
+    max-width: 650px; 
+    margin: 20px auto; 
     box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
     position: relative;
     text-align: center;
@@ -22,100 +21,100 @@
 
 #blacksmith-area p {
     color: #c0c0c0;
-    margin-bottom: 25px; /* More space before slots */
+    margin-bottom: 25px; 
     line-height: 1.5;
     font-size: 1em;
 }
 
 .forge-container {
     display: flex;
-    /* flex-direction: column; */ /* Stack vertically */
+    
     flex-direction: column;
-    /* gap: 20px; */
-    gap: 20px; /* Space between rows (slots, preview, button) */
-    /* padding: 15px; */
-    align-items: center; /* Center children horizontally */
-    /* background: rgba(0, 0, 0, 0.2); */
-    /* border-radius: 8px; */
-    min-height: 450px; /* Example: Set a minimum height - Adjust this value! */
-    padding-top: 30px;    /* Example: Add more space inside at the top */
-    padding-bottom: 30px; /* Example: Add more space inside at the bottom */
-    box-sizing: border-box; /* Include padding in height calculations */
-    justify-content: center; /* Optional: Center content vertically if using fixed height or it fills space */
+    
+    gap: 20px; 
+    
+    align-items: center; 
+    
+    
+    min-height: 450px; 
+    padding-top: 30px;    
+    padding-bottom: 30px; 
+    box-sizing: border-box; 
+    justify-content: center; 
 }
 
 .forge-slots-area {
-    /* display: grid; */
-    display: flex; /* Changed */
-    /* grid-template-columns: repeat(3, 1fr); */
-    align-items: center; /* Added */
-    justify-content: center; /* Added */
+    
+    display: flex; 
+    
+    align-items: center; 
+    justify-content: center; 
     gap: 15px;
-    width: 100%; /* Added */
-    /* margin: 15px 0; */
-    margin-bottom: 10px; /* Added */
+    width: 100%; 
+    
+    margin-bottom: 10px; 
 }
 
 .forge-slot {
-    /* background: rgba(0, 0, 0, 0.3); */
+    
     background-color: #333;
     border: 2px dashed #555;
     border-radius: 6px;
-    /* padding: 15px; */
-    padding: 10px; /* Slightly reduced padding */
-    width: 180px; /* Wider slots */
-    /* min-height: 100px; */
+    
+    padding: 10px; 
+    width: 180px; 
+    
     height: 90px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     transition: all 0.2s;
-    /* transition: background-color 0.2s, border-color 0.2s; */ /* More specific */
+    
     cursor: default;
-    flex-shrink: 0; /* Added */
+    flex-shrink: 0; 
 }
 
 .forge-slot.crafting-slot-filled {
     cursor: pointer;
     border-style: solid;
-    /* border-color: #4a9eff; */
+    
     border-color: #777;
 }
 
 .forge-slot-label {
-    font-size: 0.75em; /* Smaller label */
+    font-size: 0.75em; 
     color: #888;
     margin-bottom: 5px;
-    /* text-align: center; */
+    
     text-transform: uppercase;
-    display: none; /* Added */
+    display: none; 
 }
 
 .forge-slot.crafting-slot-filled .forge-slot-label {
-    /* color: #4a9eff; */
-    display: block; /* Added */
+    
+    display: block; 
 }
 
 .forge-slot-content {
-    /* width: 100%; */
-    width: 100%; /* Ensure text wraps/ellipsis works */
+    
+    width: 100%; 
     height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    /* color: #ccc; */
+    
     color: #999;
     font-size: 0.9em;
     font-style: italic;
     flex-grow: 1;
-    overflow: hidden; /* Added */
-    white-space: normal; /* Added */
-    text-align: center; /* Added */
+    overflow: hidden; 
+    white-space: normal; 
+    text-align: center; 
 }
 
 .forge-slot.crafting-slot-filled .forge-slot-content {
-    /* color: #fff; */
+    
     color: #e0e0e0;
     font-weight: bold;
     font-style: normal;
@@ -144,31 +143,31 @@
 }
 
 .forge-symbol {
-    font-size: 2em; /* Larger symbols */
+    font-size: 2em; 
     color: #999;
-    /* margin: 0 10px; */
-    align-self: center; /* Added */
-    padding: 0 8px; /* Added */
-    line-height: 90px; /* Added */
+    
+    align-self: center; 
+    padding: 0 8px; 
+    line-height: 90px; 
 }
 
 #forge-preview {
-    /* background: rgba(0, 0, 0, 0.3); */
-    background-color: #303030; /* Darker preview background */
+    
+    background-color: #303030; 
     border: 1px solid #555;
     border-radius: 4px;
-    padding: 15px; /* More padding */
-    /* margin-top: 20px; */
-    /* text-align: center; */
-    text-align: left; /* Align text left */
-    /* min-height: 100px; */
-    height: 160px;     /* *** ADD THIS: Set desired fixed height (adjust value) *** */
-    overflow-y: auto;  /* *** ADD THIS: Add scrollbar if content overflows *** */
-    width: 90%; /* Wider preview */
+    padding: 15px; 
+    
+    
+    text-align: left; 
+    
+    height: 160px;     
+    overflow-y: auto;  
+    width: 90%; 
     max-width: 500px;
     color: #b0b0b0;
     font-size: 0.9em;
-    line-height: 1.7; /* Increased line height */
+    line-height: 1.7; 
     box-sizing: border-box;
 }
 
@@ -187,34 +186,34 @@
 }
 
 #forge-button {
-    /* background: #4CAF50; */
-    background-color: #e07a2e; /* Orange button */
+    
+    background-color: #e07a2e; 
     color: #fff;
-    /* border: none; */
+    
     border: 1px solid #c76a1e;
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    /* padding: 10px 20px; */
-    padding: 12px 35px; /* Larger button */
+    
+    padding: 12px 35px; 
     border-radius: 5px;
     cursor: pointer;
-    /* transition: all 0.2s; */
+    
     transition: background-color 0.2s, transform 0.1s;
     font-weight: bold;
-    /* margin-top: 20px; */
-    font-size: 1.1em; /* Larger font */
-    width: auto; /* Fit content */
+    
+    font-size: 1.1em; 
+    width: auto; 
 }
 
 #forge-button:hover:not(:disabled) {
-    /* background: #45a049; */
+    
     background-color: #f08a3e;
     transform: translateY(-1px);
     box-shadow: 0 4px 6px rgba(0,0,0,0.25);
 }
 
 #forge-button:disabled {
-    /* background: #333; */
-    background-color: #555; /* Dark grey disabled */
+    
+    background-color: #555; 
     color: #999;
     border-color: #777;
     cursor: default;
@@ -223,34 +222,34 @@
 }
 
 #blacksmith-leave-button {
-    /* background: #f44336; */
+    
     background-color: #5a5a5a;
-    /* color: white; */
+    
     color: #ddd;
-    /* border: none; */
+    
     border: 1px solid #777;
     padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
-    /* transition: all 0.2s; */
+    
     transition: background-color 0.2s, transform 0.1s;
-    /* margin-top: 20px; */
-    /* display: block; */
+    
+    
     display: block;
-    /* margin-left: auto; */
-    /* margin-right: auto; */
-    margin: 30px auto 0 auto; /* More space above */
+    
+    
+    margin: 30px auto 0 auto; 
     font-size: 0.95em;
     width: fit-content;
 }
 
 #blacksmith-leave-button:hover {
-    /* background: #d32f2f; */
+    
     background-color: #6a6a6a;
     transform: translateY(-1px);
 }
 
-/* Sharpen Styles */
+
 .sharpen-container {
     display: flex;
     flex-direction: column;
@@ -305,7 +304,7 @@
     border-color: #f44336;
 }
 
-/* Armourer Styles */
+
 .armourer-container {
     display: flex;
     flex-direction: column;
@@ -374,24 +373,24 @@
     border-color: #666;
 }
 
-/* --- Forge Choice Screen Styles --- */
+
 
 #forge-armorer-button:disabled,
-#forge-blacksmith-button:disabled { /* Assuming these IDs exist */
+#forge-blacksmith-button:disabled { 
     cursor:default;
 }
 
-.forge-container { /* Applying to the main container for choice screen */
-    background-color: #2c2c2e; /* Darker grey */
-    padding: 25px; /* Added padding */
+.forge-container { 
+    background-color: #2c2c2e; 
+    padding: 25px; 
     border-radius: 8px;
     border: 1px solid #444;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
     text-align: center;
-    /* Remove blacksmith specific styles if they conflict */
-    /* min-height: 450px; */ 
-    /* padding-top: 30px;    */
-    /* padding-bottom: 30px; */
+    
+    
+    
+    
 }
 
 .forge-prompt {
@@ -409,12 +408,12 @@
 }
 
 .forge-card {
-    background-color: #3a3a3e; /* Slightly lighter grey */
+    background-color: #3a3a3e; 
     border: 1px solid #555;
     border-radius: 8px;
     padding: 20px;
     text-align: center;
-    width: calc(33% - 22px); /* Adjust for padding/gap */
+    width: calc(33% - 22px); 
     min-width: 200px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
@@ -463,17 +462,17 @@
     cursor: not-allowed;
 }
 
-/* Style for missing requirement text */
+
 .requirement-missing {
-    color: #ff6b6b; /* Reddish color */
+    color: #ff6b6b; 
     font-size: 0.8em;
-    display: block; /* Ensure it's on its own line */
-    margin-top: -8px; /* Adjust spacing */
+    display: block; 
+    margin-top: -8px; 
     margin-bottom: 5px;
 }
 
 #forge-leave-button {
-    background-color: #6c757d; /* Neutral grey */
+    background-color: #6c757d; 
     color: #fff;
     border: 1px solid #5a6268;
     padding: 10px 25px;
@@ -488,15 +487,14 @@
     background-color: #5a6268;
 }
 
-/* --- End Forge Choice Screen Styles --- */
 
-/* --- Blacksmith Combine Item Styles --- */
+
 
 #blacksmith-area {
-    /* background-color: #4a4a4a; */ /* Keep grey for consistency? */
+    
     border-radius: 8px;
-    max-width: 550px; /* Blacksmith needs a bit more width */
-    margin: 20px auto; /* Center it */
+    max-width: 550px; 
+    margin: 20px auto; 
     box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
     text-align: center;
 }
@@ -504,42 +502,42 @@
 #blacksmith-area h3 {
     margin-top: 0;
     margin-bottom: 15px;
-    color: #e5e5e5; /* Light grey */
+    color: #e5e5e5; 
     font-size: 1.5em;
     text-shadow: 1px 1px 2px #222;
 }
 
-#blacksmith-area p { /* General paragraph styling */
-    color: #c0c0c0; /* Lighter grey text */
+#blacksmith-area p { 
+    color: #c0c0c0; 
     margin-bottom: 20px;
     line-height: 1.5;
 }
 
-.forge-container { /* For blacksmith item combine */
+.forge-container { 
     display: flex;
-    align-items: center; /* Align slots and symbols vertically */
-    justify-content: center; /* Center horizontally */
+    align-items: center; 
+    justify-content: center; 
     margin-bottom: 20px;
-    flex-wrap: wrap; /* Allow wrapping if needed */
+    flex-wrap: wrap; 
 }
 
-.forge-slot { /* Keep previous updates for combine slots */
+.forge-slot { 
     background-color: #333; 
     border: 2px dashed #555; 
     border-radius: 6px;
-    padding: 15px; /* Adjusted padding */
-    width: 100px; /* Fixed width */
-    height: 80px; /* Fixed height */
+    padding: 15px; 
+    width: 100px; 
+    height: 80px; 
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     transition: background-color 0.2s, border-color 0.2s;
-    cursor: default; /* Default cursor */
+    cursor: default; 
 }
 
 .forge-slot.crafting-slot-filled {
-     cursor: pointer; /* Pointer cursor when filled */
+     cursor: pointer; 
      border-style: solid;
      border-color: #777;
 }
@@ -549,42 +547,42 @@
     color: #888;
     margin-bottom: 5px;
     text-transform: uppercase;
-    display: none; /* Hide label by default */
+    display: none; 
 }
 .forge-slot.crafting-slot-filled .forge-slot-label {
-    display: block; /* Show label when filled */
+    display: block; 
 }
 
 .forge-slot-content {
     color: #999;
     font-style: italic;
-    flex-grow: 1; /* Allow content to take space */
-    display: flex; /* Center text vertically */
+    flex-grow: 1; 
+    display: flex; 
     align-items: center;
     justify-content: center;
     font-size: 0.9em;
 }
 
 .forge-slot.crafting-slot-filled .forge-slot-content {
-    color: #e0e0e0; /* Light text for item name */
+    color: #e0e0e0; 
     font-style: normal;
     font-weight: bold;
     font-size: 1em;
 }
 
-.forge-slot:hover:not(.crafting-slot-filled) { /* Only apply hover effect when empty */
+.forge-slot:hover:not(.crafting-slot-filled) { 
     background-color: #3a3a3a;
     border-color: #777;
 }
 
 .forge-slot.drag-over-valid {
-    background-color: #3a5a3a; /* Greenish tint */
+    background-color: #3a5a3a; 
     border-color: #6a8a6a;
     border-style: solid;
 }
 
 .forge-slot.drag-over-invalid {
-    background-color: #5a3a3a; /* Reddish tint */
+    background-color: #5a3a3a; 
     border-color: #8a6a6a;
     border-style: solid;
 }
@@ -592,47 +590,47 @@
 .forge-symbol {
     font-size: 1.8em;
     color: #888;
-    align-self: center; /* Align symbols vertically with slots */
+    align-self: center; 
     padding: 0 5px;
 }
 
-/* Forge Result Area */
+
 .forge-result {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px; /* Space between button and preview */
-    min-width: 120px; /* Ensure some width */
+    gap: 10px; 
+    min-width: 120px; 
 }
 
 #forge-preview {
     background-color: #383838;
     border: 1px solid #505050;
     border-radius: 4px;
-    padding: 8px 12px; /* Slightly less padding */
-    margin-top: 5px; /* Space below button */
+    padding: 8px 12px; 
+    margin-top: 5px; 
     color: #b0b0b0;
-    font-size: 0.85em; /* Slightly smaller */
+    font-size: 0.85em; 
     line-height: 1.4;
-    min-height: 40px; /* Ensure space */
+    min-height: 40px; 
     text-align: center;
-    width: 100%; /* Take full width of result area */
+    width: 100%; 
 }
-#forge-preview.hidden { /* Ensure hidden works */
+#forge-preview.hidden { 
     display: none;
 }
 
-/* Forge Button */
+
 #forge-button {
-    background-color: #4a6b4a; /* Greenish background for action */
+    background-color: #4a6b4a; 
     color: #fff;
     border: 1px solid #6a8b6a;
-    padding: 10px 25px; /* Generous padding */
+    padding: 10px 25px; 
     border-radius: 5px;
     font-size: 1em;
     cursor: pointer;
     transition: background-color 0.2s, transform 0.1s;
-    width: 100%; /* Full width within result area */
+    width: 100%; 
 }
 
 #forge-button:hover:not(:disabled) {
@@ -644,13 +642,13 @@
     background-color: #404040;
     color: #888;
     border-color: #555;
-    cursor: default; /* Use default cursor */
-    opacity: 0.6; /* Make it look more disabled */
+    cursor: default; 
+    opacity: 0.6; 
 }
 
-/* Leave Button */
-#blacksmith-leave-button { /* Assuming this is for leaving the combine screen */
-    background-color: #5a5a5a; /* Darker grey, distinct from actions */
+
+#blacksmith-leave-button { 
+    background-color: #5a5a5a; 
     color: #ddd;
     border: 1px solid #777;
     padding: 10px 20px;
@@ -658,8 +656,8 @@
     font-size: 0.95em;
     cursor: pointer;
     transition: background-color 0.2s, transform 0.1s;
-    display: block; /* Center it */
-    margin: 25px auto 0 auto; /* Add space above and center */
+    display: block; 
+    margin: 25px auto 0 auto; 
     width: fit-content;
 }
 

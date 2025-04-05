@@ -48,8 +48,6 @@
 }
 
 .shop-item.selected {
-    /* border-color: #4CAF50; */
-    /* box-shadow: 0 0 10px rgba(76, 175, 80, 0.3); */
     background-color: #3a3a3a;
     border-color: #505050;
 }
@@ -177,7 +175,6 @@
     cursor: pointer;
 }
 
-/* Add shop info section style */
 .shop-info {
     text-align: center;
     color: #ccc;

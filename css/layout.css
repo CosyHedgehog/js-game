@@ -213,28 +213,27 @@ html {
 }
 
 #equipment-area-2 {
-    /* Styles specific to equipment section if needed */
+    
 }
 
 #player-stats-area-2 {
-    /* Styles specific to stats section if needed */
+    
 }
 
-/* Area Description Styling */
 #area-description {
-    font-size: 0.9em;      /* Slightly smaller than round display */
-    color: #a0a0a0;        /* Greyish color */
-    margin-top: 4px;       /* Small space below round display */
-    text-align: center;    /* Center the text */
-    font-style: italic;    /* Italicize for flavor */
-    height: 1.2em;         /* Prevent layout shift if text changes */
+    font-size: 0.9em;      
+    color: #a0a0a0;        
+    margin-top: 4px;       
+    text-align: center;    
+    font-style: italic;    
+    height: 1.2em;         
     line-height: 1.2em;
-    cursor: default;       /* Default cursor on hover */
+    cursor: default;       
     transition: color 0.2s;
 }
 
 #area-description:hover {
-    color: #cccccc;       /* Slightly brighter on hover */
+    color: #cccccc;       
 }
 
 .hidden {
