@@ -22,7 +22,7 @@ class Game {
         { type: 'shop', weight: 10 },
         { type: 'alchemist', weight: 10 },
         { type: 'treasure_chest', weight: 10 }, //
-        { type: 'forge', weight: 100 }, // NEW Forge Event
+        { type: 'forge', weight: 10 }, // NEW Forge Event
         { type: 'fishing', weight: 10 }, //
         { type: 'trap', weight: 10 }
     ];
@@ -150,14 +150,8 @@ class Game {
         this.currentChoices = [];
         
         const roll = Math.random() * 100;
-        let numChoices;
-        if (roll < 5){
-            numChoices = 1;
-        } else if (roll < 30) {
-            numChoices = 2;
-        } else if (roll < 95) {
-            numChoices = 3;
-        } else { 
+        let numChoices = 3;
+        if (roll < 25) {
             numChoices = 4;
         }
 

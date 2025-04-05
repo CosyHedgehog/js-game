@@ -103,6 +103,13 @@ class UI {
 
         // DPS Stat
         this.statDps = document.getElementById('stat-dps-2');
+
+        // Add tooltip cache
+        this.tooltipCache = {
+            attack: new Map(), // Map<attackValue, tooltipText>
+            defense: new Map(), // Map<defenseValue, tooltipText>
+            dps: new Map()    // Map<attackValue_speed, tooltipText>
+        };
     }
 
     cacheDynamicElements() {
@@ -633,7 +640,7 @@ class UI {
 
     updatePlayerStats() {
         const player = this.game.player;
-        const previousRound = this.statRound?.textContent; // Store previous round text
+        const previousRound = this.statRound?.textContent;
 
         if (this.statHealth) this.statHealth.textContent = player.health;
         if (this.statMaxHealth) this.statMaxHealth.textContent = player.getMaxHealth();
@@ -641,13 +648,41 @@ class UI {
         // Attack
         let attackBase = player.baseAttack + (player.equipment.weapon !== null ? (this.game.player.inventory[player.equipment.weapon]?.stats?.attack || 0) : 0) + (player.equipment.ring !== null ? (this.game.player.inventory[player.equipment.ring]?.stats?.attack || 0) : 0);
         let attackText = `${attackBase}`; 
-        let attackTooltip = "Maximum potential damage per attack.";
+
+        // Check cache for attack tooltip
+        const maxAttack = player.getAttack();
+        let attackTooltip = this.tooltipCache.attack.get(maxAttack);
+
+        if (!attackTooltip) {
+            // Calculate if not in cache
+            attackTooltip = "<b>Max damage<\/b><br><br>Chance to hit:<br>";
+            const numSimulations = 2400;
+
+            for (let def = 0; def <= 10; def++) {
+                let hits = 0;
+                for (let i = 0; i < numSimulations; i++) {
+                    const attackRoll = Math.floor(Math.random() * (maxAttack + 1));
+                    const defenseRoll = Math.floor(Math.random() * (def + 1));
+                    if (attackRoll > defenseRoll) {
+                        hits++;
+                    }
+                }
+                const hitChance = (hits / numSimulations) * 100;
+                attackTooltip += `${def} Def: <b>${hitChance.toFixed(1)}%</b><br>`;
+            }
+
+            // Store in cache
+            this.tooltipCache.attack.set(maxAttack, attackTooltip);
+        }
+
+        // Add temp attack info if needed
         if (player.tempAttack > 0) {
             attackText += ` <span class="boosted-stat">(+${player.tempAttack})</span>`;
-            attackTooltip = `Maximum potential damage per attack.\nBoosted by +${player.tempAttack} (temporary, lasts until combat ends).`;
+            attackTooltip = attackTooltip + `<br>Boosted by +${player.tempAttack} (temporary, lasts until combat ends).`;
         }
-        if (this.statAttack) this.statAttack.innerHTML = attackText; // Use innerHTML to render span
-        if (this.statAttackElement) this.statAttackElement.dataset.tooltipText = attackTooltip; // Store dynamic tooltip text
+
+        if (this.statAttack) this.statAttack.innerHTML = attackText;
+        if (this.statAttackElement) this.statAttackElement.dataset.tooltipText = attackTooltip;
 
         // Defense
         let defenseBase = player.baseDefense;
@@ -655,14 +690,40 @@ class UI {
              if (index !== null && this.game.player.inventory[index]?.stats?.defense) {
                  defenseBase += this.game.player.inventory[index].stats.defense;
              }
-         });
+        });
         let defenseText = `${defenseBase}`;
-        let defenseTooltip = "Maximum potential damage blocked per hit.";
+        
+        // Check cache for defense tooltip
+        const maxDefense = player.getDefense();
+        let defenseTooltip = this.tooltipCache.defense.get(maxDefense);
+
+        if (!defenseTooltip) {
+            // Calculate if not in cache
+            defenseTooltip = "<b>Max block<\/b><br><br>Chance to block:<br>";
+            const numSimulations = 2400;
+
+            for (let atk = 0; atk <= 10; atk++) {
+                let blocks = 0;
+                for (let i = 0; i < numSimulations; i++) {
+                    const attackRoll = Math.floor(Math.random() * (atk + 1));
+                    const defenseRoll = Math.floor(Math.random() * (maxDefense + 1));
+                    if (defenseRoll >= attackRoll) {
+                        blocks++;
+                    }
+                }
+                const blockChance = (blocks / numSimulations) * 100;
+                defenseTooltip += `${atk} Atk: <b>${blockChance.toFixed(1)}%</b><br>`;
+            }
+
+            // Store in cache
+            this.tooltipCache.defense.set(maxDefense, defenseTooltip);
+        }
+
         if (player.tempDefense > 0) {
             defenseText += ` <span class="boosted-stat">(+${player.tempDefense})</span>`;
-            defenseTooltip = `Maximum potential damage blocked per hit.\nBoosted by +${player.tempDefense} (temporary, lasts until combat ends).`;
+            defenseTooltip = defenseTooltip + `<br>Boosted by +${player.tempDefense} (temporary, lasts until combat ends).`;
         }
-        if (this.statDefense) this.statDefense.innerHTML = defenseText; // Use innerHTML
+        if (this.statDefense) this.statDefense.innerHTML = defenseText;
         if (this.statDefenseElement) this.statDefenseElement.dataset.tooltipText = defenseTooltip;
         
         // Speed
@@ -676,7 +737,36 @@ class UI {
         }
         if (this.statSpeed) this.statSpeed.innerHTML = speedText; // Use innerHTML
         if (this.statSpeedElement) this.statSpeedElement.dataset.tooltipText = speedTooltip;
-        if (this.statDpsElement) this.statDpsElement.dataset.tooltipText = "Damage Per Second";
+
+        // Calculate DPS against different defense values
+        const attackSpeed = player.getAttackSpeed();
+        const cacheKey = `${maxAttack}_${attackSpeed}`;
+        let dpsTooltip = this.tooltipCache.dps.get(cacheKey);
+
+        if (!dpsTooltip) {
+            // Calculate if not in cache
+            dpsTooltip = "<b>Damage per second<\/b><br><br>DPS against:<br>";
+            const numSimulations = 2400;
+
+            for (let def = 0; def <= 10; def++) {
+                let totalDamage = 0;
+                for (let i = 0; i < numSimulations; i++) {
+                    const attackRoll = Math.floor(Math.random() * (maxAttack + 1));
+                    const defenseRoll = Math.floor(Math.random() * (def + 1));
+                    const damage = Math.max(0, attackRoll - defenseRoll);
+                    totalDamage += damage;
+                }
+                const avgDamagePerHit = totalDamage / numSimulations;
+                const dpsAgainstDef = attackSpeed > 0 ? (avgDamagePerHit / attackSpeed) : 0;
+                dpsTooltip += `${def} Def: <b>${dpsAgainstDef.toFixed(2)}</b><br>`;
+            }
+
+            // Store in cache
+            this.tooltipCache.dps.set(cacheKey, dpsTooltip);
+        }
+
+        if (this.statDpsElement) this.statDpsElement.dataset.tooltipText = dpsTooltip;
+
         // Gold & Round (Update normally, keep existing tooltip logic if needed)
         if (this.statGold) this.statGold.textContent = player.gold;
         if (this.statGoldElement) this.statGoldElement.dataset.tooltipText = "Your current wealth."; // Update gold tooltip text

@@ -17,8 +17,8 @@ class Rest {
         restArea.id = 'rest-area'; // Keep the ID for potential styling/splats
         restArea.classList.remove('hidden'); // Ensure it's visible
 
-        const minHealPercent = 0.3;
-        const maxHealPercent = 0.7;
+        const minHealPercent = 0.5;
+        const maxHealPercent = 0.9;
         const minHealAmount = Math.floor(this.game.player.getMaxHealth() * minHealPercent);
         const maxHealAmount = Math.ceil(this.game.player.getMaxHealth() * maxHealPercent);
 

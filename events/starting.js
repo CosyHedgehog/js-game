@@ -9,7 +9,7 @@ class Starting {
             name: 'Warrior',
             description: 'A balanced fighter.',
             stats: {
-                maxHealth: 20,
+                maxHealth: 15,
                 health: 15,
                 baseAttack: 1,
                 baseDefense: 1,
