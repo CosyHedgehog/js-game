@@ -163,11 +163,11 @@ const MONSTERS = {
     'grog': {
         name: 'Grog', health: 60, attack: 5, defense: 8, speed: 3.0,
         goldDrop: [20, 35],
-        hasStunningSlam: true,
-        stunChance: 0.25, // 25% chance on hit
-        stunDuration: 4, // Player attack delayed 2.5s
+        hasTimedStun: true,
+        timedStunInterval: 15,
+        timedStunDuration: 4,
         description: "An armored ogre with a large club.",
-        mechanics: "25% chance to stun on attack!",
+        mechanics: "Slams the ground every 15 seconds, stunning you for 4 seconds!",
         lootTable: [
             { itemId: 'greater_defense_potion', chance: 0.4 }, 
             { itemTier: 'uncommonItem', chance: 0.2 },

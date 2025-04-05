@@ -10,7 +10,8 @@ class Combat {
             currentAttack: enemy.attack,
             currentDefense: enemy.defense,
             scalesHardened: false,
-            breathAttackTimer: enemy.hasBreathAttack ? enemy.breathAttackInterval : null
+            breathAttackTimer: enemy.hasBreathAttack ? enemy.breathAttackInterval : null,
+            timedStunTimer: enemy.hasTimedStun ? enemy.timedStunInterval : null
         };
         this.game = game;
         this.ui = ui;
@@ -131,6 +132,10 @@ class Combat {
         this.enemy.attackTimer = Math.max(0, this.enemy.attackTimer - this.timeScale);
         if (this.enemy.breathAttackTimer !== null) {
             this.enemy.breathAttackTimer = Math.max(0, this.enemy.breathAttackTimer - this.timeScale);
+        }
+        // *** Decrement Timed Stun Timer ***
+        if (this.enemy.timedStunTimer !== null) {
+            this.enemy.timedStunTimer = Math.max(0, this.enemy.timedStunTimer - this.timeScale);
         }
 
         // Handle Player Poison Effect
@@ -279,7 +284,9 @@ class Combat {
             this.enemy.attackTimer,
             this.player.pendingActionDelay,
             this.enemy.breathAttackTimer,
-            this.enemy.breathAttackInterval
+            this.enemy.breathAttackInterval,
+            this.enemy.timedStunTimer,
+            this.enemy.timedStunInterval
         );
         this.ui.updateCombatStats(this.player, this.enemy); // Update stats every tick
         // ---------------------------------
@@ -295,6 +302,13 @@ class Combat {
             this.enemyBreathAttack();
             if (this.checkCombatEnd()) return;
             this.enemy.breathAttackTimer = this.enemy.breathAttackInterval;
+        }
+
+        // *** Check and trigger Timed Stun ***
+        if (this.enemy.timedStunTimer !== null && this.enemy.timedStunTimer <= 0) {
+            this.enemyTimedStunAttack(); // Call new function
+            if (this.checkCombatEnd()) return; // Check if stun killed player (unlikely but possible)
+            this.enemy.timedStunTimer = this.enemy.timedStunInterval; // Reset timer
         }
 
         if (this.enemy.attackTimer <= 0) {
@@ -368,30 +382,6 @@ class Combat {
             } // End poison chance check
         }
 
-        // Check for Stunning Slam
-        if (this.enemy.hasStunningSlam && damageDealt > 0 && Math.random() < this.enemy.stunChance) {
-             // Apply stun effect to player
-             this.player.attackTimerPaused = true;
-             this.player.pendingActionDelay = this.enemy.stunDuration;
-             this.player.isStunned = true; // Set the stun flag
-             this.game.addLog(`<span style="color: #ffff99;">Ogmor slams the ground, stunning you! (Attack delayed ${this.enemy.stunDuration}s)</span>`);
-             
-             // Trigger visual effect
-             const playerSide = document.querySelector('.player-side');
-             if (playerSide) {
-                 playerSide.classList.add('player-stunned-visual');
-                 // Remove class after animation (0.4s * 2 = 0.8s)
-                 setTimeout(() => {
-                     playerSide.classList.remove('player-stunned-visual');
-                 }, 800); 
-             }
-             // Create Stun splat
-             this.ui.createDamageSplat('.player-side', 'Stunned!', 'stun');
-             
-             // Re-render inventory to show stun effect on food
-             this.ui.renderInventory(); 
-        }
-
         this.ui.updateCombatantHealth(
             'player', 
             this.player.health, 
@@ -448,7 +438,9 @@ class Combat {
                     this.enemy.attackTimer,
                     this.player.pendingActionDelay,
                     this.enemy.breathAttackTimer,
-                    this.enemy.breathAttackInterval
+                    this.enemy.breathAttackInterval,
+                    this.enemy.timedStunTimer,
+                    this.enemy.timedStunInterval
                 );
             }
             if (useResult.item?.healAmount) {
@@ -666,5 +658,31 @@ class Combat {
         } else {
             this.game.proceedToNextRound();
         }
+    }
+
+    // *** NEW FUNCTION for Timed Stun ***
+    enemyTimedStunAttack() {
+        if (!this.enemy.hasTimedStun) return; // Safety check
+
+        // Apply stun effect to player
+        this.player.attackTimerPaused = true;
+        this.player.pendingActionDelay = this.enemy.timedStunDuration;
+        this.player.isStunned = true; // Set the stun flag
+        this.game.addLog(`<span style="color: #ffff99;">${this.enemy.name} slams the ground, stunning you! (Attack delayed ${this.enemy.timedStunDuration}s)</span>`);
+        
+        // Trigger visual effect
+        const playerSide = document.querySelector('.player-side');
+        if (playerSide) {
+            playerSide.classList.add('player-stunned-visual');
+            // Remove class after animation (0.4s * 2 = 0.8s)
+            setTimeout(() => {
+                playerSide.classList.remove('player-stunned-visual');
+            }, 800); 
+        }
+        // Create Stun splat
+        this.ui.createDamageSplat('.player-side', 'Stunned!', 'stun');
+        
+        // Re-render inventory to show stun effect on food
+        this.ui.renderInventory(); 
     }
 }

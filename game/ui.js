@@ -43,6 +43,10 @@ class UI {
         this.combatEnemyBreathTimerContainer = document.querySelector('.enemy-side .breath-timer'); 
         this.combatEnemyBreathTimerText = document.getElementById('combat-enemy-breath-timer');
         this.combatEnemyBreathTimerBar = document.querySelector('.enemy-breath-timer');
+        // *** Cache Stun Timer Elements ***
+        this.combatEnemyStunTimerContainer = document.querySelector('.enemy-side .stun-timer');
+        this.combatEnemyStunTimerText = document.getElementById('combat-enemy-stun-timer');
+        this.combatEnemyStunTimerBar = document.querySelector('.enemy-stun-timer');
         this.shopItemsContainer = document.getElementById('shop-items');
         this.shopRerollButton = document.getElementById('shop-reroll-button');
         this.outputLogArea = document.getElementById('output-log-area');
@@ -194,7 +198,9 @@ class UI {
             // enemyDef: { el: this.combatEnemyDef?.closest('span'), text: "Enemy's current defense value." }, 
             playerTimer: { el: this.combatPlayerTimerContainer, text: "Attack every X seconds." }, 
             enemyTimer: { el: this.combatEnemyTimerContainer, text: "Attack every X seconds." }, 
-            enemyBreathTimer: { el: this.combatEnemyBreathTimerContainer, text: "Firebreath every X seconds." }
+            enemyBreathTimer: { el: this.combatEnemyBreathTimerContainer, text: "Firebreath every X seconds." },
+            // *** Add Stun Timer Tooltip ***
+            stunTimer: { el: this.combatEnemyStunTimerContainer, text: "Slams ground every X seconds." }
         };
 
         // --- Add listener for player health bar for POISON tooltip --- 
@@ -249,6 +255,9 @@ class UI {
                         tooltipText = tooltipText.replace('X', this.game?.currentCombat?.enemy?.currentSpeed.toFixed(1) || '?');
                     } else if (key === 'enemyBreathTimer') {
                         tooltipText = tooltipText.replace('X', this.game?.currentCombat?.enemy?.breathAttackInterval?.toFixed(1) || '?');
+                    // *** Add Stun Timer Interval Replacement ***
+                    } else if (key === 'stunTimer') {
+                        tooltipText = tooltipText.replace('X', this.game?.currentCombat?.enemy?.timedStunInterval?.toFixed(1) || '?');
                     }
 
                     this.showTooltip(tooltipText.replace(/\n/g, '<br>'), this.statTooltip, e);
@@ -1201,7 +1210,7 @@ class UI {
         }
     }
 
-    updateCombatTimers(playerTime, enemyTime, playerDelay = 0, enemyBreathTime = null, enemyBreathInterval = null) {
+    updateCombatTimers(playerTime, enemyTime, playerDelay = 0, enemyBreathTime = null, enemyBreathInterval = null, enemyStunTime = null, enemyStunInterval = null) {
         // Player Timer Update (handle delay)
         this.combatPlayerTimer.textContent = playerDelay > 0 ? 
             `Delayed: ${playerDelay.toFixed(1)}s` : 
@@ -1238,6 +1247,23 @@ class UI {
                  console.error("UI Error: Breath timer elements not found during update.");
                  this._breathTimerErrorLogged = true;
              }
+        }
+
+        // *** Enemy Stun Timer Update (Conditional) ***
+        if (this.combatEnemyStunTimerContainer && this.combatEnemyStunTimerText && this.combatEnemyStunTimerBar) {
+            if (enemyStunTime !== null && enemyStunInterval !== null) {
+                this.combatEnemyStunTimerContainer.classList.remove('hidden');
+                this.combatEnemyStunTimerText.textContent = enemyStunTime.toFixed(1);
+                const stunPercentage = (1 - (enemyStunTime / enemyStunInterval)) * 100;
+                this.combatEnemyStunTimerBar.style.width = `${stunPercentage}%`;
+            } else {
+                this.combatEnemyStunTimerContainer.classList.add('hidden');
+            }
+        } else {
+            if (!this._stunTimerErrorLogged) { // Prevent console spam
+                console.error("UI Error: Stun timer elements not found during update.");
+                this._stunTimerErrorLogged = true;
+            }
         }
     }
 
