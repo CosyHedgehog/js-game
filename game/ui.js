@@ -857,8 +857,10 @@ class UI {
             const cardContent = document.createElement('div');
             cardContent.classList.add('choice-card-content');
 
-            // Conditionally add badge INSIDE the monster check
+            // Conditionally add badge AND specific class INSIDE the monster check
             if (encounter.type === 'monster') {
+                card.classList.add('choice-monster'); // *** ADD CLASS FOR MONSTER CARDS ***
+
                 const monster = MONSTERS[encounter.monsterId];
                 const playerAttack = this.game.player.getAttack();
 

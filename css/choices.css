@@ -79,32 +79,37 @@
 
 .difficulty-badge {
     position: absolute;
-    top: -10px;
-    right: -10px;
-    padding: 4px 12px;
-    border-radius: 4px;
-    font-size: 0.9em;
+    top: 10px;
+    right: 10px;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.75em;
     font-weight: bold;
+    color: #ffffff;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    color: white;
     z-index: 2;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 
-.difficulty-badge.easy {
+.difficulty-badge.difficulty-easy {
     background-color: #4CAF50;
-    border: 1px solid #45a049;
 }
 
-.difficulty-badge.medium {
-    background-color: #FF9800;
-    border: 1px solid #f57c00;
+.difficulty-badge.difficulty-medium {
+    background-color: #ffc107;
 }
 
-.difficulty-badge.hard {
+.difficulty-badge.difficulty-hard {
     background-color: #f44336;
-    border: 1px solid #d32f2f;
+}
+
+.choice-card.miniboss-card .difficulty-badge,
+.choice-card.boss-card .difficulty-badge {
+    background-color: #FF9800;
+}
+
+.choice-card.boss-card .difficulty-badge {
+    background-color: #f44336;
 }
 
 .choice-start-button {
@@ -357,4 +362,18 @@
 
 #choices-area {
     width: 100%;
+}
+
+/* Style for the "Fight" button on regular monster cards */
+.choice-card.choice-monster .choice-start-button {
+    background: linear-gradient(135deg, #e53935 0%, #c62828 100%); /* Red gradient */
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.choice-card.choice-monster .choice-start-button:hover {
+    background: linear-gradient(135deg, #f44336 0%, #e53935 100%); /* Lighter red gradient on hover */
+    transform: translateY(-1px); /* Keep consistent slight lift */
+    box-shadow: 0 2px 5px rgba(229, 57, 53, 0.3); /* Reddish shadow */
 }
