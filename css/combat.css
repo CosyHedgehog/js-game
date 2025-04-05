@@ -5,6 +5,8 @@
     padding: 20px;
     margin: 10px 0;
     position: relative;
+    margin-top: auto;    /* Center vertically */
+    margin-bottom: auto; /* Center vertically */
 }
 
 #round-indicator-area {
@@ -35,7 +37,7 @@
 .combat-container {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     gap: 20px;
     margin: 20px 0;
     position: relative;
@@ -47,10 +49,11 @@
     flex-direction: column;
     align-items: center;
     gap: 10px;
-    padding: 15px;
+    padding: 20px;
     background: rgba(0, 0, 0, 0.2);
     border-radius: 8px;
     position: relative;
+    border: 1px solid #333;
 }
 
 .combatant-name {
@@ -76,20 +79,23 @@
     border-radius: 10px;
     overflow: hidden;
     position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Match timer border */
+    box-sizing: border-box; /* Include border in height */
 }
 
 .health-bar {
     height: 100%;
     transition: width 0.3s ease-out;
     border-radius: 10px;
+    box-sizing: border-box; /* Add box-sizing */
 }
 
-.player-health {
-    background: linear-gradient(to right, #4CAF50, #81C784);
+.player-side:not(.player-poisoned) .player-health {
+    background: #4CAF50;
 }
 
-.enemy-health {
-    background: linear-gradient(to right, #f44336, #E57373);
+.enemy-side .enemy-health {
+    background: #4CAF50;
 }
 
 .health-text {
@@ -132,12 +138,14 @@
 }
 
 .attack-timer {
+    width: 100%;
     height: 20px;
     background: rgba(0, 0, 0, 0.3);
     border-radius: 10px;
     overflow: hidden;
     position: relative;
     border: 1px solid rgba(255, 255, 255, 0.1);
+    box-sizing: border-box; /* Include border in height */
 }
 
 .timer-bar {
@@ -427,10 +435,6 @@
     margin: 10px 0;
     line-height: 1.5;
     color: #ddd;
-}
-
-.damage-taken {
-    animation: damage-flash 0.3s ease-out;
 }
 
 /* --- Breath Timer Specific Styles --- */
