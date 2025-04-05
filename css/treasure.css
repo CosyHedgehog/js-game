@@ -6,6 +6,7 @@
     text-align: center;
     height: 100%; /* Add this to make it fill parent's height */
     box-sizing: border-box; /* Include padding in height calculation */
+    width: 100%; /* Explicitly add width */
 }
 
 .treasure-container {
