@@ -862,8 +862,20 @@ class UI {
                 card.classList.add('choice-monster'); // *** ADD CLASS FOR MONSTER CARDS ***
 
                 const monster = MONSTERS[encounter.monsterId];
-                const playerAttack = this.game.player.getAttack();
+                // const playerAttack = this.game.player.getAttack(); // REMOVED old calculation basis
 
+                // *** Use difficulty property directly from monster data ***
+                if (monster && monster.difficulty) {
+                    difficultyClass = 'difficulty-' + monster.difficulty; // e.g., difficulty-easy
+                    difficultyText = monster.difficulty.toUpperCase(); // e.g., EASY
+                } else {
+                    // Fallback if difficulty property is missing (optional)
+                    difficultyClass = 'difficulty-unknown'; 
+                    difficultyText = '???';
+                    console.warn(`Monster ${encounter.monsterId} is missing the difficulty property.`);
+                }
+
+                /* REMOVED old calculation logic:
                 // Calculate difficulty
                 if (monster.defense >= playerAttack) {
                     difficultyClass = 'difficulty-hard';
@@ -875,6 +887,7 @@ class UI {
                     difficultyClass = 'difficulty-easy';
                     difficultyText = 'EASY';
                 }
+                */
 
                 // Create and append badge ONLY for monsters
                 const difficultyBadge = document.createElement('div');
@@ -954,9 +967,16 @@ class UI {
             // Add start button
             const startButton = document.createElement('button');
             startButton.className = 'choice-start-button';
-            // Set button text based on encounter type
+
+            // Set button text based on encounter type & Add difficulty class if monster
             switch (encounter.type) {
-                case 'monster': startButton.textContent = 'Fight'; break;
+                case 'monster': 
+                    startButton.textContent = 'Fight';
+                    // Add difficulty class derived from monster data (e.g., difficulty-easy)
+                    if (difficultyClass) { 
+                        startButton.classList.add(difficultyClass);
+                    }
+                    break;
                 case 'rest': startButton.textContent = 'Rest'; break;
                 case 'shop': startButton.textContent = 'Enter Shop'; break;
                 case 'forge': startButton.textContent = 'Enter Workshop'; break;

@@ -11,6 +11,7 @@ const MONSTERS = {
     'giant_spider': {
         name: 'Giant Spider', health: 15, attack: 2, defense: 1, speed: 1.4, goldDrop: [2, 4],
         description: "A large arachnid with powerful fangs.",
+        difficulty: 'easy',
         lootTable: [
             { itemTier: 'commonFood', chance: 0.4 },
             { itemTier: 'uncommonFood', chance: 0.6 },
@@ -22,6 +23,7 @@ const MONSTERS = {
     'web_weaver': {
         name: 'Web Weaver', health: 12, attack: 1, defense: 3, speed: 1.8, goldDrop: [2, 5],
         description: "A cunning spider that specializes in defensive tactics.",
+        difficulty: 'medium',
         lootTable: [
             { itemTier: 'commonFood', chance: 0.5 },
             { itemTier: 'uncommonFood', chance: 0.4 },
@@ -31,6 +33,7 @@ const MONSTERS = {
     },
     'poison_crawler': {
         name: 'Poison Crawler', health: 10, attack: 3, defense: 1, speed: 1.6, goldDrop: [3, 6],
+        difficulty: 'hard',
         appliesPoison: true,
         poisonDamage: [1, 1],
         poisonDuration: 5,
@@ -47,6 +50,7 @@ const MONSTERS = {
     // === Wolf Den Monsters ===
     'dire_wolf': {
         name: 'Dire Wolf', health: 18, attack: 3, defense: 1, speed: 1.3, goldDrop: [3, 5],
+        difficulty: 'medium',
         description: "A large, powerful wolf with sharp fangs.",
         lootTable: [
             { itemTier: 'commonFood', chance: 0.6 },
@@ -57,6 +61,7 @@ const MONSTERS = {
     },
     'wolf_pup': {
         name: 'Wolf Pup', health: 8, attack: 1, defense: 1, speed: 1.0, goldDrop: [1, 3],
+        difficulty: 'easy',
         description: "A young wolf, quick but not very strong.",
         lootTable: [
             { itemTier: 'commonFood', chance: 0.7 },
@@ -66,6 +71,7 @@ const MONSTERS = {
     },
     'feral_hunter': {
         name: 'Feral Hunter', health: 14, attack: 2, defense: 2, speed: 1.5, goldDrop: [2, 6],
+        difficulty: 'hard',
         description: "A skilled wolf that hunts in precise strikes.",
         packTactics: true,
         packDamageBonus: 2,
