@@ -152,22 +152,25 @@
 }
 
 #leave-fishing-button {
-    background-color: #6c757d;
+    background-color: #4a4a4a;
     color: #fff;
-    border: 1px solid #5a6268;
-    padding: 10px 25px;
-    border-radius: 5px;
+    border: none;
+    padding: 10px;
+    border-radius: 4px;
     font-weight: bold;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: all 0.3s ease;
     font-size: 1em;
     margin-top: 15px;
     display: block;
     margin-left: auto;
     margin-right: auto;
     flex-shrink: 0;
+    width: fit-content;
 }
 
 #leave-fishing-button:hover {
-    background-color: #5a6268;
+    background-color: #5a5a5a;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }

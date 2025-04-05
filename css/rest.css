@@ -5,14 +5,18 @@
     border: 1px solid #333;
     border-radius: 8px;
     padding: 20px;
-    width: 90%;
-    max-width: 500px; /* Slightly narrower */
-    margin: auto;
-    align-self: center;
-    display: flex; /* Ensure flex properties work */
-    justify-content: center; /* Center the container */
-    align-items: center; /* Center vertically */
-    min-height: 250px;
+    /* width: 90%; */
+    /* max-width: 500px; */ /* Removed max-width */
+    /* margin: auto; */ /* Removed margin */
+    /* align-self: center; */ /* Removed align-self */
+    display: flex; 
+    /* justify-content: center; */ /* Removed justify-content */
+    /* align-items: center; */ /* Removed align-items */
+    /* min-height: 250px; */ /* Removed min-height */
+    flex-direction: column; /* Stack content vertically */
+    width: 100%; /* Fill width */
+    height: 100%; /* Fill height */
+    box-sizing: border-box; /* Include padding */
 }
 
 .rest-campfire-container {
@@ -22,6 +26,8 @@
     flex-direction: column;
     align-items: center;
     gap: 15px; /* Spacing between elements */
+    width: 100%; /* Make container full width */
+    /* flex-shrink: 0; */ /* Removed - Let flexbox manage shrinking */
 }
 
 .rest-campfire-icon {
@@ -50,48 +56,61 @@
 }
 
 #rest-continue-button {
-    background-color: #6b4a4a; /* Warm brown/red */
+    background-color: #4a4a4a; /* Match choice-start-button */
     color: #ffffff;
-    border: 1px solid #555;
-    padding: 10px 25px;
-    font-size: 1.05em;
-    border-radius: 4px;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 1px 1px rgba(0, 0, 0, 0.15);
-    margin-top: 10px; /* Space above button */
-    transition: background-color 0.2s ease;
+    border: none; /* Match choice-start-button */
+    padding: 10px; /* Match choice-start-button */
+    font-size: 1em; /* Adjust if needed */
+    border-radius: 4px; /* Match choice-start-button */
+    font-weight: bold; /* Added */
+    cursor: pointer; /* Added */
+    margin-top: 10px; 
+    transition: all 0.3s ease; /* Match choice-start-button */
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: fit-content; /* Keep width */
 }
 
 #rest-continue-button:hover {
-    background-color: #775555;
-    border-color: #604040;
+    background-color: #5a5a5a; /* Match choice-start-button hover */
+    transform: translateY(-2px); /* Added */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Added */
 }
 
 .rest-choices {
-    display: flex; /* Arrange cards horizontally */
-    justify-content: space-around; /* Distribute space */
-    flex-wrap: wrap; /* Allow cards to wrap on smaller screens */
-    gap: 20px; /* Space between cards */
+    /* display: flex; */ /* Changed to grid */
+    /* justify-content: space-around; */
+    /* flex-wrap: wrap; */
+    display: grid; /* Use grid */
+    grid-template-columns: repeat(2, 1fr); /* 2 equal columns */
+    grid-auto-rows: 1fr; /* Equal height rows */
+    gap: 15px; /* Adjusted gap slightly */
     margin-top: 20px;
+    width: 100%; /* Fill width */
+    flex-grow: 1; /* Fill remaining vertical space */
+    box-sizing: border-box;
 }
 
 .rest-card {
-    background-color: #3a3a3a; /* Darker background for the card */
-    border: 1px solid #555; /* Subtle border */
+    background-color: #2a2a2a; /* Match choice-card */
+    border: 2px solid #3a3a3a; /* Match choice-card */
     border-radius: 8px; /* Rounded corners */
-    padding: 15px;
+    padding: 20px; /* Match choice-card */
     text-align: center;
-    width: calc(33% - 20px); /* Aim for 3 cards per row, adjusting for gap */
+    /* width: calc(33% - 15px); */ /* Adjust width based on gap if needed, or let flex handle */
     min-width: 180px; /* Prevent cards from becoming too narrow */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Add a slight shadow */
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease; /* Match choice-card */
     display: flex; /* Use flexbox for internal alignment */
     flex-direction: column; /* Stack content vertically */
     justify-content: space-between; /* Push button to the bottom */
 }
 
 .rest-card:hover {
-    transform: translateY(-3px); /* Lift effect on hover */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px); /* Match choice-card hover */
+    border-color: #555; /* Match choice-card hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Match choice-card hover */
 }
 
 .rest-card h4 {
@@ -108,16 +127,20 @@
 }
 
 .rest-card button {
-    background-color: #5a5a5a;
-    color: #fff;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 5px;
+    background-color: #4a4a4a; /* Match choice-start-button */
+    color: #ffffff;
+    border: none; /* Match choice-start-button */
+    padding: 10px; /* Match choice-start-button */
+    border-radius: 4px; /* Match choice-start-button */
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: all 0.3s ease; /* Match choice-start-button */
     margin-top: auto; /* Push button to bottom */
+    font-weight: bold; /* Added */
+    width: 100%; /* Make button full width within card */
 }
 
 .rest-card button:hover {
-    background-color: #6a6a6a;
+    background-color: #5a5a5a; /* Match choice-start-button hover */
+    transform: translateY(-2px); /* Added */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Added */
 } 
