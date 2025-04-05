@@ -83,7 +83,7 @@ const MONSTERS = {
     'silverfang': {
         name: 'Silverfang', health: 30, attack: 5, defense: 1, speed: 1.2,
         goldDrop: [10, 20],
-        description: "The alpha wolf of the den, known for its lightning-fast strikes.",
+        description: "A swift and agile wolf.",
         mechanics: "Attacks 50% faster when below 50% health.",
         lootTable: [
             { itemId: 'speed_potion', chance: 0.4 },
@@ -97,7 +97,7 @@ const MONSTERS = {
         appliesPoison: true,
         poisonDamage: [1, 2],
         poisonDuration: 10,
-        description: "The spider brood mother, her venom is particularly potent.",
+        description: "Venomous spider.",
         mechanics: "Inflicts poison on successful attacks, dealing damage over time. Lasts 10s.",
         lootTable: [
             { itemId: 'health_potion', chance: 0.5 }, 
@@ -141,7 +141,7 @@ const MONSTERS = {
 
     // === Round 20 Mini-Boss ===
     'krug': {
-        name: 'Krug [Ogre]', health: 50, attack: 5, defense: 6, speed: 2.5, goldDrop: [15, 30],
+        name: 'Krug', health: 50, attack: 5, defense: 6, speed: 2.5, goldDrop: [15, 30],
         enrageThreshold: 0.4,
         enrageAttackMultiplier: 3,
         description: "An angry ogre.",
@@ -154,7 +154,7 @@ const MONSTERS = {
     },
 
     'grog': {
-        name: 'Grog [Ogre]', health: 60, attack: 5, defense: 8, speed: 3.0,
+        name: 'Grog', health: 60, attack: 5, defense: 8, speed: 3.0,
         goldDrop: [20, 35],
         hasStunningSlam: true,
         stunChance: 0.25, // 25% chance on hit
@@ -179,8 +179,8 @@ const MONSTERS = {
         breathAttackDamage: [4, 8], // Raw damage range
         hardenThreshold: 0.25, // Hardens below 25% health
         hardenDefenseBonus: 5, // Adds +5 Defense when hardened
-        description: "A colossal beast of legend.",
-        mechanics: "Unleashes devastating firebreath every 12 seconds,  dealing 4-8 damage that cannot be blocked and burns the player for 4 seconds.\n When critically wounded (below 25% health), its scales harden, boosting defense by 5.",
+        description: "An ancient dragon.",
+        mechanics: "- Unleashes devastating firebreath every 12 seconds,  dealing 4-8 damage that cannot be blocked and burns the player for 4 seconds.\n When critically wounded (below 25% health), its scales harden, boosting defense by 5.",
         breathDotDamage: 1, // Damage per tick
         breathDotDuration: 5, // Total duration in seconds add + 1 second
         breathDotTickInterval: 1, // Seconds between ticks

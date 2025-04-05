@@ -139,6 +139,29 @@
     margin: 0;
 }
 
+/* Styles for the description text wrapper */
+.monster-desc-text-wrapper {
+    max-height: 100px; /* Adjust as needed */
+    overflow-y: auto;
+    margin-bottom: 10px; /* Space below description, above stats */
+    padding-right: 5px; /* Space for scrollbar */
+    scrollbar-width: thin; /* Optional: thinner scrollbar */
+}
+
+.monster-desc-text-wrapper::-webkit-scrollbar {
+    width: 6px;
+}
+
+.monster-desc-text-wrapper::-webkit-scrollbar-track {
+    background: #1a1a1a;
+    border-radius: 3px;
+}
+
+.monster-desc-text-wrapper::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 3px;
+}
+
 .monster-stats-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -179,7 +202,15 @@
     color: #ff6666;
     margin-top: 0.5rem;
     font-style: italic;
+    overflow: auto;
+    box-sizing: border-box;
+    padding: 10px;
+    border: 1px solid #444;
+    background: rgba(0,0,0,0.1);
+    border-radius: 4px;
+    white-space: pre-line;
     text-align: center;
+    min-height: 3em;
 }
 
 .choice-card.boss-card {
@@ -200,6 +231,11 @@
     color: #ff5722;
     font-size: 1.3rem;
     text-shadow: 0 0 10px rgba(255, 87, 34, 0.3);
+    text-align: center;
+}
+
+.choice-card.boss-card .choice-description {
+    text-align: center;
 }
 
 .choice-card.boss-card .monster-stat {
@@ -216,8 +252,9 @@
     background: rgba(255, 87, 34, 0.1);
     border: 1px solid rgba(255, 87, 34, 0.3);
     color: #ff5722;
-    max-width: 300px;
     cursor: default;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .choice-card.boss-card .choice-start-button {
@@ -226,6 +263,9 @@
     text-transform: uppercase;
     letter-spacing: 1px;
     padding: 0.75rem;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .choice-card.boss-card .choice-start-button:hover {
@@ -296,4 +336,25 @@
 #choices-area button:active {
     background-color: #444;
     transform: translateY(0);
+}
+
+/* Styles for centering a single boss card */
+.choices-container.boss-only {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%; /* Ensure container takes full height */
+}
+
+/* Apply auto sizing to both boss and miniboss cards when centered */
+.choices-container.boss-only .choice-card.boss-card,
+.choices-container.boss-only .choice-card.miniboss-card {
+    height: auto; /* Override default height */
+    flex-grow: 0; /* Prevent growing to fill flex container */
+    width: fit-content; /* Size width based on content */
+    max-width: 60%; /* Prevent excessive width */
+}
+
+#choices-area {
+    width: 100%;
 }

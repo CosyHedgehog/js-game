@@ -880,13 +880,12 @@ class UI {
             const cardContent = document.createElement('div');
             cardContent.classList.add('choice-card-content');
 
-            // Add difficulty badge if it exists
-            if (difficultyText) {
-                const difficultyBadge = document.createElement('div');
-                difficultyBadge.className = `difficulty-badge ${difficultyClass}`;
-                difficultyBadge.textContent = difficultyText;
-                cardContent.appendChild(difficultyBadge);
-            }
+            // Add difficulty badge
+            const difficultyBadge = document.createElement('div');
+            difficultyBadge.className = 'difficulty-badge';
+            difficultyBadge.style.backgroundColor = this.game.currentRound === 30 ? '#f44336' : '#FF9800'; // Red for boss, orange for miniboss
+            difficultyBadge.textContent = this.game.currentRound === 30 ? 'BOSS' : 'MINI-BOSS'; // Update text
+            cardContent.appendChild(difficultyBadge);
 
             // Add event type icon
             const eventIcon = document.createElement('span');
@@ -923,7 +922,9 @@ class UI {
                 const monster = choice.monster;
                 description.innerHTML = `
                     <div class="monster-description">
-                        <p>${monster.description || 'No description available.'}</p>
+                        <div class="monster-desc-text-wrapper">
+                            <p>${monster.description || 'No description available.'}</p>
+                        </div>
                         <div class="monster-stats-grid">
                             <div class="monster-stat">
                                 <span class="stat-icon">❤️</span>
@@ -946,7 +947,7 @@ class UI {
                                 <span class="stat-label">Speed</span>
                             </div>
                         </div>
-                        ${monster.special ? `<div class="monster-special">Special: ${monster.special}</div>` : ''}
+                        ${monster.special ? `<div class="monster-special">${monster.special}</div>` : ''}
                     </div>
                 `;
             } else {
@@ -957,28 +958,14 @@ class UI {
             // Add start button
             const startButton = document.createElement('button');
             startButton.className = 'choice-start-button';
-            startButton.textContent = choice.type === 'combat' ? 'Fight' : 'Start';
-
-            const difficultyBadge = document.createElement('div');
-            difficultyBadge.className = 'difficulty-badge';
-            if (choice.type === 'combat') {
-            const playerAttack = this.game.player.getAttack();
-                const monsterDefense = choice.monster.defense;
-                let difficulty;
-                
-                if (playerAttack >= monsterDefense + 3) {
-                    difficulty = 'easy';
-                    difficultyBadge.style.backgroundColor = '#4CAF50';
-                } else if (playerAttack >= monsterDefense) {
-                    difficulty = 'medium';
-                    difficultyBadge.style.backgroundColor = '#ff9800';
-            } else {
-                    difficulty = 'hard';
-                    difficultyBadge.style.backgroundColor = '#f44336';
-                }
-                difficultyBadge.textContent = difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
-                cardContent.appendChild(difficultyBadge);
-            }
+            startButton.textContent = this.game.currentRound === 30 ? 'Fight Final Boss' : 'Fight Mini-Boss'; // Update button text
+            startButton.onclick = () => {
+                card.classList.add('boss-engage-start');
+                setTimeout(() => {
+                    this.choicesArea.classList.add('hidden');
+                    this.game.startEncounter({ type: 'monster', monsterId: choice.encounter.monsterId });
+                }, 500);
+            };
 
             cardContent.appendChild(startButton);
 
@@ -1393,9 +1380,13 @@ class UI {
 
         const choicesContainer = document.createElement('div');
         choicesContainer.classList.add('choices-container');
+        choicesContainer.classList.add('boss-only'); // Add class for centering
 
         const card = document.createElement('div');
-        card.classList.add('choice-card', 'boss-card', 'selected');
+        // card.classList.add('choice-card', 'boss-card', 'selected');
+        // Apply boss or miniboss class based on round
+        const isFinalBoss = this.game.currentRound === 30;
+        card.classList.add('choice-card', isFinalBoss ? 'boss-card' : 'miniboss-card', 'selected');
 
         const cardContent = document.createElement('div');
         cardContent.classList.add('choice-card-content');
@@ -1403,8 +1394,9 @@ class UI {
         // Add difficulty badge
         const difficultyBadge = document.createElement('div');
         difficultyBadge.className = 'difficulty-badge';
-        difficultyBadge.style.backgroundColor = '#f44336';
-        difficultyBadge.textContent = 'BOSS';
+        // difficultyBadge.style.backgroundColor = '#f44336';
+        difficultyBadge.style.backgroundColor = isFinalBoss ? '#f44336' : '#FF9800'; // Red for boss, orange for miniboss
+        difficultyBadge.textContent = isFinalBoss ? 'BOSS' : 'MINI-BOSS'; // Update text
         cardContent.appendChild(difficultyBadge);
 
         // Add boss icon
@@ -1424,18 +1416,20 @@ class UI {
         description.classList.add('choice-description');
         description.innerHTML = `
             <div class="monster-description">
-                <p>${bossData.description || 'No description available.'}</p>
+                <div class="monster-desc-text-wrapper">
+                    <p>${bossData.description || 'No description available.'}</p>
+                </div>
                 <div class="monster-stats-grid">
                     <div class="monster-stat">
                         <span class="stat-icon">❤️ Health</span>
                         <span class="stat-value">${bossData.health}</span>
                         <span class="stat-label">Health</span>
-                </div>
+                    </div>
                     <div class="monster-stat">
                         <span class="stat-icon">⚔️ Attack</span>
                         <span class="stat-value">${bossData.attack}</span>
                         <span class="stat-label">Attack</span>
-            </div>
+                    </div>
                     <div class="monster-stat">
                         <span class="stat-icon">🛡️ Defense</span>
                         <span class="stat-value">${bossData.defense}</span>
@@ -1447,7 +1441,7 @@ class UI {
                         <span class="stat-label">Speed</span>
                     </div>
                 </div>
-                ${bossData.mechanics ? `<div class="monster-special">Special: ${bossData.mechanics}</div>` : ''}
+                ${bossData.mechanics ? `<div class="monster-special">${bossData.mechanics}</div>` : ''}
             </div>
         `;
         cardContent.appendChild(description);
@@ -1455,12 +1449,12 @@ class UI {
         // Add fight button
         const startButton = document.createElement('button');
         startButton.className = 'choice-start-button';
-        startButton.textContent = 'Fight Boss';
+        startButton.textContent = isFinalBoss ? 'Fight' : 'Fight'; // Update button text
         startButton.onclick = () => {
             card.classList.add('boss-engage-start');
-                setTimeout(() => {
+            setTimeout(() => {
                 this.choicesArea.classList.add('hidden');
-                    this.game.startEncounter({ type: 'monster', monsterId: bossData.id });
+                this.game.startEncounter({ type: 'monster', monsterId: bossData.id });
             }, 500);
         };
         cardContent.appendChild(startButton);
