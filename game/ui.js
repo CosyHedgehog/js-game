@@ -852,19 +852,18 @@ class UI {
             const encounter = choice.encounter;
             let difficultyText = '';
             let difficultyClass = '';
-            
+
+            // Create card content FIRST
+            const cardContent = document.createElement('div');
+            cardContent.classList.add('choice-card-content');
+
+            // Conditionally add badge INSIDE the monster check
             if (encounter.type === 'monster') {
                 const monster = MONSTERS[encounter.monsterId];
                 const playerAttack = this.game.player.getAttack();
-                
-                // Check for mini-boss or boss rounds
-                if (this.game.currentRound === 30) {
-                    difficultyText = 'BOSS';
-                    difficultyClass = 'difficulty-hard';
-                } else if (this.game.currentRound === 10 || this.game.currentRound === 20) {
-                    difficultyText = 'MINI-BOSS';
-                    difficultyClass = 'difficulty-hard';
-                } else if (monster.defense >= playerAttack) {
+
+                // Calculate difficulty
+                if (monster.defense >= playerAttack) {
                     difficultyClass = 'difficulty-hard';
                     difficultyText = 'HARD';
                 } else if (monster.defense >= playerAttack - 2) {
@@ -874,18 +873,13 @@ class UI {
                     difficultyClass = 'difficulty-easy';
                     difficultyText = 'EASY';
                 }
+
+                // Create and append badge ONLY for monsters
+                const difficultyBadge = document.createElement('div');
+                difficultyBadge.className = `difficulty-badge ${difficultyClass}`;
+                difficultyBadge.textContent = difficultyText;
+                cardContent.appendChild(difficultyBadge);
             }
-
-            // Create card content
-            const cardContent = document.createElement('div');
-            cardContent.classList.add('choice-card-content');
-
-            // Add difficulty badge
-            const difficultyBadge = document.createElement('div');
-            difficultyBadge.className = 'difficulty-badge';
-            difficultyBadge.style.backgroundColor = this.game.currentRound === 30 ? '#f44336' : '#FF9800'; // Red for boss, orange for miniboss
-            difficultyBadge.textContent = this.game.currentRound === 30 ? 'BOSS' : 'MINI-BOSS'; // Update text
-            cardContent.appendChild(difficultyBadge);
 
             // Add event type icon
             const eventIcon = document.createElement('span');
@@ -958,13 +952,24 @@ class UI {
             // Add start button
             const startButton = document.createElement('button');
             startButton.className = 'choice-start-button';
-            startButton.textContent = this.game.currentRound === 30 ? 'Fight Final Boss' : 'Fight Mini-Boss'; // Update button text
-            startButton.onclick = () => {
-                card.classList.add('boss-engage-start');
-                setTimeout(() => {
-                    this.choicesArea.classList.add('hidden');
-                    this.game.startEncounter({ type: 'monster', monsterId: choice.encounter.monsterId });
-                }, 500);
+            // Set button text based on encounter type
+            switch (encounter.type) {
+                case 'monster': startButton.textContent = 'Fight'; break;
+                case 'rest': startButton.textContent = 'Rest'; break;
+                case 'shop': startButton.textContent = 'Enter Shop'; break;
+                case 'forge': startButton.textContent = 'Enter Workshop'; break;
+                case 'fishing': startButton.textContent = 'Go Fishing'; break;
+                case 'blacksmith': startButton.textContent = 'Visit Blacksmith'; break;
+                case 'sharpen': startButton.textContent = 'Use Stone'; break;
+                case 'armorsmith': startButton.textContent = 'Use Tools'; break;
+                case 'alchemist': startButton.textContent = 'Enter Shop'; break;
+                case 'trap': startButton.textContent = 'Investigate'; break;
+                case 'treasure_chest': startButton.textContent = 'Open Chest'; break;
+                default: startButton.textContent = 'Start';
+            }
+            startButton.onclick = (e) => {
+                e.stopPropagation();
+                this.confirmChoice(index);
             };
 
             cardContent.appendChild(startButton);
@@ -978,11 +983,6 @@ class UI {
                 });
                 card.classList.add('selected');
                 this.game.selectChoice(index);
-            });
-
-            startButton.addEventListener('click', (e) => {
-                e.stopPropagation();
-                this.confirmChoice(index);
             });
 
             choicesContainer.appendChild(card);
