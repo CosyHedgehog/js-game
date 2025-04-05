@@ -64,4 +64,60 @@
 #rest-continue-button:hover {
     background-color: #775555;
     border-color: #604040;
+}
+
+.rest-choices {
+    display: flex; /* Arrange cards horizontally */
+    justify-content: space-around; /* Distribute space */
+    flex-wrap: wrap; /* Allow cards to wrap on smaller screens */
+    gap: 20px; /* Space between cards */
+    margin-top: 20px;
+}
+
+.rest-card {
+    background-color: #3a3a3a; /* Darker background for the card */
+    border: 1px solid #555; /* Subtle border */
+    border-radius: 8px; /* Rounded corners */
+    padding: 15px;
+    text-align: center;
+    width: calc(33% - 20px); /* Aim for 3 cards per row, adjusting for gap */
+    min-width: 180px; /* Prevent cards from becoming too narrow */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Add a slight shadow */
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    display: flex; /* Use flexbox for internal alignment */
+    flex-direction: column; /* Stack content vertically */
+    justify-content: space-between; /* Push button to the bottom */
+}
+
+.rest-card:hover {
+    transform: translateY(-3px); /* Lift effect on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.rest-card h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #eee; /* Lighter heading color */
+}
+
+.rest-card p {
+    font-size: 0.9em;
+    color: #ccc; /* Lighter text color */
+    margin-bottom: 15px;
+    flex-grow: 1; /* Allow paragraph to take up space */
+}
+
+.rest-card button {
+    background-color: #5a5a5a;
+    color: #fff;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-top: auto; /* Push button to bottom */
+}
+
+.rest-card button:hover {
+    background-color: #6a6a6a;
 } 

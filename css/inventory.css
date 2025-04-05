@@ -97,6 +97,8 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    display: block;
+    max-width: 100%;
 }
 
 .item-stats {
@@ -281,14 +283,14 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    /* Maybe redundant within .inventory-slot, check if needed */
+    display: block;
+    max-width: 100%;
 }
 
 .item-stats {
     font-size: 0.8em;
     color: #aaa;
     text-align: center;
-    /* Maybe redundant within .inventory-slot, check if needed */
 }
 
 /* Keep rarity colors */
@@ -306,3 +308,97 @@
     border: 2px dashed #4CAF50;
 }
 */
+
+/* Style for equipped slot CHIP */
+.inventory-slot .equipped-slot-chip {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%; /* Make chip wider */
+    background-color: #2a7a3a;
+    color: #ffffff;
+    font-size: 0.9em;
+    font-weight: bold;
+    padding: 1px 8px;
+    border-radius: 0 0 5px 5px;
+    line-height: 1.1;
+    z-index: 2; /* Chips above slot base */
+    box-shadow: 0 1px 2px rgba(0,0,0,0.4);
+    text-transform: uppercase;
+}
+
+/* ADD Style for Food action CHIP */
+.inventory-slot .food-action-chip {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    background-color: #806040; /* Brownish background */
+    color: #ffe0c0; /* Light text */
+    font-size: 0.7em;
+    font-weight: bold;
+    padding: 1px 8px;
+    border-radius: 0 0 5px 5px;
+    line-height: 1.1;
+    z-index: 2; /* Chips above slot base */
+    box-shadow: 0 1px 2px rgba(0,0,0,0.4);
+    text-transform: uppercase;
+}
+
+/* ADD Style for Tool action CHIP */
+.inventory-slot .tool-action-chip {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    background-color: #5a6a7a; /* Greyish-blue background */
+    color: #d0d8e0; /* Light text */
+    font-size: 0.7em;
+    font-weight: bold;
+    padding: 1px 8px;
+    border-radius: 0 0 5px 5px;
+    line-height: 1.1;
+    z-index: 2; /* Chips above slot base */
+    box-shadow: 0 1px 2px rgba(0,0,0,0.4);
+    text-transform: uppercase;
+}
+
+/* ADD Style for Potion action CHIP */
+.inventory-slot .potion-action-chip {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    background-color: #6a4a7a; /* Purplish background */
+    color: #e0d0e8; /* Light purple text */
+    font-size: 0.7em;
+    font-weight: bold;
+    padding: 1px 8px;
+    border-radius: 0 0 5px 5px;
+    line-height: 1.1;
+    z-index: 2; /* Chips above slot base */
+    box-shadow: 0 1px 2px rgba(0,0,0,0.4);
+    text-transform: uppercase;
+}
+
+#inventory-grid .inventory-slot.equipped {
+    background-color: #285028 !important; /* Dark green background */
+    border-color: green !important; /* Green border */
+}
+
+#inventory-grid .inventory-slot.equipped:hover {
+    transform: scale(1.03);
+    z-index: 5;
+}
+
+/* Make crafting valid borders more visible */
+.inventory-slot.blacksmith-valid,
+.inventory-slot.armourer-valid,
+.inventory-slot.sharpen-valid {
+    /* border: 2px dashed #33cc33; Thicker, brighter green dashed border */
+    animation: shopGlow 1s infinite alternate; /* Keep glow animation */
+}

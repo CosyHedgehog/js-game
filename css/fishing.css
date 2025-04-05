@@ -7,29 +7,34 @@
     margin: 20px auto;
 }
 
-.fishing-areas {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+.fishing-areas-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
     gap: 20px;
     margin-bottom: 20px;
+    padding: 0 5px;
+    box-sizing: border-box;
 }
 
 .fishing-area-option {
-    background: #2a2a2a;
-    border: 1px solid #444;
+    background-color: #3a4a5a;
+    border: 1px solid #5a6a7a;
     border-radius: 8px;
-    padding: 20px;
-    cursor: pointer;
-    transition: all 0.2s ease;
+    padding: 15px;
+    text-align: center;
+    flex-basis: calc(50% - 20px);
+    box-sizing: border-box;
+    min-width: 200px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease-in-out;
     display: flex;
     flex-direction: column;
-    gap: 10px;
 }
 
 .fishing-area-option:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    border-color: #666;
 }
 
 .fishing-area-option.selected {
@@ -38,16 +43,19 @@
 }
 
 .fishing-area-name {
-    color: #4CAF50;
+    color: #e0f0ff;
     font-size: 1.2em;
     font-weight: bold;
     margin-bottom: 5px;
+    margin-top: 0;
 }
 
 .fishing-area-description {
-    color: #ccc;
+    color: #c0d0e0;
     font-size: 0.9em;
     line-height: 1.4;
+    margin-bottom: 10px;
+    flex-grow: 1;
 }
 
 .fishing-area-stats {
@@ -76,16 +84,14 @@
 }
 
 .fishing-area-details {
-    background: #333;
-    padding: 10px;
-    border-radius: 4px;
-    margin: 10px 0;
+    font-size: 0.8em;
+    color: #a0b0c0;
+    margin-bottom: 15px;
 }
 
 .fishing-area-details p {
-    margin: 5px 0;
-    color: #aaa;
-    font-size: 0.85em;
+    margin: 2px 0;
+    color: #a0b0c0;
 }
 
 .fishing-controls {
@@ -97,47 +103,50 @@
 }
 
 #fishing-area-button {
-    background: #444;
-    color: white;
+    background-color: #5a7a9a;
+    color: #fff;
     border: none;
-    padding: 10px;
-    border-radius: 4px;
+    padding: 8px 15px;
+    border-radius: 5px;
     font-weight: bold;
     cursor: pointer;
-    transition: background 0.3s ease;
-    width: 100%;
+    transition: background-color 0.2s;
+    margin-top: auto;
 }
 
 #fishing-area-button:hover:not(:disabled) {
-    background: #555;
+    background-color: #6a8aaa;
 }
 
 #fishing-area-button:disabled {
-    background: #666;
-    cursor: not-allowed;
-    opacity: 0.7;
+    background-color: #445566;
+    cursor: default;
+    color: #8899aa;
 }
 
 .requirement-missing {
-    color: #f44336;
+    color: #ff6b6b;
     font-size: 0.85em;
-    font-style: italic;
-    display: block;
-    margin-top: 5px;
+    font-weight: bold;
+    margin-left: 5px;
 }
 
 #leave-fishing-button {
-    background: #f44336;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
+    background-color: #6c757d;
+    color: #fff;
+    border: 1px solid #5a6268;
+    padding: 10px 25px;
+    border-radius: 5px;
     font-weight: bold;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: background-color 0.2s;
+    font-size: 1em;
+    margin-top: 20px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 #leave-fishing-button:hover {
-    background: #d32f2f;
-    transform: translateY(-2px);
+    background-color: #5a6268;
 }

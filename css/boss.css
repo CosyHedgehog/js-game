@@ -1,20 +1,44 @@
 .boss-encounter-display {
-    background: rgba(0, 0, 0, 0.4);
-    border: 2px solid #ff5722;
-    border-radius: 8px;
-    padding: 20px;
+    /* background: rgba(0, 0, 0, 0.4); */
+    /* border: 2px solid #ff5722; */
+    /* border-radius: 8px; */
+    border-radius: 8px; /* Slightly smaller radius */
+    /* padding: 20px; */
+    padding: 20px 15px; /* Reduced padding (Top/Bottom 20px, Left/Right 15px) */
     margin: 20px 0;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 0 20px rgba(255, 87, 34, 0.2);
+    /* box-shadow: 0 0 20px rgba(255, 87, 34, 0.2); */
+    box-shadow: 0 0 15px rgba(100, 0, 0, 0.4), inset 0 0 10px rgba(0, 0, 0, 0.4); /* Reduced shadow */
+    /* New additions */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; /* Center content vertically */
+    text-align: center;
+    width: 100%; /* Keep taking full width of parent */
+    box-sizing: border-box;
+    cursor: default; /* Set default cursor for the container itself */
+}
+
+/* Set default cursor for all children, override for button later */
+.boss-encounter-display * {
+    cursor: default;
 }
 
 .boss-encounter-title {
-    color: #ff5722;
-    font-size: 1.8em;
+    /* color: #ff5722; */
+    color: #ff5555; /* Slightly less bright red */
+    /* font-size: 1.8em; */
+    font-size: 2.0em; /* Reduced font size */
     text-align: center;
     margin-bottom: 15px;
-    text-shadow: 0 0 10px rgba(255, 87, 34, 0.3);
+    /* text-shadow: 0 0 10px rgba(255, 87, 34, 0.3); */
+    text-shadow: 0 0 3px #cc0000, 0 0 6px #a00000; /* Reduced glow */
+    /* New additions */
+    text-transform: uppercase;
+    letter-spacing: 1.5px; /* Reduced letter spacing */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Back to standard font */
 }
 
 .boss-info {
@@ -22,82 +46,127 @@
     flex-direction: column;
     gap: 15px;
     align-items: center;
-    padding: 10px;
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.4); /* Slightly more transparent */
+    border-radius: 6px;
+    border: 2px solid #500000; /* Darker border */
+    margin-bottom: 20px; /* Slightly reduced margin */
+    max-width: 600px; /* Fixed max-width for the info box */
+    width: 90%; /* Allow it to shrink gracefully on very narrow screens */
+    box-sizing: border-box; /* Ensure padding is included in width */
 }
 
 .boss-encounter-name {
-    font-size: 1.4em;
+    /* font-size: 1.4em; */
+    font-size: 1.5em; /* Reduced font size */
     font-weight: bold;
-    color: #fff;
-    text-shadow: 0 0 5px rgba(255, 87, 34, 0.5);
+    /* color: #fff; */
+    color: #ffcccc; /* Slightly adjusted color */
+    /* text-shadow: 0 0 5px rgba(255, 87, 34, 0.5); */
+    text-shadow: 1px 1px 2px #000; /* Reduced shadow */
+    margin-top: 0;
+    margin-bottom: 10px;
 }
 
 .boss-encounter-description {
-    color: #ccc;
+    color: #cccccc;
     text-align: center;
     line-height: 1.5;
-    margin: 10px 0;
+    /* margin: 10px 0; */
+    margin-bottom: 0;
     font-style: italic;
+    white-space: pre-line;
 }
 
 .boss-engage-button {
-    background: linear-gradient(135deg, #ff5722 0%, #f44336 100%);
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 4px;
-    font-size: 1.1em;
+    /* background: linear-gradient(135deg, #ff5722 0%, #f44336 100%); */
+    background: linear-gradient(to bottom, #7a0000, #500000); /* Subtler gradient */
+    color: #ffffff;
+    /* border: none; */
+    border: 2px solid #cc4444; /* Less bright border */
+    /* padding: 12px 24px; */
+    padding: 12px 35px; /* Reduced padding */
+    border-radius: 6px; /* Slightly smaller radius */
+    /* font-size: 1.1em; */
+    font-size: 1.3em; /* Reduced font size */
     font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s;
+    cursor: pointer; /* <<< Ensure button keeps pointer cursor */
+    /* transition: all 0.3s; */
+    transition: all 0.2s ease;
     text-transform: uppercase;
     letter-spacing: 1px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 100, 100, 0.2); /* Reduced shadow */
 }
 
 .boss-engage-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(244, 67, 54, 0.4);
-    background: linear-gradient(135deg, #ff7043 0%, #ff5722 100%);
+    /* transform: translateY(-2px); */
+    transform: translateY(-1px); /* Less movement */
+    /* box-shadow: 0 4px 8px rgba(244, 67, 54, 0.4); */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(255, 120, 120, 0.3); /* Slightly reduced hover shadow */
+    /* background: linear-gradient(135deg, #ff7043 0%, #ff5722 100%); */
+    background: linear-gradient(to bottom, #8b0000, #600000); /* Slightly brighter hover */
+    border-color: #dd5555;
 }
 
 .boss-engage-button:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(244, 67, 54, 0.4);
+    transform: translateY(0px); /* No movement on active */
+    /* box-shadow: 0 2px 4px rgba(244, 67, 54, 0.4); */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), inset 0 1px 2px rgba(0, 0, 0, 0.4); /* Reduced active shadow */
+    background: linear-gradient(to bottom, #600000, #400000);
 }
 
 .boss-stats {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    /* display: grid; */
+    display: flex; /* Arrange stats horizontally */
+    /* grid-template-columns: repeat(4, 1fr); */
+    justify-content: space-around; /* Space them out evenly */
+    align-items: center;
     gap: 15px;
-    margin: 15px 0;
+    /* margin: 15px 0; */
+    margin-top: 15px; /* Space above the stats */
     padding: 10px;
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
+    /* background: rgba(0, 0, 0, 0.2); */
+    /* border-radius: 8px; */
+    border-top: 2px solid #500000; /* Separator line */
+    width: 100%; /* Take full width within boss-info */
 }
 
 .boss-stat-item {
-    text-align: center;
-    padding: 8px;
+    /* text-align: center; */
+    /* padding: 8px; */
+    display: inline-flex; /* Keep label and value together */
+    align-items: baseline; /* Align text nicely */
+    color: #cccccc; /* Base color for label */
+    font-size: 0.95em;
 }
 
 .boss-stat-item .boss-stat-value {
-    font-size: 1.2em;
+    /* font-size: 1.2em; */
+    font-size: 1.1em; /* Make value slightly larger */
     font-weight: bold;
-    margin-top: 5px;
-    display: block;
+    /* margin-top: 5px; */
+    margin-left: 6px; /* Space between label and value */
+    /* display: block; */
+    color: #ffffff; /* White color for the value */
 }
 
-.boss-stats span:nth-child(1) .boss-stat-value { color: #4CAF50; }
-.boss-stats span:nth-child(2) .boss-stat-value { color: #f44336; }
-.boss-stats span:nth-child(3) .boss-stat-value { color: #2196F3; }
-.boss-stats span:nth-child(4) .boss-stat-value { color: #FF9800; }
-
-
+/* Specific stat value colors (Optional but nice) */
+.boss-stats span:nth-child(1) .boss-stat-value { /* HP */
+    color: #77dd77; /* Green */
+}
+.boss-stats span:nth-child(2) .boss-stat-value { /* ATK */
+    color: #ff8888; /* Red */
+}
+.boss-stats span:nth-child(3) .boss-stat-value { /* DEF */
+    color: #88aaff; /* Blue */
+}
+.boss-stats span:nth-child(4) .boss-stat-value { /* SPD */
+    color: #ffdd77; /* Yellow/Gold */
+}
 
 .boss-engage-start {
-    animation: boss-engage-zoom 0.5s ease-out;
+    /* animation: boss-engage-zoom 0.5s ease-in forwards; */ /* Defined in animations.css */
+    animation: bossEngageStart 0.5s ease-out forwards;
 }
 
 .choice-card.boss-card {

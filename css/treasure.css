@@ -1,0 +1,99 @@
+#treasure-area {
+    display: flex;
+    justify-content: center; /* Horizontal alignment */
+    align-items: center;    /* Vertical alignment */
+    padding: 20px;
+    text-align: center;
+    height: 100%; /* Add this to make it fill parent's height */
+    box-sizing: border-box; /* Include padding in height calculation */
+}
+
+.treasure-container {
+    border: 2px solid #7a5a3a; /* Darker brown border */
+    border-radius: 10px;
+    padding: 25px 30px;
+    max-width: 400px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4), inset 0 0 10px rgba(0, 0, 0, 0.2); /* Outer and inner shadow */
+}
+
+.treasure-container.locked {
+    /* Add specific styles if needed, maybe an icon or different border */
+    border-color: #a08060; /* Slightly lighter border for locked */
+}
+
+.treasure-container h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #ffe0b0; /* Light gold color */
+    font-size: 1.4em;
+    text-shadow: 1px 1px 2px #332211;
+}
+
+.treasure-container p {
+    color: #e0c0a0; /* Lighter brown text */
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.treasure-buttons {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 15px; /* Space between buttons */
+    flex-wrap: wrap; /* Allow buttons to wrap */
+}
+
+/* Style for the 'need tools' message specifically */
+.treasure-buttons p {
+    width: 100%; /* Make it take full width */
+    font-style: italic;
+    color: #ff4444; /* Changed to red */
+    margin-bottom: 10px; /* Space before the leave button */
+}
+
+#treasure-picklock-button,
+#treasure-leave-button {
+    background-color: #7a5a3a; /* Match border color */
+    color: #ffe0b0; /* Match heading color */
+    border: 1px solid #a08060; /* Lighter border */
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+#treasure-picklock-button:hover,
+#treasure-leave-button:hover {
+    background-color: #8a6a4a;
+    transform: translateY(-1px);
+}
+
+#treasure-picklock-button:active,
+#treasure-leave-button:active {
+    transform: translateY(0px);
+}
+
+.picklocking {
+  animation: picklock-shake 0.6s ease-in-out;
+}
+
+/* Optional: Style the container during animation */
+.treasure-container.picklocking {
+  border-color: #fff700; /* Example: Golden border during pick */
+}
+
+#treasure-leave-button {
+    background-color: #6c757d; /* Neutral grey background */
+    color: #fff; /* White text */
+    border-color: #5a6268; /* Darker grey border */
+}
+
+#treasure-leave-button:hover {
+    background-color: #5a6268; /* Darken on hover */
+    border-color: #545b62;
+}
+
+#treasure-leave-button:active {
+    transform: translateY(0px);
+} 

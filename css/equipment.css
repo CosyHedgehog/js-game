@@ -17,65 +17,102 @@
 
 #equipment-text-display {
     margin-top: 10px;
+    padding: 10px;
+    font-family: 'Arial', sans-serif;
+    font-size: 0.9em;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
 #equipment-text-display p {
-    color: #ccc;
-    margin: 5px 0;
-    padding: 8px;
-    border-radius: 4px;
-    background: rgba(0, 0, 0, 0.2);
-    transition: background-color 0.2s;
+    margin: 1px 0;
+    padding: 3px 0px;
+    transition: background-color 0.2s ease;
     position: relative;
-    cursor: pointer;
-    font-size: 0.95em;
-    line-height: 1.5;
-    display: grid;
-    grid-template-columns: 100px 1fr auto;
-    gap: 8px;
+    cursor: default;
+    font-size: 0.9em;
+    display: flex;
     align-items: center;
+    gap: 8px;
+    justify-content: space-between;
+    color: #ccc;
+    border-radius: 4px;
+    white-space: nowrap;
+    overflow: visible;
+    text-overflow: clip;
+    border: none;
+    box-sizing: border-box;
+    background-image: linear-gradient(to bottom, #505050, #404040);
+    color: #e0e0e0;
+    padding: 5px 10px;
+    border-radius: 15px;
+    border: 1px solid #606060;
+    flex-grow: 0;
+    flex-shrink: 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s ease;
 }
 
 #equipment-text-display p:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background-color: #3a3a3a;
+    transform: scale(1.05);
 }
 
 #equipment-text-display p .equip-label {
     display: inline-block;
-    color: #aaa;
-    font-weight: normal;
+    color: #ddd;
+    font-weight: bold;
     text-align: left;
+    background-color: #4a4a4a;
+    margin-right: 0;
+    flex-shrink: 0;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 1em;
+    line-height: 1.2;
+    text-align: center;
+    white-space: nowrap;
+    transition: all 0.2s ease;
 }
 
 #equipment-text-display p .equip-label.equipped {
-    color: #4CAF50;
+    color: #e0e0e0;
     font-weight: bold;
+    background-color: #4CAF50;
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
 }
 
 #equipment-text-display p .equip-value {
     color: #fff;
-    font-weight: bold;
+    font-weight: 500;
     text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-grow: 1;
+    cursor: pointer;
 }
 
 .unequip-button {
-    position: absolute;
-    right: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: #f44336;
-    color: white;
-    border: none;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.8em;
+    background-color: #6e2b2b;
+    color: #ffcccc;
+    border: 1px solid #8e4b4b;
+    padding: 0;
+    border-radius: 50%;
+    font-size: 12px;
     cursor: pointer;
-    opacity: 0;
-    transition: opacity 0.2s, background-color 0.2s;
+    transition: background-color 0.2s ease;
+    width: 18px;
+    height: 18px;
+    line-height: 16px;
+    text-align: center;
+    flex-shrink: 0;
+    margin-left: 8px;
 }
 
 .unequip-button:hover {
-    background: #d32f2f;
+    background-color: #8e4b4b;
+    color: #ffffff;
 }
 
 .unequip-button.hidden {
