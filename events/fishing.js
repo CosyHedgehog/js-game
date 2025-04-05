@@ -71,7 +71,6 @@ class Fishing {
         const hasFishingRod = this.game.player.inventory.some(item => item && item.id === 'fishing_rod');
 
         fishingAreaContainer.innerHTML = `
-            <h3>Choose a Fishing Spot</h3>
             <div class="fishing-areas-container">
                 ${Object.entries(this.FISHING_AREAS).map(([key, area]) => {
             const needsRod = area.requiresRod === true;
@@ -92,7 +91,6 @@ class Fishing {
                     </div>
                 `}).join('')}
             </div>
-            <button id="fishing-leave-button">Leave Area</button>
         `;
 
         document.getElementById('main-content').appendChild(fishingAreaContainer);
