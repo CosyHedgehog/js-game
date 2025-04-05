@@ -12,7 +12,7 @@ class Game {
         this.currentShopItems = [];
         this.shopCanReroll = false;
         this.pendingLoot = null; // Will hold { gold: number, items: [] }
-        this.currentArea = 'wolf_den';
+        this.currentArea = Math.random() < 0.5 ? 'spider_cave' : 'wolf_den';
         // Math.random() < 0.5 ? 'spider_cave' : 'wolf_den';
 
         if (this.ui) { this.ui.game = this; }

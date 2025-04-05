@@ -3,7 +3,7 @@ class Rest {
         this.game = game;
         this.ui = ui;
     }
-    
+
     handle() {
         this.game.state = 'rest';
         this.game.addLog("The warmth of the fire is inviting. What will you do?");
@@ -83,19 +83,19 @@ class Rest {
         const healPercent = 0.3 + Math.random() * 0.4; // 30% to 70%
         const healAmount = Math.floor(this.game.player.getMaxHealth() * healPercent);
         const actualHealed = this.game.player.heal(healAmount);
-        
+
         // 3. Log result
         let message = `You rest by the fire and recover ${actualHealed} HP.`;
         this.game.addLog(message);
-        
+
         // 4. Update stats display
         this.ui.updatePlayerStats();
-        
+
         // 5. Show splat(s) over the new UI (with slight delay for DOM update)
         setTimeout(() => {
             this.ui.createDamageSplat('#rest-area .rest-campfire-container', actualHealed, 'heal');
         }, 50); // Small delay
-        
+
         // 6. Add Continue button
         this.addContinueButton();
     }
@@ -125,13 +125,13 @@ class Rest {
         //     message += ` You feel refreshed, recovering ${actualHealed} HP.`;
         // }
         this.game.addLog(message);
-        
+
         // 4. Update stats display
         this.ui.updatePlayerStats();
-        
+
         // 5. Show splat(s) over the new UI (with delays)
         this.ui.createDamageSplat('#rest-area .rest-campfire-container', `${maxHpIncrease} Max HP`, 'max-hp');
-        
+
         // 6. Add Continue button
         this.addContinueButton();
     }
@@ -150,35 +150,28 @@ class Rest {
             console.error("Rest area not found to update UI!");
         }
 
-        // 2. Calculate effects
         const maxHpIncrease = 1;
-        this.game.player.maxHealth += maxHpIncrease;
-  
-        const healPercent = 0.15 + Math.random() * 0.15; // 15% to 30%
-        const healAmount = Math.floor(this.game.player.getMaxHealth() * healPercent); 
-        const actualHealed = this.game.player.heal(healAmount);
-  
-        // 3. Log result
-        let message = `You meditate, strengthening your body and mind. Max HP +${maxHpIncrease} (now ${this.game.player.getMaxHealth()}).`;
-        if (actualHealed > 0) { 
-            message += ` You recover ${actualHealed} HP.`
-        }
-        this.game.addLog(message);
-        
-        // 4. Update stats display
-        this.ui.updatePlayerStats();
-  
-        // 5. Show splat(s) over the new UI (with delays)
         setTimeout(() => {
-            this.ui.createDamageSplat('#rest-area .rest-campfire-container', actualHealed, 'heal');
+            this.game.player.maxHealth += maxHpIncrease;
+            this.ui.updatePlayerStats();
+            this.ui.createDamageSplat('#rest-area .rest-campfire-container', `${maxHpIncrease} Max HP`, 'max-hp');
 
-            // Show separate splat for Max HP increase after a further delay
             setTimeout(() => {
-                this.ui.createDamageSplat('#rest-area .rest-campfire-container', `${maxHpIncrease} Max HP`, 'max-hp');
-            }, 500); // Delay for Max HP splat relative to heal splat
-        }, 50); // Small initial delay
-  
-        // 6. Add Continue button
+                const healPercent = 0.15 + Math.random() * 0.15; // 15% to 30%
+                const healAmount = Math.floor(this.game.player.getMaxHealth() * healPercent);
+                const actualHealed = this.game.player.heal(healAmount);
+
+                let message = `You meditate, strengthening your body and mind. Max HP +${maxHpIncrease} (now ${this.game.player.getMaxHealth()}).`;
+                if (actualHealed > 0) {
+                    message += ` You recover ${actualHealed} HP.`
+                }
+                this.game.addLog(message);
+
+                this.ui.updatePlayerStats();
+                this.ui.createDamageSplat('#rest-area .rest-campfire-container', actualHealed, 'heal');
+            }, 500);
+        }, 50);
+
         this.addContinueButton();
     }
 

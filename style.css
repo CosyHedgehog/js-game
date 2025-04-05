@@ -5065,9 +5065,39 @@ html {
 
 .event-icon {
     position: absolute;
-    top: 1rem;
-    right: 1rem;
-    font-size: 1.5rem;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+}
+
+.difficulty-badge {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    font-weight: bold;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    z-index: 2;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.difficulty-badge.easy {
+    background-color: #4CAF50;
+    border: 1px solid #45a049;
+}
+
+.difficulty-badge.medium {
+    background-color: #FF9800;
+    border: 1px solid #f57c00;
+}
+
+.difficulty-badge.hard {
+    background-color: #f44336;
+    border: 1px solid #d32f2f;
 }
 
 @media (max-width: 768px) {
