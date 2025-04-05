@@ -324,10 +324,6 @@ class UI {
                  if (!this.statTooltip) console.warn(`Tooltip Listener: Stat tooltip element not found during listener attachment.`);
             }
         }
-        // Call updatePlayerStats once AFTER attaching all listeners to set initial data attributes
-        if (this.game && this.game.player) { 
-            this.updatePlayerStats(); 
-        }
     }
 
     switchScreen(screenId) {
@@ -1173,6 +1169,23 @@ class UI {
                  playerSide.classList.remove('player-burning');
             }
         }
+
+        // Add tooltip listeners to player stats
+        this.addStatTooltipListeners('.player-side .combat-stats', this.statTooltip);
+
+        // *** Add tooltip listener to regen timer bar ***
+        const regenTimerContainer = this.combatArea.querySelector('.regen-timer');
+        if (regenTimerContainer) {
+            regenTimerContainer.addEventListener('mouseenter', (e) => {
+                this.showTooltip("The giant is regenerating.", this.statTooltip, e);
+            });
+            regenTimerContainer.addEventListener('mouseleave', () => {
+                this.hideTooltip(this.statTooltip);
+            });
+        }
+
+        // Initial update of timers and stats
+        this.updateCombatTimers(player.attackTimer, enemy.attackTimer, 0, enemy.breathAttackTimer, enemy.breathAttackInterval, enemy.timedStunTimer, enemy.timedStunInterval, enemy.regenerationTimer, enemy.regenerationInterval);
     }
 
     showCombatUI(player, enemy) {
@@ -1228,59 +1241,88 @@ class UI {
         }
     }
 
-    updateCombatTimers(playerTime, enemyTime, playerDelay = 0, enemyBreathTime = null, enemyBreathInterval = null, enemyStunTime = null, enemyStunInterval = null) {
-        // Player Timer Update (handle delay)
-        this.combatPlayerTimer.textContent = playerDelay > 0 ? 
-            `Delayed: ${playerDelay.toFixed(1)}s` : 
-            playerTime.toFixed(1);
-        const playerMaxTime = this.game.player.getAttackSpeed();
+    updateCombatTimers(playerTimer, enemyTimer, playerDelay = 0, 
+                         enemyBreathTimer, enemyBreathInterval, 
+                         enemyStunTimer, enemyStunInterval,
+                         enemyRegenTimer, enemyRegenInterval) { // Add regen params
+        const playerTimerEl = document.getElementById('combat-player-timer');
         const playerTimerBar = document.querySelector('.player-timer');
-        if (playerDelay > 0) {
-            playerTimerBar.style.width = `${(playerDelay / 2) * 100}%`;
-            playerTimerBar.style.backgroundColor = '#ffd700'; // Gold color for delay
-        } else {
-            playerTimerBar.style.width = `${(1 - (playerTime / playerMaxTime)) * 100}%`; // Fill up as timer decreases
-            playerTimerBar.style.backgroundColor = ''; // Reset to default
-        }
-
-        // Enemy Attack Timer Update
-        this.combatEnemyTimer.textContent = enemyTime.toFixed(1);
-        const enemyMaxTime = this.game.currentCombat.enemy.currentSpeed; // Use currentSpeed
+        const enemyTimerEl = document.getElementById('combat-enemy-timer');
         const enemyTimerBar = document.querySelector('.enemy-timer');
-        enemyTimerBar.style.width = `${(1 - (enemyTime / enemyMaxTime)) * 100}%`; // Fill up
+        const enemyBreathTimerEl = document.getElementById('combat-enemy-breath-timer');
+        const enemyBreathTimerContainer = document.querySelector('.breath-timer');
+        const enemyBreathTimerBar = document.querySelector('.enemy-breath-timer');
+        const enemyStunTimerEl = document.getElementById('combat-enemy-stun-timer');
+        const enemyStunTimerContainer = document.querySelector('.stun-timer');
+        const enemyStunTimerBar = document.querySelector('.enemy-stun-timer');
+        // *** Add Regen Elements ***
+        const enemyRegenTimerEl = document.getElementById('combat-enemy-regen-timer');
+        const enemyRegenTimerContainer = document.querySelector('.regen-timer');
+        const enemyRegenTimerBar = document.querySelector('.enemy-regen-timer');
 
-        // Enemy Breath Timer Update (Conditional)
-        if (this.combatEnemyBreathTimerContainer && this.combatEnemyBreathTimerText && this.combatEnemyBreathTimerBar) {
-            if (enemyBreathTime !== null && enemyBreathInterval !== null) {
-                this.combatEnemyBreathTimerContainer.classList.remove('hidden');
-                this.combatEnemyBreathTimerText.textContent = enemyBreathTime.toFixed(1);
-                const breathPercentage = (1 - (enemyBreathTime / enemyBreathInterval)) * 100;
-                this.combatEnemyBreathTimerBar.style.width = `${breathPercentage}%`;
-            } else {
-                this.combatEnemyBreathTimerContainer.classList.add('hidden');
+        if (playerTimerEl) playerTimerEl.textContent = playerTimer.toFixed(1);
+        if (playerTimerBar) {
+            const playerTotalTime = this.game.player.getAttackSpeed();
+            const playerProgress = 1 - (playerTimer / playerTotalTime);
+            playerTimerBar.style.width = `${Math.min(100, playerProgress * 100)}%`;
+            // Set player delay state
+            const playerContainer = playerTimerBar.closest('.attack-timer');
+            if (playerContainer) {
+                 if (playerDelay > 0) {
+                    playerContainer.classList.add('player-delayed');
+                    playerTimerEl.textContent = `Delayed ${playerDelay.toFixed(1)}s`;
+                 } else {
+                    playerContainer.classList.remove('player-delayed');
+                 }
             }
-        } else {
-            // Log error if elements aren't found, only once maybe?
-             if (!this._breathTimerErrorLogged) { // Prevent console spam
-                 console.error("UI Error: Breath timer elements not found during update.");
-                 this._breathTimerErrorLogged = true;
-             }
         }
 
-        // *** Enemy Stun Timer Update (Conditional) ***
-        if (this.combatEnemyStunTimerContainer && this.combatEnemyStunTimerText && this.combatEnemyStunTimerBar) {
-            if (enemyStunTime !== null && enemyStunInterval !== null) {
-                this.combatEnemyStunTimerContainer.classList.remove('hidden');
-                this.combatEnemyStunTimerText.textContent = enemyStunTime.toFixed(1);
-                const stunPercentage = (1 - (enemyStunTime / enemyStunInterval)) * 100;
-                this.combatEnemyStunTimerBar.style.width = `${stunPercentage}%`;
+        if (enemyTimerEl) enemyTimerEl.textContent = enemyTimer.toFixed(1);
+        if (enemyTimerBar) {
+            const enemyTotalTime = this.game.currentCombat.enemy.speed; // Changed game.combat to game.currentCombat
+            const enemyProgress = 1 - (enemyTimer / enemyTotalTime);
+            enemyTimerBar.style.width = `${Math.min(100, enemyProgress * 100)}%`;
+        }
+
+        // Update Breath Timer UI
+        if (enemyBreathTimerContainer) {
+            if (enemyBreathInterval !== null && enemyBreathInterval > 0) {
+                enemyBreathTimerContainer.classList.remove('hidden');
+                if (enemyBreathTimerEl) enemyBreathTimerEl.textContent = enemyBreathTimer.toFixed(1);
+                if (enemyBreathTimerBar) {
+                    const breathProgress = 1 - (enemyBreathTimer / enemyBreathInterval);
+                    enemyBreathTimerBar.style.width = `${Math.min(100, breathProgress * 100)}%`;
+                }
             } else {
-                this.combatEnemyStunTimerContainer.classList.add('hidden');
+                enemyBreathTimerContainer.classList.add('hidden');
             }
-        } else {
-            if (!this._stunTimerErrorLogged) { // Prevent console spam
-                console.error("UI Error: Stun timer elements not found during update.");
-                this._stunTimerErrorLogged = true;
+        }
+        
+        // Update Stun Timer UI
+        if (enemyStunTimerContainer) {
+            if (enemyStunInterval !== null && enemyStunInterval > 0) {
+                enemyStunTimerContainer.classList.remove('hidden');
+                if (enemyStunTimerEl) enemyStunTimerEl.textContent = enemyStunTimer.toFixed(1);
+                if (enemyStunTimerBar) {
+                    const stunProgress = 1 - (enemyStunTimer / enemyStunInterval);
+                    enemyStunTimerBar.style.width = `${Math.min(100, stunProgress * 100)}%`;
+                }
+            } else {
+                enemyStunTimerContainer.classList.add('hidden');
+            }
+        }
+        
+        // *** Update Regen Timer UI ***
+        if (enemyRegenTimerContainer) {
+            if (enemyRegenInterval !== null && enemyRegenInterval > 0) {
+                enemyRegenTimerContainer.classList.remove('hidden');
+                if (enemyRegenTimerEl) enemyRegenTimerEl.textContent = enemyRegenTimer.toFixed(1);
+                if (enemyRegenTimerBar) {
+                    const regenProgress = 1 - (enemyRegenTimer / enemyRegenInterval);
+                    enemyRegenTimerBar.style.width = `${Math.min(100, regenProgress * 100)}%`;
+                }
+            } else {
+                enemyRegenTimerContainer.classList.add('hidden');
             }
         }
     }

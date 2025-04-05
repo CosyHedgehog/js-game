@@ -485,6 +485,23 @@
     display: none;
 }
 
+/* --- Regeneration Timer Specific Styles --- */
+.regen-timer {
+    margin-top: 5px;
+}
+
+.regen-timer .timer-bar {
+    background: linear-gradient(to right, #66bb6a, #43a047); /* Light green gradient */
+}
+
+.regen-timer .timer-text {
+    color: #a5d6a7; /* Lighter green text */
+}
+
+.regen-timer.hidden {
+    display: none;
+}
+
 /* Venfing Speed Boost Timer Indicator */
 .enemy-side .attack-timer.enemy-timer-speed-boost {
     border: 2px solid #00e0ff;

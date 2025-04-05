@@ -16,7 +16,8 @@ class Combat {
             ferocityTimer: 0,
             regenerationActive: enemy.name === 'Moss Giant',
             regenerationTimer: enemy.name === 'Moss Giant' ? 5 : 0,
-            regenerationAmount: enemy.name === 'Moss Giant' ? 1 : 0
+            regenerationAmount: enemy.name === 'Moss Giant' ? 1 : 0,
+            regenerationInterval: enemy.name === 'Moss Giant' ? 5 : null
         };
         this.game = game;
         this.ui = ui;
@@ -216,8 +217,8 @@ class Combat {
                     this.game.addLog(`<span style="color: #a0a0a0;">${this.enemy.name} tries to regenerate, but is already at full health.</span>`);
                 }
                 
-                // Always update UI to show the splat, using potentialHeal for the text
-                this.ui.updateCombatantHealth('enemy', this.enemy.health, this.enemy.maxHealth, potentialHeal, 0, true); 
+                // Always update UI, passing ACTUAL heal amount for splat text calculation
+                this.ui.updateCombatantHealth('enemy', this.enemy.health, this.enemy.maxHealth, actualHeal, 0, true); 
                 
                 this.enemy.regenerationTimer = 5; // Reset timer
             }
@@ -325,7 +326,9 @@ class Combat {
             this.enemy.breathAttackTimer,
             this.enemy.breathAttackInterval,
             this.enemy.timedStunTimer,
-            this.enemy.timedStunInterval
+            this.enemy.timedStunInterval,
+            this.enemy.regenerationTimer,
+            this.enemy.regenerationInterval
         );
         this.ui.updateCombatStats(this.player, this.enemy); // Update stats every tick
         // ---------------------------------
@@ -504,7 +507,9 @@ class Combat {
                     this.enemy.breathAttackTimer,
                     this.enemy.breathAttackInterval,
                     this.enemy.timedStunTimer,
-                    this.enemy.timedStunInterval
+                    this.enemy.timedStunInterval,
+                    this.enemy.regenerationTimer,
+                    this.enemy.regenerationInterval
                 );
             }
             if (useResult.item?.healAmount) {

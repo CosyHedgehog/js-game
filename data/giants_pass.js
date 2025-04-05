@@ -12,7 +12,7 @@ const GIANTS_PASS_MONSTER_DATA = {
     'moss_giant': {
         name: 'Moss Giant', health: 35, attack: 5, defense: 3, speed: 2.8, goldDrop: [5, 9],
         difficulty: 'medium',
-        description: "A hulking giant covered in thick moss, slowly regenerating its wounds.",
+        description: "A hulking giant covered in thick moss.",
         mechanics: "Regenerates 1 health every 5 seconds.",
         lootTable: [
             { itemTier: 'uncommonFood', chance: 0.6 },
