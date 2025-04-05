@@ -110,7 +110,7 @@ class Alchemist {
             const itemId = item.getAttribute('data-item-id');
             const itemData = ITEMS[itemId];
 
-            item.addEventListener('click', () => {
+            item.addEventListener('mouseenter', () => {
                 if (itemData) {
                     const name = itemData.name || 'Unknown Potion';
                     const desc = itemData.description || 'No description available.';
@@ -118,8 +118,6 @@ class Alchemist {
                         <div class="item-desc-name">${name}</div>
                         <div class="item-desc-text">${desc}</div>
                     `;
-                    potionItems.forEach(i => i.classList.remove('selected'));
-                    item.classList.add('selected');
                 }
             });
         });

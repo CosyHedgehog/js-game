@@ -64,13 +64,14 @@
 }
 
 .shop-item:hover {
-    transform: translateY(-2px);
+    /* transform: translateY(-2px); */ /* Removed transform */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #3a3a3a; /* Added background color on hover */
 }
 
 .shop-item.selected {
-    background-color: #3a3a3a;
-    border-color: #505050;
+    /* background-color: #3a3a3a; */ /* Removed background color from selected */
+    border-color: #505050; /* Keep border color change for selected */
 }
 
 .shop-item-info {
@@ -193,7 +194,7 @@
     flex-direction: column; /* Stack name and text */
     gap: 8px; /* Space between name and text */
     overflow-y: auto; /* Allow scroll if content overflows */
-    min-height: 80px; /* Give it some default height */
+    min-height: 80px; /* Increased minimum height */
 }
 
 .item-desc-name {

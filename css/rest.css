@@ -9,11 +9,10 @@
     /* max-width: 500px; */ /* Removed max-width */
     /* margin: auto; */ /* Removed margin */
     /* align-self: center; */ /* Removed align-self */
+    position: relative;
     display: flex; 
-    /* justify-content: center; */ /* Removed justify-content */
-    /* align-items: center; */ /* Removed align-items */
-    /* min-height: 250px; */ /* Removed min-height */
-    flex-direction: column; /* Stack content vertically */
+    flex-direction: column; 
+    justify-content: center; /* Add vertical centering */
     width: 100%; /* Fill width */
     height: 100%; /* Fill height */
     box-sizing: border-box; /* Include padding */

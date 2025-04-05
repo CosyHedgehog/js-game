@@ -71,11 +71,9 @@ class Shop {
             };
         });
 
-        const shopItems = document.querySelectorAll('.shop-item');
+        const shopItems = document.querySelectorAll('#shop-area .shop-item');
         shopItems.forEach((shopItem, index) => {
-            shopItem.addEventListener('click', () => {
-                shopItems.forEach(item => item.classList.remove('selected'));
-                shopItem.classList.add('selected');
+            shopItem.addEventListener('mouseenter', () => {
                 const descriptionArea = document.querySelector('#shop-area .item-description');
                 if (descriptionArea && items[index]) {
                     const name = items[index].name || 'Unknown Item';
