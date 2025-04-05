@@ -10,7 +10,7 @@ class Starting {
             description: 'A balanced fighter.',
             stats: {
                 maxHealth: 15,
-                health: 15,
+                health: 150,
                 baseAttack: 1,
                 baseDefense: 1,
             },
@@ -192,7 +192,7 @@ class Starting {
             this.ui.renderAll();
             this.game.addLog("Game started with your chosen equipment.");
             this.ui.clearMainArea();
-            this.game.currentRound = 20;
+            this.game.currentRound = 10;
             this.game.proceedToNextRound();
         }, 500);
     }

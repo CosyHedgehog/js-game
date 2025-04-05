@@ -23,37 +23,31 @@ const AREA_CONFIG = [
         startRound: 11,
         endRound: 20, // Inclusive end round
         areas: {
-            'grizzly_hills': {
-                name: "Grizzly Hills",
-                tooltip: "Steep hills inhabited by tenacious wildlife.",
-                monsters: ['mountain_goat', 'mountain_lion', 'wolverine'],
-                miniBoss: 'raging_grizzly' // Added mini-boss specific to area
-            },
+            // 'grizzly_hills': {
+            //     name: "Grizzly Hills",
+            //     tooltip: "Steep hills inhabited by tenacious wildlife.",
+            //     monsters: ['mountain_goat', 'mountain_lion', 'wolverine'],
+            //     miniBoss: 'raging_grizzly' // Added mini-boss specific to area
+            // },
             'giants_pass': {
                 name: "Giant's Pass",
                 tooltip: "A high mountain pass where colossal beings tread.",
-                monsters: ['hill_giant_grunt', 'crag_troll', 'giant_gatekeeper'],
+                monsters: ['hill_giant_grunt', 'moss_giant', 'giant_gatekeeper'],
                 miniBoss: 'cyclops_stone_thrower' // Added mini-boss specific to area
             },
         }
     },
-    // Tier 3 (Rounds 21-29) - Corrected Structure
+    // Tier 3 (Rounds 21-30) - Combined with Final Boss
     {
         startRound: 21,
-        endRound: 29,
+        endRound: 30, // Updated to include final boss round
         areas: {
             'dragon_peak': { 
                 name: "Dragon Peak", 
                 tooltip: "A treacherous peak shrouded in smoke, leading to the dragon's lair.", 
-                monsters: ['flame_whelp', 'stone_drake', 'obsidian_sentinel']
-                // No mini-boss for round 29 in this setup
+                monsters: ['flame_whelp', 'stone_drake', 'obsidian_sentinel'],
+                finalBoss: 'ancient_dragon'
             }
         }
-    },
-    // Final Boss Tier (Round 30) - Corrected Structure
-    {
-        startRound: 30,
-        endRound: 30,
-        finalBoss: 'ancient_dragon' // Final boss ID for this specific round
     }
 ];

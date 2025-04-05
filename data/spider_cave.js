@@ -38,7 +38,6 @@ const SPIDER_CAVE_MONSTER_DATA = {
             { itemTier: 'commonItem', chance: 0.2 },
         ]
     },
-    // Round 10 Mini-Boss (associated with Spider Cave)
     'venox': {
         name: 'Venox', health: 25, attack: 2, defense: 4, speed: 1.8, 
         goldDrop: [10, 20],

@@ -35,7 +35,6 @@ const GRIZZLY_HILLS_MONSTER_DATA = {
             { itemId: 'minor_attack_potion', chance: 0.05 },
         ]
     },
-    // Round 20 Mini-Boss (associated with Grizzly Hills)
     'raging_grizzly': {
         name: 'Raging Grizzly', health: 50, attack: 5, defense: 6, speed: 2.5, goldDrop: [15, 30],
         isMiniBoss: true,

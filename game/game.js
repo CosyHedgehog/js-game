@@ -48,35 +48,50 @@ class Game {
             return; 
         }
 
+        // *** DEBUG AREA START ***
+        console.log(`[Debug] Start of proceedToNextRound (${this.currentRound + 1}): currentArea = ${this.currentArea}`);
+        // *** END DEBUG AREA START ***
+
         this.currentRound++;
         this.addLog(`--- Round ${this.currentRound} ---`);
         console.log("Current round:", this.currentRound);
 
-        // *** Update Area Based on AREA_CONFIG ***
+        // *** REMOVE OLD AREA UPDATE LOOP (lines ~60-95) ***
+        /*
         let newAreaSelected = false;
+        console.log(`[Debug Area Update] Checking tiers for round ${this.currentRound}`); // Add log before loop
         for (const tier of AREA_CONFIG) { // Use AREA_CONFIG
+             console.log(`[Debug Area Update] Checking tier: ${tier.startRound}-${tier.endRound}`); // Log current tier
             // Check if the *start* of a new tier has been reached
             if (this.currentRound === tier.startRound) {
+                 console.log(`[Debug Area Update] Matched startRound ${tier.startRound}`); // Log match
                 const previousArea = this.currentArea;
                 // *** Check if the new tier actually defines areas before selecting ***
-                if (tier.areas) { 
+                if (tier.areas) {
+                     console.log(`[Debug Area Update] Tier has areas: ${Object.keys(tier.areas)}`); // Log areas found
                     const availableAreaIds = Object.keys(tier.areas);
                     if (availableAreaIds.length > 0) {
                         // Select a random area ID from the new tier's list
                         const newAreaIndex = Math.floor(Math.random() * availableAreaIds.length);
-                        this.currentArea = availableAreaIds[newAreaIndex];
-                        if (this.currentArea !== previousArea) { 
+                        const newArea = availableAreaIds[newAreaIndex]; // Log the selected area
+                        console.log(`[Debug Area Update] Selected new area index ${newAreaIndex}, ID: ${newArea}`);
+                        this.currentArea = newArea; // Set the area
+                        if (this.currentArea !== previousArea) {
                              this.addLog(`You venture into the ${tier.areas[this.currentArea]?.name || this.currentArea.replace('_', ' ')}!`);
                         }
                         newAreaSelected = true;
+                         console.log(`[Debug Area Update] newAreaSelected = true, currentArea is now ${this.currentArea}`); // Log final state
                     } else {
                         console.warn(`No areas defined for tier starting round ${tier.startRound}`);
                     }
-                } // else: This tier doesn't define areas (e.g., final boss tier), so no area change needed.
-                
+                } else {
+                     console.log(`[Debug Area Update] Tier starting at ${tier.startRound} has no 'areas' property.`); // Log if no areas
+                }
+
                 break; // Stop checking tiers once the correct startRound is found
             }
         }
+         console.log(`[Debug Area Update] After loop, currentArea = ${this.currentArea}, newAreaSelected = ${newAreaSelected}`); // Log after loop
         // Initialize area on round 1 if not set by progression
         if (this.currentRound === 1 && !newAreaSelected && AREA_CONFIG[0]) {
             const firstTierAreaIds = Object.keys(AREA_CONFIG[0].areas);
@@ -84,6 +99,7 @@ class Game {
                  this.currentArea = firstTierAreaIds[Math.floor(Math.random() * firstTierAreaIds.length)];
             }
         }
+        */
 
         this.state = 'choosing';
         this.ui.clearMainArea();
@@ -109,14 +125,49 @@ class Game {
                 break;
             }
         }
+        
+        // *** NEW: Validate and Update Area if Necessary ***
+        if (currentTier && currentTier.areas) {
+            const validAreaIds = Object.keys(currentTier.areas);
+            if (validAreaIds.length > 0 && !validAreaIds.includes(this.currentArea)) {
+                 const previousArea = this.currentArea;
+                 const newAreaIndex = Math.floor(Math.random() * validAreaIds.length);
+                 this.currentArea = validAreaIds[newAreaIndex];
+                 console.log(`[Area Correction] Current area '${previousArea}' invalid for Tier ${currentTier.startRound}-${currentTier.endRound}. Changing to '${this.currentArea}'.`);
+                 this.addLog(`You venture into the ${currentTier.areas[this.currentArea]?.name || this.currentArea.replace('_', ' ')}!`);
+            }
+        } else if (this.currentRound === 1 && (!currentTier || !currentTier.areas)) { 
+             // Special handling for initializing area on round 1 if the first tier setup is odd
+             const firstTier = AREA_CONFIG[0];
+             if (firstTier && firstTier.areas) {
+                 const firstTierAreaIds = Object.keys(firstTier.areas);
+                 if (firstTierAreaIds.length > 0) {
+                    this.currentArea = firstTierAreaIds[Math.floor(Math.random() * firstTierAreaIds.length)];
+                     console.log(`[Area Init] Setting initial area for Round 1 to ${this.currentArea}`);
+                 }
+             }
+        }
+
+        // *** DEBUG AREA BEFORE BOSS CHECK ***
+        console.log(`[Debug] Before boss check (Round ${this.currentRound}): currentArea = ${this.currentArea}, currentTier found = ${!!currentTier}`);
+        if(currentTier) {
+             const areaDataForLog = currentTier.areas?.[this.currentArea];
+             console.log(`[Debug] currentAreaData = ${JSON.stringify(areaDataForLog)}`);
+             console.log(`[Debug] Check: (round=${this.currentRound} === 30 && areaData?.finalBoss=${areaDataForLog?.finalBoss}) = ${this.currentRound === 30 && areaDataForLog?.finalBoss}`);
+        }
+        // *** END DEBUG AREA BEFORE BOSS CHECK ***
 
         if (currentTier) {
-            // Check if it's the end round of a tier that has mini-bosses OR the final boss round
-            if ((this.currentRound === currentTier.endRound && currentTier.areas && Object.values(currentTier.areas).some(a => a.miniBoss)) || 
-                currentTier.finalBoss) 
-            {
-                this.generateBossEncounter(); 
-                encounterGenerated = true;
+            const currentAreaData = currentTier.areas?.[this.currentArea]; // Get current area data
+
+            // Check if it's round 30 AND the current area has a final boss defined
+            if (this.currentRound === 30 && currentAreaData?.finalBoss) {
+                 this.generateBossEncounter();
+                 encounterGenerated = true;
+            // Check if it's the end round of the tier (and not round 30) AND the current area has a miniBoss defined
+            } else if (this.currentRound === currentTier.endRound && currentAreaData?.miniBoss) {
+                 this.generateBossEncounter();
+                 encounterGenerated = true;
             }
         }
 
@@ -335,7 +386,8 @@ class Game {
 
         // Find the tier corresponding to the current round
         for (const tier of AREA_CONFIG) {
-            if (this.currentRound === tier.endRound || this.currentRound === tier.startRound) { // Check end/start of tiers
+            // *** Updated check to simply find the tier the current round falls into ***
+            if (this.currentRound >= tier.startRound && this.currentRound <= tier.endRound) { 
                 currentTier = tier;
                 break;
             }
@@ -347,13 +399,22 @@ class Game {
             return;
         }
 
-        // Determine if it's the final boss or a mini-boss
-        if (currentTier.finalBoss) {
-            bossId = currentTier.finalBoss;
-        } else if (currentTier.areas && currentTier.areas[this.currentArea] && currentTier.areas[this.currentArea].miniBoss) {
-            // Get the mini-boss specific to the player's current area within the tier
-            bossId = currentTier.areas[this.currentArea].miniBoss;
+        // *** Updated Logic to check for finalBoss first, then miniBoss within the area ***
+        const currentAreaData = currentTier.areas?.[this.currentArea];
+
+        if (this.currentRound === 30 && currentAreaData?.finalBoss) {
+            // Check for final boss specifically on round 30 in the current area data
+            bossId = currentAreaData.finalBoss;
+        } else if (currentTier.endRound === this.currentRound && currentAreaData?.miniBoss) {
+            // Check for mini-boss on the last round of the tier in the current area data
+            bossId = currentAreaData.miniBoss;
         } 
+
+        // *** DEBUGGING ***
+        console.log(`generateBossEncounter: Determined bossId = ${bossId}`);
+        console.log(`generateBossEncounter: MONSTERS object keys:`, Object.keys(MONSTERS || {}));
+        console.log(`generateBossEncounter: MONSTERS[${bossId}] =`, MONSTERS ? MONSTERS[bossId] : 'MONSTERS is undefined');
+        // *** END DEBUGGING ***
 
         if (bossId && MONSTERS[bossId]) {
             const bossData = MONSTERS[bossId];

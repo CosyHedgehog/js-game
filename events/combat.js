@@ -13,7 +13,10 @@ class Combat {
             breathAttackTimer: enemy.hasBreathAttack ? enemy.breathAttackInterval : null,
             timedStunTimer: enemy.hasTimedStun ? enemy.timedStunInterval : null,
             ferocityActive: false,
-            ferocityTimer: 0
+            ferocityTimer: 0,
+            regenerationActive: enemy.name === 'Moss Giant',
+            regenerationTimer: enemy.name === 'Moss Giant' ? 5 : 0,
+            regenerationAmount: enemy.name === 'Moss Giant' ? 1 : 0
         };
         this.game = game;
         this.ui = ui;
@@ -194,6 +197,29 @@ class Combat {
             if (burn.timeRemaining <= 0) {
                 this.game.addLog("The fire subsides.");
                 delete this.player.activeEffects.burning;
+            }
+        }
+
+        // *** Handle Enemy Regeneration (Moss Giant) ***
+        if (this.enemy.regenerationActive) {
+            this.enemy.regenerationTimer = Math.max(0, this.enemy.regenerationTimer - this.timeScale);
+            if (this.enemy.regenerationTimer <= 0) {
+                const potentialHeal = this.enemy.regenerationAmount;
+                const actualHeal = (this.enemy.health < this.enemy.maxHealth) ? potentialHeal : 0;
+                
+                // Apply the actual heal
+                if (actualHeal > 0) {
+                    this.enemy.health = Math.min(this.enemy.maxHealth, this.enemy.health + actualHeal);
+                    this.game.addLog(`<span style="color: #66bb6a;">${this.enemy.name} regenerates ${actualHeal} health.</span>`);
+                } else {
+                    // Log differently if no health was gained
+                    this.game.addLog(`<span style="color: #a0a0a0;">${this.enemy.name} tries to regenerate, but is already at full health.</span>`);
+                }
+                
+                // Always update UI to show the splat, using potentialHeal for the text
+                this.ui.updateCombatantHealth('enemy', this.enemy.health, this.enemy.maxHealth, potentialHeal, 0, true); 
+                
+                this.enemy.regenerationTimer = 5; // Reset timer
             }
         }
 

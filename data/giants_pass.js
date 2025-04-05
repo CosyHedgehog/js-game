@@ -9,11 +9,11 @@ const GIANTS_PASS_MONSTER_DATA = {
             { itemTier: 'commonItem', chance: 0.2 },
         ]
     },
-    'crag_troll': {
-        name: 'Crag Troll', health: 35, attack: 5, defense: 3, speed: 2.8, goldDrop: [5, 9],
+    'moss_giant': {
+        name: 'Moss Giant', health: 35, attack: 5, defense: 3, speed: 2.8, goldDrop: [5, 9],
         difficulty: 'medium',
-        description: "A large, regenerating troll hardened by the mountain rock.", // Add regen hint?
-        // Optional: Add slow regeneration mechanic later if desired
+        description: "A hulking giant covered in thick moss, slowly regenerating its wounds.",
+        mechanics: "Regenerates 1 health every 5 seconds.",
         lootTable: [
             { itemTier: 'uncommonFood', chance: 0.6 },
             { itemTier: 'commonItem', chance: 0.3 },
@@ -23,12 +23,7 @@ const GIANTS_PASS_MONSTER_DATA = {
     'giant_gatekeeper': {
         name: 'Giant Gatekeeper', health: 40, attack: 4, defense: 5, speed: 3.0, goldDrop: [6, 12],
         difficulty: 'hard',
-        hasBrace: true, // Flag for the mechanic
-        braceDefBonus: 6,
-        braceDuration: 5, // Duration in seconds
-        braceInterval: 14, // Cooldown in seconds
         description: "A vigilant giant tasked with guarding the pass.",
-        mechanics: "Brace: Periodically increases defense by 6 for 5 seconds.",
         lootTable: [
             { itemTier: 'uncommonFood', chance: 0.5 },
             { itemTier: 'commonItem', chance: 0.25 },
@@ -36,7 +31,6 @@ const GIANTS_PASS_MONSTER_DATA = {
             { itemId: 'minor_defense_potion', chance: 0.05 },
         ]
     },
-    // Round 20 Mini-Boss (associated with Giant's Pass)
     'cyclops_stone_thrower': {
         name: 'Cyclops Stone-Thrower', health: 60, attack: 5, defense: 8, speed: 3.0,
         goldDrop: [20, 35],
