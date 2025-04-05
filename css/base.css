@@ -97,7 +97,7 @@ h2, h3 {
     background-color: #7f8c8d !important;
 }
 
-#start-screen button, #end-screen button, #rest-area button, #shop-leave-button, #shop-reroll-button {
+#start-screen button, #end-screen button, #rest-area button, #shop-reroll-button {
     background: #5a5a5a;
     color: white;
     padding: 12px 24px;
@@ -106,13 +106,33 @@ h2, h3 {
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
-#start-screen button:hover, #end-screen button:hover, #rest-area button:hover, #shop-leave-button:hover, #shop-reroll-button:hover {
+#start-screen button:hover, #end-screen button:hover, #rest-area button:hover, #shop-reroll-button:hover {
     background: #6a6a6a;
 }
 
-#start-screen button:active, #end-screen button:active, #rest-area button:active, #shop-leave-button:active, #shop-reroll-button:active {
+#start-screen button:active, #end-screen button:active, #rest-area button:active, #shop-reroll-button:active {
     background: #4a4a4a;
     box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+}
+
+/* Specific styles for shop-leave-button to match choice-start-button */
+#shop-leave-button {
+    background: #4a4a4a;
+    color: white;
+    border: none;
+    padding: 10px; /* Match choice button */
+    border-radius: 4px; /* Match choice button */
+    font-weight: bold; /* Match choice button */
+    font-size: 1.1em; /* Keep original font size for now */
+    transition: all 0.3s ease; /* Match choice button */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2); /* Add base shadow */
+    cursor: pointer;
+}
+
+#shop-leave-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Match choice hover */
+    background: #5a5a5a; /* Match choice hover */
 }
 
 #equip-tooltip {

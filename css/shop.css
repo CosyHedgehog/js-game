@@ -4,6 +4,8 @@
     border-radius: 8px;
     padding: 20px;
     margin: 10px 0;
+    margin-top: auto;
+    margin-bottom: auto;
     position: relative;
 }
 
@@ -165,8 +167,10 @@
     font-size: 0.9em;
     line-height: 1.4;
     margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px solid #444;
+    background-color: #2a2a2a;
+    border: 1px solid #404040;
+    padding: 10px;
+    border-radius: 4px;
 }
 
 .inventory-slot.shop-sellable {
