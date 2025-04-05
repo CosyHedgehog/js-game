@@ -812,8 +812,8 @@ class Game {
         const defeatedName = this.lastDefeatedEnemyName;
         this.lastDefeatedEnemyName = null;
 
-        // Check if it was the boss
-        const isBossDefeated = defeatedName && MONSTERS[FINAL_BOSS] && defeatedName === MONSTERS[FINAL_BOSS].name;
+        // Check if it was the boss by comparing the name to the known final boss
+        const isBossDefeated = defeatedName && MONSTERS['ancient_dragon'] && defeatedName === MONSTERS['ancient_dragon'].name;
 
         if (isBossDefeated) {
             this.endGame(true);

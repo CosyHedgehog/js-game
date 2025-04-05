@@ -27,7 +27,6 @@
 
 #equipment-text-display p {
     margin: 1px 0;
-    padding: 3px 0px;
     transition: background-color 0.2s ease;
     position: relative;
     cursor: default;
@@ -43,37 +42,31 @@
     text-overflow: clip;
     border: none;
     box-sizing: border-box;
-    background-image: linear-gradient(to bottom, #505050, #404040);
-    color: #e0e0e0;
-    padding: 5px 10px;
-    border-radius: 15px;
-    border: 1px solid #606060;
     flex-grow: 0;
     flex-shrink: 0;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
     transition: transform 0.2s ease;
+    padding: 3px 0px;
 }
 
 #equipment-text-display p:hover {
     background-color: #3a3a3a;
-    transform: scale(1.05);
+    transform: scale(1.0);
 }
 
 #equipment-text-display p .equip-label {
-    display: inline-block;
     color: #ddd;
     font-weight: bold;
-    text-align: left;
+    text-align: center;
     background-color: #4a4a4a;
     margin-right: 0;
     flex-shrink: 0;
     padding: 2px 8px;
     border-radius: 12px;
-    font-size: 1em;
+    font-size: 0.9em;
     line-height: 1.2;
-    text-align: center;
     white-space: nowrap;
     transition: all 0.2s ease;
+    min-width: 50px;
 }
 
 #equipment-text-display p .equip-label.equipped {
@@ -91,6 +84,7 @@
     text-overflow: ellipsis;
     flex-grow: 1;
     cursor: pointer;
+    margin-right: auto;
 }
 
 .unequip-button {

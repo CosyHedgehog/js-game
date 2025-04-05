@@ -119,6 +119,18 @@
     border-color: #505050;
 }
 
+/* Style for items already taken */
+.loot-item.taken {
+    opacity: 0.6;
+    background-color: #202020; /* Darken background slightly */
+    cursor: default;
+    pointer-events: none; /* Prevent hover/click on taken item */
+}
+
+.loot-item.taken:hover {
+    box-shadow: none; /* Remove hover shadow */
+}
+
 .loot-gold-button, 
 .loot-item-button {
     /* background: #4a4a4a; Removed */

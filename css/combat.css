@@ -531,31 +531,54 @@
     justify-content: center; 
     align-items: center;    
     width: 100%;            
-    margin-bottom: 15px; /* Increased space below */
+    margin-bottom: 15px; /* Keep space below */
+    /* Add styles similar to player-stats-area-2 */
+    background-color: #222;
+    border: 1px solid #484848;
+    border-radius: 5px;
+    padding: 10px; /* Add some padding */
+    box-sizing: border-box; /* Ensure padding included */
 }
 
 #round-area .stat-item { /* Apply styles to the container */
     display: inline-flex; /* Use inline-flex to keep content together */
     align-items: baseline; /* Align text baseline */
-    background: linear-gradient(to bottom, #5a5a5a, #454545);
-    border: 1px solid #888;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.15);
-    padding: 6px 18px; /* Adjusted padding */
-    border-radius: 25px; /* Pill shape */
-    font-size: 1.1em; /* Larger font */
+    /* Remove specific background/border/shadow/pill shape */
+    /* background: linear-gradient(to bottom, #5a5a5a, #454545); */
+    /* border: 1px solid #888; */
+    /* box-shadow: 0 2px 5px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.15); */
+    /* padding: 6px 18px; */ /* Padding now on #round-area */
+    /* border-radius: 25px; */ 
+    font-size: 1.0em; /* Adjust font size if needed */
     color: #fff;
     text-align: center;
-    min-width: 130px; /* Minimum width */
+    /* min-width: 130px; */ /* Remove min-width */
 }
 
 #round-area .stat-label {
-    background: none; 
-    padding: 0;
-    color: #ccc;
-    font-size: 0.9em; 
-    margin-right: 6px; /* Space after label */
-    font-weight: normal;
+    /* Make label consistent with stats panel */
+    /* background: none; */ 
+    /* padding: 0; */
+    /* color: #ccc; */
+    /* font-size: 0.9em; */ 
+    margin-right: 8px; /* Space after label */
+    /* font-weight: normal; */
     vertical-align: baseline; /* Align with numbers */
+    
+    /* Copied from .stat-label in stats.css */
+    grid-column: 1;
+    justify-self: start;
+    color: #ddd;
+    font-weight: bold;
+    flex-shrink: 0;
+    background-color: #4a4a4a;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.9em; /* Adjusted from 1em */
+    display: inline-block;
+    line-height: 1.2;
+    text-align: center;
+    white-space: nowrap;
 }
 
 #round-area #stat-round, 
@@ -565,6 +588,7 @@
     color: #fff;
     display: inline; /* Keep elements inline */
     vertical-align: baseline; /* Align numbers */
+    font-size: 1.0em; /* Ensure consistent size */
 }
 
 #round-area .round-separator {
