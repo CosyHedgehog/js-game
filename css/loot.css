@@ -1,15 +1,20 @@
 #loot-area {
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid #444;
+    /* background: rgba(0, 0, 0, 0.2); */
+    background: #333; /* Consistent background */
+    /* border: 1px solid #444; */
+    border: 1px solid #555; /* Consistent border */
     border-radius: 8px;
     padding: 20px;
-    margin: 10px 0;
     margin-top: auto;
     margin-bottom: auto;
+    margin-left: auto;
+    margin-right: auto;
     position: relative;
     opacity: 0;
     transform: translateY(20px);
     animation: loot-fade-in 0.5s ease-out forwards;
+    width: 700px;
+    box-sizing: border-box;
 }
 
 #loot-area h3 {
@@ -49,6 +54,7 @@
     box-sizing: border-box;
     margin-bottom: 15px;
     margin-top: 0;
+    height: 150px;
 }
 
 .loot-buttons {
@@ -60,13 +66,15 @@
 }
 
 .loot-gold-container {
-    background: rgba(255, 215, 0, 0.1);
-    border: 1px solid rgba(255, 215, 0, 0.3);
+    /* background: rgba(255, 215, 0, 0.1); */
+    background: rgba(42, 42, 42, 0.5); /* Darker background */
+    /* border: 1px solid rgba(255, 215, 0, 0.3); */
+    border: 1px solid #404040; /* Consistent border */
     border-radius: 8px;
     padding: 15px;
     text-align: center;
     margin: 20px 0;
-    animation: glow 2s ease-in-out infinite;
+    /* animation: glow 2s ease-in-out infinite; */ /* Remove glow */
 }
 
 .loot-gold-container span {
@@ -76,8 +84,10 @@
 }
 
 .loot-item {
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid #444;
+    /* background: rgba(0, 0, 0, 0.3); */
+    background: #2a2a2a; /* Consistent background */
+    /* border: 1px solid #444; */
+    border: 1px solid #404040; /* Consistent border */
     border-radius: 8px;
     padding: 15px;
     display: flex;
@@ -93,9 +103,8 @@
 }
 
 .loot-item:hover {
-    /* transform: translateY(-2px); */ /* Removed transform */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    background-color: #333; /* Slightly lighter background on hover */
+    background-color: #333; /* Keep hover background */
 }
 
 .loot-item.selected {

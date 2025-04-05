@@ -77,19 +77,21 @@ class Loot {
                     }
                 };
 
-                itemDiv.addEventListener('click', () => {
-                    lootItemsContainer.querySelectorAll('.loot-item').forEach(div => div.classList.remove('selected'));
-                    itemDiv.classList.add('selected');
+                itemDiv.addEventListener('mouseenter', () => {
                     descriptionBox.textContent = item.description || 'No description available.';
                 });
+                
+                itemDiv.addEventListener('mouseleave', () => {
+                    descriptionBox.textContent = 'Hover over an item to see details.'; 
+                });
+
                 lootItemsContainer.appendChild(itemDiv);
             });
 
             if (allDisplayableLoot.length > 0) {
                 const firstItemDiv = lootItemsContainer.querySelector('.loot-item');
                 if (firstItemDiv) {
-                    firstItemDiv.classList.add('selected');
-                    descriptionBox.textContent = allDisplayableLoot[0].description || 'No description available.';
+                    descriptionBox.textContent = 'Hover over an item to see details.';
                 }
             }
         }

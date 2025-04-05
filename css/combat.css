@@ -46,7 +46,10 @@
 }
 
 .combatant {
-    flex: 1;
+    /* flex: 1; */ /* Removed */
+    flex-basis: 45%; /* Set base width */
+    flex-grow: 0; /* Prevent growing */
+    flex-shrink: 1; /* Allow shrinking (default) */
     display: flex;
     flex-direction: column;
     align-items: center;
