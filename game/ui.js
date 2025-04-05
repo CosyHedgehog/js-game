@@ -1098,6 +1098,8 @@ class UI {
             this.combatEnemyDef.textContent = enemy.currentDefense; 
             if (enemy.scalesHardened) { 
                 this.combatEnemyDef.classList.add('hardened');
+            } else if (enemy.packTacticsActive) {
+                this.combatEnemyDef.classList.add('hardened');
             } else {
                 this.combatEnemyDef.classList.remove('hardened');
             }

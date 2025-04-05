@@ -220,32 +220,32 @@ class Combat {
             }
         }
         
-        // Harden Scales Check (Dragon)
-        if (this.enemy.hardenThreshold && this.enemy.hardenDefenseBonus) {
-            let shouldHarden = healthPercent < this.enemy.hardenThreshold;
-            
-            if (shouldHarden && !this.enemy.scalesHardened) {
-                // Harden the scales
-                this.enemy.currentDefense = this.enemy.defense + this.enemy.hardenDefenseBonus;
-                this.enemy.scalesHardened = true;
-                this.game.addLog(`<span style="color: #a0a0ff;">The ${this.enemy.name}'s scales harden! (+${this.enemy.hardenDefenseBonus} Defense)</span>`);
+        // Pack Tactics Check (Feral Hunter)
+        if (this.enemy.packTactics) {
+            const wasPackTacticsActive = this.enemy.currentAttack > this.enemy.attack;
+            const shouldActivatePackTactics = healthPercent < 0.5;
+
+            if (shouldActivatePackTactics && !wasPackTacticsActive) {
+                this.enemy.packTacticsActive = true;
+                this.enemy.currentAttack = this.enemy.attack + this.enemy.packDamageBonus;
+                this.enemy.currentDefense = this.enemy.defense + this.enemy.packDefenseBonus;
                 
-                // Trigger animation
+                // Visual feedback
                 const enemySide = document.querySelector('.enemy-side');
                 if (enemySide) {
-                    enemySide.classList.add('enemy-scales-harden');
+                    enemySide.classList.add('enemy-pack-tactics');
                     setTimeout(() => {
-                        enemySide.classList.remove('enemy-scales-harden');
-                    }, 800); // Animation duration (adjust CSS too)
+                        enemySide.classList.remove('enemy-pack-tactics');
+                    }, 800);
                 }
-            } else if (!shouldHarden && this.enemy.scalesHardened) {
-                // Scales soften (if health goes back up - less likely but good to handle)
+                
+                this.game.addLog(`<span style="color: #ffd700">${this.enemy.name}'s pack tactics activate! (+${this.enemy.packDamageBonus} Attack, +${this.enemy.packDefenseBonus} Defense)</span>`);
+            } else if (!shouldActivatePackTactics && wasPackTacticsActive) {
+                this.enemy.currentAttack = this.enemy.attack;
                 this.enemy.currentDefense = this.enemy.defense;
-                this.enemy.scalesHardened = false;
-                // Optional: Log softening?
-                // this.game.addLog(`The ${this.enemy.name}'s scales seem less rigid.`);
             }
         }
+        
 
         // Enrage Attack Check (Before Enemy Attack)
         if (this.enemy.enrageThreshold && this.enemy.enrageAttackMultiplier) {

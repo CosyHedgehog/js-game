@@ -67,6 +67,10 @@ const MONSTERS = {
     'feral_hunter': {
         name: 'Feral Hunter', health: 14, attack: 2, defense: 2, speed: 1.5, goldDrop: [2, 6],
         description: "A skilled wolf that hunts in precise strikes.",
+        packTactics: true,
+        packDamageBonus: 2,
+        packDefenseBonus: 1,
+        mechanics: "Pack Tactics: Gains +2 attack and +1 defense when below 50% health, representing desperate pack survival instincts.",
         lootTable: [
             { itemTier: 'commonFood', chance: 0.5 },
             { itemTier: 'uncommonFood', chance: 0.5 },
@@ -77,7 +81,7 @@ const MONSTERS = {
 
     // === Mini-Bosses ===
     'silverfang': {
-        name: 'Silverfang [Alpha Wolf]', health: 30, attack: 5, defense: 1, speed: 1.2,
+        name: 'Silverfang', health: 30, attack: 5, defense: 1, speed: 1.2,
         goldDrop: [10, 20],
         description: "The alpha wolf of the den, known for its lightning-fast strikes.",
         mechanics: "Attacks 50% faster when below 50% health.",
@@ -88,7 +92,7 @@ const MONSTERS = {
         ]
     },
     'venox': {
-        name: 'Venox [Brood Mother]', health: 25, attack: 2, defense: 4, speed: 1.8, 
+        name: 'Venox', health: 25, attack: 2, defense: 4, speed: 1.8, 
         goldDrop: [10, 20],
         appliesPoison: true,
         poisonDamage: [1, 2],
