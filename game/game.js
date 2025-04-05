@@ -420,7 +420,14 @@ class Game {
             // If in combat and equipping a weapon, reset attack timer
             if (this.state === 'combat' && this.currentCombat && result.item.type === 'weapon') {
                 this.player.attackTimer = this.player.getAttackSpeed();
-                this.currentCombat.ui.updateCombatTimers(this.player.attackTimer, this.currentCombat.enemy.attackTimer);
+                // Pass breath timer arguments to prevent hiding
+                this.currentCombat.ui.updateCombatTimers(
+                    this.player.attackTimer,
+                    this.currentCombat.enemy.attackTimer,
+                    0, // playerDelay
+                    this.currentCombat.enemy.breathAttackTimer, // Pass breath timer
+                    this.currentCombat.enemy.breathAttackInterval // Pass breath interval
+                );
             }
 
             this.ui.renderInventory(); // Update inventory for visual indicator

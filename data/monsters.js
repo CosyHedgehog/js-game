@@ -180,7 +180,7 @@ const MONSTERS = {
         hardenThreshold: 0.25, // Hardens below 25% health
         hardenDefenseBonus: 5, // Adds +5 Defense when hardened
         description: "An ancient dragon.",
-        mechanics: "- Unleashes devastating firebreath every 12 seconds,  dealing 4-8 damage that cannot be blocked and burns the player for 4 seconds.\n When critically wounded (below 25% health), its scales harden, boosting defense by 5.",
+        mechanics: "Firebreath every 12 seconds, dealing 4-8 damage that cannot be blocked and burns the player over 4 seconds.\n\n Hardens below 25% health, increasing defense by 5.",
         breathDotDamage: 1, // Damage per tick
         breathDotDuration: 5, // Total duration in seconds add + 1 second
         breathDotTickInterval: 1, // Seconds between ticks

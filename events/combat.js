@@ -443,7 +443,9 @@ class Combat {
                 this.ui.updateCombatTimers(
                     this.player.attackTimer,
                     this.enemy.attackTimer,
-                    this.player.pendingActionDelay
+                    this.player.pendingActionDelay,
+                    this.enemy.breathAttackTimer,
+                    this.enemy.breathAttackInterval
                 );
             }
             if (useResult.item?.healAmount) {
