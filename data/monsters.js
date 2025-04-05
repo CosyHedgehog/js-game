@@ -39,9 +39,9 @@ const MONSTERS = {
 
     // === Round 10 Mini-Boss ===
     'silverfang': {
-        name: 'Silverfang [Wolf]', health: 30, attack: 5, defense: 1, speed: 1.2,
+        name: 'Silverfang', health: 30, attack: 5, defense: 1, speed: 1.2,
         goldDrop: [1, 15],
-        description: "A swift and agile spider.",
+        description: "A swift and agile wolf.",
         mechanics: "Attacks 50% faster when below 50% health.",
         lootTable: [
             { itemId: 'speed_potion', chance: 0.4 },
@@ -50,12 +50,12 @@ const MONSTERS = {
         ]
     },
     'venox': {
-        name: 'Venox [Venomous Spider]', health: 20, attack: 2, defense: 4, speed: 1.8, 
+        name: 'Venox', health: 20, attack: 2, defense: 4, speed: 1.8, 
         goldDrop: [10, 20],
         appliesPoison: true,
         poisonDamage: [1, 2],
         poisonDuration: 10,
-        description: "A patient spider that coats its fangs in venom.",
+        description: "A venomous spider.",
         mechanics: "Inflicts poison on successful attacks, dealing damage over time. Lasts 10s.",
         lootTable: [
             { itemId: 'health_potion', chance: 0.5 }, 
