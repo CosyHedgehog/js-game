@@ -353,16 +353,19 @@ class Combat {
         
         // Apply Poison if applicable
         if (this.enemy.appliesPoison && damageDealt > 0) { // Only apply if damage was dealt
-            if (!this.player.activeEffects.poison) { // Don't stack duration if already poisoned
-                 this.player.activeEffects.poison = {
-                    // Store the damage range, not a single value
-                    damageRange: this.enemy.poisonDamage, 
-                    duration: this.enemy.poisonDuration,
-                    timer: this.enemy.poisonDuration, 
-                    tickCooldown: 1.5 
-                };
-                this.game.addLog(`<span style="color: #ab47bc;">You have been poisoned!</span>`);
-            }
+            // *** Check poison chance ***
+            const poisonProcChance = this.enemy.poisonChance || 1; // Default to 100% if not defined
+            if (Math.random() < poisonProcChance) {
+                if (!this.player.activeEffects.poison) { // Don't stack duration if already poisoned
+                    this.player.activeEffects.poison = {
+                        damageRange: this.enemy.poisonDamage, 
+                        duration: this.enemy.poisonDuration,
+                        timer: this.enemy.poisonDuration, 
+                        tickCooldown: 1.5 
+                    };
+                    this.game.addLog(`<span style="color: #ab47bc;">You have been poisoned!</span>`);
+                }
+            } // End poison chance check
         }
 
         // Check for Stunning Slam

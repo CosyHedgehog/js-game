@@ -22,7 +22,7 @@ const MONSTERS = {
     },
     'web_weaver': {
         name: 'Web Weaver', health: 12, attack: 1, defense: 3, speed: 1.8, goldDrop: [2, 5],
-        description: "A cunning spider that specializes in defensive tactics.",
+        description: "A cunning spider that specializes in defense.",
         difficulty: 'medium',
         lootTable: [
             { itemTier: 'commonFood', chance: 0.5 },
@@ -35,6 +35,7 @@ const MONSTERS = {
         name: 'Poison Crawler', health: 10, attack: 3, defense: 1, speed: 1.6, goldDrop: [3, 6],
         difficulty: 'hard',
         appliesPoison: true,
+        poisonChance: 0.5,
         poisonDamage: [1, 1],
         poisonDuration: 5,
         description: "A small but deadly spider with toxic venom.",

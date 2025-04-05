@@ -364,15 +364,33 @@
     width: 100%;
 }
 
-/* Style for the "Fight" button on regular monster cards - REMOVED/REPLACED by difficulty styles */
-/*
-.choice-card.choice-monster .choice-start-button {
-    // ... old red styles ...
+/* === Monster Description Summary (Choice Card) === */
+.choice-description .monster-description-summary {
+    margin-bottom: 10px; /* Space below description, before stats */
+    color: #b0bec5; /* Slightly lighter grey for description */
+    font-style: normal; /* Ensure it's not italic unless intended */
+    text-align: left;
 }
-.choice-card.choice-monster .choice-start-button:hover {
-    // ... old red hover styles ...
+
+/* === Monster Stat Summary (Choice Card) === */
+.choice-description .monster-stats-summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columns */
+    gap: 5px 10px; /* Row gap, Column gap */
+    margin-bottom: 10px; /* Space before mechanics */
+    text-align: left; /* Align text left within grid cells */
 }
-*/
+
+.choice-description .monster-stats-summary div {
+    white-space: nowrap; /* Prevent wrapping within a stat */
+}
+
+.choice-description .monster-mechanics-summary {
+    margin-top: 10px;
+    font-style: italic;
+    color: #ffcc80; /* Light orange color for mechanics */
+    text-align: left;
+}
 
 /* === Difficulty-Based Button Colors === */
 .choice-start-button.difficulty-easy {

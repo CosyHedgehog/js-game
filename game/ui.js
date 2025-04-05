@@ -927,39 +927,35 @@ class UI {
 
             const description = document.createElement('div');
             description.classList.add('choice-description');
-            if (choice.type === 'combat') {
-                const monster = choice.monster;
-                description.innerHTML = `
-                    <div class="monster-description">
-                        <div class="monster-desc-text-wrapper">
-                            <p>${monster.description || 'No description available.'}</p>
-                        </div>
-                        <div class="monster-stats-grid">
-                            <div class="monster-stat">
-                                <span class="stat-icon">❤️</span>
-                                <span class="stat-value">${monster.health}</span>
-                                <span class="stat-label">Health</span>
-                            </div>
-                            <div class="monster-stat">
-                                <span class="stat-icon">⚔️</span>
-                                <span class="stat-value">${monster.attack}</span>
-                                <span class="stat-label">Attack</span>
-                            </div>
-                            <div class="monster-stat">
-                                <span class="stat-icon">🛡️</span>
-                                <span class="stat-value">${monster.defense}</span>
-                                <span class="stat-label">Defense</span>
-                            </div>
-                            <div class="monster-stat">
-                                <span class="stat-icon">⚡</span>
-                                <span class="stat-value">${monster.speed}s</span>
-                                <span class="stat-label">Speed</span>
-                            </div>
-                        </div>
-                        ${monster.special ? `<div class="monster-special">${monster.special}</div>` : ''}
-                    </div>
-                `;
+
+            // Set description content based on encounter type
+            if (encounter.type === 'monster') {
+                const monster = MONSTERS[encounter.monsterId];
+                if (monster) {
+                    let descriptionHTML = '';
+                    // Add description first if it exists
+                    if (monster.description) {
+                        descriptionHTML += `<div class="monster-description-summary">${monster.description}</div>`;
+                    }
+
+                    // Use a container for grid layout for stats
+                    descriptionHTML += `<div class="monster-stats-summary">
+                        <div>⚔️ Atk: ${monster.attack}</div>
+                        <div>🛡️ Def: ${monster.defense}</div>
+                        <div>⚡ Spd: ${monster.speed}s</div>
+                        <div>💰 Gold: ${monster.goldDrop[0]}-${monster.goldDrop[1]}</div>
+                    </div>`; // Close stats summary div
+
+                    // Add mechanics separately below the grid
+                    if (monster.mechanics) {
+                        descriptionHTML += `<div class="monster-mechanics-summary">✨ ${monster.mechanics}</div>`;
+                    }
+                    description.innerHTML = descriptionHTML;
+                } else {
+                    description.innerHTML = "Error: Monster data not found.";
+                }
             } else {
+                // Keep existing behavior for non-monster events
                 description.innerHTML = this.game.getEncounterDetails(encounter);
             }
             cardContent.appendChild(description);
