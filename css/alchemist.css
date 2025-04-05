@@ -4,8 +4,26 @@
     border-radius: 6px;
     padding: 20px;
     margin: 10px auto;
+    margin-top: auto;
+    margin-bottom: auto;
     width: 90%;
     max-width: 600px;
+}
+
+/* Add rule to center the h3 title */
+#alchemist-area h3 {
+    text-align: center;
+    color: #ffd700; /* Match shop title color */
+    margin-bottom: 20px; /* Add some space below */
+    font-size: 1.4em; /* Match shop title size */
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.3); /* Match shop title shadow */
+}
+
+/* Add potion emoji */
+#alchemist-area h3::before {
+    content: "🧪 "; /* Potion emoji followed by a space */
+    margin-right: 0.3em; /* Add some space after the emoji */
+    font-size: 1em; /* Ensure emoji size matches text */
 }
 
 .potion-description {
