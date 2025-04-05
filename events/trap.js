@@ -55,21 +55,21 @@ class Trap {
                     const adjustedChance = hasTools ? Math.min(100, Math.round((area.disarmChance + 0.2) * 100)) : baseChance;
                     const toolBonus = hasTools ? ` (+20%)` : '';
                     return `
-                        <div class="trap-area-option" data-risk="${key}">
-                            <h4>${area.name}</h4>
-                            <p>${area.description}</p>
-                            <div class="trap-area-details">
-                                <p>Disarm Chance: ${adjustedChance}%${toolBonus}</p>
-                                <p>Damage: ${area.damageRange[0]}-${area.damageRange[1]}</p>
+                        <div class="choice-card" data-risk="${key}">
+                            <h4 class="choice-title">${area.name}</h4>
+                            <p class="choice-description">${area.description}</p>
+                            <div class="monster-stats-grid">
+                                <span class="monster-stat">Disarm Chance: ${adjustedChance}%${toolBonus}</span>
+                                <span class="monster-stat">Damage: ${area.damageRange[0]}-${area.damageRange[1]}</span>
                             </div>
-                            <button class="trap-area-button">Attempt Disarm</button>
+                            <button class="choice-start-button">Attempt Disarm</button>
                         </div>
                     `;
                 }).join('')}
             </div>
         `;
 
-        const trapButtons = trapArea.querySelectorAll('.trap-area-button');
+        const trapButtons = trapArea.querySelectorAll('.choice-start-button');
         trapButtons.forEach((button, index) => {
             button.addEventListener('click', () => {
                 const areaKey = Object.keys(this.TRAP_REWARDS)[index];
@@ -103,7 +103,7 @@ class Trap {
         } else {
             const damageTaken = this.game.getRandomInt(area.damageRange[0], area.damageRange[1]);
             this.game.player.takeRawDamage(damageTaken);
-            const trapSelector = `.trap-area-option[data-risk="${areaKey}"]`;
+            const trapSelector = `.choice-card[data-risk="${areaKey}"]`;
             this.game.ui.createDamageSplat(trapSelector, damageTaken, 'damage');
             this.game.ui.updatePlayerStats();
 

@@ -1,11 +1,19 @@
+/* #trap-area {
+    background-color: transparent;
+} */
+
 #trap-area {
     border-radius: 6px;
-    width: 90%;
-    max-width: 600px;
+    /* width: 90%; */ /* Removed */
+    /* max-width: 600px; */ /* Removed */
     text-align: center;
     display: flex;
     flex-direction: column;
     gap: 15px;
+    width: 100%; /* Fill width */
+    height: 100%; /* Fill height */
+    box-sizing: border-box; /* Include padding */
+    padding: 10px; /* Add some padding */
 }
 
 #trap-area h3 {
@@ -67,82 +75,23 @@
 
 /* --- Trap Choice Area Styling (Optional - If there's a selection screen) --- */
 .trap-areas-container {
+    width: 100%;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
-    padding: 20px;
-    max-width: 1200px;
-    margin: 0 auto;
-    width: 100%;
-}
-
-.trap-area-option {
-    background: #2a2a2a;
-    border: 2px solid #3a3a3a;
-    border-radius: 8px;
-    padding: 20px;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-}
-
-.trap-area-option:hover {
-    transform: translateY(-2px);
-    border-color: #555;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.trap-area-option h4 {
-    color: #ffffff;
-    margin: 10px 0;
-    font-size: 1.5em;
-    font-weight: bold;
-}
-
-.trap-area-option p {
-    color: #cccccc;
-    margin: 5px 0;
-    font-size: 0.9em;
-    line-height: 1.5;
-    margin-bottom: 15px;
-}
-
-.trap-area-details {
-    background: rgba(0, 0, 0, 0.2);
-    padding: 10px;
-    border-radius: 4px;
-    margin: 10px 0;
-    border-top: 1px solid #444;
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 1fr;
+    gap: 15px;
     flex-grow: 1;
+    box-sizing: border-box;
 }
 
-.trap-area-details p {
-    margin: 5px 0;
-    color: #aaa;
-    font-size: 0.85em;
-}
-
-.trap-area-button {
-    width: 100%;
-    padding: 10px;
-    background: #4a4a4a;
-    border: none;
-    border-radius: 4px;
-    color: #fff;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-top: auto;
-}
-
-.trap-area-button:hover {
-    background: #5a5a5a;
-    transform: translateY(-2px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
+/* REMOVED .trap-area-option */
+/* REMOVED .trap-area-option:hover */
+/* REMOVED .trap-area-option h4 */
+/* REMOVED .trap-area-option p */
+/* REMOVED .trap-area-details */
+/* REMOVED .trap-area-details p */
+/* REMOVED .trap-area-button */
+/* REMOVED .trap-area-button:hover */
 
 .trap-area-option[data-risk="safe"] {
     border-color: #4CAF50;

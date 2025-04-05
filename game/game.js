@@ -23,10 +23,10 @@ class Game {
         { type: 'rest', weight: 10 }, // 
         { type: 'shop', weight: 10 },
         { type: 'alchemist', weight: 10 },
-        { type: 'treasure_chest', weight: 10 }, //
-        { type: 'forge', weight: 10 }, // NEW Forge Event
-        { type: 'fishing', weight: 10 }, //
-        { type: 'trap', weight: 10 }
+        // { type: 'treasure_chest', weight: 100 }, //
+        { type: 'forge', weight: 100 }, // NEW Forge Event
+        // { type: 'fishing', weight: 10 },
+        // { type: 'trap', weight: 10 }
     ];
 
     startGame() {

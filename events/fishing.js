@@ -91,7 +91,6 @@ class Fishing {
                     </div>
                 `}).join('')}
             </div>
-            <button id="leave-fishing-button">Leave Area</button> 
         `;
 
         document.getElementById('main-content').appendChild(fishingAreaContainer);
@@ -103,15 +102,6 @@ class Fishing {
                 this.startFishing(areaKey);
             });
         });
-
-        const leaveButton = document.getElementById('leave-fishing-button');
-        if (leaveButton) {
-            leaveButton.onclick = () => {
-                this.game.addLog("You decide not to fish right now.");
-                this.ui.clearMainArea();
-                this.game.proceedToNextRound();
-            };
-        }
     }
 
     startFishing(areaKey) {
