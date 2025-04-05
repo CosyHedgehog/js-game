@@ -22,6 +22,7 @@ class UI {
         this.itemTooltip = document.getElementById('item-tooltip');
         this.treasureArea = document.getElementById('treasure-area');
         this.forgeArea = document.getElementById('forge-area');
+        this.mainContent = document.getElementById('main-content'); // Add this line
         // Initialize equipmentTextDisplay as an empty object
         this.equipmentTextDisplay = {}; 
         // Select elements using data-slot in cacheDynamicElements or here
@@ -1096,6 +1097,12 @@ class UI {
         }
         this.choicesArea.innerHTML = '';
         this.cacheDynamicElements();
+        // *** Add removal for area transition screen ***
+        const areaTransitionScreen = document.getElementById('area-transition-screen');
+        if (areaTransitionScreen) {
+            areaTransitionScreen.remove();
+        }
+        // *** End added removal ***
     }
 
     updateCombatStats(player, enemy) {
@@ -1851,6 +1858,54 @@ class UI {
         card.appendChild(cardContent);
         choicesContainer.appendChild(card);
         this.choicesArea.appendChild(choicesContainer);
+    }
+
+    showAreaTransitionScreen(areaName) {
+        this.clearMainArea(); // Ensure area is clear
+
+        const transitionDiv = document.createElement('div');
+        transitionDiv.id = 'area-transition-screen';
+        transitionDiv.className = 'area-transition-container'; // For styling
+
+        const title = document.createElement('h2');
+        title.textContent = `Entering ${areaName}...`;
+
+        // Optional: Add some descriptive text or image later
+        // const description = document.createElement('p');
+        // description.textContent = "Prepare for new challenges!";
+
+        const continueButton = document.createElement('button');
+        continueButton.id = 'area-transition-continue-button';
+        continueButton.textContent = 'Venture Forth';
+        continueButton.onclick = () => {
+            // Call the game logic to proceed
+            this.game.continueAfterAreaTransition();
+        };
+
+        transitionDiv.appendChild(title);
+        // transitionDiv.appendChild(description);
+        transitionDiv.appendChild(continueButton);
+
+        this.mainContent.appendChild(transitionDiv);
+    }
+
+    // *** NEW Method to update round display ***
+    updateRoundDisplay(currentRound, maxRounds) {
+        if (this.statRound) {
+            this.statRound.textContent = currentRound;
+        }
+        // Optionally update max rounds if it can change, though likely static
+        const maxRoundEl = document.getElementById('stat-max-rounds');
+        if (maxRoundEl && maxRoundEl.textContent !== maxRounds.toString()) {
+            maxRoundEl.textContent = maxRounds;
+        }
+
+        // Trigger animation if round area element exists
+        if (this.roundAreaElement) {
+            this.roundAreaElement.classList.remove('round-pulsing'); // Remove first to re-trigger
+            void this.roundAreaElement.offsetWidth; // Force reflow
+            this.roundAreaElement.classList.add('round-pulsing');
+        }
     }
 
 } // End UI Class
