@@ -98,13 +98,14 @@
     border-radius: 8px; /* Rounded corners */
     padding: 20px; /* Match choice-card */
     text-align: center;
-    /* width: calc(33% - 15px); */ /* Adjust width based on gap if needed, or let flex handle */
     min-width: 180px; /* Prevent cards from becoming too narrow */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     transition: all 0.3s ease; /* Match choice-card */
-    display: flex; /* Use flexbox for internal alignment */
-    flex-direction: column; /* Stack content vertically */
-    justify-content: space-between; /* Push button to the bottom */
+    display: flex; /* Re-affirm */
+    flex-direction: column; /* Re-affirm */
+    justify-content: space-between; /* Re-affirm */
+    height: 100%; /* Ensure card fills grid cell if applicable */
+    box-sizing: border-box; /* Add if missing */
 }
 
 .rest-card:hover {
@@ -134,9 +135,10 @@
     border-radius: 4px; /* Match choice-start-button */
     cursor: pointer;
     transition: all 0.3s ease; /* Match choice-start-button */
-    margin-top: auto; /* Push button to bottom */
-    font-weight: bold; /* Added */
-    width: 100%; /* Make button full width within card */
+    margin-top: auto; /* Re-affirm push to bottom */
+    font-weight: bold; /* Match */
+    width: 100%; /* Match */
+    font-size: 1em; /* Explicitly set font size */
 }
 
 .rest-card button:hover {

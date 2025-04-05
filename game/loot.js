@@ -58,7 +58,6 @@ class Loot {
 
                 itemDiv.innerHTML = `
                         <div class="loot-item-info">
-                            <span class="loot-item-icon">${item.spritePath ? '' : 'I'}</span>
                             <span class="loot-item-name">${item.name}</span>
                         </div>
                         <button class="loot-item-button">Take</button>

@@ -79,31 +79,32 @@ class Fishing {
             const isDisabled = needsRod && !hasFishingRod ? 'disabled' : '';
 
             return `
-                    <div class="fishing-area-option" data-area="${key}">
-                        <h4>${area.name}</h4>
+                    <div class="choice-card" data-area="${key}">
+                        <h4 class="choice-title">${area.name}</h4>
                         ${requirementText}
-                        <p>${area.description}</p>
-                        <div class="fishing-area-details">
-                            <p>Fish: ${area.fishRange[0]}-${area.fishRange[1]}</p>
-                            <p>Monster Chance: ${Math.round(area.monsterChance * 100)}%</p>
+                        <p class="choice-description">${area.description}</p>
+                        <div class="monster-stats-grid">
+                            <span class="monster-stat">Fish: ${area.fishRange[0]}-${area.fishRange[1]}</span>
+                            <span class="monster-stat">Monster Chance: ${Math.round(area.monsterChance * 100)}%</span>
                         </div>
-                        <button class="fishing-area-button" ${isDisabled}>Fish Here</button>
+                        <button class="choice-start-button" ${isDisabled}>Fish Here</button>
                     </div>
                 `}).join('')}
             </div>
+            <button id="leave-fishing-button">Leave Area</button> 
         `;
 
         document.getElementById('main-content').appendChild(fishingAreaContainer);
 
-        const fishingButtons = fishingAreaContainer.querySelectorAll('.fishing-area-button');
+        const fishingButtons = fishingAreaContainer.querySelectorAll('.choice-start-button');
         fishingButtons.forEach(button => {
             button.addEventListener('click', () => {
-                const areaKey = button.closest('.fishing-area-option').dataset.area;
+                const areaKey = button.closest('.choice-card').dataset.area;
                 this.startFishing(areaKey);
             });
         });
 
-        const leaveButton = document.getElementById('fishing-leave-button');
+        const leaveButton = document.getElementById('leave-fishing-button');
         if (leaveButton) {
             leaveButton.onclick = () => {
                 this.game.addLog("You decide not to fish right now.");
