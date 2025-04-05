@@ -14,6 +14,7 @@ class Game {
         this.pendingLoot = null; // Will hold { gold: number, items: [] }
         this.currentArea = Math.random() < 0.5 ? 'spider_cave' : 'wolf_den';
         this.pendingAreaTransitionName = null; // Add this property
+        this.pendingNewAreaId = null; // Add this property
 
         if (this.ui) { this.ui.game = this; }
     }
@@ -48,137 +49,99 @@ class Game {
             return; 
         }
 
-        this.currentRound++;
-        this.addLog(`--- Round ${this.currentRound} ---`);
-        console.log("Current round:", this.currentRound);
+        const nextRound = this.currentRound + 1; // Calculate next round number
 
-        this.ui.updateRoundDisplay(this.currentRound, this.maxRounds);
+        // *** DEBUG AREA START ***
+        console.log(`[Debug] Start of proceedToNextRound (Checking for ${nextRound}): currentArea = ${this.currentArea}`);
+        // *** END DEBUG AREA START ***
+        
         let encounterGenerated = false;
-        let currentTier = null;
+        let currentTier = null; // Tier for the NEXT round
 
-        // Find the tier for the CURRENT round first
+        // Find the tier for the NEXT round
         for (const tier of AREA_CONFIG) {
-            if (this.currentRound >= tier.startRound && this.currentRound <= tier.endRound) {
+            if (nextRound >= tier.startRound && nextRound <= tier.endRound) {
                 currentTier = tier;
                 break;
             }
         }
         
-        // *** Handle Area Change and Transition ***
-        let areaChanged = false;
+        // *** Handle Area Change based on NEXT round ***
+        let needsAreaTransition = false;
+        let newAreaName = null;
         if (currentTier && currentTier.areas) {
             const validAreaIds = Object.keys(currentTier.areas);
             if (validAreaIds.length > 0 && !validAreaIds.includes(this.currentArea)) {
-                 const previousArea = this.currentArea;
+                 needsAreaTransition = true;
+                 // Determine the new area ID and Name *now*
                  const newAreaIndex = Math.floor(Math.random() * validAreaIds.length);
-                 this.currentArea = validAreaIds[newAreaIndex];
-                 // Store the name for the UI
-                 this.pendingAreaTransitionName = currentTier.areas[this.currentArea]?.name || this.currentArea.replace('_', ' ');
-                 areaChanged = true;
-                 console.log(`[Area Change] Determined new area: ${this.currentArea}`);
+                 const newAreaId = validAreaIds[newAreaIndex];
+                 newAreaName = currentTier.areas[newAreaId]?.name || newAreaId.replace('_', ' ');
+                 this.pendingNewAreaId = newAreaId; // Store ID for later assignment
+                 this.pendingAreaTransitionName = newAreaName;
+                 console.log(`[Area Change Triggered] Next round (${nextRound}) requires area change to ${newAreaId}`);
             }
-        } else if (this.currentRound === 1 && (!this.currentArea || (currentTier && !currentTier.areas))) { 
+        } else if (nextRound === 1 && (!this.currentArea || (currentTier && !currentTier.areas))) { 
              // Special handling for initializing area on round 1
              const firstTier = AREA_CONFIG[0];
              if (firstTier && firstTier.areas) {
                  const firstTierAreaIds = Object.keys(firstTier.areas);
                  if (firstTierAreaIds.length > 0) {
-                    this.currentArea = firstTierAreaIds[Math.floor(Math.random() * firstTierAreaIds.length)];
-                    // Store the name for the UI
-                    this.pendingAreaTransitionName = firstTier.areas[this.currentArea]?.name || this.currentArea.replace('_', ' ');
-                    areaChanged = true;
-                    console.log(`[Area Init] Setting initial area for Round 1 to ${this.currentArea}`);
+                    const newAreaIndex = Math.floor(Math.random() * firstTierAreaIds.length);
+                    const newAreaId = firstTierAreaIds[newAreaIndex];
+                    needsAreaTransition = true;
+                    newAreaName = firstTier.areas[newAreaId]?.name || newAreaId.replace('_', ' ');
+                    this.pendingNewAreaId = newAreaId;
+                    this.pendingAreaTransitionName = newAreaName;
+                    console.log(`[Area Init Triggered] Setting initial area for Round 1 to ${newAreaId}`);
                  }
              }
         }
 
-        // *** If area changed, show transition and stop ***
-        if (areaChanged) {
-            this.state = 'area_transition'; // Set new state
+        // *** If area transition is needed, show screen and stop ***
+        if (needsAreaTransition) {
+            this.state = 'area_transition'; 
             this.ui.clearMainArea(); 
             this.ui.showAreaTransitionScreen(this.pendingAreaTransitionName);
-            return; // Exit function early
+            return; // Exit function early, DO NOT increment round yet
         }
 
-        // --- If NO area transition, proceed with regular logic ---
+        // --- If NO area transition, proceed with regular round increment and logic ---
+        this.currentRound++; // Increment round HERE
+        this.addLog(`--- Round ${this.currentRound} ---`);
+        console.log("Current round:", this.currentRound);
+        this.ui.updateRoundDisplay(this.currentRound, this.maxRounds); // Update UI HERE
+
         this.state = 'choosing';
         this.ui.clearMainArea();
 
-        // Apply boss round indicators
-        if (this.ui.roundAreaElement) {
-            this.ui.roundAreaElement.classList.remove('round-miniboss', 'round-finalboss'); // Clear previous
-            if (this.currentRound === 10 || this.currentRound === 20) {
-                this.ui.roundAreaElement.classList.add('round-miniboss');
-            } else if (this.currentRound === 30) {
-                this.ui.roundAreaElement.classList.add('round-finalboss');
-            }
-        }
-
-        // *** Determine Encounter Type using Revised AREA_CONFIG ***
-        encounterGenerated = false;
-        currentTier = null;
-
-        // Find the tier for the CURRENT round first
+        // Boss Check Logic (Use the *actual* currentRound now)
+        let tierForThisRound = null;
         for (const tier of AREA_CONFIG) {
             if (this.currentRound >= tier.startRound && this.currentRound <= tier.endRound) {
-                currentTier = tier;
+                tierForThisRound = tier;
                 break;
             }
         }
         
-        // *** NEW: Validate and Update Area if Necessary ***
-        if (currentTier && currentTier.areas) {
-            const validAreaIds = Object.keys(currentTier.areas);
-            if (validAreaIds.length > 0 && !validAreaIds.includes(this.currentArea)) {
-                 const previousArea = this.currentArea;
-                 const newAreaIndex = Math.floor(Math.random() * validAreaIds.length);
-                 this.currentArea = validAreaIds[newAreaIndex];
-                 console.log(`[Area Correction] Current area '${previousArea}' invalid for Tier ${currentTier.startRound}-${currentTier.endRound}. Changing to '${this.currentArea}'.`);
-                 this.addLog(`You venture into the ${currentTier.areas[this.currentArea]?.name || this.currentArea.replace('_', ' ')}!`);
-            }
-        } else if (this.currentRound === 1 && (!currentTier || !currentTier.areas)) { 
-             // Special handling for initializing area on round 1 if the first tier setup is odd
-             const firstTier = AREA_CONFIG[0];
-             if (firstTier && firstTier.areas) {
-                 const firstTierAreaIds = Object.keys(firstTier.areas);
-                 if (firstTierAreaIds.length > 0) {
-                    this.currentArea = firstTierAreaIds[Math.floor(Math.random() * firstTierAreaIds.length)];
-                     console.log(`[Area Init] Setting initial area for Round 1 to ${this.currentArea}`);
-                 }
-             }
-        }
-
-        // *** DEBUG AREA BEFORE BOSS CHECK ***
-        console.log(`[Debug] Before boss check (Round ${this.currentRound}): currentArea = ${this.currentArea}, currentTier found = ${!!currentTier}`);
-        if(currentTier) {
-             const areaDataForLog = currentTier.areas?.[this.currentArea];
-             console.log(`[Debug] currentAreaData = ${JSON.stringify(areaDataForLog)}`);
-             console.log(`[Debug] Check: (round=${this.currentRound} === 30 && areaData?.finalBoss=${areaDataForLog?.finalBoss}) = ${this.currentRound === 30 && areaDataForLog?.finalBoss}`);
-        }
-        // *** END DEBUG AREA BEFORE BOSS CHECK ***
-
-        if (currentTier) {
-            const currentAreaData = currentTier.areas?.[this.currentArea]; // Get current area data
-
-            // Check if it's round 30 AND the current area has a final boss defined
+        if (tierForThisRound) {
+            const currentAreaData = tierForThisRound.areas?.[this.currentArea]; 
             if (this.currentRound === 30 && currentAreaData?.finalBoss) {
                  this.generateBossEncounter();
                  encounterGenerated = true;
-            // Check if it's the end round of the tier (and not round 30) AND the current area has a miniBoss defined
-            } else if (this.currentRound === currentTier.endRound && currentAreaData?.miniBoss) {
+            } else if (this.currentRound === tierForThisRound.endRound && currentAreaData?.miniBoss) {
                  this.generateBossEncounter();
                  encounterGenerated = true;
             }
         }
 
-        // If it wasn't a boss round, generate normal choices
+        // Generate regular choices if no boss was generated
         if (!encounterGenerated) {
-            this.generateEventChoices(); 
+            this.generateEventChoices();
         }
 
         this.ui.updatePlayerStats();
-        this.ui.renderEquipment();
-        this.ui.renderInventory();
+        this.ui.renderEquipment(); 
     }
 
     enterLootState(gold, items) {
@@ -861,15 +824,22 @@ class Game {
         return newItem;
     }
 
-    // *** NEW FUNCTION to continue after transition ***
+    // *** Updated function to continue after transition ***
     continueAfterAreaTransition() {
         if (this.state !== 'area_transition') {
             console.warn("Tried to continue transition, but not in transition state.");
             return;
         }
 
+        // *** Increment Round and Update Area HERE ***
+        this.currentRound++; 
+        this.currentArea = this.pendingNewAreaId; // Assign the stored area ID
+        this.addLog(`--- Round ${this.currentRound} ---`);
         this.addLog(`You venture into ${this.pendingAreaTransitionName}!`);
+        this.ui.updateRoundDisplay(this.currentRound, this.maxRounds); // Update UI Round
+        
         this.pendingAreaTransitionName = null; // Clear pending name
+        this.pendingNewAreaId = null; // Clear pending ID
 
         this.state = 'choosing'; // Set state back
         this.ui.clearMainArea(); // Ensure transition screen is cleared
@@ -877,7 +847,7 @@ class Game {
         let encounterGenerated = false;
         let currentTier = null;
 
-        // --- Repeat the logic to decide what to show next ---
+        // --- Repeat the logic to decide what to show next for the NEW round ---
         for (const tier of AREA_CONFIG) {
             if (this.currentRound >= tier.startRound && this.currentRound <= tier.endRound) {
                 currentTier = tier;
@@ -885,7 +855,7 @@ class Game {
             }
         }
 
-        // Boss Check Logic (repeated)
+        // Boss Check Logic (for the NEW round)
         if (currentTier) {
             const currentAreaData = currentTier.areas?.[this.currentArea];
             if (this.currentRound === 30 && currentAreaData?.finalBoss) {
@@ -903,7 +873,7 @@ class Game {
         }
 
         this.ui.updatePlayerStats();
-        this.ui.renderEquipment();
+        this.ui.renderEquipment(); 
     }
 
 }

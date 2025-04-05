@@ -38,3 +38,9 @@
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
+
+/* Class to apply fade-out animation */
+.area-transition-container.fade-out {
+    animation: fadeOut 0.5s ease-out forwards; /* Apply fadeOut, keep final state */
+    pointer-events: none; /* Prevent interaction during fade */
+}

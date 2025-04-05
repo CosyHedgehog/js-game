@@ -1878,8 +1878,17 @@ class UI {
         continueButton.id = 'area-transition-continue-button';
         continueButton.textContent = 'Venture Forth';
         continueButton.onclick = () => {
-            // Call the game logic to proceed
-            this.game.continueAfterAreaTransition();
+            // 1. Add fade-out class to the container
+            transitionDiv.classList.add('fade-out');
+            
+            // 2. Disable button during fade
+            continueButton.disabled = true;
+
+            // 3. Wait for animation, then proceed
+            setTimeout(() => {
+                // Call the game logic to proceed (this will also clear the UI)
+                this.game.continueAfterAreaTransition();
+            }, 500); // Match CSS animation duration
         };
 
         transitionDiv.appendChild(title);
