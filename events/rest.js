@@ -117,13 +117,13 @@ class Rest {
         // 2. Calculate effects
         const maxHpIncrease = 3;
         this.game.player.maxHealth += maxHpIncrease;
-        const actualHealed = this.game.player.heal(maxHpIncrease); 
+        // const actualHealed = this.game.player.heal(maxHpIncrease); 
 
         // 3. Log result
         let message = `You sleep soundly. Your maximum HP increases by ${maxHpIncrease} (now ${this.game.player.getMaxHealth()}).`;
-        if (actualHealed > 0) {
-            message += ` You feel refreshed, recovering ${actualHealed} HP.`;
-        }
+        // if (actualHealed > 0) {
+        //     message += ` You feel refreshed, recovering ${actualHealed} HP.`;
+        // }
         this.game.addLog(message);
         
         // 4. Update stats display

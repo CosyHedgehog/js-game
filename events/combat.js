@@ -183,7 +183,7 @@ class Combat {
         const healthPercent = this.enemy.health / this.enemy.maxHealth;
 
         // Dynamic Speed Check (Venfing)
-        if (this.enemy.name === MONSTERS['scrix']?.name) {
+        if (this.enemy.name === MONSTERS['silverfang']?.name) {
             const wasFast = this.enemy.currentSpeed === 0.6; // Check previous state
             let isNowFast = false;
             
@@ -515,7 +515,7 @@ class Combat {
 
         const multiplier = 1 + Math.random() * 2;
         const runDamage = Math.floor(this.enemy.attack * multiplier);
-        const damageResult = this.player.takeDamage(runDamage);
+        this.player.takeRawDamage(runDamage);
         
         // Update player stats display immediately, but don't create splat on player side
         this.ui.updatePlayerStats(); 
@@ -541,7 +541,7 @@ class Combat {
             const content = `
                 <h3>${this.player.health <= 0 ? 'Failed to Escape!' : 'Escape Successful!'}</h3>
                 <p>You fled from the ${this.enemy.name}...</p>
-                <p>But took <span style="color: #ff4444">${damageResult.actualDamage} damage</span> in the process!</p>
+                <p>But took <span style="color: #ff4444">${runDamage} damage</span> in the process!</p>
                 ${this.player.health <= 0 ? 
                     `<p style="color: #ff4444">Unfortunately, you didn't survive the escape attempt...</p>` : 
                     ''}
@@ -552,7 +552,7 @@ class Combat {
             document.body.appendChild(messageContainer);
     
             // --- Create splat on the message box --- 
-            this.ui.createDamageSplat('.escape-message-container', damageResult.actualDamage, 'damage');
+            this.ui.createDamageSplat('.escape-message-container', runDamage, 'damage');
             // -------------------------------------
 
             const continueButton = document.getElementById('escape-continue');

@@ -1,7 +1,7 @@
 const ROUND_1_10_COMMON_MONSTERS = ['giant_rat', 'large_spider', 'cave_bat'];
 const ROUND_11_20_COMMON_MONSTERS = ['giant_rat', 'large_spider', 'cave_bat'];
 const ROUND_21_30_COMMON_MONSTERS = ['giant_rat', 'large_spider', 'cave_bat'];
-const ROUND_10_MINI_BOSSES = ['scrix', 'venox'];
+const ROUND_10_MINI_BOSSES = ['silverfang', 'venox'];
 const ROUND_20_MINI_BOSSES = ['krug', 'grog'];
 const FINAL_BOSS = 'ancient_dragon';
 
@@ -9,7 +9,7 @@ const MONSTERS = {
 
     // === Rounds 1-10 Common ===
     'giant_rat': { 
-        name: 'Giant Rat', health: 10, attack: 1, defense: 0, speed: 1.5, goldDrop: [1, 3],
+        name: 'Giant Rat', health: 10, attack: 1, defense: 1, speed: 1.5, goldDrop: [1, 3],
         lootTable: [
             { itemTier: 'commonFood', chance: 0.5 },
             { itemTier: 'uncommonFood', chance: 0.3 },
@@ -38,8 +38,8 @@ const MONSTERS = {
     },
 
     // === Round 10 Mini-Boss ===
-    'scrix': {
-        name: 'Scrix [Swift Spider]', health: 25, attack: 5, defense: 1, speed: 1.2,
+    'silverfang': {
+        name: 'Silverfang [Wolf]', health: 30, attack: 5, defense: 1, speed: 1.2,
         goldDrop: [1, 15],
         description: "A swift and agile spider.",
         mechanics: "Attacks 50% faster when below 50% health.",

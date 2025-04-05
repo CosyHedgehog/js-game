@@ -94,7 +94,7 @@ class Treasure {
 
     openUnlockedChest() {
         this.game.state = 'looting'; // Set state for loot screen
-        const goldFound = this.game.getRandomInt(5, 25); // Slightly increased gold range
+        const goldFound = this.game.getRandomInt(1, 10);
         this.game.addLog(`You open it and find ${goldFound} gold!`);
         this.game.enterLootState(goldFound, []);
     }

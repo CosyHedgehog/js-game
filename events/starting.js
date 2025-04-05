@@ -11,7 +11,7 @@ class Starting {
             stats: {
                 maxHealth: 20,
                 health: 15,
-                baseAttack: 2,
+                baseAttack: 1,
                 baseDefense: 1,
             },
             items: [
@@ -20,55 +20,55 @@ class Starting {
                 { id: 'bread', count: 3 },
             ]
         },
-        fisher: {
-            name: 'Fisher',
-            description: 'A resourceful adventurer.',
-            stats: {
-                maxHealth: 20,
-                health: 20,
-                baseAttack: 1,
-                baseDefense: 1,
-                startingGold: 5
-            },
-            items: [
-                { id: 'rusty_sword', count: 1 },
-                { id: 'fishing_rod', count: 1 },
-                { id: 'large_fish', count: 3 },
-                { id: 'medium_fish', count: 3 },
-            ]
-        },
-        blacksmith: {
-            name: 'Blacksmith',
-            description: 'A sturdy craftsman.',
-            stats: {
-                maxHealth: 25,
-                health: 25,
-                baseAttack: 0,
-                baseDefense: 3,
-            },
-            items: [
-                { id: 'wooden_hammer', count: 1 },
-                { id: 'blacksmith_hammer', count: 1 },
-                { id: 'cooked_meat', count: 2 },
-            ]
-        },
-        thief: {
-            name: 'Thief',
-            description: 'A swift tactician.',
-            stats: {
-                maxHealth: 15,
-                health: 10,
-                baseAttack: 3,
-                baseDefense: 0,
-                startingGold: 10
-            },
-            items: [
-                { id: 'wooden_dagger', count: 1 },
-                { id: 'thief_tools', count: 1 },
-                { id: 'speed_potion', count: 1 },
-                { id: 'attack_potion', count: 1 },
-            ]
-        }
+        // fisher: {
+        //     name: 'Fisher',
+        //     description: 'A resourceful adventurer.',
+        //     stats: {
+        //         maxHealth: 20,
+        //         health: 20,
+        //         baseAttack: 1,
+        //         baseDefense: 1,
+        //         startingGold: 5
+        //     },
+        //     items: [
+        //         { id: 'rusty_sword', count: 1 },
+        //         { id: 'fishing_rod', count: 1 },
+        //         { id: 'large_fish', count: 3 },
+        //         { id: 'medium_fish', count: 3 },
+        //     ]
+        // },
+        // blacksmith: {
+        //     name: 'Blacksmith',
+        //     description: 'A sturdy craftsman.',
+        //     stats: {
+        //         maxHealth: 25,
+        //         health: 25,
+        //         baseAttack: 0,
+        //         baseDefense: 3,
+        //     },
+        //     items: [
+        //         { id: 'wooden_hammer', count: 1 },
+        //         { id: 'blacksmith_hammer', count: 1 },
+        //         { id: 'cooked_meat', count: 2 },
+        //     ]
+        // },
+        // thief: {
+        //     name: 'Thief',
+        //     description: 'A swift tactician.',
+        //     stats: {
+        //         maxHealth: 15,
+        //         health: 10,
+        //         baseAttack: 3,
+        //         baseDefense: 0,
+        //         startingGold: 10
+        //     },
+        //     items: [
+        //         { id: 'wooden_dagger', count: 1 },
+        //         { id: 'thief_tools', count: 1 },
+        //         { id: 'speed_potion', count: 1 },
+        //         { id: 'attack_potion', count: 1 },
+        //     ]
+        // }
     };
 
     display() {
