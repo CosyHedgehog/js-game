@@ -817,16 +817,34 @@ class UI {
 
         // Update Area Description
         if (this.areaDescriptionElement) {
-            let areaName = "";
-            let areaTooltip = "";
+            let areaName = "Unknown Area"; // Default value
+            let areaTooltip = "You are somewhere mysterious..."; // Default value
+            const currentAreaId = this.game.currentArea;
+            let currentTier = null;
 
-            if (this.game.currentArea === 'spider_cave') {
-                areaName = "Spider Cave";
-                areaTooltip = "A dark cave filled with various species of giant spiders. Watch out for their poison!";
-            } else {
-                areaName = "Wolf Den";
-                areaTooltip = "A dangerous den inhabited by fierce wolves. Be wary of their swift attacks!";
+            // Find the current tier in AREA_CONFIG
+            for (const tier of AREA_CONFIG) {
+                if (this.game.currentRound >= tier.startRound && this.game.currentRound <= tier.endRound) {
+                    currentTier = tier;
+                    break;
+                }
             }
+
+            // Get area info from the found tier in AREA_CONFIG
+            if (currentTier && currentTier.areas && currentTier.areas[currentAreaId]) {
+                areaName = currentTier.areas[currentAreaId].name;
+                areaTooltip = currentTier.areas[currentAreaId].tooltip;
+            } else if (currentAreaId) { 
+                console.warn(`Area info not found in AREA_CONFIG for: ${currentAreaId} in current tier.`);
+            }
+            /* // REMOVED OLD LOGIC USING AREA_INFO
+            if (AREA_INFO && AREA_INFO[currentAreaId]) { 
+                areaName = AREA_INFO[currentAreaId].name;
+                areaTooltip = AREA_INFO[currentAreaId].tooltip;
+            } else if (currentAreaId) { 
+                console.warn(`Area info not found in AREA_INFO for: ${currentAreaId}`);
+            }
+            */
 
             this.areaDescriptionElement.textContent = areaName;
             this.areaDescriptionElement.dataset.tooltipText = areaTooltip;
@@ -1427,10 +1445,18 @@ class UI {
         choicesContainer.classList.add('boss-only'); // Add class for centering
 
         const card = document.createElement('div');
-        // card.classList.add('choice-card', 'boss-card', 'selected');
-        // Apply boss or miniboss class based on round
-        const isFinalBoss = this.game.currentRound === 30;
-        card.classList.add('choice-card', isFinalBoss ? 'boss-card' : 'miniboss-card', 'selected');
+        
+        // *** Apply class based on monster data tags ***
+        const isFinalBoss = bossData.isBoss === true;
+        const isMiniBoss = bossData.isMiniBoss === true;
+        card.classList.add('choice-card');
+        if (isFinalBoss) {
+            card.classList.add('boss-card');
+        } else if (isMiniBoss) {
+            card.classList.add('miniboss-card');
+        }
+        card.classList.add('selected'); // Keep selected by default
+        // Removed old class logic based on round
 
         const cardContent = document.createElement('div');
         cardContent.classList.add('choice-card-content');
@@ -1438,9 +1464,18 @@ class UI {
         // Add difficulty badge
         const difficultyBadge = document.createElement('div');
         difficultyBadge.className = 'difficulty-badge';
-        // difficultyBadge.style.backgroundColor = '#f44336';
-        difficultyBadge.style.backgroundColor = isFinalBoss ? '#f44336' : '#FF9800'; // Red for boss, orange for miniboss
-        difficultyBadge.textContent = isFinalBoss ? 'BOSS' : 'MINI-BOSS'; // Update text
+        // *** Set badge style & text based on tags ***
+        if (isFinalBoss) {
+            difficultyBadge.style.backgroundColor = '#f44336'; // Red for boss
+            difficultyBadge.textContent = 'BOSS';
+        } else if (isMiniBoss) {
+            difficultyBadge.style.backgroundColor = '#FF9800'; // Orange for miniboss
+            difficultyBadge.textContent = 'MINI-BOSS';
+        } else {
+            // Fallback or hide if somehow not a boss/miniboss (shouldn't happen here)
+            difficultyBadge.style.display = 'none'; 
+        }
+        // Removed old style/text logic based on round
         cardContent.appendChild(difficultyBadge);
 
         // Add boss icon
@@ -1493,7 +1528,15 @@ class UI {
         // Add fight button
         const startButton = document.createElement('button');
         startButton.className = 'choice-start-button';
-        startButton.textContent = isFinalBoss ? 'Fight' : 'Fight'; // Update button text
+        // *** Set button text based on tags ***
+        if (isFinalBoss) {
+            startButton.textContent = 'Fight Final Boss';
+        } else if (isMiniBoss) {
+            startButton.textContent = 'Fight Mini-Boss';
+        } else {
+            startButton.textContent = 'Fight'; // Fallback
+        }
+        // Removed old text logic based on round
         startButton.onclick = () => {
             card.classList.add('boss-engage-start');
             setTimeout(() => {

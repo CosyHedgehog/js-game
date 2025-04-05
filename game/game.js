@@ -45,6 +45,37 @@ class Game {
     proceedToNextRound() {
         this.currentRound++;
         this.addLog(`--- Round ${this.currentRound} ---`);
+        console.log("Current round:", this.currentRound);
+
+        // *** Update Area Based on AREA_CONFIG ***
+        let newAreaSelected = false;
+        for (const tier of AREA_CONFIG) { // Use AREA_CONFIG
+            // Check if the *start* of a new tier has been reached
+            if (this.currentRound === tier.startRound) {
+                const previousArea = this.currentArea;
+                // Get area IDs from the current tier
+                const availableAreaIds = Object.keys(tier.areas);
+                if (availableAreaIds.length > 0) {
+                    // Select a random area ID from the new tier's list
+                    const newAreaIndex = Math.floor(Math.random() * availableAreaIds.length);
+                    this.currentArea = availableAreaIds[newAreaIndex];
+                    if (this.currentArea !== previousArea) { 
+                         this.addLog(`You venture into the ${AREA_CONFIG[tierIndex]?.areas[this.currentArea]?.name || this.currentArea.replace('_', ' ')}!`); // Use name from config
+                    }
+                    newAreaSelected = true;
+                } else {
+                    console.warn(`No areas defined for tier starting round ${tier.startRound}`);
+                }
+                break; // Stop checking tiers once a match is found
+            }
+        }
+        // Initialize area on round 1 if not set by progression
+        if (this.currentRound === 1 && !newAreaSelected && AREA_CONFIG[0]) {
+            const firstTierAreaIds = Object.keys(AREA_CONFIG[0].areas);
+            if (firstTierAreaIds.length > 0) {
+                 this.currentArea = firstTierAreaIds[Math.floor(Math.random() * firstTierAreaIds.length)];
+            }
+        }
 
         this.state = 'choosing';
         this.ui.clearMainArea();
@@ -59,15 +90,31 @@ class Game {
             }
         }
 
-        // Call appropriate generation function based on round
-        if (this.currentRound === 10) {
-            this.generateLevel10Boss(); 
-        } else if (this.currentRound === 20) {
-            this.generateLevel20Boss();
-        } else if (this.currentRound === 30) {
-            this.generateBossEvent();
-        } else {
-            this.generateEventChoices(); // Generate normal choices
+        // *** Determine Encounter Type using Revised AREA_CONFIG ***
+        let encounterGenerated = false;
+        let currentTier = null;
+
+        // Find the tier for the CURRENT round first
+        for (const tier of AREA_CONFIG) {
+            if (this.currentRound >= tier.startRound && this.currentRound <= tier.endRound) {
+                currentTier = tier;
+                break;
+            }
+        }
+
+        if (currentTier) {
+            // Check if it's the end round of a tier that has mini-bosses OR the final boss round
+            if ((this.currentRound === currentTier.endRound && currentTier.areas && Object.values(currentTier.areas).some(a => a.miniBoss)) || 
+                currentTier.finalBoss) 
+            {
+                this.generateBossEncounter(); 
+                encounterGenerated = true;
+            }
+        }
+
+        // If it wasn't a boss round, generate normal choices
+        if (!encounterGenerated) {
+            this.generateEventChoices(); 
         }
 
         this.ui.updatePlayerStats();
@@ -204,15 +251,22 @@ class Game {
                 // If it's a monster event, pick an appropriate monster based on area
                 if (chosenEncounter.type === 'monster') {
                     let monsterPool = [];
-                    if (this.currentRound >= 1 && this.currentRound <= 9) {
-                        monsterPool = this.currentArea === 'spider_cave' ? SPIDER_CAVE_MONSTERS : WOLF_DEN_MONSTERS;
-                    } else if (this.currentRound >= 11 && this.currentRound <= 19) {
-                        monsterPool = ROUND_11_20_COMMON_MONSTERS;
-                    } else if (this.currentRound >= 21 && this.currentRound <= 29) {
-                        monsterPool = ROUND_21_30_COMMON_MONSTERS;
+                    let currentTier = null;
+
+                    // Find the current tier based on the round
+                    for (const tier of AREA_CONFIG) { // Use AREA_CONFIG
+                        if (this.currentRound >= tier.startRound && this.currentRound <= tier.endRound) {
+                            currentTier = tier;
+                            break;
+                        }
+                    }
+
+                    // Select monster pool based on current area and tier config
+                    if (currentTier && currentTier.areas && currentTier.areas[this.currentArea] && currentTier.areas[this.currentArea].monsters) {
+                        monsterPool = currentTier.areas[this.currentArea].monsters;
                     } else {
-                        console.warn(`Unexpected round (${this.currentRound}) for common monster selection.`);
-                        monsterPool = this.currentArea === 'spider_cave' ? SPIDER_CAVE_MONSTERS : WOLF_DEN_MONSTERS;
+                        console.warn(`Could not determine monster pool for round ${this.currentRound} and area ${this.currentArea} using AREA_CONFIG.`);
+                        monsterPool = []; // Default to empty if no pool found
                     }
                     
                     if (monsterPool.length > 0) {
@@ -266,14 +320,39 @@ class Game {
         }
     }
 
-    generateBossEvent() {
-        const bossId = FINAL_BOSS;
-        const bossData = MONSTERS[bossId];
-        if (bossData) {
-             this.ui.renderBossEncounter(bossData, "FINAL BOSS!"); // Call new UI function
+    // *** Combined Boss Generation Logic (Revised) ***
+    generateBossEncounter() {
+        let bossId = null;
+        let currentTier = null;
+
+        // Find the tier corresponding to the current round
+        for (const tier of AREA_CONFIG) {
+            if (this.currentRound === tier.endRound || this.currentRound === tier.startRound) { // Check end/start of tiers
+                currentTier = tier;
+                break;
+            }
+        }
+
+        if (!currentTier) {
+            console.error(`Could not find tier config for boss round ${this.currentRound}.`);
+            this.generateEventChoices(); 
+            return;
+        }
+
+        // Determine if it's the final boss or a mini-boss
+        if (currentTier.finalBoss) {
+            bossId = currentTier.finalBoss;
+        } else if (currentTier.areas && currentTier.areas[this.currentArea] && currentTier.areas[this.currentArea].miniBoss) {
+            // Get the mini-boss specific to the player's current area within the tier
+            bossId = currentTier.areas[this.currentArea].miniBoss;
+        } 
+
+        if (bossId && MONSTERS[bossId]) {
+            const bossData = MONSTERS[bossId];
+            this.ui.renderBossEncounter(bossData);
         } else {
-             console.error("Could not find boss data for Final Boss:", bossId);
-            this.generateEventChoices(); // Fallback
+            console.error(`Could not determine or find boss data for round ${this.currentRound} in area ${this.currentArea}.`);
+            this.generateEventChoices(); // Fallback to regular choices
         }
     }
 
@@ -688,51 +767,6 @@ class Game {
         this.addLog(`A powerful enemy approaches...`);
         this.ui.renderChoices(this.currentChoices);
     }
-
-    // --- Boss Encounter Generation --- 
-    generateLevel10Boss() {
-        const bossId = ROUND_10_MINI_BOSSES[this.currentArea];
-        const bossEntry = Object.entries(MONSTERS).find(([key, boss]) => key === bossId);
-        if (bossEntry) {
-            const [key, bossData] = bossEntry;
-            const bossDataWithId = { ...bossData, id: key };
-            this.ui.renderBossEncounter(bossDataWithId);
-        } else {
-            console.error(`[Game] Could not find boss data for ID: ${bossId}`);
-            this.generateEventChoices();
-        }
-    }
-    
-    generateLevel20Boss() {
-        // ** Randomly select Boss ID **
-        const bossId = ROUND_20_MINI_BOSSES[this.getRandomInt(0, ROUND_20_MINI_BOSSES.length - 1)];
-        const bossEntry = Object.entries(MONSTERS).find(([key, boss]) => key === bossId);
-        if (bossEntry) {
-            const [key, bossData] = bossEntry;
-            // *** Add the ID to the boss data object ***
-            const bossDataWithId = { ...bossData, id: key };
-            this.ui.renderBossEncounter(bossDataWithId);
-        } else {
-            console.error(`[Game] Could not find boss data for ID: ${bossId}`);
-            this.generateEventChoices(); // Fallback
-        }
-    }
-
-    generateBossEvent() {
-        const bossId = 'ancient_dragon';
-        const titleText = "FINAL BOSS: Round 30";
-        const bossEntry = Object.entries(MONSTERS).find(([key, boss]) => key === bossId);
-        if (bossEntry) {
-            const [key, bossData] = bossEntry;
-            // *** Add the ID to the boss data object ***
-            const bossDataWithId = { ...bossData, id: key }; 
-            this.ui.renderBossEncounter(bossDataWithId, titleText);
-        } else {
-            console.error(`[Game] Could not find boss data for ID: ${bossId}`);
-            this.generateEventChoices(); // Fallback
-        }
-    }
-    // -------------------------------
 
     getRandomInt(min, max) {
         min = Math.ceil(min);

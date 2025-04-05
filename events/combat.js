@@ -11,7 +11,9 @@ class Combat {
             currentDefense: enemy.defense,
             scalesHardened: false,
             breathAttackTimer: enemy.hasBreathAttack ? enemy.breathAttackInterval : null,
-            timedStunTimer: enemy.hasTimedStun ? enemy.timedStunInterval : null
+            timedStunTimer: enemy.hasTimedStun ? enemy.timedStunInterval : null,
+            ferocityActive: false,
+            ferocityTimer: 0
         };
         this.game = game;
         this.ui = ui;
@@ -136,6 +138,17 @@ class Combat {
         // *** Decrement Timed Stun Timer ***
         if (this.enemy.timedStunTimer !== null) {
             this.enemy.timedStunTimer = Math.max(0, this.enemy.timedStunTimer - this.timeScale);
+        }
+
+        // *** Handle Enemy Ferocity Timer ***
+        if (this.enemy.ferocityActive) {
+            this.enemy.ferocityTimer = Math.max(0, this.enemy.ferocityTimer - this.timeScale);
+            if (this.enemy.ferocityTimer <= 0) {
+                this.enemy.ferocityActive = false;
+                this.enemy.currentDefense -= this.enemy.ferocityDefBonus; // Remove bonus
+                this.game.addLog(`${this.enemy.name}'s ferocity fades.`);
+                // No need to update UI here, tick() updates stats later anyway
+            }
         }
 
         // Handle Player Poison Effect
@@ -343,6 +356,27 @@ class Combat {
             damageDealt === 0 && actualBlocked > 0
         );
         this.ui.updatePlayerStats();
+
+        // *** Activate Ferocity on Damage Taken ***
+        if (this.enemy.hasFerocity && damageDealt > 0 && !this.enemy.ferocityActive) {
+             this.enemy.ferocityActive = true;
+             this.enemy.ferocityTimer = this.enemy.ferocityDuration;
+             this.enemy.currentDefense += this.enemy.ferocityDefBonus; // Add bonus
+             this.game.addLog(`<span style="color: #ffc107;">${this.enemy.name} becomes ferocious! (+${this.enemy.ferocityDefBonus} Defense)</span>`);
+             
+             // Trigger visual pulse (reuse pack tactics animation for now)
+             const enemySide = document.querySelector('.enemy-side');
+             if (enemySide) {
+                 enemySide.classList.add('enemy-pack-tactics'); // Re-using this animation
+                 setTimeout(() => {
+                     enemySide.classList.remove('enemy-pack-tactics');
+                 }, 800); // Match animation duration
+             }
+        }
+        // *** Moved checkCombatEnd to after potential state changes ***
+        if(this.checkCombatEnd()) return; 
+
+        this.checkCombatEnd();
     }
 
     enemyAttack() {
@@ -392,6 +426,8 @@ class Combat {
             damageDealt === 0 && actualBlocked > 0
         );
         this.ui.updatePlayerStats();
+
+        this.checkCombatEnd();
     }
 
     enemyBreathAttack() {
@@ -424,6 +460,8 @@ class Combat {
         } else {
              console.warn(`[Combat] ${this.enemy.name} hasBreathAttack but no DoT properties defined.`);
         }
+
+        this.checkCombatEnd();
     }
 
     handlePlayerItemUse(useResult) {
@@ -668,7 +706,7 @@ class Combat {
         this.player.attackTimerPaused = true;
         this.player.pendingActionDelay = this.enemy.timedStunDuration;
         this.player.isStunned = true; // Set the stun flag
-        this.game.addLog(`<span style="color: #ffff99;">${this.enemy.name} slams the ground, stunning you! (Attack delayed ${this.enemy.timedStunDuration}s)</span>`);
+        this.game.addLog(`<span style="color: #ffff99;">${this.enemy.name} hurls a massive boulder, stunning you! (Attack delayed ${this.enemy.timedStunDuration}s)</span>`);
         
         // Trigger visual effect
         const playerSide = document.querySelector('.player-side');
