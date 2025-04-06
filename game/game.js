@@ -126,7 +126,8 @@ class Game {
         });
         this.pendingLoot = { gold, items };
         this.state = 'looting';
-        this.addLog("Examining loot..."); new Loot(this, this.ui).handle(this.pendingLoot);
+        this.addLog("Examining loot...");
+        new Loot(this, this.ui).handle(this.pendingLoot);
     }
 
     collectLoot() {
@@ -605,7 +606,7 @@ class Game {
             if (this.isAllLootCollected()) {
                 this.continueLoot();
             } else {
-                new Loot(this, this.ui).handle(this.pendingLoot, true);
+                new Loot(this, this.ui).handle(this.pendingLoot);
             }
         } else if (type === 'item' && this.pendingLoot.items[index]) {
             const item = this.pendingLoot.items[index];
@@ -625,7 +626,7 @@ class Game {
                 if (this.isAllLootCollected()) {
                     this.continueLoot();
                 } else {
-                    new Loot(this, this.ui).handle(this.pendingLoot, true);
+                    new Loot(this, this.ui).handle(this.pendingLoot);
                 }
             } else {
                 this.addLog("Failed to pick up item - inventory might be full!");

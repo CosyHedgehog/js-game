@@ -31,7 +31,7 @@ class Combat {
         this.enemy.attackTimer = 0;
         this.player.pendingActionDelay = 0;
         this.player.attackTimerPaused = false;
-        
+
         this.player.activeEffects = {};
 
         const runButton = document.getElementById('combat-run-button');
@@ -45,7 +45,7 @@ class Combat {
 
     start() {
         this.game.addLog(`Combat started: Player vs ${this.enemy.name}!`);
-        
+
         this.player.activeEffects = {};
 
         const playerSide = document.querySelector('.player-side');
@@ -55,32 +55,35 @@ class Combat {
             playerSide.style.transform = 'none';
             playerSide.style.opacity = '1';
         }
-        
+
         this.ui.showCombatUI(this.player, this.enemy);
         this.player.attackTimer = this.player.getAttackSpeed();
         this.enemy.attackTimer = this.enemy.speed;
 
-               const runButton = document.getElementById('combat-run-button');
+        const runButton = document.getElementById('combat-run-button');
         if (runButton) {
             const isBossRound = [10, 20, 30].includes(this.game.currentRound);
             let tooltipText = "";
-            
+
             if (isBossRound) {
                 runButton.disabled = true;
-                               if (this.game.currentRound === 30) {
+                if (this.game.currentRound === 30) {
                     tooltipText = "No escape!";
-                } else {                    tooltipText = "To the death!";
+                } else {
+                    tooltipText = "To the death!";
                 }
                 runButton.textContent = "Run (Disabled)";
-                runButton.onclick = null;            } else {
+                runButton.onclick = null;
+            } else {
                 runButton.disabled = false;
                 const minDamage = Math.floor(this.enemy.attack * 1);
                 const maxDamage = Math.floor(this.enemy.attack * 3);
                 tooltipText = `Attempt to flee, taking ${minDamage}-${maxDamage} damage.`;
                 runButton.textContent = `Run (${minDamage}-${maxDamage} damage)`;
-                runButton.onclick = () => this.handleRun();            }
+                runButton.onclick = () => this.handleRun();
+            }
 
-                       runButton.removeEventListener('mouseenter', runButton._tooltipEnterHandler);
+            runButton.removeEventListener('mouseenter', runButton._tooltipEnterHandler);
             runButton.removeEventListener('mouseleave', runButton._tooltipLeaveHandler);
 
             const enterHandler = (e) => {
@@ -92,11 +95,12 @@ class Combat {
 
             runButton.addEventListener('mouseenter', enterHandler);
             runButton.addEventListener('mouseleave', leaveHandler);
-            runButton._tooltipEnterHandler = enterHandler;            runButton._tooltipLeaveHandler = leaveHandler;        }
-       
+            runButton._tooltipEnterHandler = enterHandler; runButton._tooltipLeaveHandler = leaveHandler;
+        }
+
         this.intervalId = setInterval(() => this.tick(), this.tickRate);
 
-               if (this.game.ui.roundAreaElement) {
+        if (this.game.ui.roundAreaElement) {
             this.game.ui.roundAreaElement.classList.remove('round-miniboss', 'round-finalboss');
         }
         this.game.addLog(`You encounter a ${this.enemy.name}!`);
@@ -118,35 +122,36 @@ class Combat {
             this.player.pendingActionDelay = Math.max(0, this.player.pendingActionDelay - this.timeScale);
             if (this.player.pendingActionDelay === 0) {
                 this.player.attackTimerPaused = false;
-                this.player.isStunned = false;                
-                               this.ui.renderInventory(); 
+                this.player.isStunned = false;
+                this.ui.renderInventory();
             }
         }
         this.enemy.attackTimer = Math.max(0, this.enemy.attackTimer - this.timeScale);
         if (this.enemy.breathAttackTimer !== null) {
             this.enemy.breathAttackTimer = Math.max(0, this.enemy.breathAttackTimer - this.timeScale);
         }
-               if (this.enemy.timedStunTimer !== null) {
+        if (this.enemy.timedStunTimer !== null) {
             this.enemy.timedStunTimer = Math.max(0, this.enemy.timedStunTimer - this.timeScale);
         }
 
-               if (this.enemy.ferocityActive) {
+        if (this.enemy.ferocityActive) {
             this.enemy.ferocityTimer = Math.max(0, this.enemy.ferocityTimer - this.timeScale);
             if (this.enemy.ferocityTimer <= 0) {
                 this.enemy.ferocityActive = false;
-                this.enemy.currentDefense -= this.enemy.ferocityDefBonus;                this.game.addLog(`${this.enemy.name}'s ferocity fades.`);
-                           }
+                this.enemy.currentDefense -= this.enemy.ferocityDefBonus; this.game.addLog(`${this.enemy.name}'s ferocity fades.`);
+            }
         }
 
-               if (this.player.activeEffects.poison) {
+        if (this.player.activeEffects.poison) {
             const poison = this.player.activeEffects.poison;
-            poison.timer = Math.max(0, poison.timer - tickSeconds);            poison.tickCooldown = Math.max(0, poison.tickCooldown - tickSeconds);            
-                       if (poison.tickCooldown <= 0 && poison.timer > 0) { 
-                                 const damageDealt = this.game.getRandomInt(poison.damageRange[0], poison.damageRange[1]);
-                 poisonDamageThisTick = damageDealt;                 this.player.takeRawDamage(damageDealt); 
-                 this.game.addLog(`<span style="color: #ab47bc;">You take ${damageDealt} poison damage.</span>`);
-                 this.ui.createDamageSplat('.player-side', damageDealt, 'poison'); 
-                 poison.tickCooldown = 1.5;            }
+            poison.timer = Math.max(0, poison.timer - tickSeconds); poison.tickCooldown = Math.max(0, poison.tickCooldown - tickSeconds);
+            if (poison.tickCooldown <= 0 && poison.timer > 0) {
+                const damageDealt = this.game.getRandomInt(poison.damageRange[0], poison.damageRange[1]);
+                poisonDamageThisTick = damageDealt; this.player.takeRawDamage(damageDealt);
+                this.game.addLog(`<span style="color: #ab47bc;">You take ${damageDealt} poison damage.</span>`);
+                this.ui.createDamageSplat('.player-side', damageDealt, 'poison');
+                poison.tickCooldown = 1.5;
+            }
 
             if (poison.timer <= 0) {
                 this.game.addLog("The poison wears off.");
@@ -154,47 +159,49 @@ class Combat {
             }
         }
 
-               if (this.player.activeEffects.burning) {
+        if (this.player.activeEffects.burning) {
             const burn = this.player.activeEffects.burning;
-                       burn.timeRemaining = Math.max(0, burn.timeRemaining - tickSeconds); 
+            burn.timeRemaining = Math.max(0, burn.timeRemaining - tickSeconds);
             burn.timeUntilNextTick = Math.max(0, burn.timeUntilNextTick - tickSeconds);
 
-                       if (burn.timeUntilNextTick <= 0) { 
-                 const burnDmg = burn.damage; 
-                 this.player.takeRawDamage(burnDmg); 
-                 this.game.addLog(`<span style="color: #ff8c00;">You take ${burnDmg} burn damage!</span>`);
-                 this.ui.createDamageSplat('.player-side', burnDmg, 'burn'); 
-                 burn.timeUntilNextTick = burn.tickInterval;            }
+            if (burn.timeUntilNextTick <= 0) {
+                const burnDmg = burn.damage;
+                this.player.takeRawDamage(burnDmg);
+                this.game.addLog(`<span style="color: #ff8c00;">You take ${burnDmg} burn damage!</span>`);
+                this.ui.createDamageSplat('.player-side', burnDmg, 'burn');
+                burn.timeUntilNextTick = burn.tickInterval;
+            }
 
-                       if (burn.timeRemaining <= 0) {
+            if (burn.timeRemaining <= 0) {
                 this.game.addLog("The fire subsides.");
                 delete this.player.activeEffects.burning;
             }
         }
 
-               if (this.enemy.regenerationActive) {
+        if (this.enemy.regenerationActive) {
             this.enemy.regenerationTimer = Math.max(0, this.enemy.regenerationTimer - this.timeScale);
             if (this.enemy.regenerationTimer <= 0) {
                 const potentialHeal = this.enemy.regenerationAmount;
                 const actualHeal = (this.enemy.health < this.enemy.maxHealth) ? potentialHeal : 0;
-                
-                               if (actualHeal > 0) {
+
+                if (actualHeal > 0) {
                     this.enemy.health = Math.min(this.enemy.maxHealth, this.enemy.health + actualHeal);
                     this.game.addLog(`<span style="color: #66bb6a;">${this.enemy.name} regenerates ${actualHeal} health.</span>`);
                 } else {
-                                       this.game.addLog(`<span style="color: #a0a0a0;">${this.enemy.name} tries to regenerate, but is already at full health.</span>`);
+                    this.game.addLog(`<span style="color: #a0a0a0;">${this.enemy.name} tries to regenerate, but is already at full health.</span>`);
                 }
-                
-                               this.ui.updateCombatantHealth('enemy', this.enemy.health, this.enemy.maxHealth, actualHeal, 0, true); 
-                
-                this.enemy.regenerationTimer = 5;            }
+
+                this.ui.updateCombatantHealth('enemy', this.enemy.health, this.enemy.maxHealth, actualHeal, 0, true);
+
+                this.enemy.regenerationTimer = 5;
+            }
         }
 
-               const healthPercent = this.enemy.health / this.enemy.maxHealth;
+        const healthPercent = this.enemy.health / this.enemy.maxHealth;
 
-               if (this.enemy.name === MONSTERS['silverfang']?.name) {
-            const wasFast = this.enemy.currentSpeed === 0.6;            let isNowFast = false;
-            
+        if (this.enemy.name === MONSTERS['silverfang']?.name) {
+            const wasFast = this.enemy.currentSpeed === 0.6; let isNowFast = false;
+
             if (healthPercent < 0.5) {
                 this.enemy.currentSpeed = 0.6;
                 isNowFast = true;
@@ -203,19 +210,20 @@ class Combat {
                 isNowFast = false;
             }
 
-                       const enemyTimerContainer = document.querySelector('.enemy-side .attack-timer:not(.breath-timer)');
+            const enemyTimerContainer = document.querySelector('.enemy-side .attack-timer:not(.breath-timer)');
 
-                       if (isNowFast && !wasFast) {
+            if (isNowFast && !wasFast) {
                 const enemySide = document.querySelector('.enemy-side');
                 if (enemySide) {
                     enemySide.classList.add('enemy-speed-enraged-pulse');
                     setTimeout(() => {
                         enemySide.classList.remove('enemy-speed-enraged-pulse');
-                    }, 600);                }
+                    }, 600);
+                }
                 this.game.addLog("Ven'fing becomes faster!");
             }
-            
-                       if (enemyTimerContainer) {
+
+            if (enemyTimerContainer) {
                 if (isNowFast) {
                     enemyTimerContainer.classList.add('enemy-timer-speed-boost');
                 } else {
@@ -223,8 +231,8 @@ class Combat {
                 }
             }
         }
-        
-               if (this.enemy.packTactics) {
+
+        if (this.enemy.packTactics) {
             const wasPackTacticsActive = this.enemy.currentAttack > this.enemy.attack;
             const shouldActivatePackTactics = healthPercent < 0.5;
 
@@ -232,46 +240,46 @@ class Combat {
                 this.enemy.packTacticsActive = true;
                 this.enemy.currentAttack = this.enemy.attack + this.enemy.packDamageBonus;
                 this.enemy.currentDefense = this.enemy.defense + this.enemy.packDefenseBonus;
-                
-                               const enemySide = document.querySelector('.enemy-side');
+
+                const enemySide = document.querySelector('.enemy-side');
                 if (enemySide) {
                     enemySide.classList.add('enemy-pack-tactics');
                     setTimeout(() => {
                         enemySide.classList.remove('enemy-pack-tactics');
                     }, 800);
                 }
-                
+
                 this.game.addLog(`<span style="color: #ffd700">${this.enemy.name}'s pack tactics activate! (+${this.enemy.packDamageBonus} Attack, +${this.enemy.packDefenseBonus} Defense)</span>`);
             } else if (!shouldActivatePackTactics && wasPackTacticsActive) {
                 this.enemy.currentAttack = this.enemy.attack;
                 this.enemy.currentDefense = this.enemy.defense;
             }
         }
-        
 
-               if (this.enemy.enrageThreshold && this.enemy.enrageAttackMultiplier) {
-            const wasEnraged = this.enemy.currentAttack > this.enemy.attack;            let isNowEnraged = false;
+
+        if (this.enemy.enrageThreshold && this.enemy.enrageAttackMultiplier) {
+            const wasEnraged = this.enemy.currentAttack > this.enemy.attack; let isNowEnraged = false;
 
             if (healthPercent < this.enemy.enrageThreshold) {
                 this.enemy.currentAttack = Math.round(this.enemy.attack * this.enemy.enrageAttackMultiplier);
                 isNowEnraged = true;
             } else {
-                this.enemy.currentAttack = this.enemy.attack; 
+                this.enemy.currentAttack = this.enemy.attack;
                 isNowEnraged = false;
             }
 
-                       if (isNowEnraged && !wasEnraged) {
+            if (isNowEnraged && !wasEnraged) {
                 const enemySide = document.querySelector('.enemy-side');
                 if (enemySide) {
                     enemySide.classList.add('enemy-enraged-pulse');
-                                       setTimeout(() => {
+                    setTimeout(() => {
                         enemySide.classList.remove('enemy-enraged-pulse');
                     }, 500);
                 }
             }
         }
-        
-               this.ui.updateCombatTimers(
+
+        this.ui.updateCombatTimers(
             this.player.attackTimer,
             this.enemy.attackTimer,
             this.player.pendingActionDelay,
@@ -282,7 +290,7 @@ class Combat {
             this.enemy.regenerationTimer,
             this.enemy.regenerationInterval
         );
-        this.ui.updateCombatStats(this.player, this.enemy);       
+        this.ui.updateCombatStats(this.player, this.enemy);
         if (!this.player.attackTimerPaused && this.player.attackTimer <= 0) {
             this.playerAttack();
             playerActed = true;
@@ -296,8 +304,9 @@ class Combat {
             this.enemy.breathAttackTimer = this.enemy.breathAttackInterval;
         }
 
-               if (this.enemy.timedStunTimer !== null && this.enemy.timedStunTimer <= 0) {
-            this.enemyTimedStunAttack();            if (this.checkCombatEnd()) return;            this.enemy.timedStunTimer = this.enemy.timedStunInterval;        }
+        if (this.enemy.timedStunTimer !== null && this.enemy.timedStunTimer <= 0) {
+            this.enemyTimedStunAttack(); if (this.checkCombatEnd()) return; this.enemy.timedStunTimer = this.enemy.timedStunInterval;
+        }
 
         if (this.enemy.attackTimer <= 0) {
             this.enemyAttack();
@@ -312,38 +321,39 @@ class Combat {
         const enemyDefenseRoll = this.game.rollDamage(this.enemy.currentDefense || 0);
         const actualBlocked = Math.min(playerAttackRoll, enemyDefenseRoll);
         const damageDealt = Math.max(0, playerAttackRoll - enemyDefenseRoll);
-        
+
         this.enemy.health = Math.max(0, this.enemy.health - damageDealt);
-        
+
         if (damageDealt === 0 && actualBlocked > 0) {
             this.game.addLog(`You attack ${this.enemy.name} but they block all ${actualBlocked} damage!`);
         } else {
             this.game.addLog(`You attack ${this.enemy.name} for ${damageDealt} damage. (${playerAttackRoll} - ${actualBlocked} blocked)`);
         }
-        
+
         this.ui.updateCombatantHealth(
-            'enemy', 
-            this.enemy.health, 
-            this.enemy.maxHealth, 
-            damageDealt, 
+            'enemy',
+            this.enemy.health,
+            this.enemy.maxHealth,
+            damageDealt,
             actualBlocked,
-            false, 
+            false,
             damageDealt === 0 && actualBlocked > 0
         );
         this.ui.updatePlayerStats();
 
-               if (this.enemy.hasFerocity && damageDealt > 0 && !this.enemy.ferocityActive) {
-             this.enemy.ferocityActive = true;
-             this.enemy.ferocityTimer = this.enemy.ferocityDuration;
-             this.enemy.currentDefense += this.enemy.ferocityDefBonus;             this.game.addLog(`<span style="color: #ffc107;">${this.enemy.name} becomes ferocious! (+${this.enemy.ferocityDefBonus} Defense)</span>`);
-             
-                         const enemySide = document.querySelector('.enemy-side');
-             if (enemySide) {
-                 enemySide.classList.add('enemy-pack-tactics');                 setTimeout(() => {
-                     enemySide.classList.remove('enemy-pack-tactics');
-                 }, 800);             }
+        if (this.enemy.hasFerocity && damageDealt > 0 && !this.enemy.ferocityActive) {
+            this.enemy.ferocityActive = true;
+            this.enemy.ferocityTimer = this.enemy.ferocityDuration;
+            this.enemy.currentDefense += this.enemy.ferocityDefBonus; this.game.addLog(`<span style="color: #ffc107;">${this.enemy.name} becomes ferocious! (+${this.enemy.ferocityDefBonus} Defense)</span>`);
+
+            const enemySide = document.querySelector('.enemy-side');
+            if (enemySide) {
+                enemySide.classList.add('enemy-pack-tactics'); setTimeout(() => {
+                    enemySide.classList.remove('enemy-pack-tactics');
+                }, 800);
+            }
         }
-               if(this.checkCombatEnd()) return; 
+        if (this.checkCombatEnd()) return;
 
         this.checkCombatEnd();
     }
@@ -353,9 +363,9 @@ class Combat {
         const playerDefenseRoll = this.game.rollDamage(this.player.getDefense());
         const actualBlocked = Math.min(enemyAttackRoll, playerDefenseRoll);
         const damageDealt = Math.max(0, enemyAttackRoll - playerDefenseRoll);
-        
+
         this.player.health = Math.max(0, this.player.health - damageDealt);
-        
+
         let logMessage = `${this.enemy.name} attacks`;
         if (this.enemy.currentAttack > this.enemy.attack) {
             logMessage += ` <span style="color: #ff6b6b;">[ENRAGED]</span>`;
@@ -367,25 +377,28 @@ class Combat {
             logMessage += ` you for ${damageDealt} damage. (${enemyAttackRoll} - ${actualBlocked} blocked)`;
         }
         this.game.addLog(logMessage);
-        
-               if (this.enemy.appliesPoison && damageDealt > 0) {                       const poisonProcChance = this.enemy.poisonChance || 1;            if (Math.random() < poisonProcChance) {
-                if (!this.player.activeEffects.poison) {                    this.player.activeEffects.poison = {
-                        damageRange: this.enemy.poisonDamage, 
+
+        if (this.enemy.appliesPoison && damageDealt > 0) {
+            const poisonProcChance = this.enemy.poisonChance || 1; if (Math.random() < poisonProcChance) {
+                if (!this.player.activeEffects.poison) {
+                    this.player.activeEffects.poison = {
+                        damageRange: this.enemy.poisonDamage,
                         duration: this.enemy.poisonDuration,
-                        timer: this.enemy.poisonDuration, 
-                        tickCooldown: 1.5 
+                        timer: this.enemy.poisonDuration,
+                        tickCooldown: 1.5
                     };
                     this.game.addLog(`<span style="color: #ab47bc;">You have been poisoned!</span>`);
                 }
-            }        }
+            }
+        }
 
         this.ui.updateCombatantHealth(
-            'player', 
-            this.player.health, 
-            this.player.getMaxHealth(), 
-            damageDealt, 
+            'player',
+            this.player.health,
+            this.player.getMaxHealth(),
+            damageDealt,
             actualBlocked,
-            false, 
+            false,
             damageDealt === 0 && actualBlocked > 0
         );
         this.ui.updatePlayerStats();
@@ -394,27 +407,28 @@ class Combat {
     }
 
     enemyBreathAttack() {
-               const damage = this.game.getRandomInt(this.enemy.breathAttackDamage[0], this.enemy.breathAttackDamage[1]);
+        const damage = this.game.getRandomInt(this.enemy.breathAttackDamage[0], this.enemy.breathAttackDamage[1]);
         this.player.takeRawDamage(damage);
-        
-               const logMessage = `<span style="color: #ff8c00;">The ${this.enemy.name} breathes fire, engulfing you for ${damage} damage!</span>`;
-        this.game.addLog(logMessage);
-        
-               this.ui.createDamageSplat('.player-side', damage, 'burn');        
-               this.ui.playPlayerAnimation('player-breath-hit', 1000);
 
-               if (this.enemy.breathDotDamage && this.enemy.breathDotDuration && this.enemy.breathDotTickInterval) {
-            if (!this.player.activeEffects.burning) { 
-                 this.player.activeEffects.burning = {
+        const logMessage = `<span style="color: #ff8c00;">The ${this.enemy.name} breathes fire, engulfing you for ${damage} damage!</span>`;
+        this.game.addLog(logMessage);
+
+        this.ui.createDamageSplat('.player-side', damage, 'burn');
+        this.ui.playPlayerAnimation('player-breath-hit', 1000);
+
+        if (this.enemy.breathDotDamage && this.enemy.breathDotDuration && this.enemy.breathDotTickInterval) {
+            if (!this.player.activeEffects.burning) {
+                this.player.activeEffects.burning = {
                     damage: this.enemy.breathDotDamage,
                     duration: this.enemy.breathDotDuration,
                     tickInterval: this.enemy.breathDotTickInterval,
                     timeRemaining: this.enemy.breathDotDuration,
-                    timeUntilNextTick: this.enemy.breathDotTickInterval 
-                 };
-                 this.game.addLog("You are set ablaze!");            }
+                    timeUntilNextTick: this.enemy.breathDotTickInterval
+                };
+                this.game.addLog("You are set ablaze!");
+            }
         } else {
-             console.warn(`[Combat] ${this.enemy.name} hasBreathAttack but no DoT properties defined.`);
+            console.warn(`[Combat] ${this.enemy.name} hasBreathAttack but no DoT properties defined.`);
         }
 
         this.checkCombatEnd();
@@ -444,7 +458,8 @@ class Combat {
                 this.ui.updatePlayerStats();
             }
             this.ui.renderInventory();
-            this.ui.updateCombatStats(this.player, this.enemy);        } else {
+            this.ui.updateCombatStats(this.player, this.enemy);
+        } else {
             this.game.addLog(useResult.message);
         }
     }
@@ -454,32 +469,34 @@ class Combat {
         let playerWon = false;
 
         if (this.enemy.health <= 0) {
-           
-            
-                                                     if (this.ui.combatArea) {
-                    this.ui.combatArea.classList.add('combat-ending');
-                }
 
-                this.game.addLog(`You defeated the ${this.enemy.name}!`);
-                clearInterval(this.intervalId);                this.intervalId = null;
-                
-                               setTimeout(() => {
 
-                    this.endCombat(true);                }, 700);
-                       
-            combatEnded = true; 
+            if (this.ui.combatArea) {
+                this.ui.combatArea.classList.add('combat-ending');
+            }
+
+            this.game.addLog(`You defeated the ${this.enemy.name}!`);
+            clearInterval(this.intervalId); this.intervalId = null;
+
+            setTimeout(() => {
+
+                this.endCombat(true);
+            }, 700);
+
+            combatEnded = true;
             playerWon = true;
             return combatEnded;
         } else if (this.player.health <= 0) {
-                       this.game.addLog(`You were defeated by the ${this.enemy.name}...`);
-            clearInterval(this.intervalId);            this.intervalId = null;
-                       setTimeout(() => {
-                this.game.endGame(false); 
-            }, 1000);            combatEnded = true;
+            this.game.addLog(`You were defeated by the ${this.enemy.name}...`);
+            clearInterval(this.intervalId); this.intervalId = null;
+            setTimeout(() => {
+                this.game.endGame(false);
+            }, 1000); combatEnded = true;
             playerWon = false;
         }
 
-                                           return combatEnded;    }
+        return combatEnded;
+    }
 
     handleRun() {
         clearInterval(this.intervalId);
@@ -488,9 +505,9 @@ class Combat {
         const multiplier = 1 + Math.random() * 2;
         const runDamage = Math.floor(this.enemy.attack * multiplier);
         this.player.takeRawDamage(runDamage);
-        
-               this.ui.updatePlayerStats(); 
-        
+
+        this.ui.updatePlayerStats();
+
         const playerSide = document.querySelector('.player-side');
         if (playerSide) {
             playerSide.classList.add('player-escape-animation');
@@ -505,25 +522,25 @@ class Combat {
             const backdrop = document.createElement('div');
             backdrop.className = 'escape-backdrop';
             document.body.appendChild(backdrop);
-    
+
             const messageContainer = document.createElement('div');
             messageContainer.className = 'escape-message-container';
-            
+
             const content = `
                 <h3>${this.player.health <= 0 ? 'Failed to Escape!' : 'Escape Successful!'}</h3>
                 <p>You fled from the ${this.enemy.name}...</p>
                 <p>But took <span style="color: #ff4444">${runDamage} damage</span> in the process!</p>
-                ${this.player.health <= 0 ? 
-                    `<p style="color: #ff4444">Unfortunately, you didn't survive the escape attempt...</p>` : 
+                ${this.player.health <= 0 ?
+                    `<p style="color: #ff4444">Unfortunately, you didn't survive the escape attempt...</p>` :
                     ''}
                 <button id="escape-continue">Continue</button>
             `;
-            
+
             messageContainer.innerHTML = content;
             document.body.appendChild(messageContainer);
-    
-                       this.ui.createDamageSplat('.escape-message-container', runDamage, 'damage');
-           
+
+            this.ui.createDamageSplat('.escape-message-container', runDamage, 'damage');
+
             const continueButton = document.getElementById('escape-continue');
             continueButton.onclick = () => {
                 messageContainer.remove();
@@ -542,10 +559,10 @@ class Combat {
 
     endCombat(playerWon, ranAway = false) {
         this.player.resetCombatBuffs();
-                      
+
         this.player.activeEffects = {};
 
-               const enemyTimerContainer = document.querySelector('.enemy-side .attack-timer:not(.breath-timer)');
+        const enemyTimerContainer = document.querySelector('.enemy-side .attack-timer:not(.breath-timer)');
         if (enemyTimerContainer) {
             enemyTimerContainer.classList.remove('enemy-timer-speed-boost');
         }
@@ -562,7 +579,7 @@ class Combat {
                         let chosenItemId = null;
 
                         if (loot.itemTier) {
-                                                       let tierList;
+                            let tierList;
                             switch (loot.itemTier) {
                                 case 'commonItem': tierList = COMMON_ITEMS; break;
                                 case 'uncommonItem': tierList = UNCOMMON_ITEMS; break;
@@ -572,14 +589,14 @@ class Combat {
                                 case 'rareFood': tierList = RARE_FOOD; break;
                                 default: tierList = []; console.warn("Unknown itemTier:", loot.itemTier);
                             }
-                                                       const validItems = tierList.filter(id => id);
+                            const validItems = tierList.filter(id => id);
                             if (validItems.length > 0) {
                                 chosenItemId = validItems[this.game.getRandomInt(0, validItems.length - 1)];
                             } else {
                                 console.warn(`Item tier list '${loot.itemTier}' is empty or contains invalid entries.`);
                             }
                         } else if (loot.itemId) {
-                                                       chosenItemId = loot.itemId;
+                            chosenItemId = loot.itemId;
                         }
 
                         if (chosenItemId) {
@@ -593,7 +610,7 @@ class Combat {
                         }
                     }
                 });
-            }            
+            }
             const defeatedName = this.enemy.name;
             this.game.lastDefeatedEnemyName = defeatedName;
 
@@ -625,24 +642,24 @@ class Combat {
         }
     }
 
-       enemyTimedStunAttack() {
+    enemyTimedStunAttack() {
         if (!this.enemy.hasTimedStun) return;
-               this.player.attackTimerPaused = true;
+        this.player.attackTimerPaused = true;
         this.player.pendingActionDelay = this.enemy.timedStunDuration;
-        this.player.isStunned = true;        this.player.activeEffects.stun = {
+        this.player.isStunned = true; this.player.activeEffects.stun = {
             duration: this.enemy.timedStunDuration,
         }
         this.game.addLog(`<span style="color: #ffff99;">${this.enemy.name} hurls a massive boulder, stunning you! (Attack delayed ${this.enemy.timedStunDuration}s)</span>`);
-        
-               const playerSide = document.querySelector('.player-side');
+
+        const playerSide = document.querySelector('.player-side');
         if (playerSide) {
             playerSide.classList.add('player-stunned-visual');
-                       setTimeout(() => {
+            setTimeout(() => {
                 playerSide.classList.remove('player-stunned-visual');
-            }, 800); 
+            }, 800);
         }
-               this.ui.createDamageSplat('.player-side', 'Stunned!', 'stun');
-        
-               this.ui.renderInventory(); 
+        this.ui.createDamageSplat('.player-side', 'Stunned!', 'stun');
+
+        this.ui.renderInventory();
     }
 }

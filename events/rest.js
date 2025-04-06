@@ -13,7 +13,7 @@ class Rest {
     showRestChoicesUI() {
         this.ui.clearMainArea();
         const restArea = this.ui.restArea;
-        restArea.id = 'rest-area';        restArea.classList.remove('hidden');
+        restArea.id = 'rest-area'; restArea.classList.remove('hidden');
         const minHealPercent = 0.5;
         const maxHealPercent = 0.9;
         const minHealAmount = Math.floor(this.game.player.getMaxHealth() * minHealPercent);
@@ -62,34 +62,7 @@ class Rest {
     }
 
     handleRestHeal() {
-               const restArea = document.getElementById('rest-area');
-        if (restArea) {
-            restArea.innerHTML = `
-                <div class="rest-campfire-container">
-                    <div class="rest-campfire-icon">🔥</div>
-                    <p class="rest-message">You feel rested.</p>
-                </div>
-            `;
-        } else {
-            console.error("Rest area not found to update UI!");
-                   }
-
-               const healPercent = 0.3 + Math.random() * 0.4;        const healAmount = Math.floor(this.game.player.getMaxHealth() * healPercent);
-        const actualHealed = this.game.player.heal(healAmount);
-
-               let message = `You rest by the fire and recover ${actualHealed} HP.`;
-        this.game.addLog(message);
-
-               this.ui.updatePlayerStats();
-
-               setTimeout(() => {
-            this.ui.createDamageSplat('#rest-area .rest-campfire-container', actualHealed, 'heal');
-        }, 50);
-               this.addContinueButton();
-    }
-
-    handleRestSleep() {
-               const restArea = document.getElementById('rest-area');
+        const restArea = document.getElementById('rest-area');
         if (restArea) {
             restArea.innerHTML = `
                 <div class="rest-campfire-container">
@@ -101,21 +74,48 @@ class Rest {
             console.error("Rest area not found to update UI!");
         }
 
-               const maxHpIncrease = 3;
+        const healPercent = 0.3 + Math.random() * 0.4; const healAmount = Math.floor(this.game.player.getMaxHealth() * healPercent);
+        const actualHealed = this.game.player.heal(healAmount);
+
+        let message = `You rest by the fire and recover ${actualHealed} HP.`;
+        this.game.addLog(message);
+
+        this.ui.updatePlayerStats();
+
+        setTimeout(() => {
+            this.ui.createDamageSplat('#rest-area .rest-campfire-container', actualHealed, 'heal');
+        }, 50);
+        this.addContinueButton();
+    }
+
+    handleRestSleep() {
+        const restArea = document.getElementById('rest-area');
+        if (restArea) {
+            restArea.innerHTML = `
+                <div class="rest-campfire-container">
+                    <div class="rest-campfire-icon">🔥</div>
+                    <p class="rest-message">You feel rested.</p>
+                </div>
+            `;
+        } else {
+            console.error("Rest area not found to update UI!");
+        }
+
+        const maxHpIncrease = 3;
         this.game.player.maxHealth += maxHpIncrease;
-       
-               let message = `You sleep soundly. Your maximum HP increases by ${maxHpIncrease} (now ${this.game.player.getMaxHealth()}).`;
-                             this.game.addLog(message);
 
-               this.ui.updatePlayerStats();
+        let message = `You sleep soundly. Your maximum HP increases by ${maxHpIncrease} (now ${this.game.player.getMaxHealth()}).`;
+        this.game.addLog(message);
 
-               this.ui.createDamageSplat('#rest-area .rest-campfire-container', `${maxHpIncrease} Max HP`, 'max-hp');
+        this.ui.updatePlayerStats();
 
-               this.addContinueButton();
+        this.ui.createDamageSplat('#rest-area .rest-campfire-container', `${maxHpIncrease} Max HP`, 'max-hp');
+
+        this.addContinueButton();
     }
 
     handleRestMeditate() {
-               const restArea = document.getElementById('rest-area');
+        const restArea = document.getElementById('rest-area');
         if (restArea) {
             restArea.innerHTML = `
                 <div class="rest-campfire-container">
@@ -134,7 +134,7 @@ class Rest {
             this.ui.createDamageSplat('#rest-area .rest-campfire-container', `${maxHpIncrease} Max HP`, 'max-hp');
 
             setTimeout(() => {
-                const healPercent = 0.15 + Math.random() * 0.15;                const healAmount = Math.floor(this.game.player.getMaxHealth() * healPercent);
+                const healPercent = 0.15 + Math.random() * 0.15; const healAmount = Math.floor(this.game.player.getMaxHealth() * healPercent);
                 const actualHealed = this.game.player.heal(healAmount);
 
                 let message = `You meditate, strengthening your body and mind. Max HP +${maxHpIncrease} (now ${this.game.player.getMaxHealth()}).`;
@@ -161,12 +161,12 @@ class Rest {
             restContainer.appendChild(continueButton);
         } else {
             console.error("Cannot add continue button: Rest container not found.");
-                       this.endRestEvent();
+            this.endRestEvent();
         }
     }
 
     endRestEvent() {
-               this.ui.clearMainArea();
+        this.ui.clearMainArea();
         this.game.proceedToNextRound();
     }
 }

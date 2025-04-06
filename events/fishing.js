@@ -74,7 +74,6 @@ class Fishing {
             <div class="fishing-areas-container">
                 ${Object.entries(this.FISHING_AREAS).map(([key, area]) => {
             const needsRod = area.requiresRod === true;
-            const canFishHere = !needsRod || hasFishingRod;
             const requirementText = needsRod && !hasFishingRod ? '<span class="requirement-missing">(Requires Fishing Rod)</span>' : '';
             const isDisabled = needsRod && !hasFishingRod ? 'disabled' : '';
 

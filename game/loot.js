@@ -4,7 +4,7 @@ class Loot {
         this.ui = ui;
     }
 
-    handle(loot, continueLooting) {
+    handle(loot) {
         this.ui.clearMainArea();
         const allDisplayableLoot = [];
         if (loot.gold > 0) {
@@ -80,9 +80,9 @@ class Loot {
                 itemDiv.addEventListener('mouseenter', () => {
                     descriptionBox.textContent = item.description || 'No description available.';
                 });
-                
+
                 itemDiv.addEventListener('mouseleave', () => {
-                    descriptionBox.textContent = 'Hover over an item to see details.'; 
+                    descriptionBox.textContent = 'Hover over an item to see details.';
                 });
 
                 lootItemsContainer.appendChild(itemDiv);
@@ -106,8 +106,5 @@ class Loot {
         }
 
         this.ui.lootArea.classList.remove('hidden');
-        if (continueLooting) {
-           
-                                         }
     }
 }

@@ -22,8 +22,8 @@ class UI {
         this.itemTooltip = document.getElementById('item-tooltip');
         this.treasureArea = document.getElementById('treasure-area');
         this.forgeArea = document.getElementById('forge-area');
-        this.mainContent = document.getElementById('main-content');               this.equipmentTextDisplay = {}; 
-               this.cacheDynamicElements(); 
+        this.mainContent = document.getElementById('main-content'); this.equipmentTextDisplay = {};
+        this.cacheDynamicElements();
 
         this.equipTooltip = document.getElementById('equip-tooltip');
         this.statTooltip = document.getElementById('stat-tooltip');
@@ -38,10 +38,10 @@ class UI {
         this.combatEnemyHp = document.getElementById('combat-enemy-hp');
         this.combatPlayerTimer = document.getElementById('combat-player-timer');
         this.combatEnemyTimer = document.getElementById('combat-enemy-timer');
-        this.combatEnemyBreathTimerContainer = document.querySelector('.enemy-side .breath-timer'); 
+        this.combatEnemyBreathTimerContainer = document.querySelector('.enemy-side .breath-timer');
         this.combatEnemyBreathTimerText = document.getElementById('combat-enemy-breath-timer');
         this.combatEnemyBreathTimerBar = document.querySelector('.enemy-breath-timer');
-               this.combatEnemyStunTimerContainer = document.querySelector('.enemy-side .stun-timer');
+        this.combatEnemyStunTimerContainer = document.querySelector('.enemy-side .stun-timer');
         this.combatEnemyStunTimerText = document.getElementById('combat-enemy-stun-timer');
         this.combatEnemyStunTimerBar = document.querySelector('.enemy-stun-timer');
         this.shopItemsContainer = document.getElementById('shop-items');
@@ -64,46 +64,47 @@ class UI {
                 this.hideTooltip(this.equipTooltip);
             }
         }, true);
-        
+
         if (this.game) this.game.ui = this;
         if (this.lootTakeButton) this.lootTakeButton.onclick = () => this.game.collectLoot();
         else console.error("UI Error: Loot Take Button not found during constructor.");
-        
+
         this.toggleLogButton = document.getElementById('toggle-log-button');
         if (this.toggleLogButton) this.toggleLogButton.onclick = () => {
-            if (this.game) { 
+            if (this.game) {
                 new Log(this.game, this).showLog();
             } else {
                 console.error("Log button clicked but game object is not yet available on UI.");
             }
         };
 
-        this.closeLogButton = document.getElementById('close-log-button');    
+        this.closeLogButton = document.getElementById('close-log-button');
         if (this.closeLogButton) this.closeLogButton.onclick = () => {
-            if (this.game) { 
+            if (this.game) {
                 new Log(this.game, this).hideLog();
             } else {
                 console.error("Close log button clicked but game object is not yet available on UI.");
             }
         };
 
-               this.combatPlayerAtk = document.getElementById('combat-player-atk');
+        this.combatPlayerAtk = document.getElementById('combat-player-atk');
         this.combatPlayerDef = document.getElementById('combat-player-def');
         this.combatEnemyAtk = document.getElementById('combat-enemy-atk');
         this.combatEnemyDef = document.getElementById('combat-enemy-def');
-        
-               this.combatPlayerTimerContainer = document.querySelector('.player-side .attack-timer:not(.breath-timer)');
+
+        this.combatPlayerTimerContainer = document.querySelector('.player-side .attack-timer:not(.breath-timer)');
         this.combatEnemyTimerContainer = document.querySelector('.enemy-side .attack-timer:not(.breath-timer)');
-               this.combatPlayerSpd = document.getElementById('combat-player-spd'); 
+        this.combatPlayerSpd = document.getElementById('combat-player-spd');
         this.combatEnemySpd = document.getElementById('combat-enemy-spd');
-       
+
         this.roundAreaElement = document.getElementById('round-area');
-               this.areaDescriptionElement = document.getElementById('area-description'); 
+        this.areaDescriptionElement = document.getElementById('area-description');
 
-               this.statDps = document.getElementById('stat-dps-2');
+        this.statDps = document.getElementById('stat-dps-2');
 
-               this.tooltipCache = {
-            attack: new Map(),            defense: new Map(),            dps: new Map()           };
+        this.tooltipCache = {
+            attack: new Map(), defense: new Map(), dps: new Map()
+        };
     }
 
     cacheDynamicElements() {
@@ -113,14 +114,15 @@ class UI {
         this.combatEnemyTimer = document.getElementById('combat-enemy-timer');
         this.shopItemsContainer = document.getElementById('shop-items');
         this.shopRerollButton = document.getElementById('shop-reroll-button');
-        
-               this.equipmentTextDisplay = {};        const equipmentDisplay = document.getElementById('equipment-text-display');
+
+        this.equipmentTextDisplay = {}; const equipmentDisplay = document.getElementById('equipment-text-display');
         if (equipmentDisplay) {
             const pElements = equipmentDisplay.querySelectorAll('p[data-slot]');
             pElements.forEach(pElement => {
                 const slot = pElement.dataset.slot;
                 if (slot) {
-                    this.equipmentTextDisplay[slot] = pElement;                }
+                    this.equipmentTextDisplay[slot] = pElement;
+                }
             });
         } else {
             console.error("Could not find #equipment-text-display to cache elements.");
@@ -147,21 +149,21 @@ class UI {
             }
         }
 
-               this.statHealthElement = document.getElementById('stat-health-2')?.closest('.stat-item');
+        this.statHealthElement = document.getElementById('stat-health-2')?.closest('.stat-item');
         this.statAttackElement = document.getElementById('stat-attack-2')?.closest('.stat-item');
         this.statDefenseElement = document.getElementById('stat-defense-2')?.closest('.stat-item');
         this.statSpeedElement = document.getElementById('stat-speed-2')?.closest('.stat-item');
         this.statDpsElement = document.getElementById('stat-dps-2')?.closest('.stat-item');
-        this.statGoldElement = document.getElementById('stat-gold-2')?.closest('#inventory-header');        
-               this.roundAreaElement = document.getElementById('round-area')?.querySelector('.stat-item'); 
-        
-               if (!this.combatPlayerAtk) this.combatPlayerAtk = document.getElementById('combat-player-atk');
+        this.statGoldElement = document.getElementById('stat-gold-2')?.closest('#inventory-header');
+        this.roundAreaElement = document.getElementById('round-area')?.querySelector('.stat-item');
+
+        if (!this.combatPlayerAtk) this.combatPlayerAtk = document.getElementById('combat-player-atk');
         if (!this.combatPlayerDef) this.combatPlayerDef = document.getElementById('combat-player-def');
         if (!this.combatEnemyAtk) this.combatEnemyAtk = document.getElementById('combat-enemy-atk');
         if (!this.combatEnemyDef) this.combatEnemyDef = document.getElementById('combat-enemy-def');
         if (!this.combatPlayerTimerContainer) this.combatPlayerTimerContainer = document.querySelector('.player-side .attack-timer:not(.breath-timer)');
         if (!this.combatEnemyTimerContainer) this.combatEnemyTimerContainer = document.querySelector('.enemy-side .attack-timer:not(.breath-timer)');
-           }
+    }
 
     addCombatUITooltipListeners() {
         if (!this.statTooltip) {
@@ -170,50 +172,52 @@ class UI {
         }
 
         const combatElements = {
-            playerAtk: { el: this.combatPlayerAtk?.closest('span'), text: "Maximum potential damage per attack." }, 
-            playerDef: { el: this.combatPlayerDef?.closest('span'), text: "Maximum potential damage blocked per hit." }, 
-            enemyAtk: { el: this.combatEnemyAtk?.closest('span'), text: "Enemy's current attack power." }, 
-            enemyDef: { el: this.combatEnemyDef?.closest('span'), text: "Enemy's current defense value." }, 
-            playerTimer: { el: this.combatPlayerTimerContainer, text: "Attack every X seconds." }, 
-            enemyTimer: { el: this.combatEnemyTimerContainer, text: "Attack every X seconds." }, 
+            playerAtk: { el: this.combatPlayerAtk?.closest('span'), text: "Maximum potential damage per attack." },
+            playerDef: { el: this.combatPlayerDef?.closest('span'), text: "Maximum potential damage blocked per hit." },
+            enemyAtk: { el: this.combatEnemyAtk?.closest('span'), text: "Enemy's current attack power." },
+            enemyDef: { el: this.combatEnemyDef?.closest('span'), text: "Enemy's current defense value." },
+            playerTimer: { el: this.combatPlayerTimerContainer, text: "Attack every X seconds." },
+            enemyTimer: { el: this.combatEnemyTimerContainer, text: "Attack every X seconds." },
             enemyBreathTimer: { el: this.combatEnemyBreathTimerContainer, text: "Firebreath every X seconds." },
             stunTimer: { el: this.combatEnemyStunTimerContainer, text: "Slams ground every X seconds." }
         };
 
-               const playerHealthBarContainer = document.querySelector('.player-side .health-bar-container');
-        
+        const playerHealthBarContainer = document.querySelector('.player-side .health-bar-container');
+
         const poisonEnterHandler = (e) => {
-            if (this.game?.player?.activeEffects?.poison) {                 this.showTooltip("You are poisoned!", this.statTooltip, e);
+            if (this.game?.player?.activeEffects?.poison) {
+                this.showTooltip("You are poisoned!", this.statTooltip, e);
             }
         };
         const poisonLeaveHandler = () => {
             this.hideTooltip(this.statTooltip);
         };
 
-               if (playerHealthBarContainer) {
-                       playerHealthBarContainer.removeEventListener('mouseenter', playerHealthBarContainer._tooltipEnterHandler);
+        if (playerHealthBarContainer) {
+            playerHealthBarContainer.removeEventListener('mouseenter', playerHealthBarContainer._tooltipEnterHandler);
             playerHealthBarContainer.removeEventListener('mouseleave', playerHealthBarContainer._tooltipLeaveHandler);
-                       playerHealthBarContainer.addEventListener('mouseenter', poisonEnterHandler);
+            playerHealthBarContainer.addEventListener('mouseenter', poisonEnterHandler);
             playerHealthBarContainer.addEventListener('mouseleave', poisonLeaveHandler);
-                       playerHealthBarContainer._tooltipEnterHandler = poisonEnterHandler;
+            playerHealthBarContainer._tooltipEnterHandler = poisonEnterHandler;
             playerHealthBarContainer._tooltipLeaveHandler = poisonLeaveHandler;
         } else {
             console.warn("Combat Tooltip Listener: Player health bar container not found.");
         }
-       
-               for (const key in combatElements) {
+
+        for (const key in combatElements) {
             const { el, text } = combatElements[key];
             if (el) {
-                el.dataset.tooltipTextBase = text; 
+                el.dataset.tooltipTextBase = text;
 
                 const enterHandler = (e) => {
-                                       let dynamicText = el.dataset.tooltipTextDynamic;
+                    let dynamicText = el.dataset.tooltipTextDynamic;
                     let tooltipText = "No description available.";
-                    if (dynamicText) {                        tooltipText = dynamicText;
-                    } else { 
-                                               tooltipText = combatElements[key]?.text || "No description available."; 
+                    if (dynamicText) {
+                        tooltipText = dynamicText;
+                    } else {
+                        tooltipText = combatElements[key]?.text || "No description available.";
                     }
-                    
+
                     if (key === 'playerTimer') {
                         if (this.game.player.isStunned) {
                             tooltipText = 'You are Stunned!';
@@ -236,13 +240,13 @@ class UI {
                     this.hideTooltip(this.statTooltip);
                 };
 
-                               el.removeEventListener('mouseenter', el._tooltipEnterHandler);
+                el.removeEventListener('mouseenter', el._tooltipEnterHandler);
                 el.removeEventListener('mouseleave', el._tooltipLeaveHandler);
 
                 el.addEventListener('mouseenter', enterHandler);
                 el.addEventListener('mouseleave', leaveHandler);
 
-                               el._tooltipEnterHandler = enterHandler;
+                el._tooltipEnterHandler = enterHandler;
                 el._tooltipLeaveHandler = leaveHandler;
             } else {
                 console.warn(`Combat Tooltip Listener: Element for key '${key}' not found.`);
@@ -264,28 +268,28 @@ class UI {
 
         for (const key in statElements) {
             const element = statElements[key];
-            
+
             if (element && this.statTooltip) {
                 const enterHandler = (e) => {
-                                       const tooltipText = element.dataset.tooltipText || "No description available."; 
-                    this.showTooltip(tooltipText.replace(/\\n/g, '<br>'), this.statTooltip, e); 
+                    const tooltipText = element.dataset.tooltipText || "No description available.";
+                    this.showTooltip(tooltipText.replace(/\\n/g, '<br>'), this.statTooltip, e);
                 };
                 const leaveHandler = () => {
                     this.hideTooltip(this.statTooltip);
                 };
 
-                                              element.removeEventListener('mouseenter', element._tooltipEnterHandler);
+                element.removeEventListener('mouseenter', element._tooltipEnterHandler);
                 element.removeEventListener('mouseleave', element._tooltipLeaveHandler);
 
                 element.addEventListener('mouseenter', enterHandler);
                 element.addEventListener('mouseleave', leaveHandler);
-                
-                               element._tooltipEnterHandler = enterHandler;
+
+                element._tooltipEnterHandler = enterHandler;
                 element._tooltipLeaveHandler = leaveHandler;
 
             } else {
-                 if (!element) console.warn(`Tooltip Listener: Element for stat '${key}' not found during listener attachment.`);
-                 if (!this.statTooltip) console.warn(`Tooltip Listener: Stat tooltip element not found during listener attachment.`);
+                if (!element) console.warn(`Tooltip Listener: Element for stat '${key}' not found during listener attachment.`);
+                if (!this.statTooltip) console.warn(`Tooltip Listener: Stat tooltip element not found during listener attachment.`);
             }
         }
     }
@@ -317,14 +321,16 @@ class UI {
             const slot = document.createElement('div');
             slot.classList.add('inventory-slot');
             slot.dataset.index = index;
-            
-                       slot.addEventListener('dragover', (event) => {
+
+            slot.addEventListener('dragover', (event) => {
                 event.preventDefault();
-                if (!slot.classList.contains('dragging')) {                    slot.classList.add('drag-over');
+                if (!slot.classList.contains('dragging')) {
+                    slot.classList.add('drag-over');
                 }
             });
             slot.addEventListener('dragenter', (event) => {
-                event.preventDefault();            });
+                event.preventDefault();
+            });
             slot.addEventListener('dragleave', () => {
                 slot.classList.remove('drag-over');
             });
@@ -336,34 +342,35 @@ class UI {
                 if (sourceIndex === null || sourceIndex === undefined || targetIndex === null || targetIndex === undefined || sourceIndex === targetIndex) return;
                 this.game.handleInventorySwap(sourceIndex, targetIndex);
             });
-           
-            slot.classList.remove('slot-empty', 'slot-filled', 'dragging', 'equipped', 'food-stunned'); 
+
+            slot.classList.remove('slot-empty', 'slot-filled', 'dragging', 'equipped', 'food-stunned');
 
             if (item) {
                 slot.classList.remove('slot-empty');
                 slot.classList.add('slot-filled');
-                               const MAX_NAME_LENGTH = 18;                let displayName = item.name;
+                const MAX_NAME_LENGTH = 18; let displayName = item.name;
                 if (item.name.length > MAX_NAME_LENGTH) {
-                    displayName = item.name.substring(0, MAX_NAME_LENGTH - 1) + '…';                }
-                               slot.textContent = displayName;
+                    displayName = item.name.substring(0, MAX_NAME_LENGTH - 1) + '…';
+                }
+                slot.textContent = displayName;
                 slot.draggable = true;
-                               slot.addEventListener('dragstart', (event) => {
+                slot.addEventListener('dragstart', (event) => {
                     event.dataTransfer.setData('text/plain', index.toString());
                     event.dataTransfer.effectAllowed = 'move';
                     this.draggedItemIndex = index;
                     this.draggedItem = item;
                     setTimeout(() => slot.classList.add('dragging'), 0);
-                    this.hideTooltip(this.itemTooltip);                    this.hideTooltip(this.equipTooltip);
+                    this.hideTooltip(this.itemTooltip); this.hideTooltip(this.equipTooltip);
                 });
                 slot.addEventListener('dragend', () => {
                     slot.classList.remove('dragging');
-                                       this.inventoryGrid.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+                    this.inventoryGrid.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
                     this.draggedItemIndex = null;
                     this.draggedItem = null;
                 });
-                               
-                let originalClickHandler = null; 
-                let originalActionText = '';   
+
+                let originalClickHandler = null;
+                let originalActionText = '';
                 let isEquipped = false;
                 for (const slotName in this.game.player.equipment) {
                     if (this.game.player.equipment[slotName] === index) {
@@ -380,7 +387,7 @@ class UI {
                         this.game.handleSellItem(index);
                         this.createDamageSplat(`.inventory-slot[data-index="${index}"]`, sellPrice + "G", 'sell');
                         this.hideTooltip(this.itemTooltip);
-                     };
+                    };
                     slot.classList.add('shop-sellable');
                 } else {
                     if (item.type === 'weapon' || item.type === 'armor') {
@@ -405,7 +412,7 @@ class UI {
                         originalActionText = '[No Action]';
                         slot.style.cursor = 'default';
                     }
-                    
+
                     let tooltipContent = '';
                     if (originalActionText) {
                         tooltipContent += `<div class="tooltip-action">${originalActionText}</div>`;
@@ -413,16 +420,17 @@ class UI {
                     tooltipContent += `<div class="tooltip-item-name">${item.name}</div>`;
                     tooltipContent += item.description || 'No description';
 
-                                       slot.addEventListener('mouseenter', (e) => {                                               let currentTooltipContent = '';
+                    slot.addEventListener('mouseenter', (e) => {
+                        let currentTooltipContent = '';
                         if (currentActionText) {
                             currentTooltipContent += `<div class="tooltip-action">${currentActionText}</div>`;
                         }
                         currentTooltipContent += `<div class="tooltip-item-name">${item.name}</div>`;
                         currentTooltipContent += item.description || 'No description';
 
-                                               this.showTooltip(currentTooltipContent.replace(/\n/g, '<br>'), this.itemTooltip, e);
+                        this.showTooltip(currentTooltipContent.replace(/\n/g, '<br>'), this.itemTooltip, e);
                     });
-                    
+
                     if (this.game.state === 'blacksmith' && (item.type === 'weapon' || item.type === 'armor')) {
                         slot.classList.add('blacksmith-valid');
                     } else if (this.game.state === 'armourer' && item.type === 'armor') {
@@ -432,23 +440,25 @@ class UI {
                     }
                 }
 
-                               let isStunnedAndFood = false;
+                let isStunnedAndFood = false;
                 if (this.game.state === 'combat' && this.game.player.isStunned && item.useAction === 'Eat') {
                     isStunnedAndFood = true;
                     slot.classList.add('food-stunned');
-                    slot.style.cursor = 'default';                    slot.dataset.isStunnedFood = 'true';                } else {
-                    slot.classList.remove('food-stunned'); 
-                    delete slot.dataset.isStunnedFood;                }
-               
-                               slot.removeEventListener('mouseenter', slot._tooltipEnterHandler);
+                    slot.style.cursor = 'default'; slot.dataset.isStunnedFood = 'true';
+                } else {
+                    slot.classList.remove('food-stunned');
+                    delete slot.dataset.isStunnedFood;
+                }
+
+                slot.removeEventListener('mouseenter', slot._tooltipEnterHandler);
                 slot.removeEventListener('mouseleave', slot._tooltipLeaveHandler);
-                
+
                 const enterHandler = (e) => {
                     let currentActionText = originalActionText;
-                                       if (slot.dataset.isStunnedFood === 'true') {
+                    if (slot.dataset.isStunnedFood === 'true') {
                         currentActionText = "[You are stunned!]";
                     }
-                    
+
                     let tooltipContent = '';
                     if (currentActionText) {
                         tooltipContent += `<div class="tooltip-action">${currentActionText}</div>`;
@@ -456,23 +466,25 @@ class UI {
                     tooltipContent += `<div class="tooltip-item-name">${item.name}</div>`;
                     tooltipContent += item.description || 'No description';
 
-                                       this.showTooltip(tooltipContent.replace(/\n/g, '<br>'), this.itemTooltip, e);
+                    this.showTooltip(tooltipContent.replace(/\n/g, '<br>'), this.itemTooltip, e);
                 };
                 const leaveHandler = () => {
-                     this.hideTooltip(this.itemTooltip);
+                    this.hideTooltip(this.itemTooltip);
                 };
-                
+
                 slot.addEventListener('mouseenter', enterHandler);
                 slot.addEventListener('mouseleave', leaveHandler);
                 slot._tooltipEnterHandler = enterHandler;
                 slot._tooltipLeaveHandler = leaveHandler;
-               
-                               slot.removeEventListener('click', slot._clickHandler);                if (originalClickHandler && !isStunnedAndFood) {                    slot.addEventListener('click', originalClickHandler);
-                    slot._clickHandler = originalClickHandler;                    slot.style.cursor = 'pointer';                } else if (!isStunnedAndFood) {
-                                       slot.style.cursor = 'default'; 
+
+                slot.removeEventListener('click', slot._clickHandler); if (originalClickHandler && !isStunnedAndFood) {
+                    slot.addEventListener('click', originalClickHandler);
+                    slot._clickHandler = originalClickHandler; slot.style.cursor = 'pointer';
+                } else if (!isStunnedAndFood) {
+                    slot.style.cursor = 'default';
                 }
-                              
-                               if (isEquipped) {
+
+                if (isEquipped) {
                     slot.classList.add('equipped');
                     const chip = document.createElement('span');
                     chip.classList.add('equipped-slot-chip');
@@ -506,22 +518,23 @@ class UI {
             } else {
                 slot.textContent = '';
                 slot.classList.add('slot-empty');
-                slot.draggable = false;            }
+                slot.draggable = false;
+            }
             this.inventoryGrid.appendChild(slot);
         });
     }
 
     renderEquipment() {
         for (const slotName in this.equipmentTextDisplay) {
-                       const parentPElement = this.equipmentTextDisplay[slotName]; 
+            const parentPElement = this.equipmentTextDisplay[slotName];
             if (!parentPElement) {
-                 console.warn(`UI renderEquipment: Parent <p> element reference missing for ${slotName}`);
-                 continue;
+                console.warn(`UI renderEquipment: Parent <p> element reference missing for ${slotName}`);
+                continue;
             }
-            
-                       const labelSpan = parentPElement.querySelector('.equip-label'); 
+
+            const labelSpan = parentPElement.querySelector('.equip-label');
             const unequipButton = parentPElement.querySelector(`.unequip-button[data-slot="${slotName}"]`);
-            
+
             if (!labelSpan || !unequipButton) {
                 console.warn(`UI renderEquipment: Label or Unequip button not found within parent P for ${slotName}`);
                 continue;
@@ -531,7 +544,7 @@ class UI {
             let itemDescription = '';
             let isEquipped = false;
 
-                       parentPElement.onmouseenter = null;
+            parentPElement.onmouseenter = null;
             parentPElement.onmouseleave = null;
 
             if (equippedItemIndex !== null && this.game.player.inventory[equippedItemIndex]) {
@@ -539,7 +552,7 @@ class UI {
                 itemDescription = item.description || 'No description';
                 isEquipped = true;
 
-                               parentPElement.onmouseenter = (e) => this.showTooltip(itemDescription, this.equipTooltip, e);
+                parentPElement.onmouseenter = (e) => this.showTooltip(itemDescription, this.equipTooltip, e);
                 parentPElement.onmouseleave = () => this.hideTooltip(this.equipTooltip);
 
                 unequipButton.classList.remove('hidden');
@@ -549,20 +562,20 @@ class UI {
                     this.hideTooltip(this.equipTooltip);
                 };
             } else {
-                               unequipButton.classList.add('hidden');
+                unequipButton.classList.add('hidden');
                 unequipButton.onclick = null;
-                
-                               const defaultText = "Slot empty - equip an item!";
+
+                const defaultText = "Slot empty - equip an item!";
                 parentPElement.onmouseenter = (e) => this.showTooltip(defaultText, this.equipTooltip, e);
                 parentPElement.onmouseleave = () => this.hideTooltip(this.equipTooltip);
             }
 
-                       if (isEquipped) {
+            if (isEquipped) {
                 parentPElement.classList.add('equipped');
-                labelSpan.classList.add('equipped'); 
+                labelSpan.classList.add('equipped');
             } else {
                 parentPElement.classList.remove('equipped');
-                labelSpan.classList.remove('equipped'); 
+                labelSpan.classList.remove('equipped');
             }
         }
     }
@@ -573,15 +586,15 @@ class UI {
 
         if (this.statHealth) this.statHealth.textContent = player.health;
         if (this.statMaxHealth) this.statMaxHealth.textContent = player.getMaxHealth();
-        
-               let attackBase = player.baseAttack + (player.equipment.weapon !== null ? (this.game.player.inventory[player.equipment.weapon]?.stats?.attack || 0) : 0) + (player.equipment.ring !== null ? (this.game.player.inventory[player.equipment.ring]?.stats?.attack || 0) : 0);
-        let attackText = `${attackBase}`; 
 
-               const maxAttack = player.getAttack();
+        let attackBase = player.baseAttack + (player.equipment.weapon !== null ? (this.game.player.inventory[player.equipment.weapon]?.stats?.attack || 0) : 0) + (player.equipment.ring !== null ? (this.game.player.inventory[player.equipment.ring]?.stats?.attack || 0) : 0);
+        let attackText = `${attackBase}`;
+
+        const maxAttack = player.getAttack();
         let attackTooltip = this.tooltipCache.attack.get(maxAttack);
 
         if (!attackTooltip) {
-                       attackTooltip = "<b>Max damage<\/b><br><br>Chance to hit:<br>";
+            attackTooltip = "<b>Max damage<\/b><br><br>Chance to hit:<br>";
             const numSimulations = 2400;
 
             for (let def = 0; def <= 10; def++) {
@@ -597,10 +610,10 @@ class UI {
                 attackTooltip += `${def} Def: <b>${hitChance.toFixed(1)}%</b><br>`;
             }
 
-                       this.tooltipCache.attack.set(maxAttack, attackTooltip);
+            this.tooltipCache.attack.set(maxAttack, attackTooltip);
         }
 
-               if (player.tempAttack > 0) {
+        if (player.tempAttack > 0) {
             attackText += ` <span class="boosted-stat">(+${player.tempAttack})</span>`;
             attackTooltip = attackTooltip + `<br>Boosted by +${player.tempAttack} (temporary, lasts until combat ends).`;
         }
@@ -608,19 +621,19 @@ class UI {
         if (this.statAttack) this.statAttack.innerHTML = attackText;
         if (this.statAttackElement) this.statAttackElement.dataset.tooltipText = attackTooltip;
 
-               let defenseBase = player.baseDefense;
+        let defenseBase = player.baseDefense;
         Object.values(player.equipment).forEach(index => {
-             if (index !== null && this.game.player.inventory[index]?.stats?.defense) {
-                 defenseBase += this.game.player.inventory[index].stats.defense;
-             }
-         });
+            if (index !== null && this.game.player.inventory[index]?.stats?.defense) {
+                defenseBase += this.game.player.inventory[index].stats.defense;
+            }
+        });
         let defenseText = `${defenseBase}`;
-        
-               const maxDefense = player.getDefense();
+
+        const maxDefense = player.getDefense();
         let defenseTooltip = this.tooltipCache.defense.get(maxDefense);
 
         if (!defenseTooltip) {
-                       defenseTooltip = "<b>Max block<\/b><br><br>Chance to block:<br>";
+            defenseTooltip = "<b>Max block<\/b><br><br>Chance to block:<br>";
             const numSimulations = 2400;
 
             for (let atk = 0; atk <= 10; atk++) {
@@ -636,7 +649,7 @@ class UI {
                 defenseTooltip += `${atk} Atk: <b>${blockChance.toFixed(1)}%</b><br>`;
             }
 
-                       this.tooltipCache.defense.set(maxDefense, defenseTooltip);
+            this.tooltipCache.defense.set(maxDefense, defenseTooltip);
         }
 
         if (player.tempDefense > 0) {
@@ -645,23 +658,23 @@ class UI {
         }
         if (this.statDefense) this.statDefense.innerHTML = defenseText;
         if (this.statDefenseElement) this.statDefenseElement.dataset.tooltipText = defenseTooltip;
-        
-               const baseSpeed = player.equipment.weapon !== null ? (this.game.player.inventory[player.equipment.weapon]?.speed ?? player.defaultAttackSpeed) : player.defaultAttackSpeed;
+
+        const baseSpeed = player.equipment.weapon !== null ? (this.game.player.inventory[player.equipment.weapon]?.speed ?? player.defaultAttackSpeed) : player.defaultAttackSpeed;
         let finalSpeed = Math.max(0.5, baseSpeed - player.tempSpeedReduction);
         let speedText = `${finalSpeed.toFixed(1)}s`;
         let speedTooltip = "Time between your attacks (lower is faster).";
         if (player.tempSpeedReduction > 0) {
             speedText += ` <span class="boosted-stat">(-${player.tempSpeedReduction.toFixed(1)}s)</span>`;
-             speedTooltip = `Time between your attacks (lower is faster).\nBoosted by -${player.tempSpeedReduction.toFixed(1)}s (temporary, lasts until combat ends).`;
+            speedTooltip = `Time between your attacks (lower is faster).\nBoosted by -${player.tempSpeedReduction.toFixed(1)}s (temporary, lasts until combat ends).`;
         }
-        if (this.statSpeed) this.statSpeed.innerHTML = speedText;        if (this.statSpeedElement) this.statSpeedElement.dataset.tooltipText = speedTooltip;
+        if (this.statSpeed) this.statSpeed.innerHTML = speedText; if (this.statSpeedElement) this.statSpeedElement.dataset.tooltipText = speedTooltip;
 
-               const attackSpeed = player.getAttackSpeed();
+        const attackSpeed = player.getAttackSpeed();
         const cacheKey = `${maxAttack}_${attackSpeed}`;
         let dpsTooltip = this.tooltipCache.dps.get(cacheKey);
 
         if (!dpsTooltip) {
-                       dpsTooltip = "<b>Damage per second<\/b><br><br>DPS against:<br>";
+            dpsTooltip = "<b>Damage per second<\/b><br><br>DPS against:<br>";
             const numSimulations = 2400;
 
             for (let def = 0; def <= 10; def++) {
@@ -677,55 +690,57 @@ class UI {
                 dpsTooltip += `${def} Def: <b>${dpsAgainstDef.toFixed(2)}</b><br>`;
             }
 
-                       this.tooltipCache.dps.set(cacheKey, dpsTooltip);
+            this.tooltipCache.dps.set(cacheKey, dpsTooltip);
         }
 
         if (this.statDpsElement) this.statDpsElement.dataset.tooltipText = dpsTooltip;
 
-               if (this.statGold) this.statGold.textContent = player.gold;
-        if (this.statGoldElement) this.statGoldElement.dataset.tooltipText = "Your current wealth.";        if (this.statHealthElement) this.statHealthElement.dataset.tooltipText = "Current Health / Maximum Health";        if (this.statDps) this.statDps.textContent = (player.getAttack() / player.getAttackSpeed()).toFixed(1);
-        
-        if (this.statRound && this.game && this.roundAreaElement) { 
-           const currentRound = this.game.currentRound;
-           const currentRoundText = `${currentRound}`;
-           const maxRoundsElement = document.getElementById('stat-max-rounds');
-           
-                     if (this.statRound.textContent !== currentRoundText) {
-               this.statRound.textContent = currentRoundText; 
-               this.roundAreaElement.classList.remove('round-pulsing'); 
-               void this.roundAreaElement.offsetWidth; 
-               this.roundAreaElement.classList.add('round-pulsing');
-               setTimeout(() => {
-                   this.roundAreaElement.classList.remove('round-pulsing');
-               }, 700); 
-           }
-           if (maxRoundsElement) maxRoundsElement.textContent = this.game.maxRounds;
-           
-                     let roundTooltipText = `Current Round: ${currentRound} / ${this.game.maxRounds}`;
-           if (currentRound === 10 || currentRound === 20) {
-               roundTooltipText = `MINI-BOSS APPROACHING! (Round ${currentRound})`;           } else if (currentRound === 30) {
-               roundTooltipText = `FINAL BOSS! The Ancient Dragon awaits... (Round ${currentRound})`;           }
-           
-                     this.roundAreaElement.dataset.tooltipText = roundTooltipText;
+        if (this.statGold) this.statGold.textContent = player.gold;
+        if (this.statGoldElement) this.statGoldElement.dataset.tooltipText = "Your current wealth."; if (this.statHealthElement) this.statHealthElement.dataset.tooltipText = "Current Health / Maximum Health"; if (this.statDps) this.statDps.textContent = (player.getAttack() / player.getAttackSpeed()).toFixed(1);
+
+        if (this.statRound && this.game && this.roundAreaElement) {
+            const currentRound = this.game.currentRound;
+            const currentRoundText = `${currentRound}`;
+            const maxRoundsElement = document.getElementById('stat-max-rounds');
+
+            if (this.statRound.textContent !== currentRoundText) {
+                this.statRound.textContent = currentRoundText;
+                this.roundAreaElement.classList.remove('round-pulsing');
+                void this.roundAreaElement.offsetWidth;
+                this.roundAreaElement.classList.add('round-pulsing');
+                setTimeout(() => {
+                    this.roundAreaElement.classList.remove('round-pulsing');
+                }, 700);
+            }
+            if (maxRoundsElement) maxRoundsElement.textContent = this.game.maxRounds;
+
+            let roundTooltipText = `Current Round: ${currentRound} / ${this.game.maxRounds}`;
+            if (currentRound === 10 || currentRound === 20) {
+                roundTooltipText = `MINI-BOSS APPROACHING! (Round ${currentRound})`;
+            } else if (currentRound === 30) {
+                roundTooltipText = `FINAL BOSS! The Ancient Dragon awaits... (Round ${currentRound})`;
+            }
+
+            this.roundAreaElement.dataset.tooltipText = roundTooltipText;
         }
 
-               if (this.areaDescriptionElement) {
-            let areaName = "Unknown Area";            let areaTooltip = "You are somewhere mysterious...";            const currentAreaId = this.game.currentArea;
+        if (this.areaDescriptionElement) {
+            let areaName = "Unknown Area"; let areaTooltip = "You are somewhere mysterious..."; const currentAreaId = this.game.currentArea;
             let currentTier = null;
 
-                       const roundForLookup = this.game.currentRound === 0 ? 1 : this.game.currentRound;
+            const roundForLookup = this.game.currentRound === 0 ? 1 : this.game.currentRound;
 
-                       for (const tier of AREA_CONFIG) {
+            for (const tier of AREA_CONFIG) {
                 if (roundForLookup >= tier.startRound && roundForLookup <= tier.endRound) {
                     currentTier = tier;
                     break;
                 }
             }
 
-                       if (currentTier && currentTier.areas && currentTier.areas[currentAreaId]) {
+            if (currentTier && currentTier.areas && currentTier.areas[currentAreaId]) {
                 areaName = currentTier.areas[currentAreaId].name;
                 areaTooltip = currentTier.areas[currentAreaId].tooltip;
-            } else if (currentAreaId) { 
+            } else if (currentAreaId) {
                 console.warn(`Area info not found in AREA_CONFIG for: ${currentAreaId} in current tier (lookup round: ${roundForLookup}).`);
             }
 
@@ -733,10 +748,10 @@ class UI {
             this.areaDescriptionElement.dataset.tooltipText = areaTooltip;
         }
 
-               const attack = this.game.player.getAttack();
+        const attack = this.game.player.getAttack();
         const speed = this.game.player.getAttackSpeed();
         const dps = speed > 0 ? (attack / speed) : 0;
-               this.statDps.textContent = dps.toFixed(1);
+        this.statDps.textContent = dps.toFixed(1);
     }
 
     renderChoices(choices) {
@@ -754,11 +769,11 @@ class UI {
                 card.classList.add('selected');
                 setTimeout(() => this.game.selectChoice(0), 0);
             }
-            
+
             const encounter = choice.encounter;
             let difficultyText = '';
             let difficultyClass = '';
-            
+
             const cardContent = document.createElement('div');
             cardContent.classList.add('choice-card-content');
 
@@ -766,23 +781,25 @@ class UI {
                 card.classList.add('choice-monster');
                 const monster = MONSTERS[encounter.monsterId];
                 if (monster && monster.difficulty) {
-                    difficultyClass = 'difficulty-' + monster.difficulty;                    difficultyText = monster.difficulty.toUpperCase();                } else {
-                    difficultyClass = 'difficulty-unknown'; 
+                    difficultyClass = 'difficulty-' + monster.difficulty; difficultyText = monster.difficulty.toUpperCase();
+                } else {
+                    difficultyClass = 'difficulty-unknown';
                     difficultyText = '???';
                     console.warn(`Monster ${encounter.monsterId} is missing the difficulty property.`);
                 }
 
-                               const difficultyBadge = document.createElement('div');
+                const difficultyBadge = document.createElement('div');
                 difficultyBadge.className = `difficulty-badge ${difficultyClass}`;
                 difficultyBadge.textContent = difficultyText;
                 cardContent.appendChild(difficultyBadge);
             }
 
-                       const eventIcon = document.createElement('span');
+            const eventIcon = document.createElement('span');
             eventIcon.className = 'event-icon';
             if (choice.encounter.type === 'monster') {
                 const monster = MONSTERS[choice.encounter.monsterId];
-                eventIcon.textContent = monster.icon || '⚔️';            } else {
+                eventIcon.textContent = monster.icon || '⚔️';
+            } else {
                 switch (choice.encounter.type) {
                     case 'rest': eventIcon.textContent = '🏕️'; break;
                     case 'shop': eventIcon.textContent = '🏪'; break;
@@ -799,7 +816,7 @@ class UI {
             }
             cardContent.appendChild(eventIcon);
 
-                       const title = document.createElement('h3');
+            const title = document.createElement('h3');
             title.classList.add('choice-title');
             title.textContent = choice.text;
             cardContent.appendChild(title);
@@ -807,39 +824,39 @@ class UI {
             const description = document.createElement('div');
             description.classList.add('choice-description');
 
-                       if (encounter.type === 'monster') {
+            if (encounter.type === 'monster') {
                 const monster = MONSTERS[encounter.monsterId];
                 if (monster) {
                     let descriptionHTML = '';
-                                       if (monster.description) {
+                    if (monster.description) {
                         descriptionHTML += `<div class="monster-description-summary">${monster.description}</div>`;
                     }
 
-                                       descriptionHTML += `<div class="monster-stats-summary">
+                    descriptionHTML += `<div class="monster-stats-summary">
                         <div>⚔️ Atk: ${monster.attack}</div>
                         <div>🛡️ Def: ${monster.defense}</div>
                         <div>⚡ Spd: ${monster.speed}s</div>
                         <div>💰 Gold: ${monster.goldDrop[0]}-${monster.goldDrop[1]}</div>
                     </div>`;
-                                       if (monster.mechanics) {
+                    if (monster.mechanics) {
                         descriptionHTML += `<div class="monster-mechanics-summary">✨ ${monster.mechanics}</div>`;
                     }
                     description.innerHTML = descriptionHTML;
-            } else {
+                } else {
                     description.innerHTML = "Error: Monster data not found.";
                 }
             } else {
-                               description.innerHTML = this.game.getEncounterDetails(encounter);
+                description.innerHTML = this.game.getEncounterDetails(encounter);
             }
             cardContent.appendChild(description);
 
-                       const startButton = document.createElement('button');
+            const startButton = document.createElement('button');
             startButton.className = 'choice-start-button';
 
-                       switch (encounter.type) {
-                case 'monster': 
+            switch (encounter.type) {
+                case 'monster':
                     startButton.textContent = 'Fight';
-                                       if (difficultyClass) { 
+                    if (difficultyClass) {
                         startButton.classList.add(difficultyClass);
                     }
                     break;
@@ -863,8 +880,8 @@ class UI {
             cardContent.appendChild(startButton);
 
             card.appendChild(cardContent);
-            
-                       card.addEventListener('click', () => {
+
+            card.addEventListener('click', () => {
                 this.choicesArea.querySelectorAll('.choice-card').forEach(c => {
                     c.classList.remove('selected');
                 });
@@ -881,27 +898,27 @@ class UI {
     confirmChoice(index) {
         const selectedChoice = this.game.currentChoices[index];
         const choicesArea = document.getElementById('choices-area');
-        
-               if (this.roundAreaElement) { 
+
+        if (this.roundAreaElement) {
             this.roundAreaElement.classList.remove('round-miniboss', 'round-finalboss');
         }
 
-               if (this.game.currentRound === 10 || this.game.currentRound === 20 || this.game.currentRound === 30) {
+        if (this.game.currentRound === 10 || this.game.currentRound === 20 || this.game.currentRound === 30) {
             choicesArea.classList.add('encounter-starting');
         }
-        
-               const delay = (this.game.currentRound === 10 || this.game.currentRound === 20 || this.game.currentRound === 30) ? 500 : 50;
+
+        const delay = (this.game.currentRound === 10 || this.game.currentRound === 20 || this.game.currentRound === 30) ? 500 : 50;
 
         setTimeout(() => {
-            choicesArea.classList.remove('encounter-starting');            this.game.startEncounter(selectedChoice.encounter); 
+            choicesArea.classList.remove('encounter-starting'); this.game.startEncounter(selectedChoice.encounter);
         }, delay);
     }
 
     clearMainArea() {
         this.choicesArea.classList.add('hidden');
         if (this.combatArea) {
-             this.combatArea.classList.add('hidden');
-             this.combatArea.classList.remove('combat-ending'); 
+            this.combatArea.classList.add('hidden');
+            this.combatArea.classList.remove('combat-ending');
         }
         this.shopArea.classList.add('hidden');
         this.restArea.classList.add('hidden');
@@ -938,23 +955,23 @@ class UI {
         }
         this.choicesArea.innerHTML = '';
         this.cacheDynamicElements();
-               const areaTransitionScreen = document.getElementById('area-transition-screen');
+        const areaTransitionScreen = document.getElementById('area-transition-screen');
         if (areaTransitionScreen) {
             areaTransitionScreen.remove();
         }
-           }
+    }
 
     updateCombatStats(player, enemy) {
-               if (this.combatPlayerAtk) { 
+        if (this.combatPlayerAtk) {
             this.combatPlayerAtk.textContent = `⚔️ ${player.getAttack()}`;
         }
         if (this.combatPlayerDef) {
             this.combatPlayerDef.textContent = `🛡️ ${player.getDefense()}`;
         }
-               if (this.combatPlayerSpd) { 
+        if (this.combatPlayerSpd) {
             this.combatPlayerSpd.textContent = `⚡️ ${player.getAttackSpeed().toFixed(1)}s`;
         }
-               if (this.combatPlayerHp) { 
+        if (this.combatPlayerHp) {
             const playerMaxHp = player.getMaxHealth();
             this.combatPlayerHp.textContent = `${Math.ceil(player.health)}/${playerMaxHp}`;
             const playerHealthBar = document.querySelector('.player-health');
@@ -962,8 +979,8 @@ class UI {
                 playerHealthBar.style.width = `${(player.health / playerMaxHp) * 100}%`;
             }
         }
-        
-               if (this.combatEnemyAtk) {
+
+        if (this.combatEnemyAtk) {
             this.combatEnemyAtk.textContent = `⚔️ ${enemy.currentAttack}`;
             if (enemy.currentAttack > enemy.attack) {
                 this.combatEnemyAtk.classList.add('enraged');
@@ -973,7 +990,7 @@ class UI {
         }
         if (this.combatEnemyDef) {
             this.combatEnemyDef.textContent = `🛡️ ${enemy.currentDefense}`;
-            if (enemy.scalesHardened) { 
+            if (enemy.scalesHardened) {
                 this.combatEnemyDef.classList.add('hardened');
             } else if (enemy.packTacticsActive) {
                 this.combatEnemyDef.classList.add('hardened');
@@ -981,33 +998,33 @@ class UI {
                 this.combatEnemyDef.classList.remove('hardened');
             }
         }
-               if (this.combatEnemySpd) { 
+        if (this.combatEnemySpd) {
             this.combatEnemySpd.textContent = `⚡️ ${enemy.currentSpeed.toFixed(1)}s`;
-                              }
-               if (this.combatEnemyHp) { 
+        }
+        if (this.combatEnemyHp) {
             const enemyMaxHp = enemy.maxHealth;
             this.combatEnemyHp.textContent = `${Math.ceil(enemy.health)}/${enemyMaxHp}`;
             const enemyHealthBar = document.querySelector('.enemy-health');
             if (enemyHealthBar) {
-                 enemyHealthBar.style.width = `${(enemy.health / enemyMaxHp) * 100}%`;
+                enemyHealthBar.style.width = `${(enemy.health / enemyMaxHp) * 100}%`;
             }
         }
 
-                      const playerSide = document.querySelector('.player-side');
+        const playerSide = document.querySelector('.player-side');
         if (playerSide) {
             if (player.activeEffects.poison) {
                 playerSide.classList.add('player-poisoned');
             } else {
                 playerSide.classList.remove('player-poisoned');
             }
-                       if (!player.activeEffects.burning) {
-                 playerSide.classList.remove('player-burning');
+            if (!player.activeEffects.burning) {
+                playerSide.classList.remove('player-burning');
             }
         }
 
-               this.addStatTooltipListeners('.player-side .combat-stats', this.statTooltip);
+        this.addStatTooltipListeners('.player-side .combat-stats', this.statTooltip);
 
-               const regenTimerContainer = this.combatArea.querySelector('.regen-timer');
+        const regenTimerContainer = this.combatArea.querySelector('.regen-timer');
         if (regenTimerContainer) {
             regenTimerContainer.addEventListener('mouseenter', (e) => {
                 this.showTooltip("The giant is regenerating.", this.statTooltip, e);
@@ -1017,15 +1034,15 @@ class UI {
             });
         }
 
-               this.updateCombatTimers(
-            player.attackTimer, 
-            enemy.attackTimer, 
-            player.pendingActionDelay, 
-            enemy.breathAttackTimer, 
-            enemy.breathAttackInterval, 
-            enemy.timedStunTimer, 
-            enemy.timedStunInterval, 
-            enemy.regenerationTimer, 
+        this.updateCombatTimers(
+            player.attackTimer,
+            enemy.attackTimer,
+            player.pendingActionDelay,
+            enemy.breathAttackTimer,
+            enemy.breathAttackInterval,
+            enemy.timedStunTimer,
+            enemy.timedStunInterval,
+            enemy.regenerationTimer,
             enemy.regenerationInterval);
     }
 
@@ -1034,7 +1051,7 @@ class UI {
         this.combatArea.classList.remove('hidden');
         document.getElementById('combat-enemy-name').textContent = enemy.name;
 
-               const initialPlayerPercentage = (player.health / player.getMaxHealth()) * 100;
+        const initialPlayerPercentage = (player.health / player.getMaxHealth()) * 100;
         if (this.combatPlayerHp) this.combatPlayerHp.textContent = `${player.health}/${player.getMaxHealth()}`;
         const playerHealthBar = document.querySelector('.player-health');
         if (playerHealthBar) playerHealthBar.style.width = `${initialPlayerPercentage}%`;
@@ -1043,9 +1060,9 @@ class UI {
         if (this.combatEnemyHp) this.combatEnemyHp.textContent = `${enemy.health}/${enemy.maxHealth}`;
         const enemyHealthBar = document.querySelector('.enemy-health');
         if (enemyHealthBar) enemyHealthBar.style.width = `${initialEnemyPercentage}%`;
-               
-                             this.updateCombatTimers(player.attackTimer, enemy.attackTimer);
-        this.updateCombatStats(player, enemy); 
+
+        this.updateCombatTimers(player.attackTimer, enemy.attackTimer);
+        this.updateCombatStats(player, enemy);
     }
 
     hideCombatUI() {
@@ -1064,7 +1081,7 @@ class UI {
             void healthBar.offsetWidth;
             healthBar.classList.add('damage-taken');
             this.createDamageSplat('.player-side', damage, splatType, blocked, fullBlock);
-            
+
         } else if (who === 'enemy') {
             this.combatEnemyHp.textContent = `${current}/${max}`;
             const healthBar = document.querySelector('.enemy-health');
@@ -1073,14 +1090,15 @@ class UI {
             void healthBar.offsetWidth;
             healthBar.classList.add('damage-taken');
             this.createDamageSplat('.enemy-side', damage, splatType, blocked, fullBlock);
-            
+
         }
     }
 
-    updateCombatTimers(playerTimer, enemyTimer, playerDelay = 0, 
-                         enemyBreathTimer, enemyBreathInterval, 
-                         enemyStunTimer, enemyStunInterval,
-                         enemyRegenTimer, enemyRegenInterval) {        const playerTimerEl = document.getElementById('combat-player-timer');
+    updateCombatTimers(playerTimer, enemyTimer, playerDelay = 0,
+        enemyBreathTimer, enemyBreathInterval,
+        enemyStunTimer, enemyStunInterval,
+        enemyRegenTimer, enemyRegenInterval) {
+            const playerTimerEl = document.getElementById('combat-player-timer');
         const playerTimerBar = document.querySelector('.player-timer');
         const enemyTimerEl = document.getElementById('combat-enemy-timer');
         const enemyTimerBar = document.querySelector('.enemy-timer');
@@ -1090,7 +1108,7 @@ class UI {
         const enemyStunTimerEl = document.getElementById('combat-enemy-stun-timer');
         const enemyStunTimerContainer = document.querySelector('.stun-timer');
         const enemyStunTimerBar = document.querySelector('.enemy-stun-timer');
-               const enemyRegenTimerEl = document.getElementById('combat-enemy-regen-timer');
+        const enemyRegenTimerEl = document.getElementById('combat-enemy-regen-timer');
         const enemyRegenTimerContainer = document.querySelector('.regen-timer');
         const enemyRegenTimerBar = document.querySelector('.enemy-regen-timer');
 
@@ -1099,7 +1117,7 @@ class UI {
             const playerTotalTime = this.game.player.getAttackSpeed();
             const playerProgress = 1 - (playerTimer / playerTotalTime);
             playerTimerBar.style.width = `${Math.min(100, playerProgress * 100)}%`;
-                       const playerContainer = playerTimerBar.closest('.attack-timer');
+            const playerContainer = playerTimerBar.closest('.attack-timer');
             if (playerContainer) {
                 if (playerDelay > 0) {
                     playerContainer.classList.add('player-delayed');
@@ -1108,7 +1126,7 @@ class UI {
                     if (this.game.player.isStunned) {
                         playerTimerBar.style.width = `${(playerDelay / this.game.player.activeEffects.stun.duration) * 100}%`;
                     } else {
-                        playerTimerBar.style.width = `${(playerDelay /2) * 100}%`;
+                        playerTimerBar.style.width = `${(playerDelay / 2) * 100}%`;
                     }
 
                     playerTimerBar.style.backgroundColor = '#ffd700';
@@ -1122,11 +1140,11 @@ class UI {
 
         if (enemyTimerEl) enemyTimerEl.textContent = enemyTimer.toFixed(1);
         if (enemyTimerBar) {
-            const enemyTotalTime = this.game.currentCombat.enemy.speed;            const enemyProgress = 1 - (enemyTimer / enemyTotalTime);
+            const enemyTotalTime = this.game.currentCombat.enemy.speed; const enemyProgress = 1 - (enemyTimer / enemyTotalTime);
             enemyTimerBar.style.width = `${Math.min(100, enemyProgress * 100)}%`;
         }
 
-               if (enemyBreathTimerContainer) {
+        if (enemyBreathTimerContainer) {
             if (enemyBreathInterval !== null && enemyBreathInterval > 0) {
                 enemyBreathTimerContainer.classList.remove('hidden');
                 if (enemyBreathTimerEl) enemyBreathTimerEl.textContent = enemyBreathTimer.toFixed(1);
@@ -1138,21 +1156,21 @@ class UI {
                 enemyBreathTimerContainer.classList.add('hidden');
             }
         }
-        
-               if (enemyStunTimerContainer) {
+
+        if (enemyStunTimerContainer) {
             if (enemyStunInterval !== null && enemyStunInterval > 0) {
                 enemyStunTimerContainer.classList.remove('hidden');
                 if (enemyStunTimerEl) enemyStunTimerEl.textContent = enemyStunTimer.toFixed(1);
                 if (enemyStunTimerBar) {
                     const stunProgress = 1 - (enemyStunTimer / enemyStunInterval);
                     enemyStunTimerBar.style.width = `${Math.min(100, stunProgress * 100)}%`;
-            }
-        } else {
+                }
+            } else {
                 enemyStunTimerContainer.classList.add('hidden');
             }
         }
-        
-               if (enemyRegenTimerContainer) {
+
+        if (enemyRegenTimerContainer) {
             if (enemyRegenInterval !== null && enemyRegenInterval > 0) {
                 enemyRegenTimerContainer.classList.remove('hidden');
                 if (enemyRegenTimerEl) enemyRegenTimerEl.textContent = enemyRegenTimer.toFixed(1);
@@ -1162,13 +1180,14 @@ class UI {
                 }
             } else {
                 enemyRegenTimerContainer.classList.add('hidden');
-             }
+            }
         }
     }
 
     showTooltip(text, tooltipElement, event) {
         if (!tooltipElement) {
-                       return;        }
+            return;
+        }
         tooltipElement.innerHTML = text;
         tooltipElement.classList.remove('hidden');
 
@@ -1188,30 +1207,32 @@ class UI {
     }
 
     hideTooltip(tooltipElement) {
-        if (tooltipElement) {            tooltipElement.classList.add('hidden');
+        if (tooltipElement) {
+            tooltipElement.classList.add('hidden');
         }
     }
 
     updateShopAffordability() {
-        if (!this.game || this.game.state !== 'shop') return;        
+        if (!this.game || this.game.state !== 'shop') return;
         const shopArea = document.getElementById('shop-area');
         if (!shopArea || shopArea.classList.contains('hidden')) return;
 
-               const shopItems = shopArea.querySelectorAll('.shop-item:not(.item-bought)');
+        const shopItems = shopArea.querySelectorAll('.shop-item:not(.item-bought)');
         shopItems.forEach(shopItemDiv => {
             const index = parseInt(shopItemDiv.dataset.index);
-            if (isNaN(index) || !this.game.currentShopItems || !this.game.currentShopItems[index]) return;            
+            if (isNaN(index) || !this.game.currentShopItems || !this.game.currentShopItems[index]) return;
             const item = this.game.currentShopItems[index];
             const buyButton = shopItemDiv.querySelector('.shop-item-button');
-            
+
             if (item && buyButton) {
                 const canAfford = this.game.player.gold >= item.buyPrice;
                 buyButton.disabled = !canAfford;
             }
         });
-        
-               const rerollButton = document.getElementById('shop-reroll-button');
-        if (rerollButton) {            const canAffordReroll = this.game.player.gold >= 3;            rerollButton.disabled = !this.game.shopCanReroll || !canAffordReroll;
+
+        const rerollButton = document.getElementById('shop-reroll-button');
+        if (rerollButton) {
+            const canAffordReroll = this.game.player.gold >= 3; rerollButton.disabled = !this.game.shopCanReroll || !canAffordReroll;
         }
     }
 
@@ -1252,38 +1273,43 @@ class UI {
 
         const splat = document.createElement('div');
         splat.className = `damage-splat ${type}`;
-        splat.style.position = 'absolute'; 
-        
+        splat.style.position = 'absolute';
+
         splat.style.left = '50%';
 
         if (!selector.startsWith('.inventory-slot')) {
-        const x = Math.random() * 60 - 20;
+            const x = Math.random() * 60 - 20;
             splat.style.setProperty('--splat-offset-x', `${x}px`);
         }
-        
-               if (selector.startsWith('.inventory-slot')) { 
-            splat.style.top = '25%';            splat.classList.add('inventory-splat');        } else if (selector.includes('.trap-area-option')) { 
-            splat.style.top = '30%';        } else if (selector === '#rest-area .rest-campfire-container') {
-            splat.style.top = '30%'; 
-        } else if (selector === '.escape-message-container') {            splat.style.top = '1%';        } else if (selector === '#trap-area') {
+
+        if (selector.startsWith('.inventory-slot')) {
+            splat.style.top = '25%'; splat.classList.add('inventory-splat');
+        } else if (selector.includes('.trap-area-option')) {
+            splat.style.top = '30%';
+        } else if (selector === '#rest-area .rest-campfire-container') {
+            splat.style.top = '30%';
+        } else if (selector === '.escape-message-container') { splat.style.top = '1%'; } else if (selector === '#trap-area') {
             const y = Math.random() * 60 - 20;
             splat.style.top = `calc(30% + ${y}px)`;
         }
-               splat.classList.add(type);        
+        splat.classList.add(type);
         if (type === 'damage') {
             if (fullBlock) {
                 splat.innerHTML = `<span style="color: #aaaaaa">BLOCKED ${blocked}</span>`;
-            } else if (amount === 0) {                 splat.textContent = "0";
-                 splat.classList.add('zero-damage');            } else {
-                splat.textContent = amount;            }
-        } else if (type === 'heal' || type === 'potion-heal') { 
+            } else if (amount === 0) {
+                splat.textContent = "0";
+                splat.classList.add('zero-damage');
+            } else {
+                splat.textContent = amount;
+            }
+        } else if (type === 'heal' || type === 'potion-heal') {
             splat.textContent = '+' + amount;
-        } else if (type === 'poison' || type === 'burn') {             splat.textContent = amount;        } else if (type === 'buff-attack') {
+        } else if (type === 'poison' || type === 'burn') { splat.textContent = amount; } else if (type === 'buff-attack') {
             splat.textContent = `+${amount} Atk`;
         } else if (type === 'buff-defense') {
             splat.textContent = `+${amount} Def`;
         } else if (type === 'buff-speed') {
-                       splat.textContent = `-${amount.toFixed(1)}s Spd`; 
+            splat.textContent = `-${amount.toFixed(1)}s Spd`;
         } else {
             splat.textContent = '+' + amount;
         }
@@ -1292,7 +1318,7 @@ class UI {
         setTimeout(() => splat.remove(), 2000);
     }
 
-       renderBossEncounter(bossData) {
+    renderBossEncounter(bossData) {
         this.clearMainArea();
         this.choicesArea.classList.remove('hidden');
         this.choicesArea.innerHTML = '';
@@ -1301,8 +1327,8 @@ class UI {
         choicesContainer.classList.add('choices-container');
         choicesContainer.classList.add('boss-only');
         const card = document.createElement('div');
-        
-               const isFinalBoss = bossData.isBoss === true;
+
+        const isFinalBoss = bossData.isBoss === true;
         const isMiniBoss = bossData.isMiniBoss === true;
         card.classList.add('choice-card');
         if (isFinalBoss) {
@@ -1310,32 +1336,32 @@ class UI {
         } else if (isMiniBoss) {
             card.classList.add('miniboss-card');
         }
-        card.classList.add('selected');       
+        card.classList.add('selected');
         const cardContent = document.createElement('div');
         cardContent.classList.add('choice-card-content');
 
-               const difficultyBadge = document.createElement('div');
+        const difficultyBadge = document.createElement('div');
         difficultyBadge.className = 'difficulty-badge';
-               if (isFinalBoss) {
-            difficultyBadge.style.backgroundColor = '#f44336';        difficultyBadge.textContent = 'BOSS';
+        if (isFinalBoss) {
+            difficultyBadge.style.backgroundColor = '#f44336'; difficultyBadge.textContent = 'BOSS';
         } else if (isMiniBoss) {
-            difficultyBadge.style.backgroundColor = '#FF9800';            difficultyBadge.textContent = 'MINI-BOSS';
+            difficultyBadge.style.backgroundColor = '#FF9800'; difficultyBadge.textContent = 'MINI-BOSS';
         } else {
-                       difficultyBadge.style.display = 'none'; 
+            difficultyBadge.style.display = 'none';
         }
-               cardContent.appendChild(difficultyBadge);
+        cardContent.appendChild(difficultyBadge);
 
-               const eventIcon = document.createElement('span');
+        const eventIcon = document.createElement('span');
         eventIcon.className = 'event-icon';
         eventIcon.textContent = bossData.icon;
         cardContent.appendChild(eventIcon);
 
-               const title = document.createElement('h3');
+        const title = document.createElement('h3');
         title.classList.add('choice-title');
         title.textContent = bossData.name;
         cardContent.appendChild(title);
 
-               const description = document.createElement('div');
+        const description = document.createElement('div');
         description.classList.add('choice-description');
         description.innerHTML = `
             <div class="monster-description">
@@ -1369,19 +1395,20 @@ class UI {
         `;
         cardContent.appendChild(description);
 
-               const startButton = document.createElement('button');
+        const startButton = document.createElement('button');
         startButton.className = 'choice-start-button';
-               if (isFinalBoss) {
+        if (isFinalBoss) {
             startButton.textContent = 'Fight';
         } else if (isMiniBoss) {
             startButton.textContent = 'Fight';
         } else {
-            startButton.textContent = 'Fight';        }
-               startButton.onclick = () => {
+            startButton.textContent = 'Fight';
+        }
+        startButton.onclick = () => {
             card.classList.add('boss-engage-start');
-                setTimeout(() => {
+            setTimeout(() => {
                 this.choicesArea.classList.add('hidden');
-                    this.game.startEncounter({ type: 'monster', monsterId: bossData.id });
+                this.game.startEncounter({ type: 'monster', monsterId: bossData.id });
             }, 500);
         };
         cardContent.appendChild(startButton);
@@ -1390,29 +1417,30 @@ class UI {
         choicesContainer.appendChild(card);
         this.choicesArea.appendChild(choicesContainer);
     }
-   
-       playPlayerAnimation(animationClass, duration) {
+
+    playPlayerAnimation(animationClass, duration) {
         const playerSide = document.querySelector('.player-side');
         if (!playerSide) return;
 
-               playerSide.classList.remove(animationClass);
-        
-               void playerSide.offsetWidth;
+        playerSide.classList.remove(animationClass);
 
-               playerSide.classList.add(animationClass);
+        void playerSide.offsetWidth;
 
-               setTimeout(() => {
-            if (!playerSide) return;            
+        playerSide.classList.add(animationClass);
+
+        setTimeout(() => {
+            if (!playerSide) return;
             playerSide.classList.remove(animationClass);
-                       if (this.game && this.game.player && this.game.player.activeEffects.burning) {
-                 playerSide.classList.add('player-burning');            }
-            
+            if (this.game && this.game.player && this.game.player.activeEffects.burning) {
+                playerSide.classList.add('player-burning');
+            }
+
         }, duration);
     }
 
     renderLoot(lootItems, goldAmount) {
-        this.clearMainArea();        this.lootArea.innerHTML = '';        this.lootArea.classList.remove('hidden');
-        
+        this.clearMainArea(); this.lootArea.innerHTML = ''; this.lootArea.classList.remove('hidden');
+
         let lootHTML = `<h3>Loot Dropped</h3>`;
         const lootDisplayArea = document.createElement('div');
         lootDisplayArea.className = 'loot-display-area';
@@ -1434,16 +1462,17 @@ class UI {
             takeGoldButton.onclick = () => {
                 this.game.player.addGold(goldAmount);
                 this.game.addLog(`Took ${goldAmount} gold.`);
-                goldContainer.remove();                this.updatePlayerStats();
+                goldContainer.remove(); this.updatePlayerStats();
             };
             goldContainer.appendChild(takeGoldButton);
-            itemsContainer.appendChild(goldContainer);        }
+            itemsContainer.appendChild(goldContainer);
+        }
 
         if (lootItems.length === 0 && goldAmount <= 0) {
             itemsContainer.innerHTML += '<p class="loot-empty-message">No loot dropped.</p>';
         } else {
             lootItems.forEach((item, index) => {
-                if (!item) return;                const itemElement = document.createElement('div');
+                if (!item) return; const itemElement = document.createElement('div');
                 itemElement.className = 'loot-item';
                 itemElement.dataset.lootIndex = index;
                 itemElement.innerHTML = `
@@ -1451,34 +1480,34 @@ class UI {
                     <button class="loot-item-button">Take</button>
                 `;
 
-                               itemElement.addEventListener('mouseenter', () => {
+                itemElement.addEventListener('mouseenter', () => {
                     descriptionBox.textContent = item.description || 'No description available.';
                     itemElement.classList.add('selected');
                 });
                 itemElement.addEventListener('mouseleave', () => {
-                                                          itemElement.classList.remove('selected');
+                    itemElement.classList.remove('selected');
                 });
 
-                               const takeButton = itemElement.querySelector('.loot-item-button');
+                const takeButton = itemElement.querySelector('.loot-item-button');
                 takeButton.onclick = (event) => {
-                    event.stopPropagation();                    const added = this.game.player.addItem(item);
+                    event.stopPropagation(); const added = this.game.player.addItem(item);
                     if (added) {
                         this.game.addLog(`Took ${item.name}.`);
-                        itemElement.remove();                        this.renderInventory();                                               if (descriptionBox.textContent === (item.description || 'No description available.')) {
-                             descriptionBox.textContent = 'Hover over an item to see details.';
+                        itemElement.remove(); this.renderInventory(); if (descriptionBox.textContent === (item.description || 'No description available.')) {
+                            descriptionBox.textContent = 'Hover over an item to see details.';
                         }
                     } else {
                         this.game.addLog('Inventory is full!');
-                                           }
+                    }
                 };
                 itemsContainer.appendChild(itemElement);
             });
         }
-        
+
         lootDisplayArea.appendChild(itemsContainer);
         lootDisplayArea.appendChild(descriptionBox);
-        lootHTML += lootDisplayArea.outerHTML;        
-               lootHTML += `
+        lootHTML += lootDisplayArea.outerHTML;
+        lootHTML += `
             <div class="loot-buttons">
                 <button id="loot-take-all-button">Take All</button>
                 <button id="loot-continue-button">Continue</button>
@@ -1487,23 +1516,24 @@ class UI {
 
         this.lootArea.innerHTML = lootHTML;
 
-               document.getElementById('loot-take-all-button')?.addEventListener('click', () => this.handleTakeAllLoot());
+        document.getElementById('loot-take-all-button')?.addEventListener('click', () => this.handleTakeAllLoot());
         document.getElementById('loot-continue-button')?.addEventListener('click', () => this.game.proceedToNextRound());
     }
 
     handleTakeAllLoot() {
-           }
+    }
 
-       renderBossEncounter(bossData, bossId) {        this.clearMainArea();
+    renderBossEncounter(bossData, bossId) {
+        this.clearMainArea();
         this.choicesArea.classList.remove('hidden');
         this.choicesArea.innerHTML = '';
 
         const choicesContainer = document.createElement('div');
         choicesContainer.classList.add('choices-container');
         choicesContainer.classList.add('boss-only');
-    const card = document.createElement('div');
-        
-               const isFinalBoss = bossData.isBoss === true;
+        const card = document.createElement('div');
+
+        const isFinalBoss = bossData.isBoss === true;
         const isMiniBoss = bossData.isMiniBoss === true;
         card.classList.add('choice-card');
         if (isFinalBoss) {
@@ -1511,32 +1541,32 @@ class UI {
         } else if (isMiniBoss) {
             card.classList.add('miniboss-card');
         }
-        card.classList.add('selected');       
+        card.classList.add('selected');
         const cardContent = document.createElement('div');
         cardContent.classList.add('choice-card-content');
 
-               const difficultyBadge = document.createElement('div');
+        const difficultyBadge = document.createElement('div');
         difficultyBadge.className = 'difficulty-badge';
-               if (isFinalBoss) {
-            difficultyBadge.style.backgroundColor = '#f44336';            difficultyBadge.textContent = 'BOSS';
+        if (isFinalBoss) {
+            difficultyBadge.style.backgroundColor = '#f44336'; difficultyBadge.textContent = 'BOSS';
         } else if (isMiniBoss) {
-            difficultyBadge.style.backgroundColor = '#FF9800';            difficultyBadge.textContent = 'MINI-BOSS';
+            difficultyBadge.style.backgroundColor = '#FF9800'; difficultyBadge.textContent = 'MINI-BOSS';
         } else {
-                       difficultyBadge.style.display = 'none'; 
+            difficultyBadge.style.display = 'none';
         }
-               cardContent.appendChild(difficultyBadge);
+        cardContent.appendChild(difficultyBadge);
 
-               const eventIcon = document.createElement('span');
+        const eventIcon = document.createElement('span');
         eventIcon.className = 'event-icon';
         eventIcon.textContent = bossData.icon;
         cardContent.appendChild(eventIcon);
 
-               const title = document.createElement('h3');
+        const title = document.createElement('h3');
         title.classList.add('choice-title');
         title.textContent = bossData.name;
         cardContent.appendChild(title);
 
-               const description = document.createElement('div');
+        const description = document.createElement('div');
         description.classList.add('choice-description');
         description.innerHTML = `
             <div class="monster-description">
@@ -1570,19 +1600,20 @@ class UI {
         `;
         cardContent.appendChild(description);
 
-               const startButton = document.createElement('button');
+        const startButton = document.createElement('button');
         startButton.className = 'choice-start-button';
-               if (isFinalBoss) {
+        if (isFinalBoss) {
             startButton.textContent = 'Fight Final Boss';
         } else if (isMiniBoss) {
             startButton.textContent = 'Fight Mini-Boss';
         } else {
-            startButton.textContent = 'Fight';        }
-               startButton.onclick = () => {
+            startButton.textContent = 'Fight';
+        }
+        startButton.onclick = () => {
             card.classList.add('boss-engage-start');
             setTimeout(() => {
                 this.choicesArea.classList.add('hidden');
-                               this.game.startEncounter({ type: 'monster', monsterId: bossId }); 
+                this.game.startEncounter({ type: 'monster', monsterId: bossId });
             }, 500);
         };
         cardContent.appendChild(startButton);
@@ -1600,36 +1631,37 @@ class UI {
         const title = document.createElement('h2');
         title.textContent = `Entering ${areaName}...`;
 
-                     
+
         const continueButton = document.createElement('button');
         continueButton.id = 'area-transition-continue-button';
         continueButton.textContent = 'Venture Forth';
         continueButton.onclick = () => {
-                       transitionDiv.classList.add('fade-out');
-            
-                       continueButton.disabled = true;
+            transitionDiv.classList.add('fade-out');
 
-                       setTimeout(() => {
-                               this.game.continueAfterAreaTransition();
-            }, 500);        };
+            continueButton.disabled = true;
+
+            setTimeout(() => {
+                this.game.continueAfterAreaTransition();
+            }, 500);
+        };
 
         transitionDiv.appendChild(title);
-               transitionDiv.appendChild(continueButton);
+        transitionDiv.appendChild(continueButton);
 
         this.mainContent.appendChild(transitionDiv);
     }
 
-       updateRoundDisplay(currentRound, maxRounds) {
+    updateRoundDisplay(currentRound, maxRounds) {
         if (this.statRound) {
             this.statRound.textContent = currentRound;
         }
-               const maxRoundEl = document.getElementById('stat-max-rounds');
+        const maxRoundEl = document.getElementById('stat-max-rounds');
         if (maxRoundEl && maxRoundEl.textContent !== maxRounds.toString()) {
             maxRoundEl.textContent = maxRounds;
         }
 
-               if (this.roundAreaElement) {
-            this.roundAreaElement.classList.remove('round-pulsing');            void this.roundAreaElement.offsetWidth;            this.roundAreaElement.classList.add('round-pulsing');
+        if (this.roundAreaElement) {
+            this.roundAreaElement.classList.remove('round-pulsing'); void this.roundAreaElement.offsetWidth; this.roundAreaElement.classList.add('round-pulsing');
         }
     }
 

@@ -20,7 +20,8 @@ class Player {
         this.tempAttack = 0;
         this.tempDefense = 0;
         this.tempSpeedReduction = 0;
-        this.activeEffects = {};        this.isStunned = false;
+        this.activeEffects = {};
+        this.isStunned = false;
     }
 
     getMaxHealth() {
@@ -40,7 +41,7 @@ class Player {
             totalAttack += this.inventory[weaponIndex].stats.attack;
         }
         const ringIndex = this.equipment.ring;
-         if (ringIndex !== null && this.inventory[ringIndex]?.stats?.attack) {
+        if (ringIndex !== null && this.inventory[ringIndex]?.stats?.attack) {
             totalAttack += this.inventory[ringIndex].stats.attack;
         }
         return totalAttack;
@@ -49,7 +50,7 @@ class Player {
     getAttackSpeed() {
         const weaponIndex = this.equipment.weapon;
         const baseSpeed = weaponIndex !== null ? (this.inventory[weaponIndex]?.speed ?? this.defaultAttackSpeed) : this.defaultAttackSpeed;
-        
+
         let totalSpeedReduction = this.tempSpeedReduction;
         const ringIndex = this.equipment.ring;
         if (ringIndex !== null && this.inventory[ringIndex]?.stats?.speedReduction) {
@@ -142,22 +143,22 @@ class Player {
             const shieldIndex = this.equipment.shield;
             const unequipResult = this.unequipItem(shieldIndex);
             if (!unequipResult.success) {
-                 return { success: false, message: "Could not unequip shield to equip 2H weapon (should not happen unless logic error)." };
+                return { success: false, message: "Could not unequip shield to equip 2H weapon (should not happen unless logic error)." };
             }
-             game?.addLog(`Unequipped ${this.inventory[shieldIndex]?.name} to equip 2H weapon.`);
+            game?.addLog(`Unequipped ${this.inventory[shieldIndex]?.name} to equip 2H weapon.`);
         }
         if (itemToEquip.slot === 'shield' && this.equipment.weapon !== null && this.inventory[this.equipment.weapon]?.hands === 2) {
-             return { success: false, message: "Cannot equip shield with a 2-handed weapon equipped." };
+            return { success: false, message: "Cannot equip shield with a 2-handed weapon equipped." };
         }
 
         const currentlyEquippedIndex = this.equipment[slot];
 
         if (currentlyEquippedIndex !== null && currentlyEquippedIndex !== index) {
-             const unequipResult = this.unequipItem(currentlyEquippedIndex);
-             if (!unequipResult.success) {
-                 return { success: false, message: "Could not unequip the previous item (should not happen unless logic error)." };
-             }
-              game?.addLog(`Unequipped ${this.inventory[currentlyEquippedIndex]?.name}.`);
+            const unequipResult = this.unequipItem(currentlyEquippedIndex);
+            if (!unequipResult.success) {
+                return { success: false, message: "Could not unequip the previous item (should not happen unless logic error)." };
+            }
+            game?.addLog(`Unequipped ${this.inventory[currentlyEquippedIndex]?.name}.`);
         }
 
         this.equipment[slot] = index;
@@ -192,7 +193,7 @@ class Player {
         }
         const item = this.inventory[index];
 
-               if (this.isStunned && item.useAction === 'Eat' && game && game.state === 'combat') { 
+        if (this.isStunned && item.useAction === 'Eat' && game && game.state === 'combat') {
             return { success: false, message: "You are stunned and cannot eat!" };
         }
 
@@ -214,30 +215,30 @@ class Player {
                 let buffType = null;
                 let buffAmount = 0;
 
-                               if (item.stats.tempAttack) {
-                    buffType = 'attack'; 
+                if (item.stats.tempAttack) {
+                    buffType = 'attack';
                     buffAmount = item.stats.tempAttack;
                 }
                 if (item.stats.tempDefense) {
-                    buffType = 'defense'; 
+                    buffType = 'defense';
                     buffAmount = item.stats.tempDefense;
                 }
                 if (item.stats.tempSpeed) {
-                                       buffType = 'speed'; 
-                    buffAmount = item.stats.tempSpeed; 
+                    buffType = 'speed';
+                    buffAmount = item.stats.tempSpeed;
                 }
 
-                               if (item.stats.tempAttack) this.tempAttack += item.stats.tempAttack;
+                if (item.stats.tempAttack) this.tempAttack += item.stats.tempAttack;
                 if (item.stats.tempDefense) this.tempDefense += item.stats.tempDefense;
                 if (item.stats.tempSpeed) this.tempSpeedReduction += item.stats.tempSpeed;
-                
+
                 this.inventory[index] = null;
-                               return { 
-                    success: true, 
-                    message: `Used ${item.name}. Buff applied!`,                    item: item, 
-                    actionDelay: item.isPotion ? 0 : 2.0, 
-                    buffType: buffType, 
-                    buffAmount: buffAmount 
+                return {
+                    success: true,
+                    message: `Used ${item.name}. Buff applied!`, item: item,
+                    actionDelay: item.isPotion ? 0 : 2.0,
+                    buffType: buffType,
+                    buffAmount: buffAmount
                 };
             }
         }
@@ -249,7 +250,7 @@ class Player {
         this.tempAttack = 0;
         this.tempDefense = 0;
         this.tempSpeedReduction = 0;
-        this.activeEffects = {}; 
+        this.activeEffects = {};
         this.isStunned = false;
     }
 }

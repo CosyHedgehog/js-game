@@ -2,7 +2,8 @@ class Treasure {
     constructor(game, ui) {
         this.game = game;
         this.ui = ui;
-        this.isLocked = false;    }
+        this.isLocked = false;
+    }
 
     handle() {
         this.isLocked = Math.random() < 0.25;
@@ -16,7 +17,7 @@ class Treasure {
     }
 
     showLockedChestUI() {
-        this.game.state = 'treasure_locked';        this.ui.clearMainArea();
+        this.game.state = 'treasure_locked'; this.ui.clearMainArea();
 
         const treasureArea = this.ui.treasureArea;
         treasureArea.classList.remove('hidden');
@@ -60,12 +61,12 @@ class Treasure {
         const treasureContainer = document.querySelector('#treasure-area .treasure-container');
         if (!treasureContainer) {
             console.error("Treasure container not found for animation.");
-                       this.game.addLog("Attempting to pick the lock...");
+            this.game.addLog("Attempting to pick the lock...");
             this.openUnlockedChest();
             return;
         }
 
-               const picklockButton = document.getElementById('treasure-picklock-button');
+        const picklockButton = document.getElementById('treasure-picklock-button');
         const leaveButton = document.getElementById('treasure-leave-button');
         if (picklockButton) picklockButton.disabled = true;
         if (leaveButton) leaveButton.disabled = true;
@@ -74,7 +75,10 @@ class Treasure {
         this.game.addLog("Attempting to pick the lock...");
         setTimeout(() => {
             treasureContainer.classList.remove('picklocking');
-                       this.game.addLog("Click! The lock springs open.");            this.openUnlockedChest();        }, 600);    }
+            this.game.addLog("Click! The lock springs open."); 
+            this.openUnlockedChest();
+        }, 600);
+    }
 
     handleLeaveChest() {
         this.game.addLog("You decide to leave the locked chest alone.");
@@ -83,7 +87,7 @@ class Treasure {
     }
 
     openUnlockedChest() {
-        this.game.state = 'looting';        const goldFound = this.game.getRandomInt(1, 10);
+        this.game.state = 'looting'; const goldFound = this.game.getRandomInt(1, 10);
         this.game.addLog(`You open it and find ${goldFound} gold!`);
         this.game.enterLootState(goldFound, []);
     }

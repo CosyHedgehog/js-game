@@ -143,6 +143,7 @@ class Alchemist {
             leaveButton.onclick = () => this.handleAlchemistLeave();
         }
     }
+    
     handleAlchemistBuy(itemIndex) {
         if (!this.game || !this.game.currentShopItems || itemIndex >= this.game.currentShopItems.length) {
         }
