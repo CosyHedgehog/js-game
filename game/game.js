@@ -29,6 +29,24 @@ class Game {
     ];
 
     start() {
+        // this.normalMode();
+        this.normalMode();
+    }
+
+    normalMode() {
+        this.player.addItem(this.createItem('wooden_sword'));
+        this.player.addItem(this.createItem('wooden_shield'));
+        this.player.addItem(this.createItem('bread'));
+        this.player.addItem(this.createItem('bread'));
+        this.player.addItem(this.createItem('bread'));
+        this.state = 'area_transition';
+        this.ui.renderArea(AREA_CONFIG[0].areas[this.currentArea].name);
+        this.ui.gameScreen?.classList.remove('hidden');
+        this.ui.renderAll();
+        this.addLog("Game started with your chosen equipment.");
+    }
+
+    devMode() {
         this.currentRound = 29;
         // this.state = 'area_transition';
         this.state = 'choosing';
@@ -49,11 +67,8 @@ class Game {
 
         this.generateEventChoices();
 
-        this.ui.renderInventory();
-        this.ui.renderEquipment();
-        this.ui.updatePlayerStats();
+        this.ui.renderAll();
         this.addLog("Game started with your chosen equipment.");
-        // this.ui.renderArea(this.pendingAreaTransitionName);
     }
 
     addLog(message) {
