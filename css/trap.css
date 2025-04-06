@@ -1,11 +1,5 @@
-/* #trap-area {
-    background-color: transparent;
-} */
-
 #trap-area {
     border-radius: 6px;
-   
-   
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -56,7 +50,6 @@
     font-weight: bold;
 }
 
-/* Add specific styles for success/failure messages */
 #trap-result-message.success {
     background-color: rgba(46, 204, 113, 0.2);
     color: #2ecc71;
@@ -73,7 +66,6 @@
     margin-top: 10px;
 }
 
-/* --- Trap Choice Area Styling (Optional - If there's a selection screen) --- */
 .trap-areas-container {
     width: 100%;
     display: grid;
@@ -83,15 +75,6 @@
     flex-grow: 1;
     box-sizing: border-box;
 }
-
-/* REMOVED .trap-area-option */
-/* REMOVED .trap-area-option:hover */
-/* REMOVED .trap-area-option h4 */
-/* REMOVED .trap-area-option p */
-/* REMOVED .trap-area-details */
-/* REMOVED .trap-area-details p */
-/* REMOVED .trap-area-button */
-/* REMOVED .trap-area-button:hover */
 
 .trap-area-option[data-risk="safe"] {
     border-color: #4CAF50;

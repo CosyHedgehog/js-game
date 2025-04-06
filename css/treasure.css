@@ -44,7 +44,6 @@
     flex-wrap: wrap;
 }
 
-/* Style for the 'need tools' message specifically */
 .treasure-buttons p {
     width: 100%;
     font-style: italic;
@@ -79,7 +78,6 @@
   animation: picklock-shake 0.6s ease-in-out;
 }
 
-/* Optional: Style the container during animation */
 .treasure-container.picklocking {
   border-color: #fff700;
 }

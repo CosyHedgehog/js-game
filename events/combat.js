@@ -56,7 +56,7 @@ class Combat {
             playerSide.style.opacity = '1';
         }
 
-        this.ui.showCombatUI(this.player, this.enemy);
+        this.ui.renderCombat(this.player, this.enemy);
         this.player.attackTimer = this.player.getAttackSpeed();
         this.enemy.attackTimer = this.enemy.speed;
 

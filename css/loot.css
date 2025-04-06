@@ -92,7 +92,6 @@
     cursor: pointer;
 }
 
-/* Style the item name text */
 .loot-item span {
     color: white;
     font-weight: bold;
@@ -114,7 +113,6 @@
     border-color: #505050;
 }
 
-/* Style for items already taken */
 .loot-item.taken {
     opacity: 0.6;
     background-color: #202020;

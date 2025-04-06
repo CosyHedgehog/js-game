@@ -165,11 +165,6 @@ class Shop {
                 buyButton.disabled = !canAfford;
             }
         });
-
-        const rerollButton = document.getElementById('shop-reroll-button');
-        if (rerollButton && this.game.shopCanReroll) {
-            rerollButton.disabled = this.game.player.gold < this.SHOP_REROLL_COST;
-        }
     }
 
     generateShopItems(count) {
@@ -248,4 +243,28 @@ class Shop {
             this.game.addLog(`Not enough gold to reroll (costs ${this.SHOP_REROLL_COST})!`);
         }
     }
+
+    // updateShopAffordability() {
+    //     if (!this.game || this.game.state !== 'shop') return;
+    //     const shopArea = document.getElementById('shop-area');
+    //     if (!shopArea || shopArea.classList.contains('hidden')) return;
+
+    //     const shopItems = shopArea.querySelectorAll('.shop-item:not(.item-bought)');
+    //     shopItems.forEach(shopItemDiv => {
+    //         const index = parseInt(shopItemDiv.dataset.index);
+    //         if (isNaN(index) || !this.game.currentShopItems || !this.game.currentShopItems[index]) return;
+    //         const item = this.game.currentShopItems[index];
+    //         const buyButton = shopItemDiv.querySelector('.shop-item-button');
+
+    //         if (item && buyButton) {
+    //             const canAfford = this.game.player.gold >= item.buyPrice;
+    //             buyButton.disabled = !canAfford;
+    //         }
+    //     });
+
+    //     const rerollButton = document.getElementById('shop-reroll-button');
+    //     if (rerollButton) {
+    //         const canAffordReroll = this.game.player.gold >= 3; rerollButton.disabled = !this.game.shopCanReroll || !canAffordReroll;
+    //     }
+    // }
 }

@@ -557,7 +557,6 @@
     }
 }
 
-/* New animation for inventory splats with less vertical movement */
 @keyframes inventory-splat-animation {
     0% {
         opacity: 1;

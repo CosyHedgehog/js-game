@@ -183,7 +183,6 @@
     transition: width 0.1s linear;
 }
 
-/* Stun Timer Bar Color */
 .enemy-stun-timer {
     background-color: #ffc107;
 }
@@ -353,7 +352,6 @@
     animation: burning-pulse 1s ease-in-out infinite;
 }
 
-/* Encounter Styles */
 .encounter-confirmation {
     background: rgba(0, 0, 0, 0.8);
     border: 1px solid #444;
@@ -472,7 +470,6 @@
     color: #ddd;
 }
 
-/* --- Breath Timer Specific Styles --- */
 .breath-timer {
     margin-top: 5px;
 }
@@ -489,7 +486,6 @@
     display: none;
 }
 
-/* --- Regeneration Timer Specific Styles --- */
 .regen-timer {
     margin-top: 5px;
 }
@@ -506,7 +502,6 @@
     display: none;
 }
 
-/* Venfing Speed Boost Timer Indicator */
 .enemy-side .attack-timer.enemy-timer-speed-boost {
     border: 2px solid #00e0ff;
     box-shadow: 0 0 8px rgba(0, 224, 255, 0.6);
@@ -516,20 +511,17 @@
     margin-bottom: 3px;
 }
 
-/* Player Poisoned Indicator */
 .player-poisoned {
     border: 2px solid #8f00ff !important;
     box-shadow: 0 0 10px rgba(143, 0, 255, 0.7);
 }
 
-/* Add inventory stun style */
 .inventory-slot.food-stunned {
     filter: grayscale(80%) brightness(0.7);
     box-shadow: inset 0 0 8px rgba(255, 0, 0, 0.5);
     cursor: default;
 }
 
-/* Round Area - Enhance and Center */
 #round-area {
     display: flex;
     justify-content: center; 
@@ -601,7 +593,6 @@
     font-weight: normal;
 }
 
-/* Set default cursor for all spans inside round area */
 #round-area span {
     cursor: default;
 }
@@ -611,7 +602,6 @@
     animation: round-update-pulse 0.7s ease-out; 
 }
 
-/* Apply boss glows directly to #round-area */
 #round-area.round-miniboss {
     animation: miniboss-glow 1.5s infinite ease-in-out;
 }
@@ -620,7 +610,6 @@
     animation: finalboss-flame 1.2s infinite ease-in-out;
 }
 
-/* --- Combat End/Loot Screen Transitions --- */
 .combat-ending {
   animation: combat-fade-out 0.5s ease-out forwards;
   pointer-events: none;

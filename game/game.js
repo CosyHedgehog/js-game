@@ -1,18 +1,22 @@
 class Game {
-    constructor(ui) {
-        this.lastDefeatedEnemyName = null;
-        this.ui = ui;
-        this.player = null;
+    constructor() {
+        this.ui = new UI();
+        this.ui.game = this;
+
+        this.player = new Player();
         this.currentRound = 0;
         this.maxRounds = 30;
-        this.state = 'start_screen'; this.logMessages = [];
+        this.state = 'start_screen';
+        this.logMessages = [];
         this.currentChoices = [];
         this.currentCombat = null;
         this.currentShopItems = [];
         this.shopCanReroll = false;
-        this.pendingLoot = null; this.currentArea = Math.random() < 0.5 ? 'spider_cave' : 'wolf_den';
-        this.pendingAreaTransitionName = null; this.pendingNewAreaId = null;
-        if (this.ui) { this.ui.game = this; }
+        this.pendingLoot = null; 
+        this.currentArea = Math.random() < 0.5 ? 'spider_cave' : 'wolf_den';
+        this.pendingAreaTransitionName = null; 
+        this.pendingNewAreaId = null;
+        this.lastDefeatedEnemyName = null;
     }
 
     EVENT_PROBABILITY = [
@@ -24,8 +28,25 @@ class Game {
         { type: 'trap', weight: 10 }
     ];
 
-    startGame() {
-        this.ui.renderAll();
+    start() {
+        this.currentRound = 18;
+        this.state = 'area_transition';
+        this.currentArea = "giants_pass";
+        this.pendingAreaTransitionName = "Giants pass";
+
+        this.player.addItem(this.createItem('wooden_sword'));
+        this.player.addItem(this.createItem('wooden_shield'));
+
+        this.player.addItem(this.createItem('bread'));
+        this.player.addItem(this.createItem('bread'));
+        this.player.addItem(this.createItem('bread'));
+
+        this.ui.gameScreen?.classList.remove('hidden');
+        this.ui.renderInventory();
+        this.ui.renderEquipment();
+        this.ui.updatePlayerStats();
+        this.addLog("Game started with your chosen equipment.");
+        this.ui.renderArea(this.pendingAreaTransitionName);
     }
 
     addLog(message) {
@@ -37,9 +58,7 @@ class Game {
     }
 
     proceedToNextRound() {
-        if (this.state === 'win' || this.state === 'game_over') {
-            return;
-        }
+        if (this.state === 'win' || this.state === 'game_over') return;
 
         const nextRound = this.currentRound + 1;
 
@@ -81,12 +100,12 @@ class Game {
         if (needsAreaTransition) {
             this.state = 'area_transition';
             this.ui.clearMainArea();
-            this.ui.showAreaTransitionScreen(this.pendingAreaTransitionName);
+            this.ui.renderArea(this.pendingAreaTransitionName);
             return;
         }
 
         this.currentRound++; this.addLog(`--- Round ${this.currentRound} ---`);
-        this.ui.updateRoundDisplay(this.currentRound, this.maxRounds);
+        this.ui.renderRound(this.currentRound, this.maxRounds);
         this.state = 'choosing';
         this.ui.clearMainArea();
 
@@ -547,7 +566,7 @@ class Game {
         this.ui.renderInventory();
         this.ui.renderEquipment();
         this.ui.updatePlayerStats();
-        this.ui.updateShopAffordability();
+        new Shop(this, this.ui).updateShopAffordability();
     }
 
     handleInventorySwap(sourceIndexStr, targetIndexStr) {
@@ -710,7 +729,7 @@ class Game {
 
         this.addLog(`--- Round ${this.currentRound} ---`);
         this.addLog(`You venture into ${this.pendingAreaTransitionName}!`);
-        this.ui.updateRoundDisplay(this.currentRound, this.maxRounds);
+        this.ui.renderRound(this.currentRound, this.maxRounds);
         this.pendingAreaTransitionName = null; this.pendingNewAreaId = null;
         this.state = 'choosing'; this.ui.clearMainArea();
         let encounterGenerated = false;

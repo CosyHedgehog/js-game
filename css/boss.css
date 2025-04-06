@@ -165,7 +165,6 @@
     height: 100px;
 }
 
-/* === Mini-Boss Card Styles === */
 .choice-card.miniboss-card {
     background: linear-gradient(135deg, #2a201a 0%, #1a100a 100%);
     border: 2px solid #FF9800;
@@ -187,7 +186,6 @@
     text-align: center;
 }
 
-/* Center miniboss description text */
 .choice-card.miniboss-card .choice-description {
     text-align: center;
 }

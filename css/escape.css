@@ -56,7 +56,6 @@
     animation: playerEscape 0.5s ease-out forwards;
 }
 
-/* Add a dark backdrop behind the message */
 .escape-backdrop {
     position: fixed;
     top: 0;

@@ -27,7 +27,6 @@
     flex-shrink: 0;
 }
 
-/* Add shop emoji */
 #shop-area h3::before {
     content: "💰 ";
     margin-right: 0.3em;

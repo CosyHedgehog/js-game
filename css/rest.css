@@ -1,14 +1,8 @@
-/* --- Rest Area Campfire Styles --- */
-
 #rest-area {
     background-color: #1e1e1e;
     border: 1px solid #333;
     border-radius: 8px;
     padding: 20px;
-   
-   
-   
-   
     position: relative;
     display: flex; 
     flex-direction: column; 
@@ -78,9 +72,6 @@
 }
 
 .rest-choices {
-   
-   
-   
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-auto-rows: 1fr;

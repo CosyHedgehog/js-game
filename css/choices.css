@@ -144,7 +144,6 @@
     margin: 0;
 }
 
-/* Styles for the description text wrapper */
 .monster-desc-text-wrapper {
     max-height: 100px;
     overflow-y: auto;
@@ -343,7 +342,6 @@
     transform: translateY(0);
 }
 
-/* Styles for centering a single boss card */
 .choices-container.boss-only {
     display: flex;
     justify-content: center;
@@ -351,7 +349,6 @@
     height: 100%;
 }
 
-/* Apply auto sizing to both boss and miniboss cards when centered */
 .choices-container.boss-only .choice-card.boss-card,
 .choices-container.boss-only .choice-card.miniboss-card {
     height: auto;
@@ -364,7 +361,6 @@
     width: 100%;
 }
 
-/* === Monster Description Summary (Choice Card) === */
 .choice-description .monster-description-summary {
     margin-bottom: 10px;
     color: #b0bec5;
@@ -372,7 +368,6 @@
     text-align: left;
 }
 
-/* === Monster Stat Summary (Choice Card) === */
 .choice-description .monster-stats-summary {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -392,7 +387,6 @@
     text-align: left;
 }
 
-/* === Difficulty-Based Button Colors === */
 .choice-start-button.difficulty-easy {
     background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
 }
@@ -414,7 +408,6 @@
     background: linear-gradient(135deg, #f44336 0%, #e53935 100%);
 }
 
-/* Additional button styling for consistency */
 .choice-start-button.difficulty-easy,
 .choice-start-button.difficulty-medium,
 .choice-start-button.difficulty-hard {

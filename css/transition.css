@@ -1,4 +1,3 @@
-/* --- Area Transition Screen --- */
 .area-transition-container {
     display: flex;
     flex-direction: column;
@@ -39,7 +38,6 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Class to apply fade-out animation */
 .area-transition-container.fade-out {
     animation: fadeOut 0.5s ease-out forwards;
     pointer-events: none;

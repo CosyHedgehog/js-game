@@ -228,12 +228,29 @@
     <script src="events/armorsmith.js"></script>
     <script src="events/forge.js"></script>
 
-    <!-- Main  -->
+    <!-- UI -->
+    <script src="game/ui/CacheManager.js"></script>
+    <script src="game/ui/InventoryUI.js"></script>
+    <script src="game/ui/EquipmentUI.js"></script>
+    <script src="game/ui/StatsUI.js"></script>
+    <script src="game/ui/CombatUI.js"></script>
+    <script src="game/ui/AreaUI.js"></script>
+    <script src="game/ui/TooltipManager.js"></script>
+    <script src="game/ui/BossUI.js"></script>
+    <script src="game/ui/SplatUI.js"></script>
+    <script src="game/ui/EventsUI.js"></script>
+    <script src="game/ui/RoundUI.js"></script>
+    <script src="game/ui/EndUI.js"></script>
+    <script src="game/ui/AnimationUI.js"></script>
+    <script src="game/ui.js"></script>
+
+    <!-- Game -->
+    <script src="game/game.js"></script>
     <script src="game/loot.js"></script>
     <script src="game/log.js"></script>
     <script src="game/player.js"></script>
-    <script src="game/ui.js"></script>
-    <script src="game/game.js"></script>
-    <script src="game/main.js"></script>
+    <script> 
+      document.addEventListener('DOMContentLoaded', () => { new Game().start(); });
+    </script>
   </body>
 </html>

@@ -1,6 +1,5 @@
 class Starting {
-    constructor(game, ui) {
-        this.game = game;
+    constructor(ui) {
         this.ui = ui;
     }
 
@@ -72,7 +71,7 @@ class Starting {
         // }
     };
 
-    display() {
+    render(game) {
         this.ui.clearMainArea();
         const container = document.createElement('div');
         container.id = 'starting-pack-area';
@@ -156,39 +155,37 @@ class Starting {
         packButtons.forEach(button => {
             button.addEventListener('click', () => {
                 const packId = button.getAttribute('data-pack-id');
-                this.selectStartingPack(packId);
+                this.selectStartingPack(game, packId);
             });
         });
     }
 
-    selectStartingPack(packId) {
-        this.game.state = 'starting_pack';
+    selectStartingPack(game, packId) {
+        game.state = 'starting_pack';
         const pack = this.STARTING_PACKS[packId];
         const selectedPack = document.getElementById(`${packId}-pack`);
         
         selectedPack.classList.add('selected');
         
         setTimeout(() => {
-            this.game.player.maxHealth = pack.stats.maxHealth;
-            this.game.player.health = pack.stats.health;
-            this.game.player.baseAttack = pack.stats.baseAttack;
-            this.game.player.baseDefense = pack.stats.baseDefense;
+            game.player.maxHealth = pack.stats.maxHealth;
+            game.player.health = pack.stats.health;
+            game.player.baseAttack = pack.stats.baseAttack;
+            game.player.baseDefense = pack.stats.baseDefense;
 
             if (pack.stats.startingGold) {
-                this.game.player.addGold(pack.stats.startingGold);
+                game.player.addGold(pack.stats.startingGold);
             }
 
             pack.items.forEach(item => {
                 for (let i = 0; i < item.count; i++) {
-                    this.game.player.addItem(this.game.createItem(item.id));
+                    game.player.addItem(game.createItem(item.id));
                 }
             });
             
-            this.game.currentRound = 18;
-
-            this.game.logMessages = ["Welcome to the Simple Rogue-like!"];
-            
-            this.game.state = 'area_transition';
+            game.currentRound = 18;
+            game.logMessages = ["Welcome to the Simple Rogue-like!"];        
+            game.state = 'area_transition';
             
             const firstTier = AREA_CONFIG[0];
             let initialAreaId = 'unknown_area';
@@ -203,13 +200,20 @@ class Starting {
             }
             // this.game.currentArea = initialAreaId;
             // this.game.pendingAreaTransitionName = initialAreaName;
-            this.game.currentArea = "giants_pass";
-            this.game.pendingAreaTransitionName = "Giants pass";
-            this.ui.switchScreen('game-screen');
-            this.ui.renderAll();
+            game.currentArea = "giants_pass";
+            game.pendingAreaTransitionName = "Giants pass";
+            
+            this.ui.startScreen?.classList.add('hidden');
+            this.ui.gameScreen?.classList.add('hidden');
+            this.ui.endScreen?.classList.add('hidden');
+            document.getElementById('game-screen')?.classList.remove('hidden');
 
-            this.game.addLog("Game started with your chosen equipment.");
-            this.ui.showAreaTransitionScreen(this.game.pendingAreaTransitionName);
+            this.ui.renderInventory();
+            this.ui.renderEquipment();
+            this.ui.updatePlayerStats();
+
+            game.addLog("Game started with your chosen equipment.");
+            this.ui.renderArea(game.pendingAreaTransitionName);
         }, 500);
     }
 }
