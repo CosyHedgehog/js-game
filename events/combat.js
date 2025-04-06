@@ -199,9 +199,11 @@ class Combat {
 
         const healthPercent = this.enemy.health / this.enemy.maxHealth;
 
-
+        // Handle generic speed increase mechanic
         if (this.enemy.speedIncreaseThreshold && this.enemy.speedIncreasePercent) {
-            const baseSpeed = this.enemy.speed;
+            const baseSpeed = this.enemy.speed; // Original speed from definition
+            // Define fasterSpeed *before* using it
+            const fasterSpeed = baseSpeed * (1 - this.enemy.speedIncreasePercent); 
             const wasSpeedIncreased = this.enemy.currentSpeed === fasterSpeed;
             const shouldIncreaseSpeed = healthPercent < this.enemy.speedIncreaseThreshold;
 

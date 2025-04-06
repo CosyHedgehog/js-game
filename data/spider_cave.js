@@ -1,6 +1,6 @@
 const SPIDER_CAVE_MONSTER_DATA = {
     'giant_spider': {
-        name: 'Giant Spider', health: 15, attack: 2, defense: 1, speed: 1.4, goldDrop: [2, 4],
+        name: 'Giant Spider', health: 10, attack: 2, defense: 1, speed: 1.5, goldDrop: [2, 4],
         description: "A large arachnid with powerful fangs.",
         difficulty: 'easy',
         lootTable: [
@@ -12,7 +12,7 @@ const SPIDER_CAVE_MONSTER_DATA = {
         ]
     },
     'web_weaver': {
-        name: 'Web Weaver', health: 12, attack: 1, defense: 3, speed: 1.8, goldDrop: [2, 5],
+        name: 'Web Weaver', health: 14, attack: 2, defense: 2, speed: 1.8, goldDrop: [2, 5],
         description: "A cunning spider that specializes in defense.",
         difficulty: 'medium',
         lootTable: [
@@ -23,7 +23,7 @@ const SPIDER_CAVE_MONSTER_DATA = {
         ]
     },
     'poison_crawler': {
-        name: 'Poison Crawler', health: 10, attack: 3, defense: 1, speed: 1.6, goldDrop: [3, 6],
+        name: 'Poison Crawler', health: 18, attack: 3, defense: 1, speed: 1.6, goldDrop: [3, 6],
         difficulty: 'hard',
         appliesPoison: true,
         poisonChance: 0.5,

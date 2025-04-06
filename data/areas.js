@@ -12,7 +12,7 @@ const AREA_CONFIG = [
             'wolf_den': {
                 name: "Wolf Den",
                 tooltip: "A dangerous den inhabited by fierce wolves. Be wary of their swift attacks!",
-                monsters: ['dire_wolf', 'wolf_pup', 'feral_hunter'],
+                monsters: ['wolf_pup', 'wolf', 'dire_wolf'],
                 miniBoss: 'silverfang'
             },
         }

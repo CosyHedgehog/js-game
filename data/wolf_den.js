@@ -9,8 +9,8 @@ const WOLF_DEN_MONSTER_DATA = {
             { itemTier: 'commonItem', chance: 0.1 },
         ]
     },
-    'dire_wolf': {
-        name: 'Dire Wolf', health: 14, attack: 3, defense: 1, speed: 1.3, goldDrop: [3, 5],
+    'wolf': {
+        name: 'Wolf', health: 14, attack: 3, defense: 1, speed: 1.3, goldDrop: [3, 5],
         difficulty: 'medium',
         description: "A large, powerful wolf with sharp fangs.",
         lootTable: [
@@ -20,8 +20,8 @@ const WOLF_DEN_MONSTER_DATA = {
             { itemTier: 'uncommonItem', chance: 0.08 },
         ]
     },
-    'feral_hunter': {
-        name: 'Feral Hunter', health: 18, attack: 2, defense: 2, speed: 1.5, goldDrop: [2, 6],
+    'dire_wolf': {
+        name: 'Dire Wolf', health: 18, attack: 3, defense: 2, speed: 1.5, goldDrop: [2, 6],
         difficulty: 'hard',
         description: "A skilled hunter that quickens its strikes when injured.",
         mechanics: "Attacks 30% faster when below 40% health.",

@@ -303,7 +303,7 @@ class Game {
     getEncounterText(encounter) {
         switch (encounter.type) {
             case 'monster':
-                return `Fight ${MONSTERS[encounter.monsterId]?.name || 'Unknown Monster'}`;
+                return `${MONSTERS[encounter.monsterId]?.name || 'Unknown Monster'}`;
             case 'rest':
                 return 'Rest Site';
             case 'shop':
