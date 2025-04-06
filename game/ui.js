@@ -16,7 +16,13 @@ class UI {
         this.startingUI = new Starting(this);
     }
 
-    clearMainArea() { this.cache.clearMainArea(); }
+    renderAll() {
+        this.renderInventory();
+        this.renderEquipment();
+        this.updatePlayerStats();
+    }
+
+    clearMainArea() { this.cache.clearMainArea(); this.renderAll(); }
 
     renderStarting(game) { this.startingUI.render(game); }
     renderLoot(lootItems, goldAmount) { this.lootUI.render(lootItems, goldAmount); }
@@ -27,7 +33,13 @@ class UI {
     updatePlayerStats() { this.statsUI.render(); }
     renderCombat(player, enemy) { this.combatUI.render(player, enemy); }
     renderBossEncounter(bossData, bossId) { this.bossUI.render(bossData, bossId); }
-    updateCombatTimers(playerTimer, enemyTimer) { this.combatUI.updateCombatTimers(playerTimer, enemyTimer); }
+    updateCombatTimers(playerTimer, enemyTimer, playerDelay = 0,
+        enemyBreathTimer, enemyBreathInterval,
+        enemyStunTimer, enemyStunInterval,
+        enemyRegenTimer, enemyRegenInterval) { this.combatUI.updateCombatTimers(playerTimer, enemyTimer, playerDelay = 0,
+            enemyBreathTimer, enemyBreathInterval,
+            enemyStunTimer, enemyStunInterval,
+            enemyRegenTimer, enemyRegenInterval); }
     updateCombatStats(player, enemy) { this.combatUI.updateCombatStats(player, enemy); }
     updateCombatantHealth(who, current, max, damage = 0, blocked = 0, isHeal = false, fullBlock = false) { this.combatUI.updateCombatantHealth(who, current, max, damage, blocked, isHeal, fullBlock); }
     createDamageSplat(selector, amount, type = 'damage', blocked = 0, fullBlock = false) { this.splatUI.render(selector, amount, type, blocked, fullBlock); }

@@ -139,9 +139,9 @@ class StatsUI {
 
             let roundTooltipText = `Current Round: ${currentRound} / ${this.ui.game.maxRounds}`;
             if (currentRound === 10 || currentRound === 20) {
-                roundTooltipText = `MINI-BOSS APPROACHING! (Round ${currentRound})`;
+                roundTooltipText = `Prepare to fight!`;
             } else if (currentRound === 30) {
-                roundTooltipText = `FINAL BOSS! The Ancient Dragon awaits... (Round ${currentRound})`;
+                roundTooltipText = `The Ancient Dragon awaits...`;
             }
 
             this.ui.roundAreaElement.dataset.tooltipText = roundTooltipText;

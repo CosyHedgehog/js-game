@@ -1,7 +1,7 @@
 class Player {
     constructor() {
         this.gold = 0;
-        this.maxHealth = 20;
+        this.maxHealth = 10;
         this.health = 10;
         this.baseAttack = 1;
         this.baseDefense = 1;
@@ -158,7 +158,6 @@ class Player {
             if (!unequipResult.success) {
                 return { success: false, message: "Could not unequip the previous item (should not happen unless logic error)." };
             }
-            game?.addLog(`Unequipped ${this.inventory[currentlyEquippedIndex]?.name}.`);
         }
 
         this.equipment[slot] = index;

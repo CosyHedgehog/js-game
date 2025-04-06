@@ -29,24 +29,31 @@ class Game {
     ];
 
     start() {
-        this.currentRound = 18;
-        this.state = 'area_transition';
+        this.currentRound = 29;
+        // this.state = 'area_transition';
+        this.state = 'choosing';
         this.currentArea = "giants_pass";
         this.pendingAreaTransitionName = "Giants pass";
+        this.player.health = 1000;
 
         this.player.addItem(this.createItem('wooden_sword'));
         this.player.addItem(this.createItem('wooden_shield'));
+        this.player.addItem(this.createItem('wooden_shield'));
+        this.player.addItem(this.createItem('wooden_sword'));
 
         this.player.addItem(this.createItem('bread'));
         this.player.addItem(this.createItem('bread'));
         this.player.addItem(this.createItem('bread'));
 
         this.ui.gameScreen?.classList.remove('hidden');
+
+        this.generateEventChoices();
+
         this.ui.renderInventory();
         this.ui.renderEquipment();
         this.ui.updatePlayerStats();
         this.addLog("Game started with your chosen equipment.");
-        this.ui.renderArea(this.pendingAreaTransitionName);
+        // this.ui.renderArea(this.pendingAreaTransitionName);
     }
 
     addLog(message) {
@@ -468,7 +475,6 @@ class Game {
         }
     }
 
-
     handleEquipItem(index) {
         const result = this.player.equipItem(index);
         if (result.success) {
@@ -479,10 +485,13 @@ class Game {
                 this.currentCombat.ui.updateCombatTimers(
                     this.player.attackTimer,
                     this.currentCombat.enemy.attackTimer,
-                    0, this.currentCombat.enemy.breathAttackTimer, this.currentCombat.enemy.breathAttackInterval);
+                    0, 
+                    this.currentCombat.enemy.breathAttackTimer, 
+                    this.currentCombat.enemy.breathAttackInterval);
             }
 
-            this.ui.renderInventory(); this.ui.renderEquipment();
+            this.ui.renderInventory(); 
+            this.ui.renderEquipment();
             this.ui.updatePlayerStats();
         } else {
             this.addLog(`Equip failed: ${result.message}`);
@@ -730,8 +739,10 @@ class Game {
         this.addLog(`--- Round ${this.currentRound} ---`);
         this.addLog(`You venture into ${this.pendingAreaTransitionName}!`);
         this.ui.renderRound(this.currentRound, this.maxRounds);
-        this.pendingAreaTransitionName = null; this.pendingNewAreaId = null;
-        this.state = 'choosing'; this.ui.clearMainArea();
+        this.pendingAreaTransitionName = null; 
+        this.pendingNewAreaId = null;
+        this.state = 'choosing'; 
+        this.ui.clearMainArea();
         let encounterGenerated = false;
         let currentTier = null;
 

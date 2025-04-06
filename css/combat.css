@@ -598,15 +598,14 @@
 }
 
 .round-pulsing {
-   
-    animation: round-update-pulse 0.7s ease-out; 
+    /* Keep this class definition but remove the animation */
 }
 
-#round-area.round-miniboss {
+#round-area .stat-item.round-miniboss {
     animation: miniboss-glow 1.5s infinite ease-in-out;
 }
 
-#round-area.round-finalboss {
+#round-area .stat-item.round-finalboss {
     animation: finalboss-flame 1.2s infinite ease-in-out;
 }
 
@@ -622,6 +621,11 @@
 
 .damage-splat.damage {
     color: #f44336;
+}
+
+#stat-round.round-number-animated {
+    display: inline-block; /* Needed for transform */
+    animation: round-number-update 0.5s ease-out;
 }
 
 

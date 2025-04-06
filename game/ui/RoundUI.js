@@ -12,8 +12,23 @@ class RoundUI {
             maxRoundEl.textContent = maxRounds;
         }
 
-        if (this.ui.roundAreaElement) {
-            this.ui.roundAreaElement.classList.remove('round-pulsing'); void this.ui.roundAreaElement.offsetWidth; this.ui.roundAreaElement.classList.add('round-pulsing');
+        if (this.ui.roundAreaElement && this.ui.statRound) {
+            // Remove the old animation from the area
+            this.ui.roundAreaElement.classList.remove('round-pulsing');
+
+            // Add the new animation to the round number
+            const roundNumberEl = this.ui.statRound;
+            roundNumberEl.classList.remove('round-number-animated'); 
+            void roundNumberEl.offsetWidth; // Trigger reflow
+            roundNumberEl.classList.add('round-number-animated');
+
+            // Handle miniboss/finalboss glow
+            this.ui.roundAreaElement.classList.remove('round-miniboss', 'round-finalboss');
+            if (currentRound === 10 || currentRound === 20) {
+                this.ui.roundAreaElement.classList.add('round-miniboss');
+            } else if (currentRound === maxRounds) { 
+                this.ui.roundAreaElement.classList.add('round-finalboss');
+            }
         }
     }
 }

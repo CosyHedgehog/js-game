@@ -26,7 +26,10 @@ class EquipmentUI {
 
             if (equippedItemIndex !== null && this.ui.game.player.inventory[equippedItemIndex]) {
                 const item = this.ui.game.player.inventory[equippedItemIndex];
-                itemDescription = item.description || 'No description';
+                const statsText = Object.entries(item.stats || {})
+                    .map(([stat, value]) => `${stat.charAt(0).toUpperCase() + stat.slice(1)}: ${value}`)
+                    .join('<br>');
+                itemDescription = `<b>${item.name}</b><br>${statsText}`;
                 isEquipped = true;
 
                 parentPElement.onmouseenter = (e) => this.ui.showTooltip(itemDescription, this.ui.equipTooltip, e);

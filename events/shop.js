@@ -182,7 +182,7 @@ class Shop {
             },
             mid: {
                 items: [
-                    'iron_sword', 'quick_dagger', 'iron_helm', 'iron_armor',
+                    'iron_sword', 'iron_helm', 'iron_armor',
                     'iron_legs', 'iron_shield', 'health_potion'
                 ],
                 weight: 25

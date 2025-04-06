@@ -46,10 +46,12 @@ class TooltipManager {
         }
 
         const combatElements = {
-            playerAtk: { el: this.ui.combatPlayerAtk?.closest('span'), text: "Maximum potential damage per attack." },
-            playerDef: { el: this.ui.combatPlayerDef?.closest('span'), text: "Maximum potential damage blocked per hit." },
-            enemyAtk: { el: this.ui.combatEnemyAtk?.closest('span'), text: "Enemy's current attack power." },
-            enemyDef: { el: this.ui.combatEnemyDef?.closest('span'), text: "Enemy's current defense value." },
+            playerAtk: { el: this.ui.combatPlayerAtk, text: "Your current attack power." },
+            playerDef: { el: this.ui.combatPlayerDef, text: "Your current defense value." },
+            playerSpd: { el: this.ui.combatPlayerSpd, text: "Your current attack speed." },
+            enemyAtk: { el: this.ui.combatEnemyAtk, text: "Enemy's current attack power." },
+            enemyDef: { el: this.ui.combatEnemyDef, text: "Enemy's current defense value." },
+            enemySpd: { el: this.ui.combatEnemySpd, text: "Enemy's current attack speed." },
             playerTimer: { el: this.ui.combatPlayerTimerContainer, text: "Attack every X seconds." },
             enemyTimer: { el: this.ui.combatEnemyTimerContainer, text: "Attack every X seconds." },
             enemyBreathTimer: { el: this.ui.combatEnemyBreathTimerContainer, text: "Firebreath every X seconds." },

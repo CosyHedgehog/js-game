@@ -80,13 +80,7 @@ class BossUI {
 
         const startButton = document.createElement('button');
         startButton.className = 'choice-start-button';
-        if (isFinalBoss) {
-            startButton.textContent = 'Fight Final Boss';
-        } else if (isMiniBoss) {
-            startButton.textContent = 'Fight Mini-Boss';
-        } else {
-            startButton.textContent = 'Fight';
-        }
+        startButton.textContent = 'Fight';
         startButton.onclick = () => {
             card.classList.add('boss-engage-start');
             setTimeout(() => {
