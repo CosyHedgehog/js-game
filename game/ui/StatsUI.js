@@ -88,7 +88,7 @@ class StatsUI {
         let speedTooltip = "Time between your attacks (lower is faster).";
         if (player.tempSpeedReduction > 0) {
             speedText += ` <span class="boosted-stat">(-${player.tempSpeedReduction.toFixed(1)}s)</span>`;
-            speedTooltip = `Time between your attacks (lower is faster).\nBoosted by -${player.tempSpeedReduction.toFixed(1)}s (temporary, lasts until combat ends).`;
+            speedTooltip = `Time between your attacks (lower is faster).<br>Boosted by -${player.tempSpeedReduction.toFixed(1)}s (temporary, lasts until combat ends).`;
         }
         if (this.ui.statSpeed) this.ui.statSpeed.innerHTML = speedText; if (this.ui.statSpeedElement) this.ui.statSpeedElement.dataset.tooltipText = speedTooltip;
 

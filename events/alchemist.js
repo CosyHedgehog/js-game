@@ -37,10 +37,23 @@ class Alchemist {
             });
         });
 
+        // Ensure at least one item (fallback)
         if (availableItems.length === 0) {
             const basicPotion = this.game.createItem('health_potion');
             basicPotion.buyPrice = Math.ceil(basicPotion.value);
             availableItems.push(basicPotion);
+            // Mark the fallback as free if it's the only one
+            availableItems[0].isFree = true;
+            availableItems[0].originalPrice = availableItems[0].buyPrice; // Store original price if needed
+            availableItems[0].buyPrice = 0;
+            this.game.addLog("The alchemist offers you a complimentary Health Potion!");
+        } else {
+            // Select a random item from the generated list to be free
+            const freeIndex = Math.floor(Math.random() * availableItems.length);
+            availableItems[freeIndex].isFree = true;
+            availableItems[freeIndex].originalPrice = availableItems[freeIndex].buyPrice; // Store original price
+            availableItems[freeIndex].buyPrice = 0; // Set price to 0 for logic
+             this.game.addLog(`The alchemist offers you a complimentary ${availableItems[freeIndex].name}!`);
         }
 
         this.game.currentShopItems = availableItems;
@@ -53,20 +66,23 @@ class Alchemist {
         alchemistArea.id = 'alchemist-area';
         alchemistArea.innerHTML = `
             <h3>Alchemist's Shop</h3>
-            <p class="shop-info">Potions brewed fresh (mostly).</p> 
+            <p class="shop-info">Potions brewed fresh (mostly). One's on the house!</p> 
             <div class="shop-content">
                 <div class="shop-items-container">
                     ${items.map((item, index) => {
                 const isBought = item.bought === true;
-                const canAfford = this.game.player.gold >= item.buyPrice;
+                const displayPrice = item.isFree ? item.originalPrice : item.buyPrice;
+                const canAfford = item.isFree || this.game.player.gold >= item.buyPrice;
+                const priceText = item.isFree ? `<span class="free-item-price">FREE</span> <span class="original-price">(was ${displayPrice})</span>` : `${displayPrice} gold`;
+
                 return `
-                        <div class="shop-item ${isBought ? 'item-bought' : ''}" data-item-id="${item.id}">
+                        <div class="shop-item ${isBought ? 'item-bought' : ''} ${item.isFree ? 'free-item' : ''}" data-item-id="${item.id}">
                             <div class="shop-item-info">
-                                <span class="shop-item-name">${item.name}</span>
-                                <span class="shop-item-price">${item.buyPrice} gold</span>
+                                <span class="shop-item-name">${item.name}${item.isFree ? ' ✨' : ''}</span>
+                                <span class="shop-item-price">${priceText}</span>
                             </div>
-                            <button class="shop-item-button" data-index="${index}" ${isBought || !canAfford ? 'disabled' : ''}>
-                                ${isBought ? 'Bought' : 'Buy'}
+                            <button class="shop-item-button ${item.isFree ? 'free-button' : ''}" data-index="${index}" ${isBought || !canAfford ? 'disabled' : ''}>
+                                ${isBought ? 'Bought' : (item.isFree ? 'Take' : 'Buy')}
                             </button>
                         </div>
                     `}).join('')}
@@ -113,9 +129,18 @@ class Alchemist {
             item.addEventListener('mouseenter', () => {
                 if (itemData) {
                     const name = itemData.name || 'Unknown Potion';
-                    const desc = itemData.description || 'No description available.';
+                    let desc = itemData.description || 'No description available.';
+                    const shopItemObject = items.find(i => i.id === itemId);
+                    let freeIndicator = ''; // Default empty
+
+                    // Check if this item is the free one and set the indicator string
+                    if (shopItemObject && shopItemObject.isFree) {
+                        // desc += "<br><br><i style='color: #4CAF50;'>On the house!</i>"; // Removed from here
+                        freeIndicator = " <span style='color: #4CAF50; font-style: italic; font-size: 0.9em;'>(Free!)</span>"; 
+                    }
+
                     descriptionBox.innerHTML = `
-                        <div class="item-desc-name">${name}</div>
+                        <div class="item-desc-name">${name}${freeIndicator}</div>
                         <div class="item-desc-text">${desc}</div>
                     `;
                 }
@@ -184,6 +209,12 @@ class Alchemist {
                     buyButton.disabled = true;
                 }
                 shopItemDiv.classList.add('item-bought');
+                // Remove free item styling after taking it
+                if (item.isFree) {
+                    shopItemDiv.classList.remove('free-item');
+                    // Optionally, reset button style if needed (though .item-bought might override)
+                    if(buyButton) buyButton.classList.remove('free-button'); 
+                }
             } else {
                 console.warn("Alchemist item div not found for targeted update.");
             }

@@ -47,3 +47,36 @@
     margin-top: 20px;
     flex-shrink: 0;
 }
+
+/* --- Alchemist Free Item Styling --- */
+#alchemist-area .shop-item.free-item {
+    border: 2px solid #ffd700; /* Gold border */
+    background-color: rgba(255, 215, 0, 0.08);
+}
+
+#alchemist-area .shop-item.free-item .shop-item-name {
+    color: #ffe066; /* Lighter gold text */
+    font-weight: bold;
+}
+
+#alchemist-area .shop-item .free-item-price {
+    color: #4CAF50; /* Green for FREE */
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+#alchemist-area .shop-item .original-price {
+    font-size: 0.9em;
+    color: #aaa;
+    text-decoration: line-through;
+}
+
+#alchemist-area .shop-item-button.free-button {
+    background-color: #4CAF50; /* Green button */
+    border-color: #388E3C;
+}
+
+#alchemist-area .shop-item-button.free-button:hover {
+    background-color: #66BB6A;
+}
+/* --- End Free Item Styling --- */
