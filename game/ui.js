@@ -867,46 +867,25 @@ class UI {
                 setTimeout(() => this.game.selectChoice(0), 0);
             }
             
-            // Get encounter details and difficulty
             const encounter = choice.encounter;
             let difficultyText = '';
             let difficultyClass = '';
             
-            // Create card content FIRST
             const cardContent = document.createElement('div');
             cardContent.classList.add('choice-card-content');
 
-            // Conditionally add badge AND specific class INSIDE the monster check
             if (encounter.type === 'monster') {
                 card.classList.add('choice-monster'); // *** ADD CLASS FOR MONSTER CARDS ***
 
                 const monster = MONSTERS[encounter.monsterId];
-                // const playerAttack = this.game.player.getAttack(); // REMOVED old calculation basis
-
-                // *** Use difficulty property directly from monster data ***
                 if (monster && monster.difficulty) {
                     difficultyClass = 'difficulty-' + monster.difficulty; // e.g., difficulty-easy
                     difficultyText = monster.difficulty.toUpperCase(); // e.g., EASY
                 } else {
-                    // Fallback if difficulty property is missing (optional)
                     difficultyClass = 'difficulty-unknown'; 
                     difficultyText = '???';
                     console.warn(`Monster ${encounter.monsterId} is missing the difficulty property.`);
                 }
-
-                /* REMOVED old calculation logic:
-                // Calculate difficulty
-                if (monster.defense >= playerAttack) {
-                    difficultyClass = 'difficulty-hard';
-                    difficultyText = 'HARD';
-                } else if (monster.defense >= playerAttack - 2) {
-                    difficultyClass = 'difficulty-medium';
-                    difficultyText = 'MEDIUM';
-                } else {
-                    difficultyClass = 'difficulty-easy';
-                    difficultyText = 'EASY';
-                }
-                */
 
                 // Create and append badge ONLY for monsters
                 const difficultyBadge = document.createElement('div');
