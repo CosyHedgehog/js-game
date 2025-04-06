@@ -219,8 +219,10 @@ class Sharpen {
 
         const sharpenAttackButton = document.getElementById('sharpen-attack-button');
         const sharpenSpeedButton = document.getElementById('sharpen-speed-button');
+        const leaveButton = document.getElementById('sharpen-leave-button');
         if (sharpenAttackButton) sharpenAttackButton.disabled = true;
         if (sharpenSpeedButton) sharpenSpeedButton.disabled = true;
+        if (leaveButton) leaveButton.disabled = true;
 
         const previewArea = document.getElementById('sharpen-preview');
         if (previewArea) {
@@ -290,8 +292,21 @@ class Sharpen {
 
         item.value = Math.floor(item.value * 1.2);
 
+        // --- Disable buttons immediately to prevent double-clicks ---
+        const sharpenAttackButton = document.getElementById('sharpen-attack-button');
+        const sharpenSpeedButton = document.getElementById('sharpen-speed-button');
+        const leaveButton = document.getElementById('sharpen-leave-button');
+        if (sharpenAttackButton) sharpenAttackButton.disabled = true;
+        if (sharpenSpeedButton) sharpenSpeedButton.disabled = true;
+        if (leaveButton) leaveButton.disabled = true;
+        // ----------------------------------------------------------
+
         if (!this.game.player.addItem(item)) {
             this.game.addLog("Inventory full! Cannot return the sharpened item.");
+            // Re-enable buttons if adding fails
+            if (sharpenAttackButton) sharpenAttackButton.disabled = (item.isSharpened === true);
+            if (sharpenSpeedButton) sharpenSpeedButton.disabled = (item.isHoned === true);
+            if (leaveButton) leaveButton.disabled = false;
             return;
         }
 

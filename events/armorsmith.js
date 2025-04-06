@@ -5,10 +5,10 @@ class Armoury {
     }
 
     handle() {
-        const hasHammer = game.player.inventory.some(item => item && item.id === 'blacksmith_hammer');
+        const hasHammer = this.game.player.inventory.some(item => item && item.id === 'blacksmith_hammer');
         if (!hasHammer) {
-            game.addLog("You need a Blacksmith Hammer to use the armoury!");
-            game.proceedToNextRound();
+            this.game.addLog("You need a Blacksmith Hammer to use the armoury!");
+            this.game.proceedToNextRound();
             return;
         }
         this.game.state = 'armourer';
@@ -217,8 +217,10 @@ class Armoury {
 
         const enhanceDefenseButton = document.getElementById('armourer-defense-button');
         const enhanceHealthButton = document.getElementById('armourer-health-button');
+        const leaveButton = document.getElementById('armourer-leave-button');
         if (enhanceDefenseButton) enhanceDefenseButton.disabled = true;
         if (enhanceHealthButton) enhanceHealthButton.disabled = true;
+        if (leaveButton) leaveButton.disabled = true;
 
         const previewArea = document.getElementById('armourer-preview');
         if (previewArea) {
@@ -300,8 +302,21 @@ class Armoury {
 
         item.value = Math.floor(item.value * 1.2);
         
+        // --- Disable buttons immediately to prevent double-clicks ---
+        const enhanceDefenseButton = document.getElementById('armourer-defense-button');
+        const enhanceHealthButton = document.getElementById('armourer-health-button');
+        const leaveButton = document.getElementById('armourer-leave-button');
+        if (enhanceDefenseButton) enhanceDefenseButton.disabled = true;
+        if (enhanceHealthButton) enhanceHealthButton.disabled = true;
+        if (leaveButton) leaveButton.disabled = true;
+        // ----------------------------------------------------------
+
         if (!this.game.player.addItem(item)) {
             this.game.addLog(`Inventory full! Could not add enhanced ${item.name}.`);
+            // Re-enable buttons if adding fails (optional, but good practice)
+            if (enhanceDefenseButton) enhanceDefenseButton.disabled = (item.isReinforced === true);
+            if (enhanceHealthButton) enhanceHealthButton.disabled = (item.isFortified === true); 
+            if (leaveButton) leaveButton.disabled = false;
             return;
         }
 
@@ -311,7 +326,7 @@ class Armoury {
         this.ui.renderEquipment();
 
         const armourerArea = document.getElementById('armourer-area');
-        if (armourerArea) {
+        if (armourerArea) {            
             armourerArea.classList.add('upgrade-success-flash');
             setTimeout(() => {
                 armourerArea.classList.remove('upgrade-success-flash');

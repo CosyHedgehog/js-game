@@ -59,7 +59,7 @@ class Game {
         this.player.addItem(this.createItem('wooden_shield'));
         this.player.addItem(this.createItem('wooden_shield'));
         this.player.addItem(this.createItem('wooden_sword'));
-
+        this.player.addItem(this.createItem('blacksmith_hammer'));
         this.player.addItem(this.createItem('bread'));
         this.player.addItem(this.createItem('bread'));
         this.player.addItem(this.createItem('bread'));
