@@ -741,5 +741,4 @@ class Game {
         this.ui.updatePlayerStats();
         this.ui.renderEquipment();
     }
-
 }
