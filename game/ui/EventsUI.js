@@ -80,6 +80,7 @@ class EventsUI {
                     }
 
                     descriptionHTML += `<div class="monster-stats-summary">
+                        <div>❤️ HP: ${monster.health}</div>
                         <div>⚔️ Atk: ${monster.attack}</div>
                         <div>🛡️ Def: ${monster.defense}</div>
                         <div>⚡ Spd: ${monster.speed}s</div>
