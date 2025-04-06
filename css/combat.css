@@ -140,7 +140,11 @@
     gap: 0.3em;
 }
 
-/* Set default cursor for enemy stats */
+#combat-enemy-hp,
+#combat-player-hp,
+#combat-player-atk,
+#combat-player-def,
+#combat-player-spd,
 #combat-enemy-atk,
 #combat-enemy-def,
 #combat-enemy-spd {

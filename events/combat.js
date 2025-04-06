@@ -737,6 +737,9 @@ class Combat {
         this.player.attackTimerPaused = true;
         this.player.pendingActionDelay = this.enemy.timedStunDuration;
         this.player.isStunned = true; // Set the stun flag
+        this.player.activeEffects.stun = {
+            duration: this.enemy.timedStunDuration,
+        }
         this.game.addLog(`<span style="color: #ffff99;">${this.enemy.name} hurls a massive boulder, stunning you! (Attack delayed ${this.enemy.timedStunDuration}s)</span>`);
         
         // Trigger visual effect

@@ -192,15 +192,13 @@ class UI {
         }
 
         const combatElements = {
-            // Target the SPAN containing the label and value
-            // playerAtk: { el: this.combatPlayerAtk?.closest('span'), text: "Maximum potential damage per attack." }, 
-            // playerDef: { el: this.combatPlayerDef?.closest('span'), text: "Maximum potential damage blocked per hit." }, 
-            // enemyAtk: { el: this.combatEnemyAtk?.closest('span'), text: "Enemy's current attack power." }, 
-            // enemyDef: { el: this.combatEnemyDef?.closest('span'), text: "Enemy's current defense value." }, 
+            playerAtk: { el: this.combatPlayerAtk?.closest('span'), text: "Maximum potential damage per attack." }, 
+            playerDef: { el: this.combatPlayerDef?.closest('span'), text: "Maximum potential damage blocked per hit." }, 
+            enemyAtk: { el: this.combatEnemyAtk?.closest('span'), text: "Enemy's current attack power." }, 
+            enemyDef: { el: this.combatEnemyDef?.closest('span'), text: "Enemy's current defense value." }, 
             playerTimer: { el: this.combatPlayerTimerContainer, text: "Attack every X seconds." }, 
             enemyTimer: { el: this.combatEnemyTimerContainer, text: "Attack every X seconds." }, 
             enemyBreathTimer: { el: this.combatEnemyBreathTimerContainer, text: "Firebreath every X seconds." },
-            // *** Add Stun Timer Tooltip ***
             stunTimer: { el: this.combatEnemyStunTimerContainer, text: "Slams ground every X seconds." }
         };
 
@@ -251,7 +249,13 @@ class UI {
                     }
                     
                     if (key === 'playerTimer') {
-                        tooltipText = tooltipText.replace('X', this.game?.player?.getAttackSpeed().toFixed(1) || '?');
+                        if (this.game.player.isStunned) {
+                            tooltipText = 'You are Stunned!';
+                        } else if (this.game.player.pendingActionDelay > 0) {
+                            tooltipText = 'You are Eating!';
+                        } else {
+                            tooltipText = tooltipText.replace('X', this.game?.player?.getAttackSpeed().toFixed(1) || '?');
+                        }
                     } else if (key === 'enemyTimer') {
                         tooltipText = tooltipText.replace('X', this.game?.currentCombat?.enemy?.currentSpeed.toFixed(1) || '?');
                     } else if (key === 'enemyBreathTimer') {
@@ -1260,7 +1264,13 @@ class UI {
                 if (playerDelay > 0) {
                     playerContainer.classList.add('player-delayed');
                     playerTimerEl.textContent = `Delayed ${playerDelay.toFixed(1)}s`;
-                    playerTimerBar.style.width = `${(playerDelay /2) * 100}%`;
+
+                    if (this.game.player.isStunned) {
+                        playerTimerBar.style.width = `${(playerDelay / this.game.player.activeEffects.stun.duration) * 100}%`;
+                    } else {
+                        playerTimerBar.style.width = `${(playerDelay /2) * 100}%`;
+                    }
+
                     playerTimerBar.style.backgroundColor = '#ffd700';
                 } else {
                     playerContainer.classList.remove('player-delayed');
