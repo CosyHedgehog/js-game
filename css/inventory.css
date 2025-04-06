@@ -402,3 +402,10 @@
     /* border: 2px dashed #33cc33; Thicker, brighter green dashed border */
     animation: shopGlow 1s infinite alternate; /* Keep glow animation */
 }
+
+/* New style for stunned slots */
+.inventory-slot.slot-stunned {
+    filter: grayscale(80%) brightness(0.6); 
+    cursor: not-allowed;
+    pointer-events: none; /* Prevent clicks/hover effects */
+}

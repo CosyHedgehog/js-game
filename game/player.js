@@ -22,6 +22,7 @@ class Player {
         this.tempSpeedReduction = 0;
         this.activeEffects = {}; // Example: { poison: { damage: 1, duration: 6, timer: 6 } }
         this.isStunned = false;
+        this.stunTimer = 0;
     }
 
     getMaxHealth() {
@@ -193,9 +194,9 @@ class Player {
         }
         const item = this.inventory[index];
 
-        // Check if player is specifically stunned and trying to eat food during combat
-        if (this.isStunned && item.useAction === 'Eat' && game && game.state === 'combat') { 
-            return { success: false, message: "You are stunned and cannot eat!" };
+        // Prevent ANY item use while stunned during combat
+        if (this.isStunned && game && game.state === 'combat') { 
+            return { success: false, message: "You are stunned and cannot use items!" };
         }
 
         if (item.type === 'consumable' && item.healAmount) {
@@ -259,5 +260,23 @@ class Player {
         this.tempSpeedReduction = 0;
         this.activeEffects = {}; 
         this.isStunned = false;
+    }
+
+    // Add method to apply stun
+    applyStun(duration) {
+        this.isStunned = true;
+        this.stunTimer = duration;
+        this.attackTimer = 0; // Reset attack timer when stunned
+    }
+
+    // Add method to tick the stun timer
+    tickStunTimer(deltaTime) {
+        if (this.isStunned) {
+            this.stunTimer -= deltaTime;
+            if (this.stunTimer <= 0) {
+                this.isStunned = false;
+                this.stunTimer = 0;
+            }
+        }
     }
 }
