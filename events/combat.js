@@ -34,12 +34,6 @@ class Combat {
         
         this.player.activeEffects = {};
 
-        this.tickIntervalId = null;
-        this.tickRate = 100; // ms
-
-        this.lastPlayerAttackBlocked = false; // Track if last player attack was fully blocked
-        this.playerWasStunned = player.isStunned; // Track initial player stun state
-
         const runButton = document.getElementById('combat-run-button');
         if (runButton) {
             const minDamage = Math.floor(this.enemy.attack * 1);
@@ -365,25 +359,9 @@ class Combat {
             this.enemy.attackTimer = this.enemy.currentSpeed;
             if (this.checkCombatEnd()) return;
         }
-
-        this.player.tickStunTimer(this.tickRate / 1000);
-
-        // Check if player stun state changed and re-render inventory if needed
-        if (this.player.isStunned !== this.playerWasStunned) {
-            this.ui.renderInventory();
-            this.playerWasStunned = this.player.isStunned; // Update the tracked state
-        }
-
-        if (!this.enemy.isStunned) {
-            // ... rest of the function ...
-        }
     }
 
     playerAttack() {
-        if (this.player.attackTimer > 0 || this.player.pendingActionDelay > 0 || this.player.isStunned) {
-            return; 
-        }
-
         const playerAttackRoll = this.game.rollDamage(this.player.getAttack());
         const enemyDefenseRoll = this.game.rollDamage(this.enemy.currentDefense || 0);
         const actualBlocked = Math.min(playerAttackRoll, enemyDefenseRoll);
@@ -771,12 +749,9 @@ class Combat {
             }, 800); 
         }
         // Create Stun splat
-        this.ui.createDamageSplat('#combat-area .enemy-side', `Stun ${this.enemy.timedStunDuration}s`, 'stun');
-        this.game.addLog(`The ${this.enemy.name} hurls a boulder, stunning you for ${this.enemy.timedStunDuration} seconds!`);
+        this.ui.createDamageSplat('.player-side', 'Stunned!', 'stun');
         
-        // Apply stun to player
-        this.player.applyStun(this.enemy.timedStunDuration);
-
-        this.enemy.stunTimer = this.enemy.timedStunInterval;
+        // Re-render inventory to show stun effect on food
+        this.ui.renderInventory(); 
     }
 }

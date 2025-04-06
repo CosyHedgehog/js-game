@@ -141,9 +141,6 @@
 }
 
 /* Set default cursor for enemy stats */
-#combat-player-atk,
-#combat-player-def,
-#combat-player-spd,
 #combat-enemy-atk,
 #combat-enemy-def,
 #combat-enemy-spd {
@@ -521,6 +518,13 @@
     box-shadow: 0 0 10px rgba(143, 0, 255, 0.7);
 }
 
+/* Add inventory stun style */
+.inventory-slot.food-stunned {
+    filter: grayscale(80%) brightness(0.7);
+    box-shadow: inset 0 0 8px rgba(255, 0, 0, 0.5);
+    cursor: default;
+}
+
 /* Round Area - Enhance and Center */
 #round-area {
     display: flex;
@@ -625,28 +629,6 @@
 
 .damage-splat.damage {
     color: #f44336;
-}
-
-.player-side.player-stunned {
-    animation: player-stunned-shake 0.5s ease-in-out infinite alternate;
-}
-
-.player-stun-timer {
-    /* Add styles for player stun timer */
-}
-
-.player-stun-timer .player-stun-bar {
-    background-color: #ffcc00; /* Yellow color for stun */
-    width: 100%; /* Initially full */
-}
-
-.player-stun-timer .timer-text {
-    color: #ffcc00;
-}
-
-/* Ensure stun timer is hidden by default */
-.player-stun-timer.hidden {
-    display: none;
 }
 
 

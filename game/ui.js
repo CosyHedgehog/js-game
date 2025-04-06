@@ -580,31 +580,6 @@ class UI {
                 slot.classList.add('slot-empty');
                 slot.draggable = false; // Empty slots aren't draggable
             }
-
-            // Add/Remove food-stunned class based on player stun state
-            if (item && item.useAction === 'Eat') {
-                if (this.game.player.isStunned) {
-                    slot.classList.add('food-stunned');
-                } else {
-                    slot.classList.remove('food-stunned');
-                }
-            } else if (slot.classList.contains('food-stunned')) {
-                // Ensure class is removed if item is not food or slot is empty
-                slot.classList.remove('food-stunned');
-            }
-
-            // Add/Remove slot-stunned class based on player stun state for occupied slots
-            if (item) { // Only apply to slots with items
-                if (this.game.player.isStunned && this.game.state === 'combat') { // Check for combat state too
-                    slot.classList.add('slot-stunned');
-                } else {
-                    slot.classList.remove('slot-stunned');
-                }
-            } else {
-                // Ensure empty slots don't have the stun class
-                slot.classList.remove('slot-stunned');
-            }
-
             this.inventoryGrid.appendChild(slot);
         });
     }
@@ -1330,44 +1305,6 @@ class UI {
             } else {
                 enemyRegenTimerContainer.classList.add('hidden');
              }
-        }
-
-        // Update Player Stun Timer
-        const playerStunTimerContainer = document.querySelector('#combat-area .player-side .player-stun-timer');
-        const playerStunTimerText = document.getElementById('combat-player-stun-timer');
-        const playerStunTimerBar = document.querySelector('#combat-area .player-side .player-stun-bar');
-        const playerSideDiv = document.querySelector('#combat-area .player-side');
-
-        if (playerStunTimerContainer && playerStunTimerText && playerStunTimerBar && playerSideDiv && this.game.player && this.game.currentCombat?.enemy) { // Add checks for game objects
-            if (this.game.player.isStunned && this.game.player.stunTimer > 0) {
-                playerStunTimerContainer.classList.remove('hidden');
-                playerStunTimerText.textContent = this.game.player.stunTimer.toFixed(1);
-                const originalDuration = this.game.currentCombat.enemy.timedStunDuration || 1; 
-                const widthPercent = Math.max(0, (this.game.player.stunTimer / originalDuration) * 100);
-                playerStunTimerBar.style.width = `${widthPercent}%`;
-                
-                // Apply shake effect briefly
-                if (!playerSideDiv.classList.contains('player-stunned-briefly')) { // Use a temporary flag 
-                    playerSideDiv.classList.add('player-stunned');
-                    playerSideDiv.classList.add('player-stunned-briefly'); // Add flag
-                    setTimeout(() => {
-                        playerSideDiv.classList.remove('player-stunned');
-                    }, 1000); // Remove shake after 1s
-                }
-
-                // Add tooltip listeners if not already present
-                if (!playerStunTimerContainer.onmouseenter) {
-                    playerStunTimerContainer.onmouseenter = (e) => this.showTooltip("You're stunned!", this.statTooltip, e);
-                    playerStunTimerContainer.onmouseleave = () => this.hideTooltip(this.statTooltip);
-                }
-            } else {
-                playerStunTimerContainer.classList.add('hidden');
-                playerSideDiv.classList.remove('player-stunned');
-                playerSideDiv.classList.remove('player-stunned-briefly'); // Reset the flag
-                // Remove tooltip listeners when not stunned
-                playerStunTimerContainer.onmouseenter = null;
-                playerStunTimerContainer.onmouseleave = null;
-            }
         }
     }
 
