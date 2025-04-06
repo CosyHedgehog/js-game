@@ -5,27 +5,21 @@ class Game {
         this.player = null;
         this.currentRound = 0;
         this.maxRounds = 30;
-        this.state = 'start_screen'; // Possible states: start_screen, choosing, combat, shop, rest, looting, game_over, win
-        this.logMessages = [];
+        this.state = 'start_screen'; this.logMessages = [];
         this.currentChoices = [];
         this.currentCombat = null;
         this.currentShopItems = [];
         this.shopCanReroll = false;
-        this.pendingLoot = null; // Will hold { gold: number, items: [] }
-        this.currentArea = Math.random() < 0.5 ? 'spider_cave' : 'wolf_den';
-        this.pendingAreaTransitionName = null; // Add this property
-        this.pendingNewAreaId = null; // Add this property
-
+        this.pendingLoot = null; this.currentArea = Math.random() < 0.5 ? 'spider_cave' : 'wolf_den';
+        this.pendingAreaTransitionName = null; this.pendingNewAreaId = null;
         if (this.ui) { this.ui.game = this; }
     }
 
     EVENT_PROBABILITY = [
         { type: 'monster', weight: 30 },
-        { type: 'rest', weight: 10 }, // 
-        { type: 'shop', weight: 100 },
+        { type: 'rest', weight: 10 }, { type: 'shop', weight: 100 },
         { type: 'alchemist', weight: 10 },
-        { type: 'treasure_chest', weight: 10 }, //
-        { type: 'forge', weight: 10 }, 
+        { type: 'treasure_chest', weight: 10 }, { type: 'forge', weight: 10 },
         { type: 'fishing', weight: 10 },
         { type: 'trap', weight: 10 }
     ];
@@ -36,88 +30,66 @@ class Game {
 
     addLog(message) {
         this.logMessages.push(message);
-        if (this.logMessages.length > 200) { // Keep log manageable
+        if (this.logMessages.length > 200) {
             this.logMessages.shift();
         }
         new Log(this, this.ui).renderLog();
     }
 
-    // Ensure proceedToNextRound correctly sets state and clears UI
     proceedToNextRound() {
         if (this.state === 'win' || this.state === 'game_over') {
-            console.log("Game already ended, not proceeding to next round.");
-            return; 
+            return;
         }
 
-        const nextRound = this.currentRound + 1; // Calculate next round number
+        const nextRound = this.currentRound + 1;
 
-        // *** DEBUG AREA START ***
-        console.log(`[Debug] Start of proceedToNextRound (Checking for ${nextRound}): currentArea = ${this.currentArea}`);
-        // *** END DEBUG AREA START ***
-        
         let encounterGenerated = false;
-        let currentTier = null; // Tier for the NEXT round
-
-        // Find the tier for the NEXT round
+        let currentTier = null;
         for (const tier of AREA_CONFIG) {
             if (nextRound >= tier.startRound && nextRound <= tier.endRound) {
                 currentTier = tier;
                 break;
             }
         }
-        
-        // *** Handle Area Change based on NEXT round ***
+
         let needsAreaTransition = false;
         let newAreaName = null;
         if (currentTier && currentTier.areas) {
             const validAreaIds = Object.keys(currentTier.areas);
             if (validAreaIds.length > 0 && !validAreaIds.includes(this.currentArea)) {
-                 needsAreaTransition = true;
-                 // Determine the new area ID and Name *now*
-                 const newAreaIndex = Math.floor(Math.random() * validAreaIds.length);
-                 const newAreaId = validAreaIds[newAreaIndex];
-                 newAreaName = currentTier.areas[newAreaId]?.name || newAreaId.replace('_', ' ');
-                 this.pendingNewAreaId = newAreaId; // Store ID for later assignment
-                 this.pendingAreaTransitionName = newAreaName;
-                 // *** ADD DEBUG ***
-                 console.log(`[Area Change Detected] proceedToNextRound: Round ${nextRound}, Current Area: ${this.currentArea}, New Tier Areas: ${validAreaIds.join(', ')}, Selected New Area ID: ${newAreaId}`);
+                needsAreaTransition = true;
+                const newAreaIndex = Math.floor(Math.random() * validAreaIds.length);
+                const newAreaId = validAreaIds[newAreaIndex];
+                newAreaName = currentTier.areas[newAreaId]?.name || newAreaId.replace('_', ' ');
+                this.pendingNewAreaId = newAreaId; this.pendingAreaTransitionName = newAreaName;
             }
-        } else if (nextRound === 1 && (!this.currentArea || (currentTier && !currentTier.areas))) { 
-             // Special handling for initializing area on round 1
-             const firstTier = AREA_CONFIG[0];
-             if (firstTier && firstTier.areas) {
-                 const firstTierAreaIds = Object.keys(firstTier.areas);
-                 if (firstTierAreaIds.length > 0) {
+        } else if (nextRound === 1 && (!this.currentArea || (currentTier && !currentTier.areas))) {
+            const firstTier = AREA_CONFIG[0];
+            if (firstTier && firstTier.areas) {
+                const firstTierAreaIds = Object.keys(firstTier.areas);
+                if (firstTierAreaIds.length > 0) {
                     const newAreaIndex = Math.floor(Math.random() * firstTierAreaIds.length);
                     const newAreaId = firstTierAreaIds[newAreaIndex];
                     needsAreaTransition = true;
                     newAreaName = firstTier.areas[newAreaId]?.name || newAreaId.replace('_', ' ');
                     this.pendingNewAreaId = newAreaId;
                     this.pendingAreaTransitionName = newAreaName;
-                    // *** ADD DEBUG ***
-                    console.log(`[Area Change Detected] proceedToNextRound: Round 1 Init, Selected New Area ID: ${newAreaId}`);
-                 }
-             }
+                }
+            }
         }
 
-        // *** If area transition is needed, show screen and stop ***
         if (needsAreaTransition) {
-            this.state = 'area_transition'; 
-            this.ui.clearMainArea(); 
+            this.state = 'area_transition';
+            this.ui.clearMainArea();
             this.ui.showAreaTransitionScreen(this.pendingAreaTransitionName);
-            return; // Exit function early, DO NOT increment round yet
+            return;
         }
 
-        // --- If NO area transition, proceed with regular round increment and logic ---
-        this.currentRound++; // Increment round HERE
-        this.addLog(`--- Round ${this.currentRound} ---`);
-        console.log("Current round:", this.currentRound);
-        this.ui.updateRoundDisplay(this.currentRound, this.maxRounds); // Update UI HERE
-
+        this.currentRound++; this.addLog(`--- Round ${this.currentRound} ---`);
+        this.ui.updateRoundDisplay(this.currentRound, this.maxRounds);
         this.state = 'choosing';
         this.ui.clearMainArea();
 
-        // Boss Check Logic (Use the *actual* currentRound now)
         let tierForThisRound = null;
         for (const tier of AREA_CONFIG) {
             if (this.currentRound >= tier.startRound && this.currentRound <= tier.endRound) {
@@ -125,30 +97,28 @@ class Game {
                 break;
             }
         }
-        
+
         if (tierForThisRound) {
-            const currentAreaData = tierForThisRound.areas?.[this.currentArea]; 
+            const currentAreaData = tierForThisRound.areas?.[this.currentArea];
             if (this.currentRound === 30 && currentAreaData?.finalBoss) {
-                 this.generateBossEncounter();
-                 encounterGenerated = true;
+                this.generateBossEncounter();
+                encounterGenerated = true;
             } else if (this.currentRound === tierForThisRound.endRound && currentAreaData?.miniBoss) {
-                 this.generateBossEncounter();
-                 encounterGenerated = true;
+                this.generateBossEncounter();
+                encounterGenerated = true;
             }
         }
 
-        // Generate regular choices if no boss was generated
         if (!encounterGenerated) {
             this.generateEventChoices();
         }
 
         this.ui.updatePlayerStats();
-        this.ui.renderEquipment(); 
+        this.ui.renderEquipment();
         this.ui.renderInventory();
     }
 
     enterLootState(gold, items) {
-        // Ensure items have the selected property if somehow missed (defensive)
         items.forEach(item => {
             if (item.selected === undefined) {
                 item.selected = true;
@@ -156,26 +126,22 @@ class Game {
         });
         this.pendingLoot = { gold, items };
         this.state = 'looting';
-        this.addLog("Examining loot..."); // Changed log message
-        new Loot(this, this.ui).handle(this.pendingLoot);
+        this.addLog("Examining loot..."); new Loot(this, this.ui).handle(this.pendingLoot);
     }
 
     collectLoot() {
         if (!this.pendingLoot) return;
 
-        // Count how many unlooted items we have
-        const unLootedItems = this.pendingLoot.items ? 
+        const unLootedItems = this.pendingLoot.items ?
             this.pendingLoot.items.filter(item => !item.looted).length : 0;
 
-        // Check if we have enough inventory space
         const freeSlots = this.player.inventory.filter(slot => slot === null).length;
-        
+
         if (unLootedItems > freeSlots) {
             this.addLog(`Not enough inventory space! You need ${unLootedItems} free slots.`);
             return;
         }
 
-        // If we have space, proceed with collecting all loot
         if (this.pendingLoot.gold > 0) {
             this.player.addGold(this.pendingLoot.gold);
             this.addLog(`Collected ${this.pendingLoot.gold} gold.`);
@@ -197,11 +163,9 @@ class Game {
             });
         }
 
-        // Update UI
         this.ui.updatePlayerStats();
         this.ui.renderInventory();
 
-        // Only continue if all items were successfully collected
         if (allItemsCollected) {
             this.continueLoot();
         }
@@ -209,7 +173,7 @@ class Game {
 
     generateEventChoices() {
         this.currentChoices = [];
-        
+
         const roll = Math.random() * 100;
         let numChoices = 3;
         if (roll < 25) {
@@ -217,32 +181,27 @@ class Game {
         }
 
         const usedEncounters = new Set();
-        while (this.currentChoices.length < numChoices && usedEncounters.size < this.EVENT_PROBABILITY.length) { // Added check against total event types
+        while (this.currentChoices.length < numChoices && usedEncounters.size < this.EVENT_PROBABILITY.length) {
             const encounter = this.getRandomEvent();
-            // Monster ID is now assigned within getRandomEvent
-            
-            // Create a unique key for the encounter type to prevent duplicates of non-monster events
-            // For monsters, the specific monsterId makes it unique
+
             const encounterKey = encounter.type === 'monster' ? encounter.monsterId : encounter.type;
-            
+
             if (!usedEncounters.has(encounterKey)) {
                 usedEncounters.add(encounterKey);
-                this.currentChoices.push({ 
-                    text: this.getEncounterText(encounter), 
-                    encounter: encounter 
+                this.currentChoices.push({
+                    text: this.getEncounterText(encounter),
+                    encounter: encounter
                 });
             } else if (usedEncounters.size >= this.EVENT_PROBABILITY.length) {
-                 // Safety break if we run out of unique event types 
-                 console.warn("Ran out of unique event types to generate choices.");
-                 break;
-            } 
+                console.warn("Ran out of unique event types to generate choices.");
+                break;
+            }
         }
-        
-        // Ensure at least one choice if loop fails (e.g., all weights 0 or error)
+
         if (this.currentChoices.length === 0) {
             console.warn("Failed to generate any event choices, defaulting to Rest.");
             const defaultEncounter = { type: 'rest' };
-             this.currentChoices.push({ 
+            this.currentChoices.push({
                 text: this.getEncounterText(defaultEncounter),
                 encounter: defaultEncounter
             });
@@ -259,28 +218,25 @@ class Game {
         for (const encounter of this.EVENT_PROBABILITY) {
             if (randomRoll < encounter.weight) {
                 chosenEncounter = { type: encounter.type };
-                
-                // If it's a monster event, pick an appropriate monster based on area
+
                 if (chosenEncounter.type === 'monster') {
                     let monsterPool = [];
                     let currentTier = null;
 
-                    // Find the current tier based on the round
-                    for (const tier of AREA_CONFIG) { // Use AREA_CONFIG
+                    for (const tier of AREA_CONFIG) {
                         if (this.currentRound >= tier.startRound && this.currentRound <= tier.endRound) {
                             currentTier = tier;
                             break;
                         }
                     }
 
-                    // Select monster pool based on current area and tier config
                     if (currentTier && currentTier.areas && currentTier.areas[this.currentArea] && currentTier.areas[this.currentArea].monsters) {
                         monsterPool = currentTier.areas[this.currentArea].monsters;
                     } else {
                         console.warn(`Could not determine monster pool for round ${this.currentRound} and area ${this.currentArea} using AREA_CONFIG.`);
-                        monsterPool = []; // Default to empty if no pool found
+                        monsterPool = [];
                     }
-                    
+
                     if (monsterPool.length > 0) {
                         chosenEncounter.monsterId = monsterPool[this.getRandomInt(0, monsterPool.length - 1)];
                     } else {
@@ -292,11 +248,10 @@ class Game {
             }
             randomRoll -= encounter.weight;
         }
-        
-        // Fallback if somehow no encounter is chosen (shouldn't happen with weights)
+
         if (!chosenEncounter) {
-             console.warn("No encounter chosen based on weights, defaulting to rest.");
-             chosenEncounter = { type: 'rest' };
+            console.warn("No encounter chosen based on weights, defaulting to rest.");
+            chosenEncounter = { type: 'rest' };
         }
 
         return chosenEncounter;
@@ -305,7 +260,6 @@ class Game {
     getEncounterText(encounter) {
         switch (encounter.type) {
             case 'monster':
-                // Make sure monsterId exists before trying to access MONSTERS
                 return `Fight ${MONSTERS[encounter.monsterId]?.name || 'Unknown Monster'}`;
             case 'rest':
                 return 'Rest Site';
@@ -332,15 +286,12 @@ class Game {
         }
     }
 
-    // *** Combined Boss Generation Logic (Revised) ***
     generateBossEncounter() {
         let bossId = null;
         let currentTier = null;
 
-        // Find the tier corresponding to the current round
         for (const tier of AREA_CONFIG) {
-            // *** Updated check to simply find the tier the current round falls into ***
-            if (this.currentRound >= tier.startRound && this.currentRound <= tier.endRound) { 
+            if (this.currentRound >= tier.startRound && this.currentRound <= tier.endRound) {
                 currentTier = tier;
                 break;
             }
@@ -348,33 +299,25 @@ class Game {
 
         if (!currentTier) {
             console.error(`Could not find tier config for boss round ${this.currentRound}.`);
-            this.generateEventChoices(); 
+            this.generateEventChoices();
             return;
         }
 
-        // *** Updated Logic to check for finalBoss first, then miniBoss within the area ***
         const currentAreaData = currentTier.areas?.[this.currentArea];
 
         if (this.currentRound === 30 && currentAreaData?.finalBoss) {
-            // Check for final boss specifically on round 30 in the current area data
             bossId = currentAreaData.finalBoss;
         } else if (currentTier.endRound === this.currentRound && currentAreaData?.miniBoss) {
-            // Check for mini-boss on the last round of the tier in the current area data
             bossId = currentAreaData.miniBoss;
-        } 
+        }
 
-        // *** DEBUGGING ***
-        console.log(`generateBossEncounter: Determined bossId = ${bossId}`);
-        console.log(`generateBossEncounter: MONSTERS object keys:`, Object.keys(MONSTERS || {}));
-        console.log(`generateBossEncounter: MONSTERS[${bossId}] =`, MONSTERS ? MONSTERS[bossId] : 'MONSTERS is undefined');
-        // *** END DEBUGGING ***
 
         if (bossId && MONSTERS[bossId]) {
             const bossData = MONSTERS[bossId];
             this.ui.renderBossEncounter(bossData, bossId);
         } else {
             console.error(`Could not determine or find boss data for round ${this.currentRound} in area ${this.currentArea}.`);
-            this.generateEventChoices(); // Fallback to regular choices
+            this.generateEventChoices();
         }
     }
 
@@ -382,16 +325,13 @@ class Game {
         if (this.state !== 'choosing' || index < 0 || index >= this.currentChoices.length) {
             return;
         }
-        // Just select the choice, the UI will handle showing details in the card
     }
 
-    // Add new method to handle final confirmation
     confirmChoice(index) {
         const selectedChoice = this.currentChoices[index];
         this.startEncounter(selectedChoice.encounter);
     }
 
-    // Add new method to get encounter details
     getEncounterDetails(encounter) {
         switch (encounter.type) {
             case 'monster':
@@ -399,10 +339,9 @@ class Game {
             case 'boss': {
                 const monster = MONSTERS[encounter.monsterId];
                 if (!monster) return "Error: Monster data not found.";
-                // Construct the details string, including the description if available
                 let details = `${monster.name}\n` +
-                       `Health: ${monster.health} // Attack: ${monster.attack} // Defense: ${monster.defense} // Attack Speed: ${monster.speed}s // ` +
-                       `Gold Drop: ${monster.goldDrop[0]}-${monster.goldDrop[1]}\n\n`;
+                    `Health: ${monster.health} // Attack: ${monster.attack} // Defense: ${monster.defense} // Attack Speed: ${monster.speed}s // ` +
+                    `Gold Drop: ${monster.goldDrop[0]}-${monster.goldDrop[1]}\n\n`;
                 if (monster.description) {
                     details += `${monster.description}\n\n`; // Add the description
                 }
@@ -411,41 +350,41 @@ class Game {
             }
             case 'rest':
                 return `Rest at this site to recover 20-70% of your maximum health (${Math.floor(this.player.maxHealth * 0.2)}-${Math.floor(this.player.maxHealth * 0.7)} HP).\n` +
-                       `Your maximum HP will also increase by 1.\n\n` +
-                       `Do you want to rest here?`;
+                    `Your maximum HP will also increase by 1.\n\n` +
+                    `Do you want to rest here?`;
             case 'shop':
                 return "Visit a merchant to buy and sell items.\n" +
-                       "You can also reroll the shop's inventory once for 3 gold.\n\n" +
-                       `Current gold: ${this.player.gold}\n\n` +
-                       "Enter shop?";
+                    "You can also reroll the shop's inventory once for 3 gold.\n\n" +
+                    `Current gold: ${this.player.gold}\n\n` +
+                    "Enter shop?";
             case 'fishing':
                 return "Try your luck fishing!\n" +
-                       "You might catch 1-5 fish of varying sizes:\n" +
-                       "- Small Fish (Common) - Heals 2 HP\n" +
-                       "- Medium Fish (Uncommon) - Heals 5 HP\n" +
-                       "- Large Fish (Rare) - Heals 8 HP\n\n" +
-                       "Go fishing?";
+                    "You might catch 1-5 fish of varying sizes:\n" +
+                    "- Small Fish (Common) - Heals 2 HP\n" +
+                    "- Medium Fish (Uncommon) - Heals 5 HP\n" +
+                    "- Large Fish (Rare) - Heals 8 HP\n\n" +
+                    "Go fishing?";
             case 'blacksmith':
                 return "Visit the Blacksmith to combine two similar items into a stronger version.\n" +
-                       "You can combine weapons or armor pieces of the same type.\n\n" +
-                       "Enter the forge?";
+                    "You can combine weapons or armor pieces of the same type.\n\n" +
+                    "Enter the forge?";
             case 'sharpen':
                 return "You find a sharpening stone that can enhance a weapon.\n" +
-                       "Select one weapon to permanently increase its attack power by 1.\n\n" +
-                       "Use the sharpening stone?";
+                    "Select one weapon to permanently increase its attack power by 1.\n\n" +
+                    "Use the sharpening stone?";
             case 'armorsmith':
                 return "You find an Armorsmith that can enhance armor.\n" +
-                       "Select one piece of armor to permanently increase its defense by 1.\n\n" +
-                       "OR increase its max health by 3.\n\n" +
-                       "Use the Armourer's tools?";
+                    "Select one piece of armor to permanently increase its defense by 1.\n\n" +
+                    "OR increase its max health by 3.\n\n" +
+                    "Use the Armourer's tools?";
             case 'alchemist':
                 return "Visit the Alchemist to buy powerful potions:\n" +
-                       "- Health Potions: Restore HP instantly\n" +
-                       "- Attack Potions: Boost damage for combat\n" +
-                       "- Defense Potions: Increase defense for combat\n" +
-                       "- Speed Potions: Attack faster for combat\n\n" +
-                       `Current gold: ${this.player.gold}\n\n` +
-                       "Enter the Alchemist's shop?";
+                    "- Health Potions: Restore HP instantly\n" +
+                    "- Attack Potions: Boost damage for combat\n" +
+                    "- Defense Potions: Increase defense for combat\n" +
+                    "- Speed Potions: Attack faster for combat\n\n" +
+                    `Current gold: ${this.player.gold}\n\n` +
+                    "Enter the Alchemist's shop?";
             case 'trap':
                 return "You notice something suspicious on the ground. It might be a trap."
                     + "\n\nYou could try to disarm it (30% chance) for a potential reward."
@@ -453,18 +392,17 @@ class Game {
                     + "\n\nInvestigate the trap?";
             case 'treasure_chest':
                 return "You find a sturdy-looking treasure chest.\n\n" +
-                       "Open it?";
+                    "Open it?";
             case 'forge':
                 return "Visit the Blacksmith Workshop to enhance or combine your gear using various stations.\n\n" +
-                       "Some stations may require a Blacksmith Hammer.\n\n" +
-                       "Enter the workshop?"
+                    "Some stations may require a Blacksmith Hammer.\n\n" +
+                    "Enter the workshop?"
             default:
                 return "Unknown encounter type.";
         }
     }
 
     startEncounter(encounter) {
-        // Clear choices UI
         this.ui.choicesArea.innerHTML = '';
         this.ui.choicesArea.classList.add('hidden');
 
@@ -510,41 +448,32 @@ class Game {
         }
     }
 
-    // --- Player Action Handlers ---
 
     handleEquipItem(index) {
         const result = this.player.equipItem(index);
         if (result.success) {
             this.addLog(`Equipped ${result.item.name}.`);
-            // Logging for auto-unequip is now handled inside Player.equipItem
 
-            // If in combat and equipping a weapon, reset attack timer
             if (this.state === 'combat' && this.currentCombat && result.item.type === 'weapon') {
                 this.player.attackTimer = this.player.getAttackSpeed();
-                // Pass breath timer arguments to prevent hiding
                 this.currentCombat.ui.updateCombatTimers(
                     this.player.attackTimer,
                     this.currentCombat.enemy.attackTimer,
-                    0, // playerDelay
-                    this.currentCombat.enemy.breathAttackTimer, // Pass breath timer
-                    this.currentCombat.enemy.breathAttackInterval // Pass breath interval
-                );
+                    0, this.currentCombat.enemy.breathAttackTimer, this.currentCombat.enemy.breathAttackInterval);
             }
 
-            this.ui.renderInventory(); // Update inventory for visual indicator
-            this.ui.renderEquipment();
+            this.ui.renderInventory(); this.ui.renderEquipment();
             this.ui.updatePlayerStats();
         } else {
             this.addLog(`Equip failed: ${result.message}`);
         }
     }
 
-    handleUnequipItem(index) { // Changed parameter to index
+    handleUnequipItem(index) {
         const result = this.player.unequipItem(index);
         if (result.success) {
             this.addLog(`Unequipped ${result.item.name}.`);
-            this.ui.renderInventory(); // Update inventory to remove visual indicator
-            this.ui.renderEquipment();
+            this.ui.renderInventory(); this.ui.renderEquipment();
             this.ui.updatePlayerStats();
         } else {
             this.addLog(`Unequip failed: ${result.message}`);
@@ -552,126 +481,102 @@ class Game {
     }
 
     handleUseItem(inventoryIndex) {
-        // Add a check for the inventory index bounds
         if (inventoryIndex < 0 || inventoryIndex >= this.player.inventory.length) {
             console.error(`Invalid inventory index: ${inventoryIndex}`);
-            return; // Stop execution if index is out of bounds
+            return;
         }
 
         const item = this.player.inventory[inventoryIndex];
         if (!item) {
             console.warn(`No item found at index: ${inventoryIndex}`);
-            return; // Stop execution if no item exists
+            return;
         }
 
         const useResult = this.player.useItem(inventoryIndex);
 
         if (this.state === 'combat' && this.currentCombat) {
-            // Combat usage: Already handled by Combat class
             this.currentCombat.handlePlayerItemUse(useResult);
         } else {
-            // Non-combat usage
             if (useResult.success) {
                 this.addLog(useResult.message);
-                
-                // Render inventory FIRST to reflect item consumption
-                this.ui.renderInventory(); 
 
-                // Add heal splat for non-combat heals - TARGET THE SPECIFIC SLOT
-                // Show splat even if heal amount is 0 (e.g., eating at full health)
-                if (useResult.item?.healAmount !== undefined) { // Check if it was a healing item attempt
-                   // Simplify the selector
-                   const slotSelector = `.inventory-slot[data-index="${inventoryIndex}"]`;
-                   const amountToShow = useResult.healedAmount || 0; // Show +0 if full health
-                   const splatType = useResult.item?.isPotion ? 'potion-heal' : 'heal'; 
-                   this.ui.createDamageSplat(slotSelector, amountToShow, splatType); // Pass the specific type
-                } else if (useResult.buffType) { // NEW: Check for buffs
+                this.ui.renderInventory();
+
+                if (useResult.item?.healAmount !== undefined) {
+                    const slotSelector = `.inventory-slot[data-index="${inventoryIndex}"]`;
+                    const amountToShow = useResult.healedAmount || 0; const splatType = useResult.item?.isPotion ? 'potion-heal' : 'heal';
+                    this.ui.createDamageSplat(slotSelector, amountToShow, splatType);
+                } else if (useResult.buffType) {
                     const slotSelector = `.inventory-slot[data-index="${inventoryIndex}"]`;
                     const buffAmount = useResult.buffAmount;
-                    const buffSplatType = `buff-${useResult.buffType}`; // e.g., buff-attack
-                    this.ui.createDamageSplat(slotSelector, buffAmount, buffSplatType);
+                    const buffSplatType = `buff-${useResult.buffType}`; this.ui.createDamageSplat(slotSelector, buffAmount, buffSplatType);
                 }
 
-                this.ui.updatePlayerStats(); // Health/Stats changed
+                this.ui.updatePlayerStats();
             } else {
-                this.addLog(useResult.message); 
+                this.addLog(useResult.message);
             }
         }
     }
 
     handleDestroyItem(inventoryIndex) {
-        const item = this.player.inventory[inventoryIndex]; // Get item before removing
-        if (!item) return;
+        const item = this.player.inventory[inventoryIndex]; if (!item) return;
 
-        // Ensure the item is unequipped first (removeItem now handles this, but double-check is safe)
         this.player.unequipItem(inventoryIndex);
 
         const removedItem = this.player.removeItem(inventoryIndex);
         if (removedItem) {
             this.addLog(`Destroyed ${removedItem.name}.`);
             this.ui.renderInventory();
-            this.ui.renderEquipment(); // Update equipment display if the destroyed item was equipped
-            this.ui.updatePlayerStats();
+            this.ui.renderEquipment(); this.ui.updatePlayerStats();
         }
     }
 
     handleSellItem(inventoryIndex) {
         if (this.state !== 'shop') return;
-    
+
         const item = this.player.inventory[inventoryIndex];
         if (!item) return;
-    
+
         const sellPrice = item.value || 0;
-        // Ensure item is unequipped before selling
-        this.player.unequipItem(inventoryIndex); 
-        this.player.removeItem(inventoryIndex); // removeItem now handles unequip internally, but belt-and-suspenders
-        this.player.addGold(sellPrice);
+        this.player.unequipItem(inventoryIndex);
+        this.player.removeItem(inventoryIndex); this.player.addGold(sellPrice);
         this.addLog(`You sold ${item.name} for ${sellPrice} gold.`);
 
         this.ui.renderInventory();
         this.ui.renderEquipment();
         this.ui.updatePlayerStats();
-        this.ui.updateShopAffordability(); // Call UI method
+        this.ui.updateShopAffordability();
     }
 
-    // --- NEW: Inventory Drag/Drop Handler ---
     handleInventorySwap(sourceIndexStr, targetIndexStr) {
         const sourceIndex = parseInt(sourceIndexStr, 10);
         const targetIndex = parseInt(targetIndexStr, 10);
 
-        // Validate indices
         if (isNaN(sourceIndex) || isNaN(targetIndex) ||
             sourceIndex < 0 || sourceIndex >= this.player.inventory.length ||
             targetIndex < 0 || targetIndex >= this.player.inventory.length ||
             sourceIndex === targetIndex) {
             console.warn(`Invalid inventory swap attempt: ${sourceIndexStr} -> ${targetIndexStr}`);
-            // Optional: Re-render just in case visual styles got stuck, though dragend should handle it
-            // this.ui.renderInventory();
-            return; // Do nothing if indices are invalid or the same
+            return;
         }
 
-        // Perform the swap in the player's inventory data
         const temp = this.player.inventory[sourceIndex];
         this.player.inventory[sourceIndex] = this.player.inventory[targetIndex];
         this.player.inventory[targetIndex] = temp;
 
-        // --- Update equipment references --- 
         for (const slot in this.player.equipment) {
             if (this.player.equipment[slot] === sourceIndex) {
-                this.player.equipment[slot] = targetIndex; // Update index if source was equipped
+                this.player.equipment[slot] = targetIndex;
             } else if (this.player.equipment[slot] === targetIndex) {
-                this.player.equipment[slot] = sourceIndex; // Update index if target was equipped
+                this.player.equipment[slot] = sourceIndex;
             }
         }
 
-        // Add a log message (optional)
-        // this.addLog("Rearranged inventory."); // Might be too noisy
 
-        // Re-render the inventory to show the updated positions
         this.ui.renderInventory();
     }
 
-    // --- End Game ---
     endGame(playerWon) {
         if (playerWon) {
             this.state = 'win';
@@ -683,7 +588,7 @@ class Game {
             this.ui.showEndScreen(false);
         }
         if (this.currentCombat && this.currentCombat.intervalId) {
-            clearInterval(this.currentCombat.intervalId); // Ensure combat stops fully
+            clearInterval(this.currentCombat.intervalId);
         }
     }
 
@@ -694,21 +599,18 @@ class Game {
             this.player.addGold(this.pendingLoot.gold);
             this.addLog(`Collected ${this.pendingLoot.gold} gold.`);
             this.pendingLoot.gold = 0;
-            
-            // Update UI after successful gold collection
+
             this.ui.updatePlayerStats();
-            
-            // Check if this was the last thing to loot
+
             if (this.isAllLootCollected()) {
                 this.continueLoot();
             } else {
-                // Re-render the loot UI using the Loot class handler
                 new Loot(this, this.ui).handle(this.pendingLoot, true);
             }
         } else if (type === 'item' && this.pendingLoot.items[index]) {
             const item = this.pendingLoot.items[index];
             if (item.looted) {
-                return; // Item already taken, do nothing
+                return;
             }
             const freeSlot = this.player.findFreeInventorySlot();
             if (freeSlot === -1) {
@@ -731,31 +633,25 @@ class Game {
         }
     }
 
-    // Update the isAllLootCollected method to be more robust
     isAllLootCollected() {
         if (!this.pendingLoot) return true;
-        
-        // Check if there's any gold left
+
         if (this.pendingLoot.gold > 0) return false;
-        
-        // Check if there are any unlooted items
+
         if (this.pendingLoot.items && this.pendingLoot.items.length > 0) {
             const hasUnlootedItems = this.pendingLoot.items.some(item => !item.looted);
-            return !hasUnlootedItems; // Return true if all items are looted
+            return !hasUnlootedItems;
         }
-        
-        return true; // No gold and no items (or all items looted)
+
+        return true;
     }
 
     continueLoot() {
-        // Clear pending loot
         this.pendingLoot = null;
 
-        // Get the name stored by endCombat
         const defeatedName = this.lastDefeatedEnemyName;
         this.lastDefeatedEnemyName = null;
 
-        // Check if it was the boss by comparing the name to the known final boss
         const isBossDefeated = defeatedName && MONSTERS['ancient_dragon'] && defeatedName === MONSTERS['ancient_dragon'].name;
 
         if (isBossDefeated) {
@@ -765,17 +661,15 @@ class Game {
         }
     }
 
-    // Add new method for mini-boss encounters
     generateMiniBossEvent() {
-        // Select a random mini-boss
         const miniBossIndex = this.getRandomInt(0, MINI_BOSSES.length - 1);
         const miniBossId = MINI_BOSSES[miniBossIndex];
-        
+
         this.currentChoices = [{
             text: `Fight ${MONSTERS[miniBossId].name} (Mini-Boss)`,
             encounter: { type: 'mini-boss', monsterId: miniBossId }
         }];
-        
+
         this.addLog(`A powerful enemy approaches...`);
         this.ui.renderChoices(this.currentChoices);
     }
@@ -785,54 +679,42 @@ class Game {
         max = Math.floor(max);
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
-    
+
     rollDamage(maxAttack) {
         if (maxAttack <= 0) return 0;
-        // Roll between 0 and maxAttack (inclusive)
         return this.getRandomInt(0, maxAttack);
     }
-    
+
     createItem(itemId) {
         const template = ITEMS[itemId];
         if (!template) {
             console.error(`Item template not found for ID: ${itemId}`);
             return null;
         }
-        // Simple deep copy for plain objects; use structuredClone for more complex objects if needed
         const newItem = JSON.parse(JSON.stringify(template));
-        newItem.baseId = itemId; // Add baseId tracking
-        return newItem;
+        newItem.baseId = itemId; return newItem;
     }
 
-    // *** Updated function to continue after transition ***
     continueAfterAreaTransition() {
         if (this.state !== 'area_transition') {
             console.warn("Tried to continue transition, but not in transition state.");
             return;
         }
 
-        // *** Increment Round FIRST ***
-        this.currentRound++; 
-        
-        // *** Update Area ONLY if pendingNewAreaId was set (i.e., actual tier change) ***
+        this.currentRound++;
+
         if (this.pendingNewAreaId) {
-            this.currentArea = this.pendingNewAreaId; 
+            this.currentArea = this.pendingNewAreaId;
         }
 
         this.addLog(`--- Round ${this.currentRound} ---`);
         this.addLog(`You venture into ${this.pendingAreaTransitionName}!`);
-        this.ui.updateRoundDisplay(this.currentRound, this.maxRounds); // Update UI Round
-        
-        this.pendingAreaTransitionName = null; // Clear pending name
-        this.pendingNewAreaId = null; // Clear pending ID
-
-        this.state = 'choosing'; // Set state back
-        this.ui.clearMainArea(); // Ensure transition screen is cleared
-
+        this.ui.updateRoundDisplay(this.currentRound, this.maxRounds);
+        this.pendingAreaTransitionName = null; this.pendingNewAreaId = null;
+        this.state = 'choosing'; this.ui.clearMainArea();
         let encounterGenerated = false;
         let currentTier = null;
 
-        // --- Repeat the logic to decide what to show next for the NEW round ---
         for (const tier of AREA_CONFIG) {
             if (this.currentRound >= tier.startRound && this.currentRound <= tier.endRound) {
                 currentTier = tier;
@@ -840,30 +722,24 @@ class Game {
             }
         }
 
-        // Boss Check Logic (for the NEW round)
         if (currentTier) {
             const currentAreaData = currentTier.areas?.[this.currentArea];
             if (this.currentRound === 30 && currentAreaData?.finalBoss) {
-                 this.generateBossEncounter();
-                 encounterGenerated = true;
+                this.generateBossEncounter();
+                encounterGenerated = true;
             } else if (this.currentRound === currentTier.endRound && currentAreaData?.miniBoss) {
-                 this.generateBossEncounter();
-                 encounterGenerated = true;
+                this.generateBossEncounter();
+                encounterGenerated = true;
             }
         }
 
-        // *** ADD DEBUG ***
-        console.log(`[Area Change Applied] continueAfterAreaTransition: Round ${this.currentRound}, Current Area set to: ${this.currentArea}, Pending ID was: ${this.pendingNewAreaId}`);
 
-        // Generate regular choices if no boss
         if (!encounterGenerated) {
-            // *** ADD DEBUG ***
-            console.log(`[Generate Choices] continueAfterAreaTransition: Calling generateEventChoices for Round ${this.currentRound}, Area: ${this.currentArea}`);
             this.generateEventChoices();
         }
 
         this.ui.updatePlayerStats();
-        this.ui.renderEquipment(); 
+        this.ui.renderEquipment();
     }
 
 }

@@ -20,8 +20,7 @@ class Player {
         this.tempAttack = 0;
         this.tempDefense = 0;
         this.tempSpeedReduction = 0;
-        this.activeEffects = {}; // Example: { poison: { damage: 1, duration: 6, timer: 6 } }
-        this.isStunned = false;
+        this.activeEffects = {};        this.isStunned = false;
     }
 
     getMaxHealth() {
@@ -193,8 +192,7 @@ class Player {
         }
         const item = this.inventory[index];
 
-        // Check if player is specifically stunned and trying to eat food during combat
-        if (this.isStunned && item.useAction === 'Eat' && game && game.state === 'combat') { 
+               if (this.isStunned && item.useAction === 'Eat' && game && game.state === 'combat') { 
             return { success: false, message: "You are stunned and cannot eat!" };
         }
 
@@ -216,8 +214,7 @@ class Player {
                 let buffType = null;
                 let buffAmount = 0;
 
-                // Determine buff type and amount (simplified)
-                if (item.stats.tempAttack) {
+                               if (item.stats.tempAttack) {
                     buffType = 'attack'; 
                     buffAmount = item.stats.tempAttack;
                 }
@@ -226,23 +223,18 @@ class Player {
                     buffAmount = item.stats.tempDefense;
                 }
                 if (item.stats.tempSpeed) {
-                    // Note: Speed reduction is negative for display, but positive in stats
-                    buffType = 'speed'; 
+                                       buffType = 'speed'; 
                     buffAmount = item.stats.tempSpeed; 
                 }
 
-                // Always apply the buff - removed the !canApply check
-                if (item.stats.tempAttack) this.tempAttack += item.stats.tempAttack;
+                               if (item.stats.tempAttack) this.tempAttack += item.stats.tempAttack;
                 if (item.stats.tempDefense) this.tempDefense += item.stats.tempDefense;
                 if (item.stats.tempSpeed) this.tempSpeedReduction += item.stats.tempSpeed;
                 
-                this.inventory[index] = null; // Consume item
-
-                // Return buff details for splat creation
-                return { 
+                this.inventory[index] = null;
+                               return { 
                     success: true, 
-                    message: `Used ${item.name}. Buff applied!`, // Simplified message
-                    item: item, 
+                    message: `Used ${item.name}. Buff applied!`,                    item: item, 
                     actionDelay: item.isPotion ? 0 : 2.0, 
                     buffType: buffType, 
                     buffAmount: buffAmount 

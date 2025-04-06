@@ -105,14 +105,9 @@ class Loot {
             continueButton.onclick = () => this.game.continueLoot();
         }
 
-        this.ui.lootArea.classList.remove('hidden'); // Show it first
-
+        this.ui.lootArea.classList.remove('hidden');
         if (continueLooting) {
-            // this.ui.lootArea.classList.add('loot-appearing');
-
-            // setTimeout(() => {
-            //     this.ui.lootArea.classList.remove('loot-appearing');
-            //     }, 500);
-        }
+           
+                                         }
     }
 }

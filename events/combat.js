@@ -60,33 +60,27 @@ class Combat {
         this.player.attackTimer = this.player.getAttackSpeed();
         this.enemy.attackTimer = this.enemy.speed;
 
-        // --- Disable Run Button for Bosses --- 
-        const runButton = document.getElementById('combat-run-button');
+               const runButton = document.getElementById('combat-run-button');
         if (runButton) {
             const isBossRound = [10, 20, 30].includes(this.game.currentRound);
             let tooltipText = "";
             
             if (isBossRound) {
                 runButton.disabled = true;
-                // Set specific tooltip based on boss round
-                if (this.game.currentRound === 30) {
+                               if (this.game.currentRound === 30) {
                     tooltipText = "No escape!";
-                } else { // Rounds 10 or 20
-                    tooltipText = "To the death!";
+                } else {                    tooltipText = "To the death!";
                 }
                 runButton.textContent = "Run (Disabled)";
-                runButton.onclick = null; // Explicitly remove click handler
-            } else {
+                runButton.onclick = null;            } else {
                 runButton.disabled = false;
                 const minDamage = Math.floor(this.enemy.attack * 1);
                 const maxDamage = Math.floor(this.enemy.attack * 3);
                 tooltipText = `Attempt to flee, taking ${minDamage}-${maxDamage} damage.`;
                 runButton.textContent = `Run (${minDamage}-${maxDamage} damage)`;
-                runButton.onclick = () => this.handleRun(); // Restore click handler
-            }
+                runButton.onclick = () => this.handleRun();            }
 
-            // Add/Update Tooltip Listeners
-            runButton.removeEventListener('mouseenter', runButton._tooltipEnterHandler);
+                       runButton.removeEventListener('mouseenter', runButton._tooltipEnterHandler);
             runButton.removeEventListener('mouseleave', runButton._tooltipLeaveHandler);
 
             const enterHandler = (e) => {
@@ -98,15 +92,11 @@ class Combat {
 
             runButton.addEventListener('mouseenter', enterHandler);
             runButton.addEventListener('mouseleave', leaveHandler);
-            runButton._tooltipEnterHandler = enterHandler; // Store for removal
-            runButton._tooltipLeaveHandler = leaveHandler; // Store for removal
-        }
-        // --------------------------------------
-
+            runButton._tooltipEnterHandler = enterHandler;            runButton._tooltipLeaveHandler = leaveHandler;        }
+       
         this.intervalId = setInterval(() => this.tick(), this.tickRate);
 
-        // *** Stop round indicator animation ***
-        if (this.game.ui.roundAreaElement) {
+               if (this.game.ui.roundAreaElement) {
             this.game.ui.roundAreaElement.classList.remove('round-miniboss', 'round-finalboss');
         }
         this.game.addLog(`You encounter a ${this.enemy.name}!`);
@@ -116,8 +106,7 @@ class Combat {
         const now = Date.now();
         const delta = now - this.lastTickTime;
         this.lastTickTime = now;
-        const tickSeconds = delta / 1000; // *** Use actual elapsed time ***
-
+        const tickSeconds = delta / 1000;
         let playerActed = false;
         let enemyActed = false;
         let poisonDamageThisTick = 0;
@@ -129,48 +118,35 @@ class Combat {
             this.player.pendingActionDelay = Math.max(0, this.player.pendingActionDelay - this.timeScale);
             if (this.player.pendingActionDelay === 0) {
                 this.player.attackTimerPaused = false;
-                this.player.isStunned = false; // Clear the stun flag when delay ends
-                
-                // Re-render inventory to remove stun effect from food
-                this.ui.renderInventory(); 
+                this.player.isStunned = false;                
+                               this.ui.renderInventory(); 
             }
         }
         this.enemy.attackTimer = Math.max(0, this.enemy.attackTimer - this.timeScale);
         if (this.enemy.breathAttackTimer !== null) {
             this.enemy.breathAttackTimer = Math.max(0, this.enemy.breathAttackTimer - this.timeScale);
         }
-        // *** Decrement Timed Stun Timer ***
-        if (this.enemy.timedStunTimer !== null) {
+               if (this.enemy.timedStunTimer !== null) {
             this.enemy.timedStunTimer = Math.max(0, this.enemy.timedStunTimer - this.timeScale);
         }
 
-        // *** Handle Enemy Ferocity Timer ***
-        if (this.enemy.ferocityActive) {
+               if (this.enemy.ferocityActive) {
             this.enemy.ferocityTimer = Math.max(0, this.enemy.ferocityTimer - this.timeScale);
             if (this.enemy.ferocityTimer <= 0) {
                 this.enemy.ferocityActive = false;
-                this.enemy.currentDefense -= this.enemy.ferocityDefBonus; // Remove bonus
-                this.game.addLog(`${this.enemy.name}'s ferocity fades.`);
-                // No need to update UI here, tick() updates stats later anyway
-            }
+                this.enemy.currentDefense -= this.enemy.ferocityDefBonus;                this.game.addLog(`${this.enemy.name}'s ferocity fades.`);
+                           }
         }
 
-        // Handle Player Poison Effect
-        if (this.player.activeEffects.poison) {
+               if (this.player.activeEffects.poison) {
             const poison = this.player.activeEffects.poison;
-            poison.timer = Math.max(0, poison.timer - tickSeconds); // Use tickSeconds
-            poison.tickCooldown = Math.max(0, poison.tickCooldown - tickSeconds); // Use tickSeconds
-            
-            // Deal damage when tick cooldown reaches zero
-            if (poison.tickCooldown <= 0 && poison.timer > 0) { 
-                 // Roll damage within the stored range
-                 const damageDealt = this.game.getRandomInt(poison.damageRange[0], poison.damageRange[1]);
-                 poisonDamageThisTick = damageDealt; // Track for potential future use
-                 this.player.takeRawDamage(damageDealt); 
+            poison.timer = Math.max(0, poison.timer - tickSeconds);            poison.tickCooldown = Math.max(0, poison.tickCooldown - tickSeconds);            
+                       if (poison.tickCooldown <= 0 && poison.timer > 0) { 
+                                 const damageDealt = this.game.getRandomInt(poison.damageRange[0], poison.damageRange[1]);
+                 poisonDamageThisTick = damageDealt;                 this.player.takeRawDamage(damageDealt); 
                  this.game.addLog(`<span style="color: #ab47bc;">You take ${damageDealt} poison damage.</span>`);
                  this.ui.createDamageSplat('.player-side', damageDealt, 'poison'); 
-                 poison.tickCooldown = 1.5; // Reset the cooldown
-            }
+                 poison.tickCooldown = 1.5;            }
 
             if (poison.timer <= 0) {
                 this.game.addLog("The poison wears off.");
@@ -178,59 +154,46 @@ class Combat {
             }
         }
 
-        // *** Handle Player Burning Effect ***
-        if (this.player.activeEffects.burning) {
+               if (this.player.activeEffects.burning) {
             const burn = this.player.activeEffects.burning;
-            // *** Decrement using actual elapsed time ***
-            burn.timeRemaining = Math.max(0, burn.timeRemaining - tickSeconds); 
+                       burn.timeRemaining = Math.max(0, burn.timeRemaining - tickSeconds); 
             burn.timeUntilNextTick = Math.max(0, burn.timeUntilNextTick - tickSeconds);
 
-            // Deal damage when tick cooldown reaches zero
-            if (burn.timeUntilNextTick <= 0) { 
+                       if (burn.timeUntilNextTick <= 0) { 
                  const burnDmg = burn.damage; 
                  this.player.takeRawDamage(burnDmg); 
                  this.game.addLog(`<span style="color: #ff8c00;">You take ${burnDmg} burn damage!</span>`);
                  this.ui.createDamageSplat('.player-side', burnDmg, 'burn'); 
-                 burn.timeUntilNextTick = burn.tickInterval; // Reset cooldown
-            }
+                 burn.timeUntilNextTick = burn.tickInterval;            }
 
-            // Expiry check (runs AFTER potential damage tick)
-            if (burn.timeRemaining <= 0) {
+                       if (burn.timeRemaining <= 0) {
                 this.game.addLog("The fire subsides.");
                 delete this.player.activeEffects.burning;
             }
         }
 
-        // *** Handle Enemy Regeneration (Moss Giant) ***
-        if (this.enemy.regenerationActive) {
+               if (this.enemy.regenerationActive) {
             this.enemy.regenerationTimer = Math.max(0, this.enemy.regenerationTimer - this.timeScale);
             if (this.enemy.regenerationTimer <= 0) {
                 const potentialHeal = this.enemy.regenerationAmount;
                 const actualHeal = (this.enemy.health < this.enemy.maxHealth) ? potentialHeal : 0;
                 
-                // Apply the actual heal
-                if (actualHeal > 0) {
+                               if (actualHeal > 0) {
                     this.enemy.health = Math.min(this.enemy.maxHealth, this.enemy.health + actualHeal);
                     this.game.addLog(`<span style="color: #66bb6a;">${this.enemy.name} regenerates ${actualHeal} health.</span>`);
                 } else {
-                    // Log differently if no health was gained
-                    this.game.addLog(`<span style="color: #a0a0a0;">${this.enemy.name} tries to regenerate, but is already at full health.</span>`);
+                                       this.game.addLog(`<span style="color: #a0a0a0;">${this.enemy.name} tries to regenerate, but is already at full health.</span>`);
                 }
                 
-                // Always update UI, passing ACTUAL heal amount for splat text calculation
-                this.ui.updateCombatantHealth('enemy', this.enemy.health, this.enemy.maxHealth, actualHeal, 0, true); 
+                               this.ui.updateCombatantHealth('enemy', this.enemy.health, this.enemy.maxHealth, actualHeal, 0, true); 
                 
-                this.enemy.regenerationTimer = 5; // Reset timer
-            }
+                this.enemy.regenerationTimer = 5;            }
         }
 
-        // --- Check for enemy dynamic changes BEFORE updating UI ---
-        const healthPercent = this.enemy.health / this.enemy.maxHealth;
+               const healthPercent = this.enemy.health / this.enemy.maxHealth;
 
-        // Dynamic Speed Check (Venfing)
-        if (this.enemy.name === MONSTERS['silverfang']?.name) {
-            const wasFast = this.enemy.currentSpeed === 0.6; // Check previous state
-            let isNowFast = false;
+               if (this.enemy.name === MONSTERS['silverfang']?.name) {
+            const wasFast = this.enemy.currentSpeed === 0.6;            let isNowFast = false;
             
             if (healthPercent < 0.5) {
                 this.enemy.currentSpeed = 0.6;
@@ -240,23 +203,19 @@ class Combat {
                 isNowFast = false;
             }
 
-            // Get timer container element
-            const enemyTimerContainer = document.querySelector('.enemy-side .attack-timer:not(.breath-timer)');
+                       const enemyTimerContainer = document.querySelector('.enemy-side .attack-timer:not(.breath-timer)');
 
-            // Trigger speed animation ONLY when first becoming fast
-            if (isNowFast && !wasFast) {
+                       if (isNowFast && !wasFast) {
                 const enemySide = document.querySelector('.enemy-side');
                 if (enemySide) {
                     enemySide.classList.add('enemy-speed-enraged-pulse');
                     setTimeout(() => {
                         enemySide.classList.remove('enemy-speed-enraged-pulse');
-                    }, 600); // Match animation duration
-                }
+                    }, 600);                }
                 this.game.addLog("Ven'fing becomes faster!");
             }
             
-            // Add/Remove border class based on current speed state
-            if (enemyTimerContainer) {
+                       if (enemyTimerContainer) {
                 if (isNowFast) {
                     enemyTimerContainer.classList.add('enemy-timer-speed-boost');
                 } else {
@@ -265,8 +224,7 @@ class Combat {
             }
         }
         
-        // Pack Tactics Check (Feral Hunter)
-        if (this.enemy.packTactics) {
+               if (this.enemy.packTactics) {
             const wasPackTacticsActive = this.enemy.currentAttack > this.enemy.attack;
             const shouldActivatePackTactics = healthPercent < 0.5;
 
@@ -275,8 +233,7 @@ class Combat {
                 this.enemy.currentAttack = this.enemy.attack + this.enemy.packDamageBonus;
                 this.enemy.currentDefense = this.enemy.defense + this.enemy.packDefenseBonus;
                 
-                // Visual feedback
-                const enemySide = document.querySelector('.enemy-side');
+                               const enemySide = document.querySelector('.enemy-side');
                 if (enemySide) {
                     enemySide.classList.add('enemy-pack-tactics');
                     setTimeout(() => {
@@ -292,10 +249,8 @@ class Combat {
         }
         
 
-        // Enrage Attack Check (Before Enemy Attack)
-        if (this.enemy.enrageThreshold && this.enemy.enrageAttackMultiplier) {
-            const wasEnraged = this.enemy.currentAttack > this.enemy.attack; // Check previous state
-            let isNowEnraged = false;
+               if (this.enemy.enrageThreshold && this.enemy.enrageAttackMultiplier) {
+            const wasEnraged = this.enemy.currentAttack > this.enemy.attack;            let isNowEnraged = false;
 
             if (healthPercent < this.enemy.enrageThreshold) {
                 this.enemy.currentAttack = Math.round(this.enemy.attack * this.enemy.enrageAttackMultiplier);
@@ -305,21 +260,18 @@ class Combat {
                 isNowEnraged = false;
             }
 
-            // Trigger animation ONLY when first becoming enraged
-            if (isNowEnraged && !wasEnraged) {
+                       if (isNowEnraged && !wasEnraged) {
                 const enemySide = document.querySelector('.enemy-side');
                 if (enemySide) {
                     enemySide.classList.add('enemy-enraged-pulse');
-                    // Remove the class after the animation duration (0.5s)
-                    setTimeout(() => {
+                                       setTimeout(() => {
                         enemySide.classList.remove('enemy-enraged-pulse');
                     }, 500);
                 }
             }
         }
         
-        // --- Update UI Timers AND Stats --- 
-        this.ui.updateCombatTimers(
+               this.ui.updateCombatTimers(
             this.player.attackTimer,
             this.enemy.attackTimer,
             this.player.pendingActionDelay,
@@ -330,9 +282,7 @@ class Combat {
             this.enemy.regenerationTimer,
             this.enemy.regenerationInterval
         );
-        this.ui.updateCombatStats(this.player, this.enemy); // Update stats every tick
-        // ---------------------------------
-
+        this.ui.updateCombatStats(this.player, this.enemy);       
         if (!this.player.attackTimerPaused && this.player.attackTimer <= 0) {
             this.playerAttack();
             playerActed = true;
@@ -346,12 +296,8 @@ class Combat {
             this.enemy.breathAttackTimer = this.enemy.breathAttackInterval;
         }
 
-        // *** Check and trigger Timed Stun ***
-        if (this.enemy.timedStunTimer !== null && this.enemy.timedStunTimer <= 0) {
-            this.enemyTimedStunAttack(); // Call new function
-            if (this.checkCombatEnd()) return; // Check if stun killed player (unlikely but possible)
-            this.enemy.timedStunTimer = this.enemy.timedStunInterval; // Reset timer
-        }
+               if (this.enemy.timedStunTimer !== null && this.enemy.timedStunTimer <= 0) {
+            this.enemyTimedStunAttack();            if (this.checkCombatEnd()) return;            this.enemy.timedStunTimer = this.enemy.timedStunInterval;        }
 
         if (this.enemy.attackTimer <= 0) {
             this.enemyAttack();
@@ -386,24 +332,18 @@ class Combat {
         );
         this.ui.updatePlayerStats();
 
-        // *** Activate Ferocity on Damage Taken ***
-        if (this.enemy.hasFerocity && damageDealt > 0 && !this.enemy.ferocityActive) {
+               if (this.enemy.hasFerocity && damageDealt > 0 && !this.enemy.ferocityActive) {
              this.enemy.ferocityActive = true;
              this.enemy.ferocityTimer = this.enemy.ferocityDuration;
-             this.enemy.currentDefense += this.enemy.ferocityDefBonus; // Add bonus
-             this.game.addLog(`<span style="color: #ffc107;">${this.enemy.name} becomes ferocious! (+${this.enemy.ferocityDefBonus} Defense)</span>`);
+             this.enemy.currentDefense += this.enemy.ferocityDefBonus;             this.game.addLog(`<span style="color: #ffc107;">${this.enemy.name} becomes ferocious! (+${this.enemy.ferocityDefBonus} Defense)</span>`);
              
-             // Trigger visual pulse (reuse pack tactics animation for now)
-             const enemySide = document.querySelector('.enemy-side');
+                         const enemySide = document.querySelector('.enemy-side');
              if (enemySide) {
-                 enemySide.classList.add('enemy-pack-tactics'); // Re-using this animation
-                 setTimeout(() => {
+                 enemySide.classList.add('enemy-pack-tactics');                 setTimeout(() => {
                      enemySide.classList.remove('enemy-pack-tactics');
-                 }, 800); // Match animation duration
-             }
+                 }, 800);             }
         }
-        // *** Moved checkCombatEnd to after potential state changes ***
-        if(this.checkCombatEnd()) return; 
+               if(this.checkCombatEnd()) return; 
 
         this.checkCombatEnd();
     }
@@ -428,13 +368,8 @@ class Combat {
         }
         this.game.addLog(logMessage);
         
-        // Apply Poison if applicable
-        if (this.enemy.appliesPoison && damageDealt > 0) { // Only apply if damage was dealt
-            // *** Check poison chance ***
-            const poisonProcChance = this.enemy.poisonChance || 1; // Default to 100% if not defined
-            if (Math.random() < poisonProcChance) {
-                if (!this.player.activeEffects.poison) { // Don't stack duration if already poisoned
-                    this.player.activeEffects.poison = {
+               if (this.enemy.appliesPoison && damageDealt > 0) {                       const poisonProcChance = this.enemy.poisonChance || 1;            if (Math.random() < poisonProcChance) {
+                if (!this.player.activeEffects.poison) {                    this.player.activeEffects.poison = {
                         damageRange: this.enemy.poisonDamage, 
                         duration: this.enemy.poisonDuration,
                         timer: this.enemy.poisonDuration, 
@@ -442,8 +377,7 @@ class Combat {
                     };
                     this.game.addLog(`<span style="color: #ab47bc;">You have been poisoned!</span>`);
                 }
-            } // End poison chance check
-        }
+            }        }
 
         this.ui.updateCombatantHealth(
             'player', 
@@ -460,22 +394,16 @@ class Combat {
     }
 
     enemyBreathAttack() {
-        // *** Calculate and apply INSTANT damage ***
-        const damage = this.game.getRandomInt(this.enemy.breathAttackDamage[0], this.enemy.breathAttackDamage[1]);
+               const damage = this.game.getRandomInt(this.enemy.breathAttackDamage[0], this.enemy.breathAttackDamage[1]);
         this.player.takeRawDamage(damage);
         
-        // *** Update log message to include instant damage ***
-        const logMessage = `<span style="color: #ff8c00;">The ${this.enemy.name} breathes fire, engulfing you for ${damage} damage!</span>`;
+               const logMessage = `<span style="color: #ff8c00;">The ${this.enemy.name} breathes fire, engulfing you for ${damage} damage!</span>`;
         this.game.addLog(logMessage);
         
-        // *** Create splat for the instant damage ***
-        this.ui.createDamageSplat('.player-side', damage, 'burn'); // Re-use burn style for splat
-        
-        // Visual effect for the breath hit (Shake animation)
-        this.ui.playPlayerAnimation('player-breath-hit', 1000);
+               this.ui.createDamageSplat('.player-side', damage, 'burn');        
+               this.ui.playPlayerAnimation('player-breath-hit', 1000);
 
-        // Apply the DoT effect (remains unchanged)
-        if (this.enemy.breathDotDamage && this.enemy.breathDotDuration && this.enemy.breathDotTickInterval) {
+               if (this.enemy.breathDotDamage && this.enemy.breathDotDuration && this.enemy.breathDotTickInterval) {
             if (!this.player.activeEffects.burning) { 
                  this.player.activeEffects.burning = {
                     damage: this.enemy.breathDotDamage,
@@ -484,8 +412,7 @@ class Combat {
                     timeRemaining: this.enemy.breathDotDuration,
                     timeUntilNextTick: this.enemy.breathDotTickInterval 
                  };
-                 this.game.addLog("You are set ablaze!"); // Keep separate log for DoT application
-            }
+                 this.game.addLog("You are set ablaze!");            }
         } else {
              console.warn(`[Combat] ${this.enemy.name} hasBreathAttack but no DoT properties defined.`);
         }
@@ -517,8 +444,7 @@ class Combat {
                 this.ui.updatePlayerStats();
             }
             this.ui.renderInventory();
-            this.ui.updateCombatStats(this.player, this.enemy); // Update stats after item use
-        } else {
+            this.ui.updateCombatStats(this.player, this.enemy);        } else {
             this.game.addLog(useResult.message);
         }
     }
@@ -528,52 +454,32 @@ class Combat {
         let playerWon = false;
 
         if (this.enemy.health <= 0) {
-            // Enemy defeated
-
+           
             
-            // Delay start of fade-out to see splat
-            // setTimeout(() => {
-                // Start fade-out animation
-                if (this.ui.combatArea) {
+                                                     if (this.ui.combatArea) {
                     this.ui.combatArea.classList.add('combat-ending');
                 }
 
                 this.game.addLog(`You defeated the ${this.enemy.name}!`);
-                clearInterval(this.intervalId); // Stop combat immediately
-                this.intervalId = null;
+                clearInterval(this.intervalId);                this.intervalId = null;
                 
-                // Wait for fade-out to finish before ending combat logic
-                setTimeout(() => {
+                               setTimeout(() => {
 
-                    this.endCombat(true); // Call endCombat after fade-out
-                }, 700); // Matches combat-fade-out duration
-
-            // }, 300); // Initial delay to see the final hit
-            
+                    this.endCombat(true);                }, 700);
+                       
             combatEnded = true; 
             playerWon = true;
-            return combatEnded; // Return immediately as combat is over
-
+            return combatEnded;
         } else if (this.player.health <= 0) {
-            // Player defeated
-            this.game.addLog(`You were defeated by the ${this.enemy.name}...`);
-            clearInterval(this.intervalId); // Stop combat immediately
-            this.intervalId = null;
-            // Delay the game over screen
-            setTimeout(() => {
+                       this.game.addLog(`You were defeated by the ${this.enemy.name}...`);
+            clearInterval(this.intervalId);            this.intervalId = null;
+                       setTimeout(() => {
                 this.game.endGame(false); 
-            }, 1000); // 1000ms = 1 second delay
-            combatEnded = true;
+            }, 1000);            combatEnded = true;
             playerWon = false;
         }
 
-        // This part is now only reached if player died (handled by its own timeout)
-        // or if neither died yet.
-        // if (combatEnded && playerWon) { // We moved the playerWon case into the setTimeout above
-        //     this.endCombat(true);
-        // }
-        return combatEnded; // Will be false unless player died this tick
-    }
+                                           return combatEnded;    }
 
     handleRun() {
         clearInterval(this.intervalId);
@@ -583,8 +489,7 @@ class Combat {
         const runDamage = Math.floor(this.enemy.attack * multiplier);
         this.player.takeRawDamage(runDamage);
         
-        // Update player stats display immediately, but don't create splat on player side
-        this.ui.updatePlayerStats(); 
+               this.ui.updatePlayerStats(); 
         
         const playerSide = document.querySelector('.player-side');
         if (playerSide) {
@@ -617,10 +522,8 @@ class Combat {
             messageContainer.innerHTML = content;
             document.body.appendChild(messageContainer);
     
-            // --- Create splat on the message box --- 
-            this.ui.createDamageSplat('.escape-message-container', runDamage, 'damage');
-            // -------------------------------------
-
+                       this.ui.createDamageSplat('.escape-message-container', runDamage, 'damage');
+           
             const continueButton = document.getElementById('escape-continue');
             continueButton.onclick = () => {
                 messageContainer.remove();
@@ -639,13 +542,10 @@ class Combat {
 
     endCombat(playerWon, ranAway = false) {
         this.player.resetCombatBuffs();
-        // Interval is already cleared 
-        // this.ui.hideCombatUI(); // Let animation handle hiding
-        
+                      
         this.player.activeEffects = {};
 
-        // Cleanup: Remove speed boost class if present
-        const enemyTimerContainer = document.querySelector('.enemy-side .attack-timer:not(.breath-timer)');
+               const enemyTimerContainer = document.querySelector('.enemy-side .attack-timer:not(.breath-timer)');
         if (enemyTimerContainer) {
             enemyTimerContainer.classList.remove('enemy-timer-speed-boost');
         }
@@ -657,14 +557,12 @@ class Combat {
             const droppedItems = [];
             if (this.enemy.lootTable && this.enemy.lootTable.length > 0) {
                 this.enemy.lootTable.forEach(loot => {
-                    if (loot.itemId === 'gold') return; // Skip gold entries here, handled separately
-
+                    if (loot.itemId === 'gold') return;
                     if (Math.random() < loot.chance) {
                         let chosenItemId = null;
 
                         if (loot.itemTier) {
-                            // Select item ID from tier list
-                            let tierList;
+                                                       let tierList;
                             switch (loot.itemTier) {
                                 case 'commonItem': tierList = COMMON_ITEMS; break;
                                 case 'uncommonItem': tierList = UNCOMMON_ITEMS; break;
@@ -674,16 +572,14 @@ class Combat {
                                 case 'rareFood': tierList = RARE_FOOD; break;
                                 default: tierList = []; console.warn("Unknown itemTier:", loot.itemTier);
                             }
-                            // Filter out potential null/undefined entries in tier lists
-                            const validItems = tierList.filter(id => id);
+                                                       const validItems = tierList.filter(id => id);
                             if (validItems.length > 0) {
                                 chosenItemId = validItems[this.game.getRandomInt(0, validItems.length - 1)];
                             } else {
                                 console.warn(`Item tier list '${loot.itemTier}' is empty or contains invalid entries.`);
                             }
                         } else if (loot.itemId) {
-                            // Use specific item ID
-                            chosenItemId = loot.itemId;
+                                                       chosenItemId = loot.itemId;
                         }
 
                         if (chosenItemId) {
@@ -729,32 +625,24 @@ class Combat {
         }
     }
 
-    // *** NEW FUNCTION for Timed Stun ***
-    enemyTimedStunAttack() {
-        if (!this.enemy.hasTimedStun) return; // Safety check
-
-        // Apply stun effect to player
-        this.player.attackTimerPaused = true;
+       enemyTimedStunAttack() {
+        if (!this.enemy.hasTimedStun) return;
+               this.player.attackTimerPaused = true;
         this.player.pendingActionDelay = this.enemy.timedStunDuration;
-        this.player.isStunned = true; // Set the stun flag
-        this.player.activeEffects.stun = {
+        this.player.isStunned = true;        this.player.activeEffects.stun = {
             duration: this.enemy.timedStunDuration,
         }
         this.game.addLog(`<span style="color: #ffff99;">${this.enemy.name} hurls a massive boulder, stunning you! (Attack delayed ${this.enemy.timedStunDuration}s)</span>`);
         
-        // Trigger visual effect
-        const playerSide = document.querySelector('.player-side');
+               const playerSide = document.querySelector('.player-side');
         if (playerSide) {
             playerSide.classList.add('player-stunned-visual');
-            // Remove class after animation (0.4s * 2 = 0.8s)
-            setTimeout(() => {
+                       setTimeout(() => {
                 playerSide.classList.remove('player-stunned-visual');
             }, 800); 
         }
-        // Create Stun splat
-        this.ui.createDamageSplat('.player-side', 'Stunned!', 'stun');
+               this.ui.createDamageSplat('.player-side', 'Stunned!', 'stun');
         
-        // Re-render inventory to show stun effect on food
-        this.ui.renderInventory(); 
+               this.ui.renderInventory(); 
     }
 }

@@ -11,12 +11,9 @@ class Forge {
     }
 
     showForgeChoicesUI() {
-        this.ui.clearMainArea(); // Clear previous content
-
+        this.ui.clearMainArea();
         const forgeArea = this.ui.forgeArea;
-        forgeArea.id = 'forge-area'; // Use a distinct ID
-        forgeArea.classList.remove('hidden'); // Ensure it's visible
-
+        forgeArea.id = 'forge-area';        forgeArea.classList.remove('hidden');
         const hasHammer = this.game.player.inventory.some(item => item && item.id === 'blacksmith_hammer');
         const hammerRequirementArmorer = !hasHammer ? '<span class="requirement-missing">(Requires Blacksmith Hammer)</span>' : '';
         const hammerRequirementBlacksmith = !hasHammer ? '<span class="requirement-missing">(Requires Blacksmith Hammer)</span>' : '';
@@ -58,19 +55,16 @@ class Forge {
 
     goToSharpen() {
         this.game.addLog("You move to the Sharpening Stone.");
-        // Instantiate and call handle for the Sharpen class
-        new Sharpen(this.game, this.ui).handle();
+               new Sharpen(this.game, this.ui).handle();
     }
 
     goToArmory() {
         this.game.addLog("You approach the Armourer Station.");
-        // Instantiate and call handle for the Armoury class
-        new Armoury(this.game, this.ui).handle();
+               new Armoury(this.game, this.ui).handle();
     }
 
     goToBlacksmith() {
         this.game.addLog("You head towards the Blacksmith's Anvil.");
-        // Instantiate and call handle for the Blacksmith class
-        new Blacksmith(this.game, this.ui).handle();
+               new Blacksmith(this.game, this.ui).handle();
     }
 }

@@ -147,15 +147,12 @@ class Sharpen {
                     const currentAttack = (removedItem.stats.attack || 0);
                     const newAttack = currentAttack + 1;
                     const currentSpeed = (removedItem.speed ?? this.game.player.defaultAttackSpeed);
-                    const newSpeedValue = Math.max(0.1, currentSpeed - 0.5); // Flat -0.5s, min 0.1
-
-                    // Calculate DPS values
-                    const currentDPS = currentSpeed > 0 ? (currentAttack / currentSpeed) : 0;
+                    const newSpeedValue = Math.max(0.1, currentSpeed - 0.5);
+                                       const currentDPS = currentSpeed > 0 ? (currentAttack / currentSpeed) : 0;
                     const sharpenedDPS = currentSpeed > 0 ? (newAttack / currentSpeed) : 0;
                     const honedDPS = newSpeedValue > 0 ? (currentAttack / newSpeedValue) : 0;
 
-                    // Build preview with formatting and DPS
-                    let previewHTML = `<strong>Current:</strong> Atk ${currentAttack} / Spd ${currentSpeed.toFixed(1)}s / DPS ${currentDPS.toFixed(1)}<br>`;
+                                       let previewHTML = `<strong>Current:</strong> Atk ${currentAttack} / Spd ${currentSpeed.toFixed(1)}s / DPS ${currentDPS.toFixed(1)}<br>`;
                     if (isAlreadySharpened && isAlreadyHoned) {
                         previewHTML += `<span style="color: #FF0000;">Fully Enhanced!</span>`;
                     } else if (isAlreadySharpened) {
@@ -257,8 +254,7 @@ class Sharpen {
             return;
         }
 
-        // Check if already enhanced with the selected type
-        if (type === 'attack' && item.isSharpened === true) {
+               if (type === 'attack' && item.isSharpened === true) {
             this.game.addLog(`${item.name} has already been sharpened.`);
             return;
         }
@@ -268,39 +264,30 @@ class Sharpen {
         }
 
         let successMessage = "";
-        const originalName = item.name.replace(/^Sharpened |^Honed /i, ''); // Get base name
-
-        // Use current name for messages and prepending
-        const currentName = item.name;
+        const originalName = item.name.replace(/^Sharpened |^Honed /i, '');
+               const currentName = item.name;
 
         if (type === 'attack') {
-            item.isSharpened = true; // Set the flag
-            const currentAttack = item.stats.attack || 0;
+            item.isSharpened = true;            const currentAttack = item.stats.attack || 0;
             item.stats.attack = currentAttack + 1;
             successMessage = `Sharpened ${currentName}! Attack +1.`;
-            item.name = `Sharpened ${currentName}`; // Prepend
-            item.description = item.description.replace(/Attack: \+\d+/, `Attack: +${item.stats.attack}`);
+            item.name = `Sharpened ${currentName}`;            item.description = item.description.replace(/Attack: \+\d+/, `Attack: +${item.stats.attack}`);
         } else if (type === 'speed') {
-            item.isHoned = true; // Set the flag
-            const currentSpeed = (item.speed ?? this.game.player.defaultAttackSpeed);
-            const newSpeed = Math.max(0.1, currentSpeed - 0.5); // Flat -0.5s, min 0.1
-
+            item.isHoned = true;            const currentSpeed = (item.speed ?? this.game.player.defaultAttackSpeed);
+            const newSpeed = Math.max(0.1, currentSpeed - 0.5);
             if (newSpeed === currentSpeed) {
                 this.game.addLog(`Cannot hone ${item.name} further (minimum 0.1s speed).`);
-                return; // Exit if speed can't be reduced further
-            } else {
+                return;            } else {
                 item.speed = newSpeed;
                 successMessage = `Honed ${currentName}! Speed reduced by 0.5s (Now ${newSpeed.toFixed(1)}s).`;
-                item.name = `Honed ${currentName}`; // Prepend
-                item.description = item.description.replace(/Speed: [\d.]+s/, `Speed: ${item.speed.toFixed(1)}s`);
+                item.name = `Honed ${currentName}`;                item.description = item.description.replace(/Speed: [\d.]+s/, `Speed: ${item.speed.toFixed(1)}s`);
                 if (!item.description.includes("Speed:")) {
                     item.description += ` Speed: ${item.speed.toFixed(1)}s`;
                 }
             }
         }
 
-        // Ensure the rest of the function is complete and syntax is correct
-        item.value = Math.floor(item.value * 1.2);
+               item.value = Math.floor(item.value * 1.2);
 
         if (!this.game.player.addItem(item)) {
             this.game.addLog("Inventory full! Cannot return the sharpened item.");

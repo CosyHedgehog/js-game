@@ -258,24 +258,20 @@ class Armoury {
             return;
         }
 
-        // Check if already enhanced with the selected type
-        if (type === 'defense' && item.isReinforced === true) {
+               if (type === 'defense' && item.isReinforced === true) {
             this.game.addLog(`${item.name} has already been reinforced.`);
             return;
         }
 
-        // Flags for naming logic
-        const wasForged = item.isForged === true;
+               const wasForged = item.isForged === true;
         const wasFortified = item.isFortified === true;
         const wasReinforced = item.isReinforced === true;
 
         let successMessage = "";
-        // Get base name by removing all potential prefixes
-        const originalName = item.name.replace(/^(Forged |Reinforced |Fortified )+/i, '');
+               const originalName = item.name.replace(/^(Forged |Reinforced |Fortified )+/i, '');
 
         if (type === 'defense') {
-            item.isReinforced = true; // Set flag
-            item.stats.defense = (item.stats.defense || 0) + 1;
+            item.isReinforced = true;            item.stats.defense = (item.stats.defense || 0) + 1;
             successMessage = `Reinforced ${item.name}! Defense +1.`;
             item.name = `Reinforced ${item.name}`;
 
@@ -286,8 +282,7 @@ class Armoury {
                 item.description += `\nDefense: +${item.stats.defense}`;
             }
         } else if (type === 'health') {
-            item.isFortified = true; // Set flag
-            item.stats.maxHealth = (item.stats.maxHealth || 0) + 3;
+            item.isFortified = true;            item.stats.maxHealth = (item.stats.maxHealth || 0) + 3;
             successMessage = `Fortified ${item.name}! Max HP +3`;
             item.name = `Fortified ${item.name}`;
 

@@ -145,8 +145,7 @@ class Blacksmith {
         }.bind(this);
     }
 
-    // Helper to check if an item has armourer enhancements
-    isEnhanced(item) {
+       isEnhanced(item) {
         return item && (item.isReinforced === true || item.isFortified === true || item.isForged === true);
     }
 
@@ -174,12 +173,9 @@ class Blacksmith {
                 item1 = JSON.parse(item1DataString);
                 item2 = JSON.parse(item2DataString);
 
-                // *** NEW Forge Logic: Combine two non-Forged items of same baseId ***
-                canForge = false; // Default to false
-
+                               canForge = false;
                 if (item1 && item2 && item1.baseId === item2.baseId && item1.type === item2.type && item1.slot === item2.slot && hasHammer) {
-                    // Check if neither is already Forged
-                    if (item1.isForged !== true && item2.isForged !== true) {
+                                       if (item1.isForged !== true && item2.isForged !== true) {
                         canForge = true;
                     }
                 }
@@ -192,11 +188,9 @@ class Blacksmith {
 
         forgeButton.disabled = !canForge;
 
-        if (canForge && item1 && item2) { // Use new variables
-            const previewItem = this.previewForgedItem(item1, item2);
+        if (canForge && item1 && item2) {            const previewItem = this.previewForgedItem(item1, item2);
 
-            // *** Generate detailed preview HTML ***
-            let previewHTML = ``;
+                       let previewHTML = ``;
             const formatStats = (item, label) => {
                 let statsStr = `<strong>${label}:</strong> ${item.name}<br>`;
                 statsStr += `&nbsp;&nbsp;Atk: ${item.stats?.attack || 0} / Def: ${item.stats?.defense || 0}`; 
@@ -215,12 +209,10 @@ class Blacksmith {
                 if (previewItem.speed) resultStatsStr += ` / Spd: ${previewItem.speed.toFixed(1)}s`;
                 previewHTML += resultStatsStr;
 
-                forgePreview.innerHTML = previewHTML; // Use innerHTML for breaks
-                forgePreview.classList.remove('hidden');
+                forgePreview.innerHTML = previewHTML;                forgePreview.classList.remove('hidden');
             } else {
                 forgeButton.disabled = true;
-                forgePreview.textContent = "Error generating preview."; // More specific error
-                forgePreview.classList.remove('hidden');
+                forgePreview.textContent = "Error generating preview.";                forgePreview.classList.remove('hidden');
             }
         } else {
             forgeButton.disabled = true;
@@ -229,8 +221,7 @@ class Blacksmith {
             } else if (!hasHammer) {
                 forgePreview.textContent = "Requires Blacksmith Hammer.";
             } else {
-                // Update message for new logic
-                const item1Forged = item1 && item1.isForged === true;
+                               const item1Forged = item1 && item1.isForged === true;
                 const item2Forged = item2 && item2.isForged === true;
                 if (item1DataString && item2DataString) {
                     if (item1Forged || item2Forged) {
@@ -238,8 +229,7 @@ class Blacksmith {
                     } else if (item1?.baseId !== item2?.baseId) {
                         forgePreview.textContent = "Items must be based on the same original item.";
                     } else {
-                        forgePreview.textContent = "Place two compatible items to forge."; // Generic fallback
-                    }
+                        forgePreview.textContent = "Place two compatible items to forge.";                    }
                 } else {
                     forgePreview.textContent = "Place two items to forge.";
                 }
@@ -253,52 +243,41 @@ class Blacksmith {
             return null;
         }
 
-        // Cannot forge already forged items
-        if (item1.isForged === true || item2.isForged === true) {
-            console.warn("Attempted to preview forge with already forged item."); // Should be caught by updateForgeButton
-            return null;
+               if (item1.isForged === true || item2.isForged === true) {
+            console.warn("Attempted to preview forge with already forged item.");            return null;
         }
 
-        const baseId = item1.baseId; // Both items share the same baseId
-        const baseTemplate = ITEMS[baseId];
+        const baseId = item1.baseId;        const baseTemplate = ITEMS[baseId];
         if (!baseTemplate) {
             console.error("Base template not found for ID:", baseId);
             return null;
         }
 
-        // Determine combined enhancements
-        const outputIsReinforced = item1.isReinforced === true || item2.isReinforced === true;
+               const outputIsReinforced = item1.isReinforced === true || item2.isReinforced === true;
         const outputIsFortified = item1.isFortified === true || item2.isFortified === true;
         const outputIsSharpened = item1.isSharpened === true || item2.isSharpened === true;
         const outputIsHoned = item1.isHoned === true || item2.isHoned === true;
 
-        // *** Calculate new stats by summing inputs + adding forge bonus ***
-        const newStats = {};
-        // Sum stats from both items
-        newStats.attack = (item1.stats?.attack || 0) + (item2.stats?.attack || 0);
+               const newStats = {};
+               newStats.attack = (item1.stats?.attack || 0) + (item2.stats?.attack || 0);
         newStats.defense = (item1.stats?.defense || 0) + (item2.stats?.defense || 0);
         newStats.maxHealth = (item1.stats?.maxHealth || 0) + (item2.stats?.maxHealth || 0);
 
-        // Construct name with all prefixes
-        let namePrefix = "Forged";
+               let namePrefix = "Forged";
         if (outputIsSharpened) namePrefix += " Sharpened";
         if (outputIsHoned) namePrefix += " Honed";
         if (outputIsReinforced) namePrefix += " Reinforced";
         if (outputIsFortified) namePrefix += " Fortified";
         const newName = `${namePrefix} ${baseTemplate.name}`;
 
-        // Construct description
-        let description = `Two ${baseTemplate.name} forged together, combining their strengths.\n`;
+               let description = `Two ${baseTemplate.name} forged together, combining their strengths.\n`;
         if (newStats.attack) description += `Attack: +${newStats.attack}\n`;
         if (newStats.defense) description += `Defense: +${newStats.defense}\n`;
         if (newStats.maxHealth) description += `Max HP: +${newStats.maxHealth}\n`;
-        if (baseTemplate.speed) description += `Speed: ${baseTemplate.speed.toFixed(1)}s\n`; // Forged item keeps base speed/hands
-        // Adjust description for Honed effect (applies -0.2s to base speed)
-        let finalSpeed = baseTemplate.speed;
+        if (baseTemplate.speed) description += `Speed: ${baseTemplate.speed.toFixed(1)}s\n`;               let finalSpeed = baseTemplate.speed;
         if (outputIsHoned) {
             finalSpeed = Math.max(0.1, (finalSpeed ?? this.game.player.defaultAttackSpeed) - 0.2);
-            // Replace or add speed line in description
-            const speedRegex = /Speed: [\d.]+s\n?/; 
+                       const speedRegex = /Speed: [\d.]+s\n?/; 
             if (description.match(speedRegex)) {
                 description = description.replace(speedRegex, `Speed: ${finalSpeed.toFixed(1)}s\n`);
             } else {
@@ -308,25 +287,17 @@ class Blacksmith {
         if (baseTemplate.hands) description += `${baseTemplate.hands}-Handed`;
 
         const forgedItem = {
-            id: `${baseId}_forged_${outputIsSharpened ? 's' : ''}${outputIsHoned ? 'h' : ''}${outputIsReinforced ? 'r' : ''}${outputIsFortified ? 'f' : ''}`, // Even more specific ID
-            baseId: baseId,
+            id: `${baseId}_forged_${outputIsSharpened ? 's' : ''}${outputIsHoned ? 'h' : ''}${outputIsReinforced ? 'r' : ''}${outputIsFortified ? 'f' : ''}`,            baseId: baseId,
             name: newName,
-            type: item1.type, // Type and slot are same for both inputs
-            slot: item1.slot,
+            type: item1.type,            slot: item1.slot,
             stats: newStats,
-            speed: finalSpeed, // *** Use the calculated final speed ***
-            hands: baseTemplate.hands,
-            isForged: true, // *** Mark as Forged ***
-            isSharpened: outputIsSharpened,
+            speed: finalSpeed,            hands: baseTemplate.hands,
+            isForged: true,            isSharpened: outputIsSharpened,
             isHoned: outputIsHoned,
-            isReinforced: outputIsReinforced, // Set based on combined input
-            isFortified: outputIsFortified, // Set based on combined input
-            description: description.trim()
+            isReinforced: outputIsReinforced,            isFortified: outputIsFortified,            description: description.trim()
         };
 
-        // Base value calculation on combined inputs + forge bonus
-        // Slightly increased value multiplier for weapons?
-        const valueMultiplier = item1.type === 'weapon' ? 1.15 : 1.1;
+                      const valueMultiplier = item1.type === 'weapon' ? 1.15 : 1.1;
         forgedItem.value = Math.floor((item1.value + item2.value) * valueMultiplier);
         return forgedItem;
     }

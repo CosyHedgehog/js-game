@@ -22,11 +22,8 @@ class UI {
         this.itemTooltip = document.getElementById('item-tooltip');
         this.treasureArea = document.getElementById('treasure-area');
         this.forgeArea = document.getElementById('forge-area');
-        this.mainContent = document.getElementById('main-content'); // Add this line
-        // Initialize equipmentTextDisplay as an empty object
-        this.equipmentTextDisplay = {}; 
-        // Select elements using data-slot in cacheDynamicElements or here
-        this.cacheDynamicElements(); 
+        this.mainContent = document.getElementById('main-content');               this.equipmentTextDisplay = {}; 
+               this.cacheDynamicElements(); 
 
         this.equipTooltip = document.getElementById('equip-tooltip');
         this.statTooltip = document.getElementById('stat-tooltip');
@@ -44,8 +41,7 @@ class UI {
         this.combatEnemyBreathTimerContainer = document.querySelector('.enemy-side .breath-timer'); 
         this.combatEnemyBreathTimerText = document.getElementById('combat-enemy-breath-timer');
         this.combatEnemyBreathTimerBar = document.querySelector('.enemy-breath-timer');
-        // *** Cache Stun Timer Elements ***
-        this.combatEnemyStunTimerContainer = document.querySelector('.enemy-side .stun-timer');
+               this.combatEnemyStunTimerContainer = document.querySelector('.enemy-side .stun-timer');
         this.combatEnemyStunTimerText = document.getElementById('combat-enemy-stun-timer');
         this.combatEnemyStunTimerBar = document.querySelector('.enemy-stun-timer');
         this.shopItemsContainer = document.getElementById('shop-items');
@@ -91,33 +87,23 @@ class UI {
             }
         };
 
-        // Cache new combat stat elements
-        this.combatPlayerAtk = document.getElementById('combat-player-atk');
+               this.combatPlayerAtk = document.getElementById('combat-player-atk');
         this.combatPlayerDef = document.getElementById('combat-player-def');
         this.combatEnemyAtk = document.getElementById('combat-enemy-atk');
         this.combatEnemyDef = document.getElementById('combat-enemy-def');
         
-        // Cache combat timer containers
-        this.combatPlayerTimerContainer = document.querySelector('.player-side .attack-timer:not(.breath-timer)');
+               this.combatPlayerTimerContainer = document.querySelector('.player-side .attack-timer:not(.breath-timer)');
         this.combatEnemyTimerContainer = document.querySelector('.enemy-side .attack-timer:not(.breath-timer)');
-        // Add Speed elements
-        this.combatPlayerSpd = document.getElementById('combat-player-spd'); 
+               this.combatPlayerSpd = document.getElementById('combat-player-spd'); 
         this.combatEnemySpd = document.getElementById('combat-enemy-spd');
-        // Note: Breath timer container already cached
-
+       
         this.roundAreaElement = document.getElementById('round-area');
-        // Cache Area Description Element
-        this.areaDescriptionElement = document.getElementById('area-description'); 
+               this.areaDescriptionElement = document.getElementById('area-description'); 
 
-        // DPS Stat
-        this.statDps = document.getElementById('stat-dps-2');
+               this.statDps = document.getElementById('stat-dps-2');
 
-        // Add tooltip cache
-        this.tooltipCache = {
-            attack: new Map(), // Map<attackValue, tooltipText>
-            defense: new Map(), // Map<defenseValue, tooltipText>
-            dps: new Map()    // Map<attackValue_speed, tooltipText>
-        };
+               this.tooltipCache = {
+            attack: new Map(),            defense: new Map(),            dps: new Map()           };
     }
 
     cacheDynamicElements() {
@@ -128,16 +114,13 @@ class UI {
         this.shopItemsContainer = document.getElementById('shop-items');
         this.shopRerollButton = document.getElementById('shop-reroll-button');
         
-        // Populate equipmentTextDisplay using data-slot query
-        this.equipmentTextDisplay = {}; // Clear first
-        const equipmentDisplay = document.getElementById('equipment-text-display');
+               this.equipmentTextDisplay = {};        const equipmentDisplay = document.getElementById('equipment-text-display');
         if (equipmentDisplay) {
             const pElements = equipmentDisplay.querySelectorAll('p[data-slot]');
             pElements.forEach(pElement => {
                 const slot = pElement.dataset.slot;
                 if (slot) {
-                    this.equipmentTextDisplay[slot] = pElement; // Store reference to the <p> element
-                }
+                    this.equipmentTextDisplay[slot] = pElement;                }
             });
         } else {
             console.error("Could not find #equipment-text-display to cache elements.");
@@ -164,26 +147,21 @@ class UI {
             }
         }
 
-        // Cache stat elements needed for tooltips
-        this.statHealthElement = document.getElementById('stat-health-2')?.closest('.stat-item');
+               this.statHealthElement = document.getElementById('stat-health-2')?.closest('.stat-item');
         this.statAttackElement = document.getElementById('stat-attack-2')?.closest('.stat-item');
         this.statDefenseElement = document.getElementById('stat-defense-2')?.closest('.stat-item');
         this.statSpeedElement = document.getElementById('stat-speed-2')?.closest('.stat-item');
         this.statDpsElement = document.getElementById('stat-dps-2')?.closest('.stat-item');
-        this.statGoldElement = document.getElementById('stat-gold-2')?.closest('#inventory-header'); // Find gold in its new parent
+        this.statGoldElement = document.getElementById('stat-gold-2')?.closest('#inventory-header');        
+               this.roundAreaElement = document.getElementById('round-area')?.querySelector('.stat-item'); 
         
-        // Cache round element for tooltip and indicators
-        this.roundAreaElement = document.getElementById('round-area')?.querySelector('.stat-item'); 
-        
-        // Cache combat stat elements if not already cached by constructor
-        if (!this.combatPlayerAtk) this.combatPlayerAtk = document.getElementById('combat-player-atk');
+               if (!this.combatPlayerAtk) this.combatPlayerAtk = document.getElementById('combat-player-atk');
         if (!this.combatPlayerDef) this.combatPlayerDef = document.getElementById('combat-player-def');
         if (!this.combatEnemyAtk) this.combatEnemyAtk = document.getElementById('combat-enemy-atk');
         if (!this.combatEnemyDef) this.combatEnemyDef = document.getElementById('combat-enemy-def');
         if (!this.combatPlayerTimerContainer) this.combatPlayerTimerContainer = document.querySelector('.player-side .attack-timer:not(.breath-timer)');
         if (!this.combatEnemyTimerContainer) this.combatEnemyTimerContainer = document.querySelector('.enemy-side .attack-timer:not(.breath-timer)');
-        // Breath timer container is cached in constructor
-    }
+           }
 
     addCombatUITooltipListeners() {
         if (!this.statTooltip) {
@@ -202,50 +180,38 @@ class UI {
             stunTimer: { el: this.combatEnemyStunTimerContainer, text: "Slams ground every X seconds." }
         };
 
-        // --- Add listener for player health bar for POISON tooltip --- 
-        const playerHealthBarContainer = document.querySelector('.player-side .health-bar-container');
+               const playerHealthBarContainer = document.querySelector('.player-side .health-bar-container');
         
         const poisonEnterHandler = (e) => {
-            if (this.game?.player?.activeEffects?.poison) { // Only show if poisoned
-                 this.showTooltip("You are poisoned!", this.statTooltip, e);
+            if (this.game?.player?.activeEffects?.poison) {                 this.showTooltip("You are poisoned!", this.statTooltip, e);
             }
         };
         const poisonLeaveHandler = () => {
             this.hideTooltip(this.statTooltip);
         };
 
-        // Attach listeners ONLY to the health bar container
-        if (playerHealthBarContainer) {
-            // Remove potential old listeners
-            playerHealthBarContainer.removeEventListener('mouseenter', playerHealthBarContainer._tooltipEnterHandler);
+               if (playerHealthBarContainer) {
+                       playerHealthBarContainer.removeEventListener('mouseenter', playerHealthBarContainer._tooltipEnterHandler);
             playerHealthBarContainer.removeEventListener('mouseleave', playerHealthBarContainer._tooltipLeaveHandler);
-            // Attach new listeners
-            playerHealthBarContainer.addEventListener('mouseenter', poisonEnterHandler);
+                       playerHealthBarContainer.addEventListener('mouseenter', poisonEnterHandler);
             playerHealthBarContainer.addEventListener('mouseleave', poisonLeaveHandler);
-            // Store handlers for removal
-            playerHealthBarContainer._tooltipEnterHandler = poisonEnterHandler;
+                       playerHealthBarContainer._tooltipEnterHandler = poisonEnterHandler;
             playerHealthBarContainer._tooltipLeaveHandler = poisonLeaveHandler;
         } else {
             console.warn("Combat Tooltip Listener: Player health bar container not found.");
         }
-        // -------------------------------------------------------------
-
-        // Loop for other combat tooltips (timers, enemy stats)
-        for (const key in combatElements) {
+       
+               for (const key in combatElements) {
             const { el, text } = combatElements[key];
             if (el) {
                 el.dataset.tooltipTextBase = text; 
 
                 const enterHandler = (e) => {
-                    // Get dynamic text first
-                    let dynamicText = el.dataset.tooltipTextDynamic;
-                    let tooltipText = "No description available."; // Default
-
-                    if (dynamicText) { // Use dynamic if it exists
-                        tooltipText = dynamicText;
+                                       let dynamicText = el.dataset.tooltipTextDynamic;
+                    let tooltipText = "No description available.";
+                    if (dynamicText) {                        tooltipText = dynamicText;
                     } else { 
-                        // Otherwise, get base text directly from the static object
-                        tooltipText = combatElements[key]?.text || "No description available."; 
+                                               tooltipText = combatElements[key]?.text || "No description available."; 
                     }
                     
                     if (key === 'playerTimer') {
@@ -270,15 +236,13 @@ class UI {
                     this.hideTooltip(this.statTooltip);
                 };
 
-                // Remove potential old listeners
-                el.removeEventListener('mouseenter', el._tooltipEnterHandler);
+                               el.removeEventListener('mouseenter', el._tooltipEnterHandler);
                 el.removeEventListener('mouseleave', el._tooltipLeaveHandler);
 
                 el.addEventListener('mouseenter', enterHandler);
                 el.addEventListener('mouseleave', leaveHandler);
 
-                // Store handlers for removal
-                el._tooltipEnterHandler = enterHandler;
+                               el._tooltipEnterHandler = enterHandler;
                 el._tooltipLeaveHandler = leaveHandler;
             } else {
                 console.warn(`Combat Tooltip Listener: Element for key '${key}' not found.`);
@@ -303,24 +267,20 @@ class UI {
             
             if (element && this.statTooltip) {
                 const enterHandler = (e) => {
-                    // ALWAYS read from dataset, which is updated by updatePlayerStats
-                    const tooltipText = element.dataset.tooltipText || "No description available."; 
+                                       const tooltipText = element.dataset.tooltipText || "No description available."; 
                     this.showTooltip(tooltipText.replace(/\\n/g, '<br>'), this.statTooltip, e); 
                 };
                 const leaveHandler = () => {
                     this.hideTooltip(this.statTooltip);
                 };
 
-                // Remove potential old listeners before adding new ones
-                // (Basic removal - might need more robust handling if issues persist)
-                element.removeEventListener('mouseenter', element._tooltipEnterHandler);
+                                              element.removeEventListener('mouseenter', element._tooltipEnterHandler);
                 element.removeEventListener('mouseleave', element._tooltipLeaveHandler);
 
                 element.addEventListener('mouseenter', enterHandler);
                 element.addEventListener('mouseleave', leaveHandler);
                 
-                // Store handlers on the element for potential future removal
-                element._tooltipEnterHandler = enterHandler;
+                               element._tooltipEnterHandler = enterHandler;
                 element._tooltipLeaveHandler = leaveHandler;
 
             } else {
@@ -358,16 +318,13 @@ class UI {
             slot.classList.add('inventory-slot');
             slot.dataset.index = index;
             
-            // --- Unconditional Drop Target Listeners (for ALL slots) ---
-            slot.addEventListener('dragover', (event) => {
+                       slot.addEventListener('dragover', (event) => {
                 event.preventDefault();
-                if (!slot.classList.contains('dragging')) { // Prevent self-drop visual
-                    slot.classList.add('drag-over');
+                if (!slot.classList.contains('dragging')) {                    slot.classList.add('drag-over');
                 }
             });
             slot.addEventListener('dragenter', (event) => {
-                event.preventDefault(); // Necessary for drop to work
-            });
+                event.preventDefault();            });
             slot.addEventListener('dragleave', () => {
                 slot.classList.remove('drag-over');
             });
@@ -379,42 +336,32 @@ class UI {
                 if (sourceIndex === null || sourceIndex === undefined || targetIndex === null || targetIndex === undefined || sourceIndex === targetIndex) return;
                 this.game.handleInventorySwap(sourceIndex, targetIndex);
             });
-            // ------------------------------------------------------------
-
+           
             slot.classList.remove('slot-empty', 'slot-filled', 'dragging', 'equipped', 'food-stunned'); 
 
             if (item) {
                 slot.classList.remove('slot-empty');
                 slot.classList.add('slot-filled');
-                // Apply truncation logic and set text content
-                const MAX_NAME_LENGTH = 18; // Adjust this character limit as desired
-                let displayName = item.name;
+                               const MAX_NAME_LENGTH = 18;                let displayName = item.name;
                 if (item.name.length > MAX_NAME_LENGTH) {
-                    displayName = item.name.substring(0, MAX_NAME_LENGTH - 1) + '…'; // Truncate and add ellipsis
-                }
-                // Set the truncated or full name directly as the slot's text content
-                slot.textContent = displayName;
-                slot.draggable = true; // Only filled slots are draggable
-
-                // --- Draggable Source Listener (for FILLED slots only) ---
-                slot.addEventListener('dragstart', (event) => {
+                    displayName = item.name.substring(0, MAX_NAME_LENGTH - 1) + '…';                }
+                               slot.textContent = displayName;
+                slot.draggable = true;
+                               slot.addEventListener('dragstart', (event) => {
                     event.dataTransfer.setData('text/plain', index.toString());
                     event.dataTransfer.effectAllowed = 'move';
                     this.draggedItemIndex = index;
                     this.draggedItem = item;
                     setTimeout(() => slot.classList.add('dragging'), 0);
-                    this.hideTooltip(this.itemTooltip); // Hide tooltips during drag
-                    this.hideTooltip(this.equipTooltip);
+                    this.hideTooltip(this.itemTooltip);                    this.hideTooltip(this.equipTooltip);
                 });
                 slot.addEventListener('dragend', () => {
                     slot.classList.remove('dragging');
-                    // Clean up any lingering drag-over styles on ALL slots
-                    this.inventoryGrid.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+                                       this.inventoryGrid.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
                     this.draggedItemIndex = null;
                     this.draggedItem = null;
                 });
-                // -------------------------------------------------------
-                
+                               
                 let originalClickHandler = null; 
                 let originalActionText = '';   
                 let isEquipped = false;
@@ -466,18 +413,14 @@ class UI {
                     tooltipContent += `<div class="tooltip-item-name">${item.name}</div>`;
                     tooltipContent += item.description || 'No description';
 
-                    // Add event listeners for tooltip
-                    slot.addEventListener('mouseenter', (e) => { // 'e' is defined here
-                        // Construct tooltip content *inside* the listener
-                        let currentTooltipContent = '';
+                                       slot.addEventListener('mouseenter', (e) => {                                               let currentTooltipContent = '';
                         if (currentActionText) {
                             currentTooltipContent += `<div class="tooltip-action">${currentActionText}</div>`;
                         }
                         currentTooltipContent += `<div class="tooltip-item-name">${item.name}</div>`;
                         currentTooltipContent += item.description || 'No description';
 
-                        // Call showTooltip here
-                        this.showTooltip(currentTooltipContent.replace(/\n/g, '<br>'), this.itemTooltip, e);
+                                               this.showTooltip(currentTooltipContent.replace(/\n/g, '<br>'), this.itemTooltip, e);
                     });
                     
                     if (this.game.state === 'blacksmith' && (item.type === 'weapon' || item.type === 'armor')) {
@@ -489,27 +432,20 @@ class UI {
                     }
                 }
 
-                // --- Stun Check & Visuals --- 
-                let isStunnedAndFood = false;
+                               let isStunnedAndFood = false;
                 if (this.game.state === 'combat' && this.game.player.isStunned && item.useAction === 'Eat') {
                     isStunnedAndFood = true;
                     slot.classList.add('food-stunned');
-                    slot.style.cursor = 'default'; // Set cursor back to default
-                    slot.dataset.isStunnedFood = 'true'; // Set data attribute
-                } else {
+                    slot.style.cursor = 'default';                    slot.dataset.isStunnedFood = 'true';                } else {
                     slot.classList.remove('food-stunned'); 
-                    delete slot.dataset.isStunnedFood; // Remove data attribute
-                }
-                // ---------------------------
-
-                // --- Dynamic Tooltip Listener --- 
-                slot.removeEventListener('mouseenter', slot._tooltipEnterHandler);
+                    delete slot.dataset.isStunnedFood;                }
+               
+                               slot.removeEventListener('mouseenter', slot._tooltipEnterHandler);
                 slot.removeEventListener('mouseleave', slot._tooltipLeaveHandler);
                 
                 const enterHandler = (e) => {
                     let currentActionText = originalActionText;
-                    // Check data attribute *inside* the handler
-                    if (slot.dataset.isStunnedFood === 'true') {
+                                       if (slot.dataset.isStunnedFood === 'true') {
                         currentActionText = "[You are stunned!]";
                     }
                     
@@ -520,8 +456,7 @@ class UI {
                     tooltipContent += `<div class="tooltip-item-name">${item.name}</div>`;
                     tooltipContent += item.description || 'No description';
 
-                    // Show tooltip
-                    this.showTooltip(tooltipContent.replace(/\n/g, '<br>'), this.itemTooltip, e);
+                                       this.showTooltip(tooltipContent.replace(/\n/g, '<br>'), this.itemTooltip, e);
                 };
                 const leaveHandler = () => {
                      this.hideTooltip(this.itemTooltip);
@@ -531,23 +466,13 @@ class UI {
                 slot.addEventListener('mouseleave', leaveHandler);
                 slot._tooltipEnterHandler = enterHandler;
                 slot._tooltipLeaveHandler = leaveHandler;
-                // -----------------------------
-
-                // --- Click Handler Attachment --- 
-                slot.removeEventListener('click', slot._clickHandler); // Remove previous click listener if any
-                if (originalClickHandler && !isStunnedAndFood) { // Attach click handler ONLY if it exists AND not stunned food
-                    slot.addEventListener('click', originalClickHandler);
-                    slot._clickHandler = originalClickHandler; // Store reference for removal
-                    slot.style.cursor = 'pointer'; // Ensure clickable cursor if handler is attached
-                } else if (!isStunnedAndFood) {
-                    // Ensure default cursor if no handler and not stunned food
-                    slot.style.cursor = 'default'; 
+               
+                               slot.removeEventListener('click', slot._clickHandler);                if (originalClickHandler && !isStunnedAndFood) {                    slot.addEventListener('click', originalClickHandler);
+                    slot._clickHandler = originalClickHandler;                    slot.style.cursor = 'pointer';                } else if (!isStunnedAndFood) {
+                                       slot.style.cursor = 'default'; 
                 }
-                // else: cursor is already set to default by stun check block if isStunnedAndFood
-                // ----------------------------
-
-                // --- Equipped Chip etc. --- 
-                if (isEquipped) {
+                              
+                               if (isEquipped) {
                     slot.classList.add('equipped');
                     const chip = document.createElement('span');
                     chip.classList.add('equipped-slot-chip');
@@ -581,23 +506,20 @@ class UI {
             } else {
                 slot.textContent = '';
                 slot.classList.add('slot-empty');
-                slot.draggable = false; // Empty slots aren't draggable
-            }
+                slot.draggable = false;            }
             this.inventoryGrid.appendChild(slot);
         });
     }
 
     renderEquipment() {
         for (const slotName in this.equipmentTextDisplay) {
-            // Now, parentPElement is directly the element we stored
-            const parentPElement = this.equipmentTextDisplay[slotName]; 
+                       const parentPElement = this.equipmentTextDisplay[slotName]; 
             if (!parentPElement) {
                  console.warn(`UI renderEquipment: Parent <p> element reference missing for ${slotName}`);
                  continue;
             }
             
-            // Find label and button within this <p> element
-            const labelSpan = parentPElement.querySelector('.equip-label'); 
+                       const labelSpan = parentPElement.querySelector('.equip-label'); 
             const unequipButton = parentPElement.querySelector(`.unequip-button[data-slot="${slotName}"]`);
             
             if (!labelSpan || !unequipButton) {
@@ -609,8 +531,7 @@ class UI {
             let itemDescription = '';
             let isEquipped = false;
 
-            // Reset listeners on the <p> element
-            parentPElement.onmouseenter = null;
+                       parentPElement.onmouseenter = null;
             parentPElement.onmouseleave = null;
 
             if (equippedItemIndex !== null && this.game.player.inventory[equippedItemIndex]) {
@@ -618,8 +539,7 @@ class UI {
                 itemDescription = item.description || 'No description';
                 isEquipped = true;
 
-                // Attach hover listener for equipped item
-                parentPElement.onmouseenter = (e) => this.showTooltip(itemDescription, this.equipTooltip, e);
+                               parentPElement.onmouseenter = (e) => this.showTooltip(itemDescription, this.equipTooltip, e);
                 parentPElement.onmouseleave = () => this.hideTooltip(this.equipTooltip);
 
                 unequipButton.classList.remove('hidden');
@@ -629,18 +549,15 @@ class UI {
                     this.hideTooltip(this.equipTooltip);
                 };
             } else {
-                // No item equipped, hide button and ADD default tooltip
-                unequipButton.classList.add('hidden');
+                               unequipButton.classList.add('hidden');
                 unequipButton.onclick = null;
                 
-                // ADD default tooltip for empty slot
-                const defaultText = "Slot empty - equip an item!";
+                               const defaultText = "Slot empty - equip an item!";
                 parentPElement.onmouseenter = (e) => this.showTooltip(defaultText, this.equipTooltip, e);
                 parentPElement.onmouseleave = () => this.hideTooltip(this.equipTooltip);
             }
 
-            // Add/remove 'equipped' class to the parent <p> AND the label span
-            if (isEquipped) {
+                       if (isEquipped) {
                 parentPElement.classList.add('equipped');
                 labelSpan.classList.add('equipped'); 
             } else {
@@ -657,17 +574,14 @@ class UI {
         if (this.statHealth) this.statHealth.textContent = player.health;
         if (this.statMaxHealth) this.statMaxHealth.textContent = player.getMaxHealth();
         
-        // Attack
-        let attackBase = player.baseAttack + (player.equipment.weapon !== null ? (this.game.player.inventory[player.equipment.weapon]?.stats?.attack || 0) : 0) + (player.equipment.ring !== null ? (this.game.player.inventory[player.equipment.ring]?.stats?.attack || 0) : 0);
+               let attackBase = player.baseAttack + (player.equipment.weapon !== null ? (this.game.player.inventory[player.equipment.weapon]?.stats?.attack || 0) : 0) + (player.equipment.ring !== null ? (this.game.player.inventory[player.equipment.ring]?.stats?.attack || 0) : 0);
         let attackText = `${attackBase}`; 
 
-        // Check cache for attack tooltip
-        const maxAttack = player.getAttack();
+               const maxAttack = player.getAttack();
         let attackTooltip = this.tooltipCache.attack.get(maxAttack);
 
         if (!attackTooltip) {
-            // Calculate if not in cache
-            attackTooltip = "<b>Max damage<\/b><br><br>Chance to hit:<br>";
+                       attackTooltip = "<b>Max damage<\/b><br><br>Chance to hit:<br>";
             const numSimulations = 2400;
 
             for (let def = 0; def <= 10; def++) {
@@ -683,12 +597,10 @@ class UI {
                 attackTooltip += `${def} Def: <b>${hitChance.toFixed(1)}%</b><br>`;
             }
 
-            // Store in cache
-            this.tooltipCache.attack.set(maxAttack, attackTooltip);
+                       this.tooltipCache.attack.set(maxAttack, attackTooltip);
         }
 
-        // Add temp attack info if needed
-        if (player.tempAttack > 0) {
+               if (player.tempAttack > 0) {
             attackText += ` <span class="boosted-stat">(+${player.tempAttack})</span>`;
             attackTooltip = attackTooltip + `<br>Boosted by +${player.tempAttack} (temporary, lasts until combat ends).`;
         }
@@ -696,8 +608,7 @@ class UI {
         if (this.statAttack) this.statAttack.innerHTML = attackText;
         if (this.statAttackElement) this.statAttackElement.dataset.tooltipText = attackTooltip;
 
-        // Defense
-        let defenseBase = player.baseDefense;
+               let defenseBase = player.baseDefense;
         Object.values(player.equipment).forEach(index => {
              if (index !== null && this.game.player.inventory[index]?.stats?.defense) {
                  defenseBase += this.game.player.inventory[index].stats.defense;
@@ -705,13 +616,11 @@ class UI {
          });
         let defenseText = `${defenseBase}`;
         
-        // Check cache for defense tooltip
-        const maxDefense = player.getDefense();
+               const maxDefense = player.getDefense();
         let defenseTooltip = this.tooltipCache.defense.get(maxDefense);
 
         if (!defenseTooltip) {
-            // Calculate if not in cache
-            defenseTooltip = "<b>Max block<\/b><br><br>Chance to block:<br>";
+                       defenseTooltip = "<b>Max block<\/b><br><br>Chance to block:<br>";
             const numSimulations = 2400;
 
             for (let atk = 0; atk <= 10; atk++) {
@@ -727,8 +636,7 @@ class UI {
                 defenseTooltip += `${atk} Atk: <b>${blockChance.toFixed(1)}%</b><br>`;
             }
 
-            // Store in cache
-            this.tooltipCache.defense.set(maxDefense, defenseTooltip);
+                       this.tooltipCache.defense.set(maxDefense, defenseTooltip);
         }
 
         if (player.tempDefense > 0) {
@@ -738,8 +646,7 @@ class UI {
         if (this.statDefense) this.statDefense.innerHTML = defenseText;
         if (this.statDefenseElement) this.statDefenseElement.dataset.tooltipText = defenseTooltip;
         
-        // Speed
-        const baseSpeed = player.equipment.weapon !== null ? (this.game.player.inventory[player.equipment.weapon]?.speed ?? player.defaultAttackSpeed) : player.defaultAttackSpeed;
+               const baseSpeed = player.equipment.weapon !== null ? (this.game.player.inventory[player.equipment.weapon]?.speed ?? player.defaultAttackSpeed) : player.defaultAttackSpeed;
         let finalSpeed = Math.max(0.5, baseSpeed - player.tempSpeedReduction);
         let speedText = `${finalSpeed.toFixed(1)}s`;
         let speedTooltip = "Time between your attacks (lower is faster).";
@@ -747,17 +654,14 @@ class UI {
             speedText += ` <span class="boosted-stat">(-${player.tempSpeedReduction.toFixed(1)}s)</span>`;
              speedTooltip = `Time between your attacks (lower is faster).\nBoosted by -${player.tempSpeedReduction.toFixed(1)}s (temporary, lasts until combat ends).`;
         }
-        if (this.statSpeed) this.statSpeed.innerHTML = speedText; // Use innerHTML
-        if (this.statSpeedElement) this.statSpeedElement.dataset.tooltipText = speedTooltip;
+        if (this.statSpeed) this.statSpeed.innerHTML = speedText;        if (this.statSpeedElement) this.statSpeedElement.dataset.tooltipText = speedTooltip;
 
-        // Calculate DPS against different defense values
-        const attackSpeed = player.getAttackSpeed();
+               const attackSpeed = player.getAttackSpeed();
         const cacheKey = `${maxAttack}_${attackSpeed}`;
         let dpsTooltip = this.tooltipCache.dps.get(cacheKey);
 
         if (!dpsTooltip) {
-            // Calculate if not in cache
-            dpsTooltip = "<b>Damage per second<\/b><br><br>DPS against:<br>";
+                       dpsTooltip = "<b>Damage per second<\/b><br><br>DPS against:<br>";
             const numSimulations = 2400;
 
             for (let def = 0; def <= 10; def++) {
@@ -773,25 +677,20 @@ class UI {
                 dpsTooltip += `${def} Def: <b>${dpsAgainstDef.toFixed(2)}</b><br>`;
             }
 
-            // Store in cache
-            this.tooltipCache.dps.set(cacheKey, dpsTooltip);
+                       this.tooltipCache.dps.set(cacheKey, dpsTooltip);
         }
 
         if (this.statDpsElement) this.statDpsElement.dataset.tooltipText = dpsTooltip;
 
-        // Gold & Round (Update normally, keep existing tooltip logic if needed)
-        if (this.statGold) this.statGold.textContent = player.gold;
-        if (this.statGoldElement) this.statGoldElement.dataset.tooltipText = "Your current wealth."; // Update gold tooltip text
-        if (this.statHealthElement) this.statHealthElement.dataset.tooltipText = "Current Health / Maximum Health"; // Update HP tooltip text
-        if (this.statDps) this.statDps.textContent = (player.getAttack() / player.getAttackSpeed()).toFixed(1);
+               if (this.statGold) this.statGold.textContent = player.gold;
+        if (this.statGoldElement) this.statGoldElement.dataset.tooltipText = "Your current wealth.";        if (this.statHealthElement) this.statHealthElement.dataset.tooltipText = "Current Health / Maximum Health";        if (this.statDps) this.statDps.textContent = (player.getAttack() / player.getAttackSpeed()).toFixed(1);
         
         if (this.statRound && this.game && this.roundAreaElement) { 
            const currentRound = this.game.currentRound;
            const currentRoundText = `${currentRound}`;
            const maxRoundsElement = document.getElementById('stat-max-rounds');
            
-           // --- Round Update & Animation --- 
-           if (this.statRound.textContent !== currentRoundText) {
+                     if (this.statRound.textContent !== currentRoundText) {
                this.statRound.textContent = currentRoundText; 
                this.roundAreaElement.classList.remove('round-pulsing'); 
                void this.roundAreaElement.offsetWidth; 
@@ -802,39 +701,28 @@ class UI {
            }
            if (maxRoundsElement) maxRoundsElement.textContent = this.game.maxRounds;
            
-           // --- Boss Indicators & Dynamic Tooltip --- 
-           let roundTooltipText = `Current Round: ${currentRound} / ${this.game.maxRounds}`; // Default tooltip
-
+                     let roundTooltipText = `Current Round: ${currentRound} / ${this.game.maxRounds}`;
            if (currentRound === 10 || currentRound === 20) {
-               roundTooltipText = `MINI-BOSS APPROACHING! (Round ${currentRound})`; // Boss round tooltip
-           } else if (currentRound === 30) {
-               roundTooltipText = `FINAL BOSS! The Ancient Dragon awaits... (Round ${currentRound})`; // Final boss tooltip
-           }
+               roundTooltipText = `MINI-BOSS APPROACHING! (Round ${currentRound})`;           } else if (currentRound === 30) {
+               roundTooltipText = `FINAL BOSS! The Ancient Dragon awaits... (Round ${currentRound})`;           }
            
-           // Set the dynamic tooltip text
-           this.roundAreaElement.dataset.tooltipText = roundTooltipText;
+                     this.roundAreaElement.dataset.tooltipText = roundTooltipText;
         }
 
-        // Update Area Description
-        if (this.areaDescriptionElement) {
-            let areaName = "Unknown Area"; // Default value
-            let areaTooltip = "You are somewhere mysterious..."; // Default value
-            const currentAreaId = this.game.currentArea;
+               if (this.areaDescriptionElement) {
+            let areaName = "Unknown Area";            let areaTooltip = "You are somewhere mysterious...";            const currentAreaId = this.game.currentArea;
             let currentTier = null;
 
-            // *** Use Round 1 for lookup if currentRound is 0 (initial state) ***
-            const roundForLookup = this.game.currentRound === 0 ? 1 : this.game.currentRound;
+                       const roundForLookup = this.game.currentRound === 0 ? 1 : this.game.currentRound;
 
-            // Find the current tier in AREA_CONFIG based on lookup round
-            for (const tier of AREA_CONFIG) {
+                       for (const tier of AREA_CONFIG) {
                 if (roundForLookup >= tier.startRound && roundForLookup <= tier.endRound) {
                     currentTier = tier;
                     break;
                 }
             }
 
-            // Get area info from the found tier in AREA_CONFIG
-            if (currentTier && currentTier.areas && currentTier.areas[currentAreaId]) {
+                       if (currentTier && currentTier.areas && currentTier.areas[currentAreaId]) {
                 areaName = currentTier.areas[currentAreaId].name;
                 areaTooltip = currentTier.areas[currentAreaId].tooltip;
             } else if (currentAreaId) { 
@@ -845,13 +733,10 @@ class UI {
             this.areaDescriptionElement.dataset.tooltipText = areaTooltip;
         }
 
-        // Calculate DPS
-        const attack = this.game.player.getAttack();
+               const attack = this.game.player.getAttack();
         const speed = this.game.player.getAttackSpeed();
-        const dps = speed > 0 ? (attack / speed) : 0; // Avoid division by zero
-
-        // Update DPS element
-        this.statDps.textContent = dps.toFixed(1);
+        const dps = speed > 0 ? (attack / speed) : 0;
+               this.statDps.textContent = dps.toFixed(1);
     }
 
     renderChoices(choices) {
@@ -878,32 +763,26 @@ class UI {
             cardContent.classList.add('choice-card-content');
 
             if (encounter.type === 'monster') {
-                card.classList.add('choice-monster'); // *** ADD CLASS FOR MONSTER CARDS ***
-
+                card.classList.add('choice-monster');
                 const monster = MONSTERS[encounter.monsterId];
                 if (monster && monster.difficulty) {
-                    difficultyClass = 'difficulty-' + monster.difficulty; // e.g., difficulty-easy
-                    difficultyText = monster.difficulty.toUpperCase(); // e.g., EASY
-                } else {
+                    difficultyClass = 'difficulty-' + monster.difficulty;                    difficultyText = monster.difficulty.toUpperCase();                } else {
                     difficultyClass = 'difficulty-unknown'; 
                     difficultyText = '???';
                     console.warn(`Monster ${encounter.monsterId} is missing the difficulty property.`);
                 }
 
-                // Create and append badge ONLY for monsters
-                const difficultyBadge = document.createElement('div');
+                               const difficultyBadge = document.createElement('div');
                 difficultyBadge.className = `difficulty-badge ${difficultyClass}`;
                 difficultyBadge.textContent = difficultyText;
                 cardContent.appendChild(difficultyBadge);
             }
 
-            // Add event type icon
-            const eventIcon = document.createElement('span');
+                       const eventIcon = document.createElement('span');
             eventIcon.className = 'event-icon';
             if (choice.encounter.type === 'monster') {
                 const monster = MONSTERS[choice.encounter.monsterId];
-                eventIcon.textContent = monster.icon || '⚔️'; // Use monster's icon if available, fallback to sword
-            } else {
+                eventIcon.textContent = monster.icon || '⚔️';            } else {
                 switch (choice.encounter.type) {
                     case 'rest': eventIcon.textContent = '🏕️'; break;
                     case 'shop': eventIcon.textContent = '🏪'; break;
@@ -920,8 +799,7 @@ class UI {
             }
             cardContent.appendChild(eventIcon);
 
-            // Add title and description
-            const title = document.createElement('h3');
+                       const title = document.createElement('h3');
             title.classList.add('choice-title');
             title.textContent = choice.text;
             cardContent.appendChild(title);
@@ -929,26 +807,21 @@ class UI {
             const description = document.createElement('div');
             description.classList.add('choice-description');
 
-            // Set description content based on encounter type
-            if (encounter.type === 'monster') {
+                       if (encounter.type === 'monster') {
                 const monster = MONSTERS[encounter.monsterId];
                 if (monster) {
                     let descriptionHTML = '';
-                    // Add description first if it exists
-                    if (monster.description) {
+                                       if (monster.description) {
                         descriptionHTML += `<div class="monster-description-summary">${monster.description}</div>`;
                     }
 
-                    // Use a container for grid layout for stats
-                    descriptionHTML += `<div class="monster-stats-summary">
+                                       descriptionHTML += `<div class="monster-stats-summary">
                         <div>⚔️ Atk: ${monster.attack}</div>
                         <div>🛡️ Def: ${monster.defense}</div>
                         <div>⚡ Spd: ${monster.speed}s</div>
                         <div>💰 Gold: ${monster.goldDrop[0]}-${monster.goldDrop[1]}</div>
-                    </div>`; // Close stats summary div
-
-                    // Add mechanics separately below the grid
-                    if (monster.mechanics) {
+                    </div>`;
+                                       if (monster.mechanics) {
                         descriptionHTML += `<div class="monster-mechanics-summary">✨ ${monster.mechanics}</div>`;
                     }
                     description.innerHTML = descriptionHTML;
@@ -956,21 +829,17 @@ class UI {
                     description.innerHTML = "Error: Monster data not found.";
                 }
             } else {
-                // Keep existing behavior for non-monster events
-                description.innerHTML = this.game.getEncounterDetails(encounter);
+                               description.innerHTML = this.game.getEncounterDetails(encounter);
             }
             cardContent.appendChild(description);
 
-            // Add start button
-            const startButton = document.createElement('button');
+                       const startButton = document.createElement('button');
             startButton.className = 'choice-start-button';
 
-            // Set button text based on encounter type & Add difficulty class if monster
-            switch (encounter.type) {
+                       switch (encounter.type) {
                 case 'monster': 
                     startButton.textContent = 'Fight';
-                    // Add difficulty class derived from monster data (e.g., difficulty-easy)
-                    if (difficultyClass) { 
+                                       if (difficultyClass) { 
                         startButton.classList.add(difficultyClass);
                     }
                     break;
@@ -995,8 +864,7 @@ class UI {
 
             card.appendChild(cardContent);
             
-            // Add click handlers
-            card.addEventListener('click', () => {
+                       card.addEventListener('click', () => {
                 this.choicesArea.querySelectorAll('.choice-card').forEach(c => {
                     c.classList.remove('selected');
                 });
@@ -1014,22 +882,18 @@ class UI {
         const selectedChoice = this.game.currentChoices[index];
         const choicesArea = document.getElementById('choices-area');
         
-        // Remove boss indicator animations before starting
-        if (this.roundAreaElement) { 
+               if (this.roundAreaElement) { 
             this.roundAreaElement.classList.remove('round-miniboss', 'round-finalboss');
         }
 
-        // Only add epic animation for boss rounds
-        if (this.game.currentRound === 10 || this.game.currentRound === 20 || this.game.currentRound === 30) {
+               if (this.game.currentRound === 10 || this.game.currentRound === 20 || this.game.currentRound === 30) {
             choicesArea.classList.add('encounter-starting');
         }
         
-        // Delay slightly even without animation for smoother transition
-        const delay = (this.game.currentRound === 10 || this.game.currentRound === 20 || this.game.currentRound === 30) ? 500 : 50;
+               const delay = (this.game.currentRound === 10 || this.game.currentRound === 20 || this.game.currentRound === 30) ? 500 : 50;
 
         setTimeout(() => {
-            choicesArea.classList.remove('encounter-starting'); // Remove class regardless (safe if not added)
-            this.game.startEncounter(selectedChoice.encounter); 
+            choicesArea.classList.remove('encounter-starting');            this.game.startEncounter(selectedChoice.encounter); 
         }, delay);
     }
 
@@ -1074,28 +938,23 @@ class UI {
         }
         this.choicesArea.innerHTML = '';
         this.cacheDynamicElements();
-        // *** Add removal for area transition screen ***
-        const areaTransitionScreen = document.getElementById('area-transition-screen');
+               const areaTransitionScreen = document.getElementById('area-transition-screen');
         if (areaTransitionScreen) {
             areaTransitionScreen.remove();
         }
-        // *** End added removal ***
-    }
+           }
 
     updateCombatStats(player, enemy) {
-        // --- Player Stats ---
-        if (this.combatPlayerAtk) { 
+               if (this.combatPlayerAtk) { 
             this.combatPlayerAtk.textContent = `⚔️ ${player.getAttack()}`;
         }
         if (this.combatPlayerDef) {
             this.combatPlayerDef.textContent = `🛡️ ${player.getDefense()}`;
         }
-        // Add Player Speed
-        if (this.combatPlayerSpd) { 
+               if (this.combatPlayerSpd) { 
             this.combatPlayerSpd.textContent = `⚡️ ${player.getAttackSpeed().toFixed(1)}s`;
         }
-        // *** ADD: Update Player Health Display in Combat UI ***
-        if (this.combatPlayerHp) { 
+               if (this.combatPlayerHp) { 
             const playerMaxHp = player.getMaxHealth();
             this.combatPlayerHp.textContent = `${Math.ceil(player.health)}/${playerMaxHp}`;
             const playerHealthBar = document.querySelector('.player-health');
@@ -1104,8 +963,7 @@ class UI {
             }
         }
         
-        // --- Enemy Stats ---
-        if (this.combatEnemyAtk) {
+               if (this.combatEnemyAtk) {
             this.combatEnemyAtk.textContent = `⚔️ ${enemy.currentAttack}`;
             if (enemy.currentAttack > enemy.attack) {
                 this.combatEnemyAtk.classList.add('enraged');
@@ -1123,14 +981,10 @@ class UI {
                 this.combatEnemyDef.classList.remove('hardened');
             }
         }
-        // Add Enemy Speed
-        if (this.combatEnemySpd) { 
+               if (this.combatEnemySpd) { 
             this.combatEnemySpd.textContent = `⚡️ ${enemy.currentSpeed.toFixed(1)}s`;
-            // Add visual indicator if speed boosted?
-            // if (enemy.currentSpeed < enemy.speed) { ... }
-        }
-        // *** ADD: Update Enemy Health Display in Combat UI ***
-        if (this.combatEnemyHp) { 
+                              }
+               if (this.combatEnemyHp) { 
             const enemyMaxHp = enemy.maxHealth;
             this.combatEnemyHp.textContent = `${Math.ceil(enemy.health)}/${enemyMaxHp}`;
             const enemyHealthBar = document.querySelector('.enemy-health');
@@ -1139,26 +993,21 @@ class UI {
             }
         }
 
-        // --- Status Effects Visuals ---
-        // Update player poisoned status visual
-        const playerSide = document.querySelector('.player-side');
+                      const playerSide = document.querySelector('.player-side');
         if (playerSide) {
             if (player.activeEffects.poison) {
                 playerSide.classList.add('player-poisoned');
             } else {
                 playerSide.classList.remove('player-poisoned');
             }
-            // *** ADD: Update player burning status visual ***
-            if (!player.activeEffects.burning) {
+                       if (!player.activeEffects.burning) {
                  playerSide.classList.remove('player-burning');
             }
         }
 
-        // Add tooltip listeners to player stats
-        this.addStatTooltipListeners('.player-side .combat-stats', this.statTooltip);
+               this.addStatTooltipListeners('.player-side .combat-stats', this.statTooltip);
 
-        // *** Add tooltip listener to regen timer bar ***
-        const regenTimerContainer = this.combatArea.querySelector('.regen-timer');
+               const regenTimerContainer = this.combatArea.querySelector('.regen-timer');
         if (regenTimerContainer) {
             regenTimerContainer.addEventListener('mouseenter', (e) => {
                 this.showTooltip("The giant is regenerating.", this.statTooltip, e);
@@ -1168,8 +1017,7 @@ class UI {
             });
         }
 
-        // Initial update of timers and stats
-        this.updateCombatTimers(
+               this.updateCombatTimers(
             player.attackTimer, 
             enemy.attackTimer, 
             player.pendingActionDelay, 
@@ -1186,8 +1034,7 @@ class UI {
         this.combatArea.classList.remove('hidden');
         document.getElementById('combat-enemy-name').textContent = enemy.name;
 
-        // --- Set Initial Health Display Directly --- 
-        const initialPlayerPercentage = (player.health / player.getMaxHealth()) * 100;
+               const initialPlayerPercentage = (player.health / player.getMaxHealth()) * 100;
         if (this.combatPlayerHp) this.combatPlayerHp.textContent = `${player.health}/${player.getMaxHealth()}`;
         const playerHealthBar = document.querySelector('.player-health');
         if (playerHealthBar) playerHealthBar.style.width = `${initialPlayerPercentage}%`;
@@ -1196,12 +1043,8 @@ class UI {
         if (this.combatEnemyHp) this.combatEnemyHp.textContent = `${enemy.health}/${enemy.maxHealth}`;
         const enemyHealthBar = document.querySelector('.enemy-health');
         if (enemyHealthBar) enemyHealthBar.style.width = `${initialEnemyPercentage}%`;
-        // -------------------------------------------
-        
-        // Keep calls for initial timer and stats display
-        // this.updateCombatantHealth('player', player.health, player.maxHealth); // REMOVE
-        // this.updateCombatantHealth('enemy', enemy.health, enemy.maxHealth); // REMOVE
-        this.updateCombatTimers(player.attackTimer, enemy.attackTimer);
+               
+                             this.updateCombatTimers(player.attackTimer, enemy.attackTimer);
         this.updateCombatStats(player, enemy); 
     }
 
@@ -1237,8 +1080,7 @@ class UI {
     updateCombatTimers(playerTimer, enemyTimer, playerDelay = 0, 
                          enemyBreathTimer, enemyBreathInterval, 
                          enemyStunTimer, enemyStunInterval,
-                         enemyRegenTimer, enemyRegenInterval) { // Add regen params
-        const playerTimerEl = document.getElementById('combat-player-timer');
+                         enemyRegenTimer, enemyRegenInterval) {        const playerTimerEl = document.getElementById('combat-player-timer');
         const playerTimerBar = document.querySelector('.player-timer');
         const enemyTimerEl = document.getElementById('combat-enemy-timer');
         const enemyTimerBar = document.querySelector('.enemy-timer');
@@ -1248,8 +1090,7 @@ class UI {
         const enemyStunTimerEl = document.getElementById('combat-enemy-stun-timer');
         const enemyStunTimerContainer = document.querySelector('.stun-timer');
         const enemyStunTimerBar = document.querySelector('.enemy-stun-timer');
-        // *** Add Regen Elements ***
-        const enemyRegenTimerEl = document.getElementById('combat-enemy-regen-timer');
+               const enemyRegenTimerEl = document.getElementById('combat-enemy-regen-timer');
         const enemyRegenTimerContainer = document.querySelector('.regen-timer');
         const enemyRegenTimerBar = document.querySelector('.enemy-regen-timer');
 
@@ -1258,8 +1099,7 @@ class UI {
             const playerTotalTime = this.game.player.getAttackSpeed();
             const playerProgress = 1 - (playerTimer / playerTotalTime);
             playerTimerBar.style.width = `${Math.min(100, playerProgress * 100)}%`;
-            // Set player delay state
-            const playerContainer = playerTimerBar.closest('.attack-timer');
+                       const playerContainer = playerTimerBar.closest('.attack-timer');
             if (playerContainer) {
                 if (playerDelay > 0) {
                     playerContainer.classList.add('player-delayed');
@@ -1282,13 +1122,11 @@ class UI {
 
         if (enemyTimerEl) enemyTimerEl.textContent = enemyTimer.toFixed(1);
         if (enemyTimerBar) {
-            const enemyTotalTime = this.game.currentCombat.enemy.speed; // Changed game.combat to game.currentCombat
-            const enemyProgress = 1 - (enemyTimer / enemyTotalTime);
+            const enemyTotalTime = this.game.currentCombat.enemy.speed;            const enemyProgress = 1 - (enemyTimer / enemyTotalTime);
             enemyTimerBar.style.width = `${Math.min(100, enemyProgress * 100)}%`;
         }
 
-        // Update Breath Timer UI
-        if (enemyBreathTimerContainer) {
+               if (enemyBreathTimerContainer) {
             if (enemyBreathInterval !== null && enemyBreathInterval > 0) {
                 enemyBreathTimerContainer.classList.remove('hidden');
                 if (enemyBreathTimerEl) enemyBreathTimerEl.textContent = enemyBreathTimer.toFixed(1);
@@ -1301,8 +1139,7 @@ class UI {
             }
         }
         
-        // Update Stun Timer UI
-        if (enemyStunTimerContainer) {
+               if (enemyStunTimerContainer) {
             if (enemyStunInterval !== null && enemyStunInterval > 0) {
                 enemyStunTimerContainer.classList.remove('hidden');
                 if (enemyStunTimerEl) enemyStunTimerEl.textContent = enemyStunTimer.toFixed(1);
@@ -1315,8 +1152,7 @@ class UI {
             }
         }
         
-        // *** Update Regen Timer UI ***
-        if (enemyRegenTimerContainer) {
+               if (enemyRegenTimerContainer) {
             if (enemyRegenInterval !== null && enemyRegenInterval > 0) {
                 enemyRegenTimerContainer.classList.remove('hidden');
                 if (enemyRegenTimerEl) enemyRegenTimerEl.textContent = enemyRegenTimer.toFixed(1);
@@ -1332,9 +1168,7 @@ class UI {
 
     showTooltip(text, tooltipElement, event) {
         if (!tooltipElement) {
-            //console.warn("Attempted to show tooltip with null element.");
-            return; // Add safety check
-        }
+                       return;        }
         tooltipElement.innerHTML = text;
         tooltipElement.classList.remove('hidden');
 
@@ -1354,23 +1188,19 @@ class UI {
     }
 
     hideTooltip(tooltipElement) {
-        if (tooltipElement) { // Check if element exists before hiding
-            tooltipElement.classList.add('hidden');
+        if (tooltipElement) {            tooltipElement.classList.add('hidden');
         }
     }
 
     updateShopAffordability() {
-        if (!this.game || this.game.state !== 'shop') return; // Add safety checks
-        
+        if (!this.game || this.game.state !== 'shop') return;        
         const shopArea = document.getElementById('shop-area');
         if (!shopArea || shopArea.classList.contains('hidden')) return;
 
-        // Update buy buttons based on player gold
-        const shopItems = shopArea.querySelectorAll('.shop-item:not(.item-bought)');
+               const shopItems = shopArea.querySelectorAll('.shop-item:not(.item-bought)');
         shopItems.forEach(shopItemDiv => {
             const index = parseInt(shopItemDiv.dataset.index);
-            if (isNaN(index) || !this.game.currentShopItems || !this.game.currentShopItems[index]) return; // More checks
-            
+            if (isNaN(index) || !this.game.currentShopItems || !this.game.currentShopItems[index]) return;            
             const item = this.game.currentShopItems[index];
             const buyButton = shopItemDiv.querySelector('.shop-item-button');
             
@@ -1380,11 +1210,8 @@ class UI {
             }
         });
         
-        // Update reroll button based on player gold and reroll status
-        const rerollButton = document.getElementById('shop-reroll-button');
-        if (rerollButton) { // Check if button exists
-            const canAffordReroll = this.game.player.gold >= 3; // Assuming cost is 3
-            rerollButton.disabled = !this.game.shopCanReroll || !canAffordReroll;
+               const rerollButton = document.getElementById('shop-reroll-button');
+        if (rerollButton) {            const canAffordReroll = this.game.player.gold >= 3;            rerollButton.disabled = !this.game.shopCanReroll || !canAffordReroll;
         }
     }
 
@@ -1434,43 +1261,29 @@ class UI {
             splat.style.setProperty('--splat-offset-x', `${x}px`);
         }
         
-        // Check if the splat is for an inventory slot and add specific class
-        if (selector.startsWith('.inventory-slot')) { 
-            splat.style.top = '25%'; // Start higher within inventory slot
-            splat.classList.add('inventory-splat'); // Add specific class
-        } else if (selector.includes('.trap-area-option')) { 
-            splat.style.top = '30%'; // Position within the trap card
-        } else if (selector === '#rest-area .rest-campfire-container') {
+               if (selector.startsWith('.inventory-slot')) { 
+            splat.style.top = '25%';            splat.classList.add('inventory-splat');        } else if (selector.includes('.trap-area-option')) { 
+            splat.style.top = '30%';        } else if (selector === '#rest-area .rest-campfire-container') {
             splat.style.top = '30%'; 
-        } else if (selector === '.escape-message-container') { // NEW: Handle escape message
-            splat.style.top = '1%'; // Position near the top of the message box
-        } else if (selector === '#trap-area') {
+        } else if (selector === '.escape-message-container') {            splat.style.top = '1%';        } else if (selector === '#trap-area') {
             const y = Math.random() * 60 - 20;
             splat.style.top = `calc(30% + ${y}px)`;
         }
-        // Use type for class and text formatting
-        splat.classList.add(type); // Add class based on type (damage, heal, poison, etc.)
-        
+               splat.classList.add(type);        
         if (type === 'damage') {
             if (fullBlock) {
                 splat.innerHTML = `<span style="color: #aaaaaa">BLOCKED ${blocked}</span>`;
-            } else if (amount === 0) { // NEW: Check for zero damage
-                 splat.textContent = "0";
-                 splat.classList.add('zero-damage'); // Add specific class for styling
-            } else {
-                splat.textContent = amount; // Display the numeric damage amount > 0
-            }
+            } else if (amount === 0) {                 splat.textContent = "0";
+                 splat.classList.add('zero-damage');            } else {
+                splat.textContent = amount;            }
         } else if (type === 'heal' || type === 'potion-heal') { 
             splat.textContent = '+' + amount;
-        } else if (type === 'poison' || type === 'burn') { // New poison type
-             splat.textContent = amount; // Show poison damage amount
-        } else if (type === 'buff-attack') {
+        } else if (type === 'poison' || type === 'burn') {             splat.textContent = amount;        } else if (type === 'buff-attack') {
             splat.textContent = `+${amount} Atk`;
         } else if (type === 'buff-defense') {
             splat.textContent = `+${amount} Def`;
         } else if (type === 'buff-speed') {
-            // Speed buff is a reduction, so show as negative
-            splat.textContent = `-${amount.toFixed(1)}s Spd`; 
+                       splat.textContent = `-${amount.toFixed(1)}s Spd`; 
         } else {
             splat.textContent = '+' + amount;
         }
@@ -1479,20 +1292,17 @@ class UI {
         setTimeout(() => splat.remove(), 2000);
     }
 
-    // --- NEW Boss Encounter Rendering ---
-    renderBossEncounter(bossData) {
+       renderBossEncounter(bossData) {
         this.clearMainArea();
         this.choicesArea.classList.remove('hidden');
         this.choicesArea.innerHTML = '';
 
         const choicesContainer = document.createElement('div');
         choicesContainer.classList.add('choices-container');
-        choicesContainer.classList.add('boss-only'); // Add class for centering
-
+        choicesContainer.classList.add('boss-only');
         const card = document.createElement('div');
         
-        // *** Apply class based on monster data tags ***
-        const isFinalBoss = bossData.isBoss === true;
+               const isFinalBoss = bossData.isBoss === true;
         const isMiniBoss = bossData.isMiniBoss === true;
         card.classList.add('choice-card');
         if (isFinalBoss) {
@@ -1500,43 +1310,32 @@ class UI {
         } else if (isMiniBoss) {
             card.classList.add('miniboss-card');
         }
-        card.classList.add('selected'); // Keep selected by default
-        // Removed old class logic based on round
-
+        card.classList.add('selected');       
         const cardContent = document.createElement('div');
         cardContent.classList.add('choice-card-content');
 
-        // Add difficulty badge
-        const difficultyBadge = document.createElement('div');
+               const difficultyBadge = document.createElement('div');
         difficultyBadge.className = 'difficulty-badge';
-        // *** Set badge style & text based on tags ***
-        if (isFinalBoss) {
-            difficultyBadge.style.backgroundColor = '#f44336'; // Red for boss
-        difficultyBadge.textContent = 'BOSS';
+               if (isFinalBoss) {
+            difficultyBadge.style.backgroundColor = '#f44336';        difficultyBadge.textContent = 'BOSS';
         } else if (isMiniBoss) {
-            difficultyBadge.style.backgroundColor = '#FF9800'; // Orange for miniboss
-            difficultyBadge.textContent = 'MINI-BOSS';
+            difficultyBadge.style.backgroundColor = '#FF9800';            difficultyBadge.textContent = 'MINI-BOSS';
         } else {
-            // Fallback or hide if somehow not a boss/miniboss (shouldn't happen here)
-            difficultyBadge.style.display = 'none'; 
+                       difficultyBadge.style.display = 'none'; 
         }
-        // Removed old style/text logic based on round
-        cardContent.appendChild(difficultyBadge);
+               cardContent.appendChild(difficultyBadge);
 
-        // Add boss icon
-        const eventIcon = document.createElement('span');
+               const eventIcon = document.createElement('span');
         eventIcon.className = 'event-icon';
         eventIcon.textContent = bossData.icon;
         cardContent.appendChild(eventIcon);
 
-        // Add title
-        const title = document.createElement('h3');
+               const title = document.createElement('h3');
         title.classList.add('choice-title');
         title.textContent = bossData.name;
         cardContent.appendChild(title);
 
-        // Add description with monster stats
-        const description = document.createElement('div');
+               const description = document.createElement('div');
         description.classList.add('choice-description');
         description.innerHTML = `
             <div class="monster-description">
@@ -1570,19 +1369,15 @@ class UI {
         `;
         cardContent.appendChild(description);
 
-        // Add fight button
-        const startButton = document.createElement('button');
+               const startButton = document.createElement('button');
         startButton.className = 'choice-start-button';
-        // *** Set button text based on tags ***
-        if (isFinalBoss) {
+               if (isFinalBoss) {
             startButton.textContent = 'Fight';
         } else if (isMiniBoss) {
             startButton.textContent = 'Fight';
         } else {
-            startButton.textContent = 'Fight'; // Fallback
-        }
-        // Removed old text logic based on round
-        startButton.onclick = () => {
+            startButton.textContent = 'Fight';        }
+               startButton.onclick = () => {
             card.classList.add('boss-engage-start');
                 setTimeout(() => {
                 this.choicesArea.classList.add('hidden');
@@ -1595,40 +1390,28 @@ class UI {
         choicesContainer.appendChild(card);
         this.choicesArea.appendChild(choicesContainer);
     }
-    // ---------------------------------
-
-    // NEW Method to play a temporary animation on the player combat area
-    playPlayerAnimation(animationClass, duration) {
+   
+       playPlayerAnimation(animationClass, duration) {
         const playerSide = document.querySelector('.player-side');
         if (!playerSide) return;
 
-        // Remove the class if it's already there (e.g., rapid hits)
-        playerSide.classList.remove(animationClass);
+               playerSide.classList.remove(animationClass);
         
-        // Force reflow to restart animation if class is re-added quickly
-        void playerSide.offsetWidth;
+               void playerSide.offsetWidth;
 
-        // Add the animation class
-        playerSide.classList.add(animationClass);
+               playerSide.classList.add(animationClass);
 
-        // Set timeout to remove the class AND potentially add burning class
-        setTimeout(() => {
-            if (!playerSide) return; // Guard against element disappearing
-            
-            playerSide.classList.remove(animationClass); // Remove the hit animation class
-
-            // Check if player is burning AFTER hit animation finishes
-            if (this.game && this.game.player && this.game.player.activeEffects.burning) {
-                 playerSide.classList.add('player-burning'); // Start the pulse
-            }
+               setTimeout(() => {
+            if (!playerSide) return;            
+            playerSide.classList.remove(animationClass);
+                       if (this.game && this.game.player && this.game.player.activeEffects.burning) {
+                 playerSide.classList.add('player-burning');            }
             
         }, duration);
     }
 
     renderLoot(lootItems, goldAmount) {
-        this.clearMainArea(); // Hide other areas
-        this.lootArea.innerHTML = ''; // Clear previous loot
-        this.lootArea.classList.remove('hidden');
+        this.clearMainArea();        this.lootArea.innerHTML = '';        this.lootArea.classList.remove('hidden');
         
         let lootHTML = `<h3>Loot Dropped</h3>`;
         const lootDisplayArea = document.createElement('div');
@@ -1651,19 +1434,16 @@ class UI {
             takeGoldButton.onclick = () => {
                 this.game.player.addGold(goldAmount);
                 this.game.addLog(`Took ${goldAmount} gold.`);
-                goldContainer.remove(); // Remove gold display after taking
-                this.updatePlayerStats();
+                goldContainer.remove();                this.updatePlayerStats();
             };
             goldContainer.appendChild(takeGoldButton);
-            itemsContainer.appendChild(goldContainer); // Add gold to items container for now
-        }
+            itemsContainer.appendChild(goldContainer);        }
 
         if (lootItems.length === 0 && goldAmount <= 0) {
             itemsContainer.innerHTML += '<p class="loot-empty-message">No loot dropped.</p>';
         } else {
             lootItems.forEach((item, index) => {
-                if (!item) return; // Skip null items if any
-                const itemElement = document.createElement('div');
+                if (!item) return;                const itemElement = document.createElement('div');
                 itemElement.className = 'loot-item';
                 itemElement.dataset.lootIndex = index;
                 itemElement.innerHTML = `
@@ -1671,34 +1451,25 @@ class UI {
                     <button class="loot-item-button">Take</button>
                 `;
 
-                // Add hover listener for description
-                itemElement.addEventListener('mouseenter', () => {
+                               itemElement.addEventListener('mouseenter', () => {
                     descriptionBox.textContent = item.description || 'No description available.';
                     itemElement.classList.add('selected');
                 });
                 itemElement.addEventListener('mouseleave', () => {
-                    // Optionally clear description or set back to default?
-                    // descriptionBox.textContent = 'Hover over an item to see details.'; 
-                    itemElement.classList.remove('selected');
+                                                          itemElement.classList.remove('selected');
                 });
 
-                // Add click listener to take item
-                const takeButton = itemElement.querySelector('.loot-item-button');
+                               const takeButton = itemElement.querySelector('.loot-item-button');
                 takeButton.onclick = (event) => {
-                    event.stopPropagation(); // Prevent triggering hover again if mouse moves slightly
-                    const added = this.game.player.addItem(item);
+                    event.stopPropagation();                    const added = this.game.player.addItem(item);
                     if (added) {
                         this.game.addLog(`Took ${item.name}.`);
-                        itemElement.remove(); // Remove item from loot list
-                        this.renderInventory(); // Update inventory display
-                        // Check if description box needs update if the hovered item was taken
-                        if (descriptionBox.textContent === (item.description || 'No description available.')) {
+                        itemElement.remove();                        this.renderInventory();                                               if (descriptionBox.textContent === (item.description || 'No description available.')) {
                              descriptionBox.textContent = 'Hover over an item to see details.';
                         }
                     } else {
                         this.game.addLog('Inventory is full!');
-                        // Maybe flash the button red or provide other feedback?
-                    }
+                                           }
                 };
                 itemsContainer.appendChild(itemElement);
             });
@@ -1706,10 +1477,8 @@ class UI {
         
         lootDisplayArea.appendChild(itemsContainer);
         lootDisplayArea.appendChild(descriptionBox);
-        lootHTML += lootDisplayArea.outerHTML; // Add the display area HTML
-        
-        // Buttons at the bottom
-        lootHTML += `
+        lootHTML += lootDisplayArea.outerHTML;        
+               lootHTML += `
             <div class="loot-buttons">
                 <button id="loot-take-all-button">Take All</button>
                 <button id="loot-continue-button">Continue</button>
@@ -1718,29 +1487,23 @@ class UI {
 
         this.lootArea.innerHTML = lootHTML;
 
-        // Add listeners for Take All and Continue buttons
-        document.getElementById('loot-take-all-button')?.addEventListener('click', () => this.handleTakeAllLoot());
+               document.getElementById('loot-take-all-button')?.addEventListener('click', () => this.handleTakeAllLoot());
         document.getElementById('loot-continue-button')?.addEventListener('click', () => this.game.proceedToNextRound());
     }
 
     handleTakeAllLoot() {
-        // Implementation of handleTakeAllLoot method
-    }
+           }
 
-    // *** NEW Boss Encounter Rendering (Updated Signature) ***
-    renderBossEncounter(bossData, bossId) { // Added bossId parameter
-        this.clearMainArea();
+       renderBossEncounter(bossData, bossId) {        this.clearMainArea();
         this.choicesArea.classList.remove('hidden');
         this.choicesArea.innerHTML = '';
 
         const choicesContainer = document.createElement('div');
         choicesContainer.classList.add('choices-container');
-        choicesContainer.classList.add('boss-only'); // Add class for centering
-
+        choicesContainer.classList.add('boss-only');
     const card = document.createElement('div');
         
-        // *** Apply class based on monster data tags ***
-        const isFinalBoss = bossData.isBoss === true;
+               const isFinalBoss = bossData.isBoss === true;
         const isMiniBoss = bossData.isMiniBoss === true;
         card.classList.add('choice-card');
         if (isFinalBoss) {
@@ -1748,43 +1511,32 @@ class UI {
         } else if (isMiniBoss) {
             card.classList.add('miniboss-card');
         }
-        card.classList.add('selected'); // Keep selected by default
-        // Removed old class logic based on round
-
+        card.classList.add('selected');       
         const cardContent = document.createElement('div');
         cardContent.classList.add('choice-card-content');
 
-        // Add difficulty badge
-        const difficultyBadge = document.createElement('div');
+               const difficultyBadge = document.createElement('div');
         difficultyBadge.className = 'difficulty-badge';
-        // *** Set badge style & text based on tags ***
-        if (isFinalBoss) {
-            difficultyBadge.style.backgroundColor = '#f44336'; // Red for boss
-            difficultyBadge.textContent = 'BOSS';
+               if (isFinalBoss) {
+            difficultyBadge.style.backgroundColor = '#f44336';            difficultyBadge.textContent = 'BOSS';
         } else if (isMiniBoss) {
-            difficultyBadge.style.backgroundColor = '#FF9800'; // Orange for miniboss
-            difficultyBadge.textContent = 'MINI-BOSS';
+            difficultyBadge.style.backgroundColor = '#FF9800';            difficultyBadge.textContent = 'MINI-BOSS';
         } else {
-            // Fallback or hide if somehow not a boss/miniboss (shouldn't happen here)
-            difficultyBadge.style.display = 'none'; 
+                       difficultyBadge.style.display = 'none'; 
         }
-        // Removed old style/text logic based on round
-        cardContent.appendChild(difficultyBadge);
+               cardContent.appendChild(difficultyBadge);
 
-        // Add boss icon
-        const eventIcon = document.createElement('span');
+               const eventIcon = document.createElement('span');
         eventIcon.className = 'event-icon';
         eventIcon.textContent = bossData.icon;
         cardContent.appendChild(eventIcon);
 
-        // Add title
-        const title = document.createElement('h3');
+               const title = document.createElement('h3');
         title.classList.add('choice-title');
         title.textContent = bossData.name;
         cardContent.appendChild(title);
 
-        // Add description with monster stats
-        const description = document.createElement('div');
+               const description = document.createElement('div');
         description.classList.add('choice-description');
         description.innerHTML = `
             <div class="monster-description">
@@ -1818,24 +1570,19 @@ class UI {
         `;
         cardContent.appendChild(description);
 
-        // Add fight button
-        const startButton = document.createElement('button');
+               const startButton = document.createElement('button');
         startButton.className = 'choice-start-button';
-        // *** Set button text based on tags ***
-        if (isFinalBoss) {
+               if (isFinalBoss) {
             startButton.textContent = 'Fight Final Boss';
         } else if (isMiniBoss) {
             startButton.textContent = 'Fight Mini-Boss';
         } else {
-            startButton.textContent = 'Fight'; // Fallback
-        }
-        // Removed old text logic based on round
-        startButton.onclick = () => {
+            startButton.textContent = 'Fight';        }
+               startButton.onclick = () => {
             card.classList.add('boss-engage-start');
             setTimeout(() => {
                 this.choicesArea.classList.add('hidden');
-                // *** Use passed bossId ***
-                this.game.startEncounter({ type: 'monster', monsterId: bossId }); 
+                               this.game.startEncounter({ type: 'monster', monsterId: bossId }); 
             }, 500);
         };
         cardContent.appendChild(startButton);
@@ -1846,59 +1593,43 @@ class UI {
     }
 
     showAreaTransitionScreen(areaName) {
-        this.clearMainArea(); // Ensure area is clear
-
+        this.clearMainArea();
         const transitionDiv = document.createElement('div');
         transitionDiv.id = 'area-transition-screen';
-        transitionDiv.className = 'area-transition-container'; // For styling
-
+        transitionDiv.className = 'area-transition-container';
         const title = document.createElement('h2');
         title.textContent = `Entering ${areaName}...`;
 
-        // Optional: Add some descriptive text or image later
-        // const description = document.createElement('p');
-        // description.textContent = "Prepare for new challenges!";
-
+                     
         const continueButton = document.createElement('button');
         continueButton.id = 'area-transition-continue-button';
         continueButton.textContent = 'Venture Forth';
         continueButton.onclick = () => {
-            // 1. Add fade-out class to the container
-            transitionDiv.classList.add('fade-out');
+                       transitionDiv.classList.add('fade-out');
             
-            // 2. Disable button during fade
-            continueButton.disabled = true;
+                       continueButton.disabled = true;
 
-            // 3. Wait for animation, then proceed
-            setTimeout(() => {
-                // Call the game logic to proceed (this will also clear the UI)
-                this.game.continueAfterAreaTransition();
-            }, 500); // Match CSS animation duration
-        };
+                       setTimeout(() => {
+                               this.game.continueAfterAreaTransition();
+            }, 500);        };
 
         transitionDiv.appendChild(title);
-        // transitionDiv.appendChild(description);
-        transitionDiv.appendChild(continueButton);
+               transitionDiv.appendChild(continueButton);
 
         this.mainContent.appendChild(transitionDiv);
     }
 
-    // *** NEW Method to update round display ***
-    updateRoundDisplay(currentRound, maxRounds) {
+       updateRoundDisplay(currentRound, maxRounds) {
         if (this.statRound) {
             this.statRound.textContent = currentRound;
         }
-        // Optionally update max rounds if it can change, though likely static
-        const maxRoundEl = document.getElementById('stat-max-rounds');
+               const maxRoundEl = document.getElementById('stat-max-rounds');
         if (maxRoundEl && maxRoundEl.textContent !== maxRounds.toString()) {
             maxRoundEl.textContent = maxRounds;
         }
 
-        // Trigger animation if round area element exists
-        if (this.roundAreaElement) {
-            this.roundAreaElement.classList.remove('round-pulsing'); // Remove first to re-trigger
-            void this.roundAreaElement.offsetWidth; // Force reflow
-            this.roundAreaElement.classList.add('round-pulsing');
+               if (this.roundAreaElement) {
+            this.roundAreaElement.classList.remove('round-pulsing');            void this.roundAreaElement.offsetWidth;            this.roundAreaElement.classList.add('round-pulsing');
         }
     }
 

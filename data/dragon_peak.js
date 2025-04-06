@@ -38,9 +38,7 @@ const DRAGON_PEAK_MONSTER_DATA = {
         speed: 3.5, 
         goldDrop: [15, 25],
         difficulty: 'hard',
-        reflectsDamage: true, // Flag for mechanic
-        reflectPercent: 0.2, // 20% of damage dealt reflected
-        description: "A construct of volcanic glass animated by draconic magic.",
+        reflectsDamage: true,        reflectPercent: 0.2,        description: "A construct of volcanic glass animated by draconic magic.",
         mechanics: "Jagged Form: Reflects 20% of damage taken back at the attacker.",
         lootTable: [
             { itemTier: 'rareFood', chance: 0.4 },
@@ -58,16 +56,9 @@ const DRAGON_PEAK_MONSTER_DATA = {
         goldDrop: [50, 75],
         isBoss: true,
         hasBreathAttack: true,
-        breathAttackInterval: 12, // seconds
-        breathAttackDamage: [4, 8], // Raw damage range
-        hardenThreshold: 0.25, // Hardens below 25% health
-        hardenDefenseBonus: 5, // Adds +5 Defense when hardened
-        description: "An ancient dragon.",
+        breathAttackInterval: 12,        breathAttackDamage: [4, 8],        hardenThreshold: 0.25,        hardenDefenseBonus: 5,        description: "An ancient dragon.",
         mechanics: "Firebreath every 12 seconds, dealing 4-8 damage that cannot be blocked and burns the player over 4 seconds.\n\n Hardens below 25% health, increasing defense by 5.",
-        breathDotDamage: 1, // Damage per tick
-        breathDotDuration: 5, // Total duration in seconds add + 1 second
-        breathDotTickInterval: 1, // Seconds between ticks
-        lootTable: [
+        breathDotDamage: 1,        breathDotDuration: 5,        breathDotTickInterval: 1,        lootTable: [
             { itemId: 'dragon_scale', chance: 0.8 }, 
             { itemId: 'dragon_heart', chance: 0.3 }, 
             { itemTier: 'rareItem', chance: 0.2 },

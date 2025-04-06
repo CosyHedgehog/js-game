@@ -13,8 +13,7 @@ const UNCOMMON_POTIONS = ['greater_health_potion', 'greater_attack_potion', 'gre
 
 
 const ITEMS = {
-    // wooden items // leather
-    'rusty_sword': {
+       'rusty_sword': {
         id: 'rusty_sword', name: 'Rusty Sword', type: 'weapon', slot: 'weapon', hands: 1,
         stats: { attack: 1 }, speed: 2.0, value: 4,
         description: 'A somewhat rusted sword.\nAttack: +1\nSpeed: 2.0s\n1-Handed'
@@ -54,8 +53,7 @@ const ITEMS = {
         stats: { defense: 1 }, value: 4,
         description: 'Basic leg protection.\nDefense: +1'
     },
-    // iron items
-    'iron_dagger': {
+       'iron_dagger': {
         id: 'iron_dagger', name: 'Iron Dagger', type: 'weapon', slot: 'weapon', hands: 1,
         stats: { attack: 2 }, speed: 1.4, value: 9,
         description: 'A standard iron dagger.\nAttack: +2\nSpeed: 1.4s\n1-Handed'
@@ -90,8 +88,7 @@ const ITEMS = {
         stats: { defense: 2 }, value: 10,
         description: 'A solid metal shield.\nDefense: +2'
     },
-    // steel items
-    'steel_dagger': {
+       'steel_dagger': {
         id: 'steel_dagger', name: 'Steel Dagger', type: 'weapon', slot: 'weapon', hands: 1,
         stats: { attack: 3 }, speed: 1.4, value: 14,
         description: 'A fine steel dagger.\nAttack: +3\nSpeed: 1.4s\n1-Handed'
@@ -126,8 +123,7 @@ const ITEMS = {
         stats: { defense: 3 }, value: 17,
         description: 'A superior shield.\nDefense: +3'
     },
-    // food
-    'bread': {
+       'bread': {
         id: 'bread', name: 'Bread', type: 'consumable', useAction: 'Eat',
         healAmount: 3, value: 2,
         description: 'A crusty loaf of bread.\nHeals 3 HP.'
@@ -153,8 +149,7 @@ const ITEMS = {
         description: 'An impressive fish.\nHeals 8 HP.'
     },
 
-    // potions
-    'health_potion': {
+       'health_potion': {
         id: 'health_potion', name: 'Health Potion', type: 'consumable', useAction: 'Drink',
         healAmount: 15, value: 8, isPotion: true,
         description: 'A bubbling red potion.\nHeals 15 HP.\nNo combat delay.'
@@ -195,8 +190,7 @@ const ITEMS = {
         description: 'A fizzing yellow potion.\nReduces attack time by 0.4s. Removed after combat.\nNo combat delay.'
     },
 
-    // tools
-    'fishing_rod': {
+       'fishing_rod': {
         id: 'fishing_rod', name: 'Fishing Rod', type: 'tool', value: 2,
         description: 'A simple fishing rod.\nRequired for fishing.'
     },
@@ -209,9 +203,7 @@ const ITEMS = {
         description: 'A set of tools for delicate work.\nIncreases trap disarm chance by 20%.'
     },
 
-    // === Rings ===
-    'ring_of_the_dragon': { // attack ring
-        id: 'ring_of_the_dragon', name: 'Dragon Ring', type: 'armor', slot: 'ring',
+       'ring_of_the_dragon': {        id: 'ring_of_the_dragon', name: 'Dragon Ring', type: 'armor', slot: 'ring',
         stats: { attack: 2, defense: 2 }, value: 50,
         description: 'A powerful ring imbued with dragon magic.\nAttack: +2\nDefense: +2'
     }
