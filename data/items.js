@@ -151,42 +151,42 @@ const ITEMS = {
 
        'health_potion': {
         id: 'health_potion', name: 'Health Potion', type: 'consumable', useAction: 'Drink',
-        healAmount: 15, value: 8, isPotion: true,
+        healAmount: 15, value: 6, isPotion: true,
         description: 'A bubbling red potion.\nHeals 15 HP.\nNo combat delay.'
     },
     'greater_health_potion': {
         id: 'greater_health_potion', name: 'Greater Health Potion', type: 'consumable', useAction: 'Drink',
-        healAmount: 25, value: 12, isPotion: true,
+        healAmount: 25, value: 8, isPotion: true,
         description: 'A large healing potion.\nHeals 25 HP.\nNo combat delay.'
     },
     'attack_potion': {
         id: 'attack_potion', name: 'Attack Potion', type: 'consumable', useAction: 'Drink',
-        stats: { tempAttack: 1 }, value: 5, isPotion: true,
+        stats: { tempAttack: 1 }, value: 4, isPotion: true,
         description: 'A bubbling red potion.\nGrants +1 Attack. Removed after combat.\nNo combat delay.'
     },
     'greater_attack_potion': {
         id: 'greater_attack_potion', name: 'Greater Attack Potion', type: 'consumable', useAction: 'Drink',
-        stats: { tempAttack: 2 }, value: 10, isPotion: true,
+        stats: { tempAttack: 2 }, value: 7, isPotion: true,
         description: 'A swirling crimson potion.\nGrants +2 Attack. Removed after combat.\nNo combat delay.'
     },
     'defense_potion': {
         id: 'defense_potion', name: 'Defense Potion', type: 'consumable', useAction: 'Drink',
-        stats: { tempDefense: 1 }, value: 5, isPotion: true,
+        stats: { tempDefense: 1 }, value: 4, isPotion: true,
         description: 'A blue protective potion.\nGrants +1 Defense. Removed after combat.\nNo combat delay.'
     },
     'greater_defense_potion': {
         id: 'greater_defense_potion', name: 'Greater Defense Potion', type: 'consumable', useAction: 'Drink',
-        stats: { tempDefense: 2 }, value: 10, isPotion: true,
+        stats: { tempDefense: 2 }, value: 7, isPotion: true,
         description: 'A deep azure potion.\nGrants +2 Defense. Removed after combat.\nNo combat delay.'
     },
     'speed_potion': {
         id: 'speed_potion', name: 'Speed Potion', type: 'consumable', useAction: 'Drink',
-        stats: { tempSpeed: 0.2 }, value: 5, isPotion: true,
+        stats: { tempSpeed: 0.2 }, value: 4, isPotion: true,
         description: 'A fizzing yellow potion.\nReduces attack time by 0.2s. Removed after combat.\nNo combat delay.'
     },
     'greater_speed_potion': {
-        id: 'speed_potion', name: 'Greater Speed Potion', type: 'consumable', useAction: 'Drink',
-        stats: { tempSpeed: 0.4 }, value: 15, isPotion: true,
+        id: 'greater_speed_potion', name: 'Greater Speed Potion', type: 'consumable', useAction: 'Drink',
+        stats: { tempSpeed: 0.4 }, value: 11, isPotion: true,
         description: 'A fizzing yellow potion.\nReduces attack time by 0.4s. Removed after combat.\nNo combat delay.'
     },
 

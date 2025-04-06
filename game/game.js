@@ -29,8 +29,8 @@ class Game {
     ];
 
     start() {
-        this.devMode();
-        // this.normalMode();
+        // this.devMode();
+        this.normalMode();
     }
 
     normalMode() {

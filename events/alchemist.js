@@ -25,12 +25,15 @@ class Alchemist {
 
         const availableItems = [];
 
+        // Generate items and store their tier
         Object.entries(this.POTION_TIERS).forEach(([tier, { items, chance }]) => {
             items.forEach(itemId => {
                 if (Math.random() < chance) {
                     const item = this.game.createItem(itemId);
                     if (item) {
-                        item.buyPrice = Math.ceil(item.value);
+                        // Apply shop pricing logic
+                        item.buyPrice = Math.ceil(item.value * 1.3 + this.game.getRandomInt(0, Math.floor(item.value * 0.2)));
+                        item.tier = tier; // Store the tier
                         availableItems.push(item);
                     }
                 }
@@ -40,20 +43,43 @@ class Alchemist {
         // Ensure at least one item (fallback)
         if (availableItems.length === 0) {
             const basicPotion = this.game.createItem('health_potion');
-            basicPotion.buyPrice = Math.ceil(basicPotion.value);
+            // Apply shop pricing logic to fallback
+            basicPotion.buyPrice = Math.ceil(basicPotion.value * 1.3 + this.game.getRandomInt(0, Math.floor(basicPotion.value * 0.2))); 
+            basicPotion.tier = 'common'; // Assign tier
             availableItems.push(basicPotion);
             // Mark the fallback as free if it's the only one
             availableItems[0].isFree = true;
-            availableItems[0].originalPrice = availableItems[0].buyPrice; // Store original price if needed
+            availableItems[0].originalPrice = availableItems[0].buyPrice;
             availableItems[0].buyPrice = 0;
             this.game.addLog("The alchemist offers you a complimentary Health Potion!");
         } else {
-            // Select a random item from the generated list to be free
-            const freeIndex = Math.floor(Math.random() * availableItems.length);
+            // --- Weighted Selection for Free Item ---
+            const tierWeights = { common: 3, rare: 2, special: 1 };
+            let totalWeight = 0;
+            availableItems.forEach(item => {
+                totalWeight += tierWeights[item.tier] || 1; // Default weight 1 if tier unknown
+            });
+
+            let randomWeight = Math.random() * totalWeight;
+            let freeIndex = -1;
+
+            for (let i = 0; i < availableItems.length; i++) {
+                const itemWeight = tierWeights[availableItems[i].tier] || 1;
+                randomWeight -= itemWeight;
+                if (randomWeight <= 0) {
+                    freeIndex = i;
+                    break;
+                }
+            }
+            
+            // Fallback if something went wrong (shouldn't happen)
+            if (freeIndex === -1) freeIndex = 0; 
+
             availableItems[freeIndex].isFree = true;
-            availableItems[freeIndex].originalPrice = availableItems[freeIndex].buyPrice; // Store original price
-            availableItems[freeIndex].buyPrice = 0; // Set price to 0 for logic
-             this.game.addLog(`The alchemist offers you a complimentary ${availableItems[freeIndex].name}!`);
+            availableItems[freeIndex].originalPrice = availableItems[freeIndex].buyPrice;
+            availableItems[freeIndex].buyPrice = 0;
+            this.game.addLog(`The alchemist offers you a complimentary ${availableItems[freeIndex].name}!`);
+            // --- End Weighted Selection ---
         }
 
         this.game.currentShopItems = availableItems;
