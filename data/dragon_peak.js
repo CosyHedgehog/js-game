@@ -1,6 +1,11 @@
 const DRAGON_PEAK_MONSTER_DATA = {
     'flame_whelp': {
-        name: 'Flame Whelp', health: 40, attack: 6, defense: 4, speed: 2.0, goldDrop: [8, 15],
+        name: 'Flame Whelp', 
+        health: 40, 
+        attack: 6, 
+        defense: 4, 
+        speed: 2.0, 
+        goldDrop: [8, 15],
         difficulty: 'easy',
         description: "A young, fiery dragonkin guarding its territory.",
         lootTable: [
@@ -10,7 +15,12 @@ const DRAGON_PEAK_MONSTER_DATA = {
         ]
     },
     'stone_drake': {
-        name: 'Stone Drake', health: 55, attack: 7, defense: 8, speed: 2.8, goldDrop: [12, 20],
+        name: 'Stone Drake', 
+        health: 55, 
+        attack: 7, 
+        defense: 8, 
+        speed: 2.8, 
+        goldDrop: [12, 20],
         difficulty: 'medium',
         description: "A drake whose scales resemble hardened rock.",
         lootTable: [
@@ -21,7 +31,12 @@ const DRAGON_PEAK_MONSTER_DATA = {
         ]
     },
     'obsidian_sentinel': {
-        name: 'Obsidian Sentinel', health: 50, attack: 6, defense: 12, speed: 3.5, goldDrop: [15, 25],
+        name: 'Obsidian Sentinel', 
+        health: 50, 
+        attack: 6, 
+        defense: 12, 
+        speed: 3.5, 
+        goldDrop: [15, 25],
         difficulty: 'hard',
         reflectsDamage: true, // Flag for mechanic
         reflectPercent: 0.2, // 20% of damage dealt reflected
@@ -35,7 +50,12 @@ const DRAGON_PEAK_MONSTER_DATA = {
         ]
     },
     'ancient_dragon': {
-        name: 'Ancient Dragon', health: 100, attack: 10, defense: 10, speed: 4, goldDrop: [50, 75],
+        name: 'Ancient Dragon', 
+        health: 100, 
+        attack: 10, 
+        defense: 10, 
+        speed: 4, 
+        goldDrop: [50, 75],
         isBoss: true,
         hasBreathAttack: true,
         breathAttackInterval: 12, // seconds

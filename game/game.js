@@ -79,7 +79,8 @@ class Game {
                  newAreaName = currentTier.areas[newAreaId]?.name || newAreaId.replace('_', ' ');
                  this.pendingNewAreaId = newAreaId; // Store ID for later assignment
                  this.pendingAreaTransitionName = newAreaName;
-                 console.log(`[Area Change Triggered] Next round (${nextRound}) requires area change to ${newAreaId}`);
+                 // *** ADD DEBUG ***
+                 console.log(`[Area Change Detected] proceedToNextRound: Round ${nextRound}, Current Area: ${this.currentArea}, New Tier Areas: ${validAreaIds.join(', ')}, Selected New Area ID: ${newAreaId}`);
             }
         } else if (nextRound === 1 && (!this.currentArea || (currentTier && !currentTier.areas))) { 
              // Special handling for initializing area on round 1
@@ -93,7 +94,8 @@ class Game {
                     newAreaName = firstTier.areas[newAreaId]?.name || newAreaId.replace('_', ' ');
                     this.pendingNewAreaId = newAreaId;
                     this.pendingAreaTransitionName = newAreaName;
-                    console.log(`[Area Init Triggered] Setting initial area for Round 1 to ${newAreaId}`);
+                    // *** ADD DEBUG ***
+                    console.log(`[Area Change Detected] proceedToNextRound: Round 1 Init, Selected New Area ID: ${newAreaId}`);
                  }
              }
         }
@@ -156,18 +158,7 @@ class Game {
         this.addLog("Examining loot..."); // Changed log message
         new Loot(this, this.ui).handle(this.pendingLoot);
     }
-    // --- NEW: Toggle Loot Item Selection ---
-    toggleLootSelection(itemIndex) {
-        if (this.state !== 'looting' || !this.pendingLoot || !this.pendingLoot.items[itemIndex]) {
-            return;
-        }
-        // Toggle the selected state
-        const item = this.pendingLoot.items[itemIndex];
-        item.selected = !item.selected;
 
-        // Update just the specific item's visual state in the UI
-        this.ui.updateLootItemVisual(itemIndex, item.selected);
-    }
     collectLoot() {
         if (!this.pendingLoot) return;
 
@@ -212,8 +203,6 @@ class Game {
         // Only continue if all items were successfully collected
         if (allItemsCollected) {
             this.continueLoot();
-        } else {
-            this.ui.showLootUI(this.pendingLoot);
         }
     }
 
@@ -713,37 +702,27 @@ class Game {
                 this.continueLoot();
             } else {
                 // Re-render the loot UI using the Loot class handler
-                new Loot(this, this.ui).handle(this.pendingLoot);
+                new Loot(this, this.ui).handle(this.pendingLoot, true);
             }
         } else if (type === 'item' && this.pendingLoot.items[index]) {
             const item = this.pendingLoot.items[index];
-            
-            // First check if item is already looted
             if (item.looted) {
                 return; // Item already taken, do nothing
             }
-
-            // Check inventory space
             const freeSlot = this.player.findFreeInventorySlot();
             if (freeSlot === -1) {
                 this.addLog("Inventory is full!");
                 return;
             }
-            
-            // Try to add the item
             if (this.player.addItem(item)) {
                 item.looted = true;
                 this.addLog(`Picked up ${item.name}.`);
-                
-                // Update UI
                 this.ui.updatePlayerStats();
                 this.ui.renderInventory();
-                
-                // Check if this was the last thing to loot
                 if (this.isAllLootCollected()) {
                     this.continueLoot();
                 } else {
-                    new Loot(this, this.ui).handle(this.pendingLoot);
+                    new Loot(this, this.ui).handle(this.pendingLoot, true);
                 }
             } else {
                 this.addLog("Failed to pick up item - inventory might be full!");
@@ -831,9 +810,14 @@ class Game {
             return;
         }
 
-        // *** Increment Round and Update Area HERE ***
+        // *** Increment Round FIRST ***
         this.currentRound++; 
-        this.currentArea = this.pendingNewAreaId; // Assign the stored area ID
+        
+        // *** Update Area ONLY if pendingNewAreaId was set (i.e., actual tier change) ***
+        if (this.pendingNewAreaId) {
+            this.currentArea = this.pendingNewAreaId; 
+        }
+
         this.addLog(`--- Round ${this.currentRound} ---`);
         this.addLog(`You venture into ${this.pendingAreaTransitionName}!`);
         this.ui.updateRoundDisplay(this.currentRound, this.maxRounds); // Update UI Round
@@ -867,8 +851,13 @@ class Game {
             }
         }
 
+        // *** ADD DEBUG ***
+        console.log(`[Area Change Applied] continueAfterAreaTransition: Round ${this.currentRound}, Current Area set to: ${this.currentArea}, Pending ID was: ${this.pendingNewAreaId}`);
+
         // Generate regular choices if no boss
         if (!encounterGenerated) {
+            // *** ADD DEBUG ***
+            console.log(`[Generate Choices] continueAfterAreaTransition: Calling generateEventChoices for Round ${this.currentRound}, Area: ${this.currentArea}`);
             this.generateEventChoices();
         }
 

@@ -4,7 +4,7 @@ class Loot {
         this.ui = ui;
     }
 
-    handle(loot) {
+    handle(loot, continueLooting) {
         this.ui.clearMainArea();
         const allDisplayableLoot = [];
         if (loot.gold > 0) {
@@ -105,13 +105,14 @@ class Loot {
             continueButton.onclick = () => this.game.continueLoot();
         }
 
-        // Apply fade-in animation
         this.ui.lootArea.classList.remove('hidden'); // Show it first
-        this.ui.lootArea.classList.add('loot-appearing');
 
-        // Remove the animation class after it finishes
-        setTimeout(() => {
-            this.ui.lootArea.classList.remove('loot-appearing');
-        }, 500); // Matches loot-fade-in duration
+        if (continueLooting) {
+            // this.ui.lootArea.classList.add('loot-appearing');
+
+            // setTimeout(() => {
+            //     this.ui.lootArea.classList.remove('loot-appearing');
+            //     }, 500);
+        }
     }
 }

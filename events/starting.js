@@ -11,8 +11,8 @@ class Starting {
             stats: {
                 maxHealth: 15,
                 health: 150,
-                baseAttack: 1,
-                baseDefense: 1,
+                baseAttack: 10,
+                baseDefense: 10,
             },
             items: [
                 { id: 'wooden_sword', count: 1 },
@@ -184,15 +184,32 @@ class Starting {
                 }
             });
             
-            this.game.currentRound = 0;
-            this.game.logMessages = ["Welcome to the Simple Rogue-like!"];
-            this.game.state = 'choosing';
+            this.game.currentRound = 18;
 
+            this.game.logMessages = ["Welcome to the Simple Rogue-like!"];
+            
+            this.game.state = 'area_transition';
+            
+            const firstTier = AREA_CONFIG[0];
+            let initialAreaId = 'unknown_area';
+            let initialAreaName = 'Unknown Area';
+            if (firstTier && firstTier.areas) {
+                const firstTierAreaIds = Object.keys(firstTier.areas);
+                if (firstTierAreaIds.length > 0) {
+                   const initialAreaIndex = Math.floor(Math.random() * firstTierAreaIds.length);
+                   initialAreaId = firstTierAreaIds[initialAreaIndex];
+                   initialAreaName = firstTier.areas[initialAreaId]?.name || initialAreaId.replace('_', ' ');
+                }
+            }
+            // this.game.currentArea = initialAreaId;
+            // this.game.pendingAreaTransitionName = initialAreaName;
+            this.game.currentArea = "giants_pass";
+            this.game.pendingAreaTransitionName = "Giants pass";
             this.ui.switchScreen('game-screen');
             this.ui.renderAll();
+
             this.game.addLog("Game started with your chosen equipment.");
-            this.ui.clearMainArea();
-            this.game.proceedToNextRound();
+            this.ui.showAreaTransitionScreen(this.game.pendingAreaTransitionName);
         }, 500);
     }
 }

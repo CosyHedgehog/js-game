@@ -603,14 +603,16 @@
 }
 
 .round-pulsing {
-    animation: round-update-pulse 0.7s ease-out; /* Slightly longer duration */
+    /* Target the #round-area element for pulsing */
+    animation: round-update-pulse 0.7s ease-out; 
 }
 
-.round-miniboss {
+/* Apply boss glows directly to #round-area */
+#round-area.round-miniboss {
     animation: miniboss-glow 1.5s infinite ease-in-out;
 }
 
-.round-finalboss {
+#round-area.round-finalboss {
     animation: finalboss-flame 1.2s infinite ease-in-out;
 }
 
@@ -620,11 +622,6 @@
   pointer-events: none; /* Prevent interaction during fade */
 }
 
-#loot-area.animate-loot-in {
-    animation: loot-fade-in 0.5s ease-out forwards;
-}
-
-/* Make inventory splats much larger */
 .damage-splat.inventory-splat {
     font-size: 2em; 
     animation: inventory-splat-animation 1s ease-out forwards; /* Use specific animation */

@@ -819,9 +819,12 @@ class UI {
             const currentAreaId = this.game.currentArea;
             let currentTier = null;
 
-            // Find the current tier in AREA_CONFIG
+            // *** Use Round 1 for lookup if currentRound is 0 (initial state) ***
+            const roundForLookup = this.game.currentRound === 0 ? 1 : this.game.currentRound;
+
+            // Find the current tier in AREA_CONFIG based on lookup round
             for (const tier of AREA_CONFIG) {
-                if (this.game.currentRound >= tier.startRound && this.game.currentRound <= tier.endRound) {
+                if (roundForLookup >= tier.startRound && roundForLookup <= tier.endRound) {
                     currentTier = tier;
                     break;
                 }
@@ -832,16 +835,8 @@ class UI {
                 areaName = currentTier.areas[currentAreaId].name;
                 areaTooltip = currentTier.areas[currentAreaId].tooltip;
             } else if (currentAreaId) { 
-                console.warn(`Area info not found in AREA_CONFIG for: ${currentAreaId} in current tier.`);
+                console.warn(`Area info not found in AREA_CONFIG for: ${currentAreaId} in current tier (lookup round: ${roundForLookup}).`);
             }
-            /* // REMOVED OLD LOGIC USING AREA_INFO
-            if (AREA_INFO && AREA_INFO[currentAreaId]) { 
-                areaName = AREA_INFO[currentAreaId].name;
-                areaTooltip = AREA_INFO[currentAreaId].tooltip;
-            } else if (currentAreaId) { 
-                console.warn(`Area info not found in AREA_INFO for: ${currentAreaId}`);
-            }
-            */
 
             this.areaDescriptionElement.textContent = areaName;
             this.areaDescriptionElement.dataset.tooltipText = areaTooltip;
@@ -876,7 +871,7 @@ class UI {
             const encounter = choice.encounter;
             let difficultyText = '';
             let difficultyClass = '';
-
+            
             // Create card content FIRST
             const cardContent = document.createElement('div');
             cardContent.classList.add('choice-card-content');
@@ -975,7 +970,7 @@ class UI {
                         descriptionHTML += `<div class="monster-mechanics-summary">✨ ${monster.mechanics}</div>`;
                     }
                     description.innerHTML = descriptionHTML;
-                } else {
+            } else {
                     description.innerHTML = "Error: Monster data not found.";
                 }
             } else {
@@ -1275,10 +1270,10 @@ class UI {
             // Set player delay state
             const playerContainer = playerTimerBar.closest('.attack-timer');
             if (playerContainer) {
-                 if (playerDelay > 0) {
+        if (playerDelay > 0) {
                     playerContainer.classList.add('player-delayed');
                     playerTimerEl.textContent = `Delayed ${playerDelay.toFixed(1)}s`;
-                 } else {
+        } else {
                     playerContainer.classList.remove('player-delayed');
                  }
             }
@@ -1313,8 +1308,8 @@ class UI {
                 if (enemyStunTimerBar) {
                     const stunProgress = 1 - (enemyStunTimer / enemyStunInterval);
                     enemyStunTimerBar.style.width = `${Math.min(100, stunProgress * 100)}%`;
-                }
-            } else {
+            }
+        } else {
                 enemyStunTimerContainer.classList.add('hidden');
             }
         }
@@ -1330,7 +1325,7 @@ class UI {
                 }
             } else {
                 enemyRegenTimerContainer.classList.add('hidden');
-            }
+             }
         }
     }
 
@@ -1434,7 +1429,7 @@ class UI {
         splat.style.left = '50%';
 
         if (!selector.startsWith('.inventory-slot')) {
-            const x = Math.random() * 60 - 20;
+        const x = Math.random() * 60 - 20;
             splat.style.setProperty('--splat-offset-x', `${x}px`);
         }
         
@@ -1516,7 +1511,7 @@ class UI {
         // *** Set badge style & text based on tags ***
         if (isFinalBoss) {
             difficultyBadge.style.backgroundColor = '#f44336'; // Red for boss
-            difficultyBadge.textContent = 'BOSS';
+        difficultyBadge.textContent = 'BOSS';
         } else if (isMiniBoss) {
             difficultyBadge.style.backgroundColor = '#FF9800'; // Orange for miniboss
             difficultyBadge.textContent = 'MINI-BOSS';
@@ -1545,19 +1540,19 @@ class UI {
         description.innerHTML = `
             <div class="monster-description">
                 <div class="monster-desc-text-wrapper">
-                    <p>${bossData.description || 'No description available.'}</p>
+                <p>${bossData.description || 'No description available.'}</p>
                 </div>
                 <div class="monster-stats-grid">
                     <div class="monster-stat">
                         <span class="stat-icon">❤️ Health</span>
                         <span class="stat-value">${bossData.health}</span>
                         <span class="stat-label">Health</span>
-                    </div>
+                </div>
                     <div class="monster-stat">
                         <span class="stat-icon">⚔️ Attack</span>
                         <span class="stat-value">${bossData.attack}</span>
                         <span class="stat-label">Attack</span>
-                    </div>
+            </div>
                     <div class="monster-stat">
                         <span class="stat-icon">🛡️ Defense</span>
                         <span class="stat-value">${bossData.defense}</span>
@@ -1588,9 +1583,9 @@ class UI {
         // Removed old text logic based on round
         startButton.onclick = () => {
             card.classList.add('boss-engage-start');
-            setTimeout(() => {
+                setTimeout(() => {
                 this.choicesArea.classList.add('hidden');
-                this.game.startEncounter({ type: 'monster', monsterId: bossData.id });
+                    this.game.startEncounter({ type: 'monster', monsterId: bossData.id });
             }, 500);
         };
         cardContent.appendChild(startButton);
@@ -1634,17 +1629,6 @@ class UI {
         this.lootArea.innerHTML = ''; // Clear previous loot
         this.lootArea.classList.remove('hidden');
         
-        // *** Trigger the fade-in animation ***
-        this.lootArea.classList.remove('animate-loot-in'); // Remove class if it lingered
-        void this.lootArea.offsetWidth; // Force reflow to restart animation
-        this.lootArea.classList.add('animate-loot-in');
-        setTimeout(() => {
-            if (this.lootArea) { // Check if element still exists
-                this.lootArea.classList.remove('animate-loot-in');
-            }
-        }, 500); // Remove class after animation duration (500ms)
-        
-        // Build the loot display HTML
         let lootHTML = `<h3>Loot Dropped</h3>`;
         const lootDisplayArea = document.createElement('div');
         lootDisplayArea.className = 'loot-display-area';
@@ -1752,7 +1736,7 @@ class UI {
         choicesContainer.classList.add('choices-container');
         choicesContainer.classList.add('boss-only'); // Add class for centering
 
-        const card = document.createElement('div');
+    const card = document.createElement('div');
         
         // *** Apply class based on monster data tags ***
         const isFinalBoss = bossData.isBoss === true;

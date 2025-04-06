@@ -1,7 +1,5 @@
 #loot-area {
-    /* background: rgba(0, 0, 0, 0.2); */
     background: #333; /* Consistent background */
-    /* border: 1px solid #444; */
     border: 1px solid #555; /* Consistent border */
     border-radius: 8px;
     padding: 20px;
@@ -10,9 +8,7 @@
     margin-left: auto;
     margin-right: auto;
     position: relative;
-    opacity: 0;
     transform: translateY(20px);
-    animation: loot-fade-in 0.5s ease-out forwards;
     width: 700px;
     box-sizing: border-box;
 }
@@ -25,7 +21,6 @@
     text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
 }
 
-/* --- Loot Screen Description Box Styles --- */
 .loot-display-area {
     width: 100%;
     margin-bottom: 15px;

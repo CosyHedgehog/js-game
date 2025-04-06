@@ -1,6 +1,11 @@
 const GIANTS_PASS_MONSTER_DATA = {
     'hill_giant_grunt': {
-        name: 'Hill Giant Grunt', health: 28, attack: 3, defense: 2, speed: 2.5, goldDrop: [3, 6],
+        name: 'Hill Giant Grunt', 
+        health: 28, 
+        attack: 3, 
+        defense: 2, 
+        speed: 2.5, 
+        goldDrop: [3, 6],
         difficulty: 'easy',
         description: "A dim-witted but large giant wandering the pass.",
         lootTable: [
@@ -9,20 +14,14 @@ const GIANTS_PASS_MONSTER_DATA = {
             { itemTier: 'commonItem', chance: 0.2 },
         ]
     },
-    'moss_giant': {
-        name: 'Moss Giant', health: 35, attack: 5, defense: 3, speed: 2.8, goldDrop: [5, 9],
-        difficulty: 'medium',
-        description: "A hulking giant covered in thick moss.",
-        mechanics: "Regenerates 1 health every 5 seconds.",
-        lootTable: [
-            { itemTier: 'uncommonFood', chance: 0.6 },
-            { itemTier: 'commonItem', chance: 0.3 },
-            { itemTier: 'uncommonItem', chance: 0.1 },
-        ]
-    },
     'giant_gatekeeper': {
-        name: 'Giant Gatekeeper', health: 40, attack: 4, defense: 5, speed: 3.0, goldDrop: [6, 12],
-        difficulty: 'hard',
+        name: 'Giant Gatekeeper', 
+        health: 40, 
+        attack: 4, 
+        defense: 5, 
+        speed: 3.0, 
+        goldDrop: [6, 12],
+        difficulty: 'medium',
         description: "A vigilant giant tasked with guarding the pass.",
         lootTable: [
             { itemTier: 'uncommonFood', chance: 0.5 },
@@ -31,8 +30,28 @@ const GIANTS_PASS_MONSTER_DATA = {
             { itemId: 'minor_defense_potion', chance: 0.05 },
         ]
     },
+    'moss_giant': {
+        name: 'Moss Giant', 
+        health: 35, 
+        attack: 5, 
+        defense: 3, 
+        speed: 2.8,
+        goldDrop: [5, 9],
+        difficulty: 'hard',
+        description: "A hulking giant covered in thick moss.",
+        mechanics: "Regenerates 1 health every 5 seconds.",
+        lootTable: [
+            { itemTier: 'uncommonFood', chance: 0.6 },
+            { itemTier: 'commonItem', chance: 0.3 },
+            { itemTier: 'uncommonItem', chance: 0.1 },
+        ]
+    },
     'cyclops_stone_thrower': {
-        name: 'Cyclops Stone-Thrower', health: 60, attack: 5, defense: 8, speed: 3.0,
+        name: 'Cyclops Stone-Thrower', 
+        health: 60, 
+        attack: 5, 
+        defense: 8, 
+        speed: 3.0,
         goldDrop: [20, 35],
         isMiniBoss: true,
         hasTimedStun: true,
