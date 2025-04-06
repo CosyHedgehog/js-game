@@ -5,10 +5,10 @@
     padding: 20px;
     margin: 10px 0;
     position: relative;
-    margin-top: auto;    /* Center vertically */
-    margin-bottom: auto; /* Center vertically */
-    width: 100%; /* Ensure full width */
-    box-sizing: border-box; /* Include padding in width */
+    margin-top: auto;   
+    margin-bottom: auto;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 #round-indicator-area {
@@ -46,22 +46,22 @@
 }
 
 .combatant {
-    /* flex: 1; */ /* Removed */
-    flex-basis: 45%; /* Set base width */
-    flex-grow: 0; /* Prevent growing */
-    flex-shrink: 1; /* Allow shrinking (default) */
+   
+    flex-basis: 45%;
+    flex-grow: 0;
+    flex-shrink: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between; /* Distribute items vertically */
+    justify-content: space-between;
     gap: 10px;
     padding: 20px;
-    /* background: rgba(0, 0, 0, 0.2); */
-    background: #2a2a2a; /* Updated background color */
+   
+    background: #2a2a2a;
     border-radius: 8px;
     position: relative;
     border: 1px solid #333;
-    min-height: 200px; /* Add min-height to stabilize layout */
+    min-height: 200px;
 }
 
 .combatant-name {
@@ -78,7 +78,7 @@
     font-weight: bold;
     color: #666;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-    align-self: center; /* Vertically center VS text */
+    align-self: center;
 }
 
 .health-bar-container {
@@ -88,15 +88,15 @@
     border-radius: 10px;
     overflow: hidden;
     position: relative;
-    border: 1px solid rgba(255, 255, 255, 0.1); /* Match timer border */
-    box-sizing: border-box; /* Include border in height */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-sizing: border-box;
 }
 
 .health-bar {
     height: 100%;
     transition: width 0.3s ease-out;
     border-radius: 10px;
-    box-sizing: border-box; /* Add box-sizing */
+    box-sizing: border-box;
 }
 
 .player-side:not(.player-poisoned) .player-health {
@@ -162,7 +162,7 @@
 }
 
 .combat-stats #combat-enemy-def.ferocity-active {
-    color: #ffc107; /* Amber/Yellow */
+    color: #ffc107;
     font-weight: bold;
 }
 
@@ -174,7 +174,7 @@
     overflow: hidden;
     position: relative;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    box-sizing: border-box; /* Include border in height */
+    box-sizing: border-box;
 }
 
 .timer-bar {
@@ -185,7 +185,7 @@
 
 /* Stun Timer Bar Color */
 .enemy-stun-timer {
-    background-color: #ffc107; /* Amber/Yellow */
+    background-color: #ffc107;
 }
 
 .timer-text {
@@ -214,8 +214,8 @@
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
     z-index: 1000;
     left: 50%;
-    font-size: 2.0em; /* Increased font size */
-    white-space: nowrap; /* Prevent text wrapping */
+    font-size: 2.0em;
+    white-space: nowrap;
 }
 
 .damage-splat.damage {
@@ -495,11 +495,11 @@
 }
 
 .regen-timer .timer-bar {
-    background: linear-gradient(to right, #66bb6a, #43a047); /* Light green gradient */
+    background: linear-gradient(to right, #66bb6a, #43a047);
 }
 
 .regen-timer .timer-text {
-    color: #a5d6a7; /* Lighter green text */
+    color: #a5d6a7;
 }
 
 .regen-timer.hidden {
@@ -535,41 +535,41 @@
     justify-content: center; 
     align-items: center;    
     width: 100%;            
-    margin-bottom: 15px; /* Keep space below */
-    /* Add styles similar to player-stats-area-2 */
+    margin-bottom: 15px;
+   
     background-color: #222;
     border: 1px solid #484848;
     border-radius: 5px;
-    padding: 10px; /* Add some padding */
-    box-sizing: border-box; /* Ensure padding included */
+    padding: 10px;
+    box-sizing: border-box;
 }
 
-#round-area .stat-item { /* Apply styles to the container */
-    display: inline-flex; /* Use inline-flex to keep content together */
-    align-items: baseline; /* Align text baseline */
-    /* Remove specific background/border/shadow/pill shape */
-    /* background: linear-gradient(to bottom, #5a5a5a, #454545); */
-    /* border: 1px solid #888; */
-    /* box-shadow: 0 2px 5px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.15); */
-    /* padding: 6px 18px; */ /* Padding now on #round-area */
-    /* border-radius: 25px; */ 
-    font-size: 1.0em; /* Adjust font size if needed */
+#round-area .stat-item {
+    display: inline-flex;
+    align-items: baseline;
+   
+   
+   
+   
+   
+    
+    font-size: 1.0em;
     color: #fff;
     text-align: center;
-    /* min-width: 130px; */ /* Remove min-width */
+   
 }
 
 #round-area .stat-label {
-    /* Make label consistent with stats panel */
-    /* background: none; */ 
-    /* padding: 0; */
-    /* color: #ccc; */
-    /* font-size: 0.9em; */ 
-    margin-right: 8px; /* Space after label */
-    /* font-weight: normal; */
-    vertical-align: baseline; /* Align with numbers */
+   
     
-    /* Copied from .stat-label in stats.css */
+   
+   
+    
+    margin-right: 8px;
+   
+    vertical-align: baseline;
+    
+   
     grid-column: 1;
     justify-self: start;
     color: #ddd;
@@ -578,7 +578,7 @@
     background-color: #4a4a4a;
     padding: 2px 8px;
     border-radius: 12px;
-    font-size: 0.9em; /* Adjusted from 1em */
+    font-size: 0.9em;
     display: inline-block;
     line-height: 1.2;
     text-align: center;
@@ -590,13 +590,13 @@
 #round-area #stat-max-rounds {
     font-weight: bold;
     color: #fff;
-    display: inline; /* Keep elements inline */
-    vertical-align: baseline; /* Align numbers */
-    font-size: 1.0em; /* Ensure consistent size */
+    display: inline;
+    vertical-align: baseline;
+    font-size: 1.0em;
 }
 
 #round-area .round-separator {
-    margin: 0 3px; /* Space around slash */
+    margin: 0 3px;
     color: #aaa;
     font-weight: normal;
 }
@@ -607,7 +607,7 @@
 }
 
 .round-pulsing {
-    /* Target the #round-area element for pulsing */
+   
     animation: round-update-pulse 0.7s ease-out; 
 }
 
@@ -622,13 +622,13 @@
 
 /* --- Combat End/Loot Screen Transitions --- */
 .combat-ending {
-  animation: combat-fade-out 0.5s ease-out forwards; /* forwards keeps it hidden */
-  pointer-events: none; /* Prevent interaction during fade */
+  animation: combat-fade-out 0.5s ease-out forwards;
+  pointer-events: none;
 }
 
 .damage-splat.inventory-splat {
     font-size: 2em; 
-    animation: inventory-splat-animation 1s ease-out forwards; /* Use specific animation */
+    animation: inventory-splat-animation 1s ease-out forwards;
 }
 
 .damage-splat.damage {

@@ -4,16 +4,16 @@
 
 #trap-area {
     border-radius: 6px;
-    /* width: 90%; */ /* Removed */
-    /* max-width: 600px; */ /* Removed */
+   
+   
     text-align: center;
     display: flex;
     flex-direction: column;
     gap: 15px;
-    width: 100%; /* Fill width */
-    height: 100%; /* Fill height */
-    box-sizing: border-box; /* Include padding */
-    padding: 10px; /* Add some padding */
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 10px;
 }
 
 #trap-area h3 {
@@ -58,14 +58,14 @@
 
 /* Add specific styles for success/failure messages */
 #trap-result-message.success {
-    background-color: rgba(46, 204, 113, 0.2); /* Light green background */
-    color: #2ecc71; /* Green text */
+    background-color: rgba(46, 204, 113, 0.2);
+    color: #2ecc71;
     border: 1px solid #2ecc71;
 }
 
 #trap-result-message.failure {
-    background-color: rgba(231, 76, 60, 0.2); /* Light red background */
-    color: #e74c3c; /* Red text */
+    background-color: rgba(231, 76, 60, 0.2);
+    color: #e74c3c;
     border: 1px solid #e74c3c;
 }
 

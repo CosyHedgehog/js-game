@@ -1,35 +1,35 @@
 #shop-area {
-    /* background: rgba(0, 0, 0, 0.2); */
-    background: #333; /* Match alchemist */
-    /* border: 1px solid #444; */
-    /* border: 1px solid #555; */ /* Removed */
-    /* border-radius: 8px; */ /* Removed */
+   
+    background: #333;
+   
+   
+   
     padding: 20px;
-    /* margin: 10px 0; */ /* Removed */
-    margin: 0; /* Ensure no margin */
-    /* margin-top: auto; */ /* Removed */
-    /* margin-bottom: auto; */ /* Removed */
+   
+    margin: 0;
+   
+   
     position: relative;
-    /* max-width: 600px; */ /* Removed to allow full width */
-    width: 100%; /* Ensure full width */
-    height: 100%; /* Add full height */
-    box-sizing: border-box; /* Ensure padding included */
-    display: flex; /* Add flex */
-    flex-direction: column; /* Add flex direction */
+   
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
 }
 
 #shop-area h3 {
     color: #ffd700;
-    text-align: center; /* Center align */
+    text-align: center;
     margin-bottom: 20px;
     font-size: 1.4em;
     text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
-    flex-shrink: 0; /* Prevent shrinking */
+    flex-shrink: 0;
 }
 
 /* Add shop emoji */
 #shop-area h3::before {
-    content: "💰 "; /* Gold bag emoji */
+    content: "💰 ";
     margin-right: 0.3em;
     font-size: 1em;
 }
@@ -39,16 +39,16 @@
     flex-direction: column;
     gap: 20px;
     margin-top: 20px;
-    flex-grow: 1; /* Allow content to fill space */
-    min-height: 0; /* Prevent flex overflow issues */
+    flex-grow: 1;
+    min-height: 0;
 }
 
 .shop-items-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 15px;
-    /* margin-bottom: 20px; */ /* Let flex gap handle */
-    overflow-y: auto; /* Allow item scrolling */
+   
+    overflow-y: auto;
 }
 
 .shop-item {
@@ -64,38 +64,38 @@
 }
 
 .shop-item:hover {
-    /* transform: translateY(-2px); */ /* Removed transform */
+   
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    background-color: #3a3a3a; /* Added background color on hover */
+    background-color: #3a3a3a;
 }
 
 .shop-item.selected {
-    /* background-color: #3a3a3a; */ /* Removed background color from selected */
-    border-color: #505050; /* Keep border color change for selected */
+   
+    border-color: #505050;
 }
 
 .shop-item-info {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 10px; /* Add some gap */
+    gap: 10px;
 }
 
 .shop-item-name {
     color: #fff;
     font-weight: bold;
     font-size: 1.1em;
-    flex-shrink: 1; /* Allow name to shrink */
-    overflow: hidden; /* Hide overflow */
-    text-overflow: ellipsis; /* Add ellipsis if name too long */
-    white-space: nowrap; /* Keep name on one line initially */
+    flex-shrink: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .shop-item-price {
     color: #ffd700;
     font-weight: bold;
-    flex-shrink: 0; /* Prevent price from shrinking */
-    white-space: nowrap; /* Keep price and 'gold' together */
+    flex-shrink: 0;
+    white-space: nowrap;
 }
 
 .shop-item-button {
@@ -183,32 +183,32 @@
 }
 
 .item-description {
-    /* color: #ccc; */ /* Text color handled by children */
-    /* font-size: 0.9em; */ /* Font size handled by children */
-    /* line-height: 1.4; */ /* Line height handled by children */
+   
+   
+   
     background-color: #2a2a2a;
     border: 1px solid #404040;
-    padding: 12px; /* Adjusted padding */
+    padding: 12px;
     border-radius: 4px;
-    display: flex; /* Use flex */
-    flex-direction: column; /* Stack name and text */
-    gap: 8px; /* Space between name and text */
-    overflow-y: auto; /* Allow scroll if content overflows */
-    min-height: 80px; /* Increased minimum height */
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow-y: auto;
+    min-height: 80px;
 }
 
 .item-desc-name {
     font-weight: bold;
     font-size: 1.1em;
     color: #ffffff;
-    margin-bottom: 4px; /* Small space below name */
+    margin-bottom: 4px;
 }
 
 .item-desc-text {
     font-size: 0.9em;
     color: #cccccc;
     line-height: 1.5;
-    white-space: pre-line; /* Respect newlines in description */
+    white-space: pre-line;
 }
 
 .inventory-slot.shop-sellable {

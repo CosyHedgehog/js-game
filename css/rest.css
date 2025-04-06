@@ -1,21 +1,21 @@
 /* --- Rest Area Campfire Styles --- */
 
 #rest-area {
-    background-color: #1e1e1e; /* Dark background */
+    background-color: #1e1e1e;
     border: 1px solid #333;
     border-radius: 8px;
     padding: 20px;
-    /* width: 90%; */
-    /* max-width: 500px; */ /* Removed max-width */
-    /* margin: auto; */ /* Removed margin */
-    /* align-self: center; */ /* Removed align-self */
+   
+   
+   
+   
     position: relative;
     display: flex; 
     flex-direction: column; 
-    justify-content: center; /* Add vertical centering */
-    width: 100%; /* Fill width */
-    height: 100%; /* Fill height */
-    box-sizing: border-box; /* Include padding */
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
 }
 
 .rest-campfire-container {
@@ -24,124 +24,124 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 15px; /* Spacing between elements */
-    width: 100%; /* Make container full width */
-    /* flex-shrink: 0; */ /* Removed - Let flexbox manage shrinking */
+    gap: 15px;
+    width: 100%;
+   
 }
 
 .rest-campfire-icon {
-    font-size: 3em; /* Large fire icon */
-    color: #ffcc66; /* Orange-yellow color */
-    text-shadow: 0 0 10px #ffaa00, 0 0 20px #ff8800; /* Glow effect */
-    animation: fire-flicker 1.5s infinite alternate; /* Subtle flicker */
+    font-size: 3em;
+    color: #ffcc66;
+    text-shadow: 0 0 10px #ffaa00, 0 0 20px #ff8800;
+    animation: fire-flicker 1.5s infinite alternate;
     margin-bottom: 10px;
 }
 
 .rest-campfire-container h3 {
-    color: #ffcc66; /* Match fire color */
+    color: #ffcc66;
     font-size: 1.4em;
     margin: 0;
-    font-family: 'Georgia', serif; /* More thematic font */
+    font-family: 'Georgia', serif;
 }
 
 .rest-message {
     font-size: 1em;
     line-height: 1.5;
-    color: #b0b0b0; /* Slightly dimmer text */
-    background-color: rgba(40, 40, 40, 0.5); /* Slightly transparent background */
+    color: #b0b0b0;
+    background-color: rgba(40, 40, 40, 0.5);
     padding: 10px;
     border-radius: 4px;
     border: 1px solid #303030;
 }
 
 #rest-continue-button {
-    background-color: #4a4a4a; /* Match choice-start-button */
+    background-color: #4a4a4a;
     color: #ffffff;
-    border: none; /* Match choice-start-button */
-    padding: 10px; /* Match choice-start-button */
-    font-size: 1em; /* Adjust if needed */
-    border-radius: 4px; /* Match choice-start-button */
-    font-weight: bold; /* Added */
-    cursor: pointer; /* Added */
+    border: none;
+    padding: 10px;
+    font-size: 1em;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
     margin-top: 10px; 
-    transition: all 0.3s ease; /* Match choice-start-button */
+    transition: all 0.3s ease;
     display: block;
     margin-left: auto;
     margin-right: auto;
-    width: fit-content; /* Keep width */
+    width: fit-content;
 }
 
 #rest-continue-button:hover {
-    background-color: #5a5a5a; /* Match choice-start-button hover */
-    transform: translateY(-2px); /* Added */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Added */
+    background-color: #5a5a5a;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .rest-choices {
-    /* display: flex; */ /* Changed to grid */
-    /* justify-content: space-around; */
-    /* flex-wrap: wrap; */
-    display: grid; /* Use grid */
-    grid-template-columns: repeat(2, 1fr); /* 2 equal columns */
-    grid-auto-rows: 1fr; /* Equal height rows */
-    gap: 15px; /* Adjusted gap slightly */
+   
+   
+   
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 1fr;
+    gap: 15px;
     margin-top: 20px;
-    width: 100%; /* Fill width */
-    flex-grow: 1; /* Fill remaining vertical space */
+    width: 100%;
+    flex-grow: 1;
     box-sizing: border-box;
 }
 
 .rest-card {
-    background-color: #2a2a2a; /* Match choice-card */
-    border: 2px solid #3a3a3a; /* Match choice-card */
-    border-radius: 8px; /* Rounded corners */
-    padding: 20px; /* Match choice-card */
+    background-color: #2a2a2a;
+    border: 2px solid #3a3a3a;
+    border-radius: 8px;
+    padding: 20px;
     text-align: center;
-    min-width: 180px; /* Prevent cards from becoming too narrow */
+    min-width: 180px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s ease; /* Match choice-card */
-    display: flex; /* Re-affirm */
-    flex-direction: column; /* Re-affirm */
-    justify-content: space-between; /* Re-affirm */
-    height: 100%; /* Ensure card fills grid cell if applicable */
-    box-sizing: border-box; /* Add if missing */
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    box-sizing: border-box;
 }
 
 .rest-card:hover {
-    transform: translateY(-2px); /* Match choice-card hover */
-    border-color: #555; /* Match choice-card hover */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Match choice-card hover */
+    transform: translateY(-2px);
+    border-color: #555;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .rest-card h4 {
     margin-top: 0;
     margin-bottom: 10px;
-    color: #eee; /* Lighter heading color */
+    color: #eee;
 }
 
 .rest-card p {
     font-size: 0.9em;
-    color: #ccc; /* Lighter text color */
+    color: #ccc;
     margin-bottom: 15px;
-    flex-grow: 1; /* Allow paragraph to take up space */
+    flex-grow: 1;
 }
 
 .rest-card button {
-    background-color: #4a4a4a; /* Match choice-start-button */
+    background-color: #4a4a4a;
     color: #ffffff;
-    border: none; /* Match choice-start-button */
-    padding: 10px; /* Match choice-start-button */
-    border-radius: 4px; /* Match choice-start-button */
+    border: none;
+    padding: 10px;
+    border-radius: 4px;
     cursor: pointer;
-    transition: all 0.3s ease; /* Match choice-start-button */
-    margin-top: auto; /* Re-affirm push to bottom */
-    font-weight: bold; /* Match */
-    width: 100%; /* Match */
-    font-size: 1em; /* Explicitly set font size */
+    transition: all 0.3s ease;
+    margin-top: auto;
+    font-weight: bold;
+    width: 100%;
+    font-size: 1em;
 }
 
 .rest-card button:hover {
-    background-color: #5a5a5a; /* Match choice-start-button hover */
-    transform: translateY(-2px); /* Added */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Added */
+    background-color: #5a5a5a;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 } 

@@ -140,23 +140,23 @@
 .inventory-slot.in-use {
     opacity: 0.5;
     cursor: not-allowed; 
-    border-color: #888; /* Dim the border */
-    box-shadow: none; /* Remove glow */
+    border-color: #888;
+    box-shadow: none;
 }
 
 /* Prevent hover effect on in-use items */
 .inventory-slot.in-use:hover {
-    background-color: rgba(0, 0, 0, 0.3); /* Keep base background */
+    background-color: rgba(0, 0, 0, 0.3);
     border-color: #888;
     box-shadow: none;
-    transform: none; /* Prevent hover transform */
+    transform: none;
 }
 
 /* Add this new style for filled crafting slots */
 .crafting-slot-filled {
-    border-color: #4CAF50; /* Green border */
-    background-color: rgba(76, 175, 80, 0.15); /* Light green background tint */
-    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5); /* Subtle green glow */
+    border-color: #4CAF50;
+    background-color: rgba(76, 175, 80, 0.15);
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
 }
 
 /* Add this for the upgrade flash effect */
@@ -166,90 +166,90 @@
 
 /* --- Slot Styling (Inventory) --- */
 .inventory-slot {
-    /* background: rgba(0, 0, 0, 0.3); */
+   
     background-color: #303030;
-    /* border: 1px solid #444; */
+   
     border: 1px solid #383838;
     border-radius: 4px;
     padding: 4px;
     display: flex;
-    /* flex-direction: column; */
+   
     align-items: center;
     justify-content: center;
-    /* gap: 5px; */
-    /* cursor: pointer; */
+   
+   
     cursor: default;
     transition: all 0.2s ease;
     position: relative;
-    /* Remove potentially conflicting styles */
-    /* overflow: hidden; */
-    /* text-overflow: ellipsis; */
-    /* white-space: normal; */
-    /* word-wrap: break-word; */
+   
+   
+   
+   
+   
     aspect-ratio: 1;
     text-align: center;
     font-size: 0.85em;
     color: #777;
-    overflow: hidden; /* CORRECT - We want this */
-    text-overflow: ellipsis; /* This only affects the slot's own text, not children */
-    white-space: normal;    /* CONFLICT? - Tells slot's text to wrap */
-    word-wrap: break-word; /* CONFLICT? - Tells slot's text how to break */
-    z-index: 1; /* Base stacking context */
-    box-sizing: border-box; /* Ensure padding/border included */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;   
+    word-wrap: break-word;
+    z-index: 1;
+    box-sizing: border-box;
 }
 
 /* Style for EMPTY slots */
 .inventory-slot.slot-empty {
-    border-style: dashed; /* Dashed border for empty */
-    color: #555; /* Dimmer text */
+    border-style: dashed;
+    color: #555;
 }
 
 .inventory-slot.slot-empty:hover {
     background-color: #3a3a3a;
     border-color: #555;
     color: #777;
-    transform: none; /* No transform on empty */
-    box-shadow: none; /* No shadow on empty */
+    transform: none;
+    box-shadow: none;
 }
 
 /* Style for FILLED slots */
 .inventory-slot.slot-filled {
-    background-color: #746d6d47 ; /* Slightly lighter bg for filled */
-    border-color: #555; /* Clearer border */
-    color: #eee; /* White text for item name */
+    background-color: #746d6d47 ;
+    border-color: #555;
+    color: #eee;
     font-weight: 500;
-    cursor: pointer; /* Indicate clickable */
-    box-shadow: inset 0 1px 2px rgba(0,0,0,0.2); /* Subtle inner shadow */
+    cursor: pointer;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
 }
 
 .inventory-slot.slot-filled:hover {
     background-color: #484848;
     border-color: #777;
-    transform: scale(1.03); /* Slight zoom effect */
-    z-index: 5; /* Bring to front */
+    transform: scale(1.03);
+    z-index: 5;
 }
 
 .inventory-slot:hover {
-    /* border-color: #666; */
-    /* transform: translateY(-2px); */
-    /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); */
-    /* Base hover is handled by .slot-empty and .slot-filled */
+   
+   
+   
+   
 }
 
 .inventory-slot.selected {
-    /* border-color: #4CAF50; */
-    /* box-shadow: 0 0 10px rgba(76, 175, 80, 0.3); */
-    /* Selection state might need review/reintegration if used differently now */
+   
+   
+   
 }
 
 .inventory-slot.equipped {
-    /* border-color: #2196F3; */
-    /* box-shadow: 0 0 10px rgba(33, 150, 243, 0.3); */
-    /* Equipped state might need review/reintegration */
+   
+   
+   
 }
 
 .inventory-slot.equipped::after {
-    /* Content/styling might need review */
+   
     content: "E";
     position: absolute;
     top: 2px;
@@ -268,8 +268,8 @@
     top: 2px;
     right: 4px;
     font-size: 0.7em;
-    color: #a0e0a0; /* Light green */
-    background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
+    color: #a0e0a0;
+    background-color: rgba(0, 0, 0, 0.6);
     padding: 1px 3px;
     border-radius: 3px;
     line-height: 1;
@@ -315,7 +315,7 @@
     top: 0;
     left: 50%;
     transform: translateX(-50%);
-    width: 80%; /* Make chip wider */
+    width: 80%;
     background-color: #2a7a3a;
     color: #ffffff;
     font-size: 0.9em;
@@ -323,7 +323,7 @@
     padding: 1px 8px;
     border-radius: 0 0 5px 5px;
     line-height: 1.1;
-    z-index: 2; /* Chips above slot base */
+    z-index: 2;
     box-shadow: 0 1px 2px rgba(0,0,0,0.4);
     text-transform: uppercase;
 }
@@ -335,14 +335,14 @@
     left: 50%;
     transform: translateX(-50%);
     width: 80%;
-    background-color: #806040; /* Brownish background */
-    color: #ffe0c0; /* Light text */
+    background-color: #806040;
+    color: #ffe0c0;
     font-size: 0.7em;
     font-weight: bold;
     padding: 1px 8px;
     border-radius: 0 0 5px 5px;
     line-height: 1.1;
-    z-index: 2; /* Chips above slot base */
+    z-index: 2;
     box-shadow: 0 1px 2px rgba(0,0,0,0.4);
     text-transform: uppercase;
 }
@@ -354,14 +354,14 @@
     left: 50%;
     transform: translateX(-50%);
     width: 80%;
-    background-color: #5a6a7a; /* Greyish-blue background */
-    color: #d0d8e0; /* Light text */
+    background-color: #5a6a7a;
+    color: #d0d8e0;
     font-size: 0.7em;
     font-weight: bold;
     padding: 1px 8px;
     border-radius: 0 0 5px 5px;
     line-height: 1.1;
-    z-index: 2; /* Chips above slot base */
+    z-index: 2;
     box-shadow: 0 1px 2px rgba(0,0,0,0.4);
     text-transform: uppercase;
 }
@@ -373,21 +373,21 @@
     left: 50%;
     transform: translateX(-50%);
     width: 80%;
-    background-color: #6a4a7a; /* Purplish background */
-    color: #e0d0e8; /* Light purple text */
+    background-color: #6a4a7a;
+    color: #e0d0e8;
     font-size: 0.7em;
     font-weight: bold;
     padding: 1px 8px;
     border-radius: 0 0 5px 5px;
     line-height: 1.1;
-    z-index: 2; /* Chips above slot base */
+    z-index: 2;
     box-shadow: 0 1px 2px rgba(0,0,0,0.4);
     text-transform: uppercase;
 }
 
 #inventory-grid .inventory-slot.equipped {
-    background-color: #285028 !important; /* Dark green background */
-    border-color: green !important; /* Green border */
+    background-color: #285028 !important;
+    border-color: green !important;
 }
 
 #inventory-grid .inventory-slot.equipped:hover {
@@ -399,6 +399,6 @@
 .inventory-slot.blacksmith-valid,
 .inventory-slot.armourer-valid,
 .inventory-slot.sharpen-valid {
-    /* border: 2px dashed #33cc33; Thicker, brighter green dashed border */
-    animation: shopGlow 1s infinite alternate; /* Keep glow animation */
+   
+    animation: shopGlow 1s infinite alternate;
 }

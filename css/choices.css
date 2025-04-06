@@ -146,11 +146,11 @@
 
 /* Styles for the description text wrapper */
 .monster-desc-text-wrapper {
-    max-height: 100px; /* Adjust as needed */
+    max-height: 100px;
     overflow-y: auto;
-    margin-bottom: 10px; /* Space below description, above stats */
-    padding-right: 5px; /* Space for scrollbar */
-    scrollbar-width: thin; /* Optional: thinner scrollbar */
+    margin-bottom: 10px;
+    padding-right: 5px;
+    scrollbar-width: thin;
 }
 
 .monster-desc-text-wrapper::-webkit-scrollbar {
@@ -348,16 +348,16 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100%; /* Ensure container takes full height */
+    height: 100%;
 }
 
 /* Apply auto sizing to both boss and miniboss cards when centered */
 .choices-container.boss-only .choice-card.boss-card,
 .choices-container.boss-only .choice-card.miniboss-card {
-    height: auto; /* Override default height */
-    flex-grow: 0; /* Prevent growing to fill flex container */
-    width: fit-content; /* Size width based on content */
-    max-width: 60%; /* Prevent excessive width */
+    height: auto;
+    flex-grow: 0;
+    width: fit-content;
+    max-width: 60%;
 }
 
 #choices-area {
@@ -366,49 +366,49 @@
 
 /* === Monster Description Summary (Choice Card) === */
 .choice-description .monster-description-summary {
-    margin-bottom: 10px; /* Space below description, before stats */
-    color: #b0bec5; /* Slightly lighter grey for description */
-    font-style: normal; /* Ensure it's not italic unless intended */
+    margin-bottom: 10px;
+    color: #b0bec5;
+    font-style: normal;
     text-align: left;
 }
 
 /* === Monster Stat Summary (Choice Card) === */
 .choice-description .monster-stats-summary {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 columns */
-    gap: 5px 10px; /* Row gap, Column gap */
-    margin-bottom: 10px; /* Space before mechanics */
-    text-align: left; /* Align text left within grid cells */
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px 10px;
+    margin-bottom: 10px;
+    text-align: left;
 }
 
 .choice-description .monster-stats-summary div {
-    white-space: nowrap; /* Prevent wrapping within a stat */
+    white-space: nowrap;
 }
 
 .choice-description .monster-mechanics-summary {
     margin-top: 10px;
     font-style: italic;
-    color: #ffcc80; /* Light orange color for mechanics */
+    color: #ffcc80;
     text-align: left;
 }
 
 /* === Difficulty-Based Button Colors === */
 .choice-start-button.difficulty-easy {
-    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); /* Green */
+    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
 }
 .choice-start-button.difficulty-easy:hover {
     background: linear-gradient(135deg, #66bb6a 0%, #4CAF50 100%);
 }
 
 .choice-start-button.difficulty-medium {
-    background: linear-gradient(135deg, #ffc107 0%, #ffa000 100%); /* Amber */
+    background: linear-gradient(135deg, #ffc107 0%, #ffa000 100%);
 }
 .choice-start-button.difficulty-medium:hover {
     background: linear-gradient(135deg, #ffca28 0%, #ffb300 100%);
 }
 
 .choice-start-button.difficulty-hard {
-    background: linear-gradient(135deg, #e53935 0%, #c62828 100%); /* Red */
+    background: linear-gradient(135deg, #e53935 0%, #c62828 100%);
 }
 .choice-start-button.difficulty-hard:hover {
     background: linear-gradient(135deg, #f44336 0%, #e53935 100%);

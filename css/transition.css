@@ -6,23 +6,23 @@
     justify-content: center;
     text-align: center;
     padding: 40px;
-    background-color: #2a2a2a; /* Dark background */
+    background-color: #2a2a2a;
     border-radius: 8px;
     border: 1px solid #444;
     width: 100%;
     height: 100%;
     box-sizing: border-box;
-    animation: fadeIn 0.5s ease-out; /* Simple fade-in */
+    animation: fadeIn 0.5s ease-out;
 }
 
 .area-transition-container h2 {
-    color: #e0e0e0; /* Light text */
+    color: #e0e0e0;
     font-size: 1.8em;
     margin-bottom: 25px;
 }
 
 #area-transition-continue-button {
-    background-color: #4CAF50; /* Green button */
+    background-color: #4CAF50;
     color: white;
     border: none;
     padding: 12px 25px;
@@ -41,6 +41,6 @@
 
 /* Class to apply fade-out animation */
 .area-transition-container.fade-out {
-    animation: fadeOut 0.5s ease-out forwards; /* Apply fadeOut, keep final state */
-    pointer-events: none; /* Prevent interaction during fade */
+    animation: fadeOut 0.5s ease-out forwards;
+    pointer-events: none;
 }

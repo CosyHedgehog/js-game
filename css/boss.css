@@ -167,24 +167,24 @@
 
 /* === Mini-Boss Card Styles === */
 .choice-card.miniboss-card {
-    background: linear-gradient(135deg, #2a201a 0%, #1a100a 100%); /* Dark orange/brown gradient */
-    border: 2px solid #FF9800; /* Orange border */
-    box-shadow: 0 0 20px rgba(255, 152, 0, 0.2); /* Orange shadow */
+    background: linear-gradient(135deg, #2a201a 0%, #1a100a 100%);
+    border: 2px solid #FF9800;
+    box-shadow: 0 0 20px rgba(255, 152, 0, 0.2);
     transform: scale(1.02);
     cursor: default;
 }
 
 .choice-card.miniboss-card:hover {
     transform: translateY(-4px) scale(1.02);
-    box-shadow: 0 8px 16px rgba(255, 152, 0, 0.3); /* Darker orange shadow */
-    border-color: #f57c00; /* Darker orange border */
+    box-shadow: 0 8px 16px rgba(255, 152, 0, 0.3);
+    border-color: #f57c00;
 }
 
 .choice-card.miniboss-card .choice-title {
-    color: #FF9800; /* Orange title */
+    color: #FF9800;
     font-size: 1.3rem;
-    text-shadow: 0 0 10px rgba(255, 152, 0, 0.3); /* Orange text shadow */
-    text-align: center; /* Center title text */
+    text-shadow: 0 0 10px rgba(255, 152, 0, 0.3);
+    text-align: center;
 }
 
 /* Center miniboss description text */
@@ -193,25 +193,25 @@
 }
 
 .choice-card.miniboss-card .monster-stat {
-    background: rgba(255, 152, 0, 0.1); /* Light orange bg */
-    border: 1px solid rgba(255, 152, 0, 0.2); /* Light orange border */
+    background: rgba(255, 152, 0, 0.1);
+    border: 1px solid rgba(255, 152, 0, 0.2);
 }
 
 .choice-card.miniboss-card .monster-stat:hover {
-    background: rgba(255, 152, 0, 0.2); /* Darker orange bg on hover */
+    background: rgba(255, 152, 0, 0.2);
     transform: translateY(-2px);
 }
 
 .choice-card.miniboss-card .monster-special {
     background: rgba(255, 152, 0, 0.1);
     border: 1px solid rgba(255, 152, 0, 0.3);
-    color: #FF9800; /* Orange special text */
-    width: 100%; /* Ensure full width */
-    box-sizing: border-box; /* Include padding/border in width */
+    color: #FF9800;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .choice-card.miniboss-card .choice-start-button {
-    background: linear-gradient(135deg, #FF9800 0%, #f57c00 100%); /* Orange gradient button */
+    background: linear-gradient(135deg, #FF9800 0%, #f57c00 100%);
     font-weight: bold;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -223,6 +223,6 @@
 
 .choice-card.miniboss-card .choice-start-button:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(255, 152, 0, 0.4); /* Orange shadow on hover */
-    background: linear-gradient(135deg, #ffb74d 0%, #FF9800 100%); /* Lighter orange gradient on hover */
+    box-shadow: 0 4px 8px rgba(255, 152, 0, 0.4);
+    background: linear-gradient(135deg, #ffb74d 0%, #FF9800 100%);
 } 

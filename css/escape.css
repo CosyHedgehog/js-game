@@ -3,8 +3,8 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    /* background: rgba(0, 0, 0, 0.95); */
-    background: #2a2a2a; /* Consistent background */
+   
+    background: #2a2a2a;
     border: 2px solid #666;
     padding: 20px;
     border-radius: 8px;
