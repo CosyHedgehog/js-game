@@ -256,7 +256,6 @@ class UI {
                         tooltipText = tooltipText.replace('X', this.game?.currentCombat?.enemy?.currentSpeed.toFixed(1) || '?');
                     } else if (key === 'enemyBreathTimer') {
                         tooltipText = tooltipText.replace('X', this.game?.currentCombat?.enemy?.breathAttackInterval?.toFixed(1) || '?');
-                    // *** Add Stun Timer Interval Replacement ***
                     } else if (key === 'stunTimer') {
                         tooltipText = tooltipText.replace('X', this.game?.currentCombat?.enemy?.timedStunInterval?.toFixed(1) || '?');
                     }
@@ -1166,7 +1165,16 @@ class UI {
         }
 
         // Initial update of timers and stats
-        this.updateCombatTimers(player.attackTimer, enemy.attackTimer, 0, enemy.breathAttackTimer, enemy.breathAttackInterval, enemy.timedStunTimer, enemy.timedStunInterval, enemy.regenerationTimer, enemy.regenerationInterval);
+        this.updateCombatTimers(
+            player.attackTimer, 
+            enemy.attackTimer, 
+            player.pendingActionDelay, 
+            enemy.breathAttackTimer, 
+            enemy.breathAttackInterval, 
+            enemy.timedStunTimer, 
+            enemy.timedStunInterval, 
+            enemy.regenerationTimer, 
+            enemy.regenerationInterval);
     }
 
     showCombatUI(player, enemy) {
@@ -1249,12 +1257,16 @@ class UI {
             // Set player delay state
             const playerContainer = playerTimerBar.closest('.attack-timer');
             if (playerContainer) {
-        if (playerDelay > 0) {
+                if (playerDelay > 0) {
                     playerContainer.classList.add('player-delayed');
                     playerTimerEl.textContent = `Delayed ${playerDelay.toFixed(1)}s`;
-        } else {
+                    playerTimerBar.style.width = `${(playerDelay /2) * 100}%`;
+                    playerTimerBar.style.backgroundColor = '#ffd700';
+                } else {
                     playerContainer.classList.remove('player-delayed');
-                 }
+                    playerTimerBar.style.width = `${1 - (playerTimer - this.game.player.getAttackSpeed)}%`;
+                    playerTimerBar.style.backgroundColor = '';
+                }
             }
         }
 
