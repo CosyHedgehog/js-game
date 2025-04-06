@@ -66,7 +66,8 @@ class CombatUI {
 
         if (enemyTimerEl) enemyTimerEl.textContent = enemyTimer.toFixed(1);
         if (enemyTimerBar) {
-            const enemyTotalTime = this.ui.game.currentCombat.enemy.speed; const enemyProgress = 1 - (enemyTimer / enemyTotalTime);
+            const enemyTotalTime = this.ui.game.currentCombat.enemy.currentSpeed;
+            const enemyProgress = 1 - (enemyTimer / enemyTotalTime);
             enemyTimerBar.style.width = `${Math.min(100, enemyProgress * 100)}%`;
         }
 

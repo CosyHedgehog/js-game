@@ -199,63 +199,42 @@ class Combat {
 
         const healthPercent = this.enemy.health / this.enemy.maxHealth;
 
-        if (this.enemy.name === MONSTERS['silverfang']?.name) {
-            const wasFast = this.enemy.currentSpeed === 0.6; let isNowFast = false;
 
-            if (healthPercent < 0.5) {
-                this.enemy.currentSpeed = 0.6;
-                isNowFast = true;
-            } else {
-                this.enemy.currentSpeed = 1.2;
-                isNowFast = false;
-            }
+        if (this.enemy.speedIncreaseThreshold && this.enemy.speedIncreasePercent) {
+            const baseSpeed = this.enemy.speed;
+            const wasSpeedIncreased = this.enemy.currentSpeed === fasterSpeed;
+            const shouldIncreaseSpeed = healthPercent < this.enemy.speedIncreaseThreshold;
 
-            const enemyTimerContainer = document.querySelector('.enemy-side .attack-timer:not(.breath-timer)');
-
-            if (isNowFast && !wasFast) {
+            if (shouldIncreaseSpeed && !wasSpeedIncreased) {
+                this.enemy.currentSpeed = fasterSpeed;
+                this.game.addLog(`<span style="color: #64b5f6;">${this.enemy.name} quickens its movements!</span>`);
+                
                 const enemySide = document.querySelector('.enemy-side');
+                const enemySpdStat = document.getElementById('combat-enemy-spd');
+
                 if (enemySide) {
-                    enemySide.classList.add('enemy-speed-enraged-pulse');
+                    enemySide.classList.add('enemy-speed-enraged-pulse'); 
                     setTimeout(() => {
                         enemySide.classList.remove('enemy-speed-enraged-pulse');
                     }, 600);
+                    enemySide.classList.add('enemy-speed-boost-active'); 
                 }
-                this.game.addLog("Ven'fing becomes faster!");
-            }
-
-            if (enemyTimerContainer) {
-                if (isNowFast) {
-                    enemyTimerContainer.classList.add('enemy-timer-speed-boost');
-                } else {
-                    enemyTimerContainer.classList.remove('enemy-timer-speed-boost');
+                if (enemySpdStat) {
+                    enemySpdStat.classList.add('stat-highlight-speed');
                 }
-            }
-        }
 
-        if (this.enemy.packTactics) {
-            const wasPackTacticsActive = this.enemy.currentAttack > this.enemy.attack;
-            const shouldActivatePackTactics = healthPercent < 0.5;
-
-            if (shouldActivatePackTactics && !wasPackTacticsActive) {
-                this.enemy.packTacticsActive = true;
-                this.enemy.currentAttack = this.enemy.attack + this.enemy.packDamageBonus;
-                this.enemy.currentDefense = this.enemy.defense + this.enemy.packDefenseBonus;
-
+            } else if (!shouldIncreaseSpeed && wasSpeedIncreased) {
+                this.enemy.currentSpeed = baseSpeed;
                 const enemySide = document.querySelector('.enemy-side');
+                const enemySpdStat = document.getElementById('combat-enemy-spd');
                 if (enemySide) {
-                    enemySide.classList.add('enemy-pack-tactics');
-                    setTimeout(() => {
-                        enemySide.classList.remove('enemy-pack-tactics');
-                    }, 800);
+                    enemySide.classList.remove('enemy-speed-boost-active');
                 }
-
-                this.game.addLog(`<span style="color: #ffd700">${this.enemy.name}'s pack tactics activate! (+${this.enemy.packDamageBonus} Attack, +${this.enemy.packDefenseBonus} Defense)</span>`);
-            } else if (!shouldActivatePackTactics && wasPackTacticsActive) {
-                this.enemy.currentAttack = this.enemy.attack;
-                this.enemy.currentDefense = this.enemy.defense;
+                if (enemySpdStat) {
+                    enemySpdStat.classList.remove('stat-highlight-speed');
+                }
             }
         }
-
 
         if (this.enemy.enrageThreshold && this.enemy.enrageAttackMultiplier) {
             const wasEnraged = this.enemy.currentAttack > this.enemy.attack; let isNowEnraged = false;
@@ -560,12 +539,15 @@ class Combat {
     endCombat(playerWon, ranAway = false) {
         this.player.resetCombatBuffs();
 
-        this.player.activeEffects = {};
-
-        const enemyTimerContainer = document.querySelector('.enemy-side .attack-timer:not(.breath-timer)');
-        if (enemyTimerContainer) {
-            enemyTimerContainer.classList.remove('enemy-timer-speed-boost');
+        const enemySide = document.querySelector('.enemy-side');
+        const enemySpdStat = document.getElementById('combat-enemy-spd');
+        if (enemySide) {
+            enemySide.classList.remove('enemy-speed-boost-active');
         }
+        if (enemySpdStat) {
+            enemySpdStat.classList.remove('stat-highlight-speed');
+        }
+        this.player.activeEffects = {};
 
         if (playerWon) {
             this.game.addLog(`You defeated the ${this.enemy.name}!`);

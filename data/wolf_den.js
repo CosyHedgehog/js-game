@@ -23,11 +23,10 @@ const WOLF_DEN_MONSTER_DATA = {
     'feral_hunter': {
         name: 'Feral Hunter', health: 18, attack: 2, defense: 2, speed: 1.5, goldDrop: [2, 6],
         difficulty: 'hard',
-        description: "A skilled wolf that hunts in precise strikes.",
-        packTactics: true,
-        packDamageBonus: 2,
-        packDefenseBonus: 1,
-        mechanics: "Pack Tactics: Gains +2 attack and +1 defense when below 50% health.",
+        description: "A skilled hunter that quickens its strikes when injured.",
+        mechanics: "Attacks 30% faster when below 40% health.",
+        speedIncreaseThreshold: 0.4, 
+        speedIncreasePercent: 0.3,
         lootTable: [
             { itemTier: 'commonFood', chance: 0.5 },
             { itemTier: 'uncommonFood', chance: 0.5 },
@@ -39,8 +38,10 @@ const WOLF_DEN_MONSTER_DATA = {
         name: 'Silverfang', health: 30, attack: 5, defense: 1, speed: 1.2,
         goldDrop: [10, 20],
         isMiniBoss: true,
-        description: "A swift and agile wolf.",
+        description: "A swift and agile wolf that attacks much faster when cornered.",
         mechanics: "Attacks 50% faster when below 50% health.",
+        speedIncreaseThreshold: 0.5,  
+        speedIncreasePercent: 0.5,
         lootTable: [
             { itemId: 'speed_potion', chance: 0.4 },
             { itemTier: 'uncommonItem', chance: 0.2 },

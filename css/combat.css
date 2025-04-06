@@ -331,6 +331,17 @@
     animation: speed-enrage-pulse 0.5s ease-in-out;
 }
 
+.enemy-speed-boost-active {
+    border: 2px solid rgba(0, 220, 255, 1);
+    box-shadow: 0 0 8px rgba(0, 200, 255, 0.6);
+}
+
+#combat-enemy-spd.stat-highlight-speed {
+    color: #00e0ff;
+    display: inline-block;
+    font-weight: bold;
+}
+
 .enemy-scales-harden {
     animation: scales-harden-effect 1s ease-out forwards;
 }

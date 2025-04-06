@@ -29,8 +29,8 @@ class Game {
     ];
 
     start() {
+        this.devMode();
         // this.normalMode();
-        this.normalMode();
     }
 
     normalMode() {
@@ -47,12 +47,13 @@ class Game {
     }
 
     devMode() {
-        this.currentRound = 29;
+        this.currentRound = 9;
         // this.state = 'area_transition';
         this.state = 'choosing';
-        this.currentArea = "giants_pass";
-        this.pendingAreaTransitionName = "Giants pass";
+        this.currentArea = "wolf_den";
+        // this.pendingAreaTransitionName = "Giants pass";
         this.player.health = 1000;
+        this.player.baseAttack = 6;
 
         this.player.addItem(this.createItem('wooden_sword'));
         this.player.addItem(this.createItem('wooden_shield'));
