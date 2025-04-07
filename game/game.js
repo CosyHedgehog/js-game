@@ -68,10 +68,10 @@ class Game {
     }
 
     devMode() {
-        this.currentRound = 5;
+        this.currentRound = 15;
         // this.state = 'area_transition';
         this.state = 'choosing';
-        this.currentArea = "wolf_den";
+        this.currentArea = "giants_pass";
         // this.pendingAreaTransitionName = "Giants pass";
         this.player.health = 1000;
         this.player.baseAttack = 6;

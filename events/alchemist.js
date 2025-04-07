@@ -146,14 +146,21 @@ class Alchemist {
                  const canAfford = item.isFree || this.game.player.gold >= item.buyPrice;
                  const priceText = item.isFree ? `<span class="free-item-price">FREE</span> <span class="original-price">(was ${displayPrice})</span>` : `${displayPrice} gold`;
 
+                 let buttonText = '';
+                 if (isBought) {
+                     buttonText = item.wasFree ? 'Taken' : 'Bought';
+                 } else {
+                     buttonText = item.isFree ? 'Take' : 'Buy';
+                 }
+
                  return `
                          <div class="shop-item ${isBought ? 'item-bought' : ''} ${item.isFree ? 'free-item' : ''}" data-item-id="${item.id}">
                              <div class="shop-item-info">
                                  <span class="shop-item-name">${item.name}${item.isFree ? ' ✨' : ''}</span>
                                  <span class="shop-item-price">${priceText}</span>
                              </div>
-                             <button class="shop-item-button ${item.isFree ? 'free-button' : ''}" data-index="${index}" ${isBought || !canAfford ? 'disabled' : ''}> 
-                                 ${isBought ? 'Bought' : (item.isFree ? 'Take' : 'Buy')}
+                             <button class="shop-item-button ${item.isFree ? 'free-button' : ''}" data-index="${index}" ${isBought || !canAfford ? 'disabled' : ''}>
+                                 ${buttonText}
                              </button>
                          </div>
                      `}).join('')}
@@ -163,7 +170,7 @@ class Alchemist {
                      Hover over a potion to see its description.
                  </div>
              </div>
-             <button id="alchemist-leave-button" class="leave-button">Leave Shop</button> <!-- Use standard leave button class -->
+             <button id="alchemist-leave-button" class="leave-button">Leave Shop</button>
          `;
 
          const existingArea = document.getElementById('alchemist-area');
@@ -269,6 +276,7 @@ class Alchemist {
         this.game.player.addItem(item);
         if (isFreeItem) {
              this.game.addLog(`You took the free ${item.name}.`);
+             item.wasFree = true;
         } else {
              this.game.addLog(`You bought ${item.name} for ${item.buyPrice} gold.`);
         }

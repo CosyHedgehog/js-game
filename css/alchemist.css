@@ -73,14 +73,16 @@
     text-decoration: line-through;
 }
 
-#alchemist-area .shop-item-button.free-button {
-    background-color: #4CAF50; /* Green button */
+#alchemist-area .shop-item-button.free-button:not(:disabled) {
+    background-color: #4CAF50; /* Green button only when active */
     border-color: #388E3C;
 }
 
-#alchemist-area .shop-item-button.free-button:hover {
+#alchemist-area .shop-item-button.free-button:hover:not(:disabled) {
     background-color: #66BB6A;
 }
+
+/* Disabled free buttons will now inherit the default disabled style from shop.css */
 /* --- End Free Item Styling --- */
 
 /* Cursor Handling for Alchemist Area */
