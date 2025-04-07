@@ -1,11 +1,14 @@
-const COMMON_ITEMS = ['wooden_dagger', 'wooden_sword', 'wooden_hammer', 
-                      'leather_helm', 'leather_armor', 'leather_legs', 'wooden_shield']
+const COMMON_WEAPONS = ['wooden_dagger', 'wooden_sword', 'wooden_hammer', 'rusty_sword'];
+const COMMON_ARMOR = ['leather_helm', 'leather_armor', 'leather_legs', 'wooden_shield'];
+const COMMON_ITEMS = [...COMMON_WEAPONS, ...COMMON_ARMOR];
 
-const UNCOMMON_ITEMS = ['iron_dagger', 'iron_sword', 'iron_hammer', 
-                        'iron_helm', 'iron_armor', 'iron_legs', 'iron_shield']
+const UNCOMMON_ARMOR = ['iron_helm', 'iron_armor', 'iron_legs', 'iron_shield'];
+const UNCOMMON_WEAPONS = ['iron_dagger', 'iron_sword', 'iron_hammer'];
+const UNCOMMON_ITEMS = [...UNCOMMON_WEAPONS, ...UNCOMMON_ARMOR];
 
-const RARE_ITEMS = ['steel_dagger', 'steel_sword', 'steel_hammer', 
-                    'steel_helm',   'steel_armor', 'steel_legs', 'steel_shield']
+const RARE_WEAPONS = ['steel_dagger', 'steel_sword', 'steel_hammer'];
+const RARE_ARMOR = ['steel_helm', 'steel_armor', 'steel_legs', 'steel_shield'];
+const RARE_ITEMS = [...RARE_WEAPONS, ...RARE_ARMOR];
 
 const COMMON_FOOD = ['bread', 'small_fish']
 const UNCOMMON_FOOD = ['medium_fish', 'cooked_meat']

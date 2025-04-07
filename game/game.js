@@ -17,6 +17,14 @@ class Game {
         this.pendingAreaTransitionName = null; 
         this.pendingNewAreaId = null;
         this.lastDefeatedEnemyName = null;
+
+        this.shop = new Shop(this, this.ui);
+        this.alchemist = new Alchemist(this, this.ui);
+        this.armorsmith = new Armoury(this, this.ui);
+        this.sharpen = new Sharpen(this, this.ui);
+        this.blacksmith = new Blacksmith(this, this.ui);
+        this.trap = new Trap(this, this.ui);
+        this.weaponMerchant = new WeaponMerchant(this, this.ui);
     }
 
     EVENT_PROBABILITY = [
@@ -27,7 +35,8 @@ class Game {
         { type: 'treasure_chest', weight: 10 }, // DONE
         { type: 'forge', weight: 10 }, // DONE
         { type: 'fishing', weight: 10 }, // DONE
-        { type: 'trap', weight: 10 } // DONE
+        { type: 'trap', weight: 10 }, // DONE
+        { type: 'weapon_merchant', weight: 100 }
     ];
 
     start() {
@@ -50,7 +59,7 @@ class Game {
     }
 
     devMode() {
-        this.currentRound = 25;
+        this.currentRound = 5;
         // this.state = 'area_transition';
         this.state = 'choosing';
         this.currentArea = "wolf_den";
@@ -336,6 +345,8 @@ class Game {
                 return "Disarm Trap";
             case 'treasure_chest':
                 return "Treasure Chest";
+            case 'weapon_merchant':
+                return "Traveling Merchant";
             default:
                 return 'Unknown Encounter';
         }
@@ -436,6 +447,10 @@ class Game {
             case 'treasure_chest':
                 return "You find a sturdy-looking treasure chest. It might be locked.\n\n" +
                     "Approach the chest?";
+            case 'weapon_merchant':
+                return "You see a Traveling Arms Dealer offering a selection of weapons.\n\n" +
+                       `Current gold: ${this.player.gold}\n\n` +
+                       "Approach the merchant?";
             default:
                 return "Unknown encounter type.";
         }
@@ -455,31 +470,34 @@ class Game {
                 new Rest(this, this.ui).handle();
                 break;
             case 'shop':
-                new Shop(this, this.ui).handle();
+                this.shop.handle();
                 break;
             case 'fishing':
                 new Fishing(this, this.ui).handle();
                 break;
             case 'blacksmith':
-                new Blacksmith(this, this.ui).handle();
+                this.blacksmith.handle();
                 break;
             case 'sharpen':
-                new Sharpen(this, this.ui).handle();
+                this.sharpen.handle();
                 break;
             case 'armorsmith':
-                new Armoury(this, this.ui).handle();
+                this.armorsmith.handle();
                 break;
             case 'alchemist':
-                new Alchemist(this, this.ui).handle();
+                this.alchemist.handle();
                 break;
             case 'trap':
-                new Trap(this, this.ui).handle();
+                this.trap.handle();
                 break;
             case 'treasure_chest':
                 new Treasure(this, this.ui).handle();
                 break;
             case 'forge':
                 new Forge(this, this.ui).handle();
+                break;
+            case 'weapon_merchant':
+                this.weaponMerchant.handle();
                 break;
             default:
                 this.addLog("Unknown encounter type selected.");

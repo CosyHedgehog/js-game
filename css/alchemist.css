@@ -8,6 +8,7 @@
     display: flex;
     flex-direction: column;
     cursor: default; /* Default for the whole area */
+    border-radius: 8px;
 }
 
 #alchemist-area h3 {
@@ -96,3 +97,9 @@
 }
 
 /* Assuming leave button uses shared class .leave-button which already has cursor: pointer */
+
+/* Ensure Alchemist leave button doesn't stretch */
+#alchemist-leave-button {
+    align-self: center;
+    /* Inherit other styles from .leave-button or define here if needed */
+}

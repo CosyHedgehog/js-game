@@ -67,6 +67,7 @@ class CacheManager {
         this.ui.areaDescriptionElement = document.getElementById('area-description');
         this.ui.statDps = document.getElementById('stat-dps-2');
         this.ui.tooltipCache = { attack: new Map(), defense: new Map(), dps: new Map() };
+        this.ui.weaponMerchantArea = document.getElementById('weapon-merchant-area');
 
         this.cacheDynamicElements();
     }
@@ -141,6 +142,7 @@ class CacheManager {
         this.ui.outputLogArea.classList.add('hidden');
         this.ui.treasureArea.classList.add('hidden');
         this.ui.forgeArea.classList.add('hidden');
+        this.ui.weaponMerchantArea.classList.add('hidden');
         document.getElementById('trap-area')?.classList.add('hidden');
         document.getElementById('blacksmith-area')?.remove();
         document.getElementById('sharpen-area')?.remove();

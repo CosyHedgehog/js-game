@@ -58,6 +58,7 @@ class EventsUI {
                     case 'alchemist': eventIcon.textContent = '⚗️'; break;
                     case 'trap': eventIcon.textContent = '⚡'; break;
                     case 'treasure_chest': eventIcon.textContent = '💎'; break;
+                    case 'weapon_merchant': eventIcon.textContent = '🗡️'; break;
                     default: eventIcon.textContent = '❓';
                 }
             }
@@ -118,6 +119,7 @@ class EventsUI {
                 case 'alchemist': startButton.textContent = 'Enter Shop'; break;
                 case 'trap': startButton.textContent = 'Investigate'; break;
                 case 'treasure_chest': startButton.textContent = 'Open Chest'; break;
+                case 'weapon_merchant': startButton.textContent = 'Visit Merchant'; break;
                 default: startButton.textContent = 'Start';
             }
             startButton.onclick = (e) => {
