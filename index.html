@@ -254,7 +254,7 @@
     <script src="game/log.js"></script>
     <script src="game/player.js"></script>
     <script> 
-      document.addEventListener('DOMContentLoaded', () => { new Game().start(); });
+      document.addEventListener('DOMContentLoaded', () => { window.game = new Game(); window.game.start(); });
     </script>
   </body>
 </html>

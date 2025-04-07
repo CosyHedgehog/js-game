@@ -24,8 +24,20 @@ class EndUI {
             `;
         }
 
-        content += `<button onclick="window.location.reload()">Play Again</button>`;
+        content += `<button id="play-again-button">Play Again</button>`;
         container.innerHTML = content;
         document.body.appendChild(container);
+
+        const playAgainButton = document.getElementById('play-again-button');
+        if (playAgainButton) {
+            playAgainButton.onclick = () => {
+
+                window.game = new Game();
+                window.game.start();
+
+                backdrop.remove();
+                container.remove();
+            };
+        }
     }
 }

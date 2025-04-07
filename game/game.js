@@ -49,8 +49,8 @@ class Game {
     ];
 
     start() {
-        this.devMode();
-        // this.normalMode();
+        // this.devMode();
+        this.normalMode();
     }
 
     normalMode() {
@@ -73,7 +73,7 @@ class Game {
         this.state = 'choosing';
         this.currentArea = "giants_pass";
         // this.pendingAreaTransitionName = "Giants pass";
-        this.player.health = 1000;
+        this.player.health = 1;
         this.player.baseAttack = 6;
         this.player.gold = 1000;
 
