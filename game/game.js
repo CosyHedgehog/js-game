@@ -25,7 +25,7 @@ class Game {
         { type: 'shop', weight: 10 }, // DONE
         { type: 'alchemist', weight: 10 }, // DONE
         { type: 'treasure_chest', weight: 10 }, // DONE
-        { type: 'forge', weight: 100 }, // DONE
+        { type: 'forge', weight: 10 }, // DONE
         { type: 'fishing', weight: 10 }, // DONE
         { type: 'trap', weight: 10 } // DONE
     ];
@@ -403,54 +403,38 @@ class Game {
                 return details;
             }
             case 'rest':
-                return `Rest at this site to recover 20-70% of your maximum health (${Math.floor(this.player.maxHealth * 0.2)}-${Math.floor(this.player.maxHealth * 0.7)} HP).\n` +
-                    `Your maximum HP will also increase by 1.\n\n` +
-                    `Do you want to rest here?`;
+                return `Rest at this campsite to restore and increase your health. \n\n` +
+                       `Do you want to rest here?`;
             case 'shop':
-                return "Visit a merchant to buy and sell items.\n" +
-                    "You can also reroll the shop's inventory once for 3 gold.\n\n" +
-                    `Current gold: ${this.player.gold}\n\n` +
+                return "Visit a merchant to buy and sell items.\n\n" +
+                    `Current gold: ${this.player.gold}.\n\n` +
                     "Enter shop?";
             case 'fishing':
-                return "Try your luck fishing!\n" +
-                    "You might catch 1-5 fish of varying sizes:\n" +
-                    "- Small Fish (Common) - Heals 2 HP\n" +
-                    "- Medium Fish (Uncommon) - Heals 5 HP\n" +
-                    "- Large Fish (Rare) - Heals 8 HP\n\n" +
+                return "Approach the water's edge. Choose a fishing spot with varying rewards and risks (Requires Fishing Rod for deeper waters).\n\n" +
                     "Go fishing?";
-            case 'blacksmith':
-                return "Visit the Blacksmith to combine two similar items into a stronger version.\n" +
-                    "You can combine weapons or armor pieces of the same type.\n\n" +
-                    "Enter the forge?";
-            case 'sharpen':
-                return "You find a sharpening stone that can enhance a weapon.\n" +
-                    "Select one weapon to permanently increase its attack power by 1.\n\n" +
-                    "Use the sharpening stone?";
-            case 'armorsmith':
-                return "You find an Armorsmith that can enhance armor.\n" +
-                    "Select one piece of armor to permanently increase its defense by 1.\n\n" +
-                    "OR increase its max health by 3.\n\n" +
-                    "Use the Armourer's tools?";
-            case 'alchemist':
-                return "Visit the Alchemist to buy powerful potions:\n" +
-                    "- Health Potions: Restore HP instantly\n" +
-                    "- Attack Potions: Boost damage for combat\n" +
-                    "- Defense Potions: Increase defense for combat\n" +
-                    "- Speed Potions: Attack faster for combat\n\n" +
-                    `Current gold: ${this.player.gold}\n\n` +
-                    "Enter the Alchemist's shop?";
-            case 'trap':
-                return "You notice something suspicious on the ground. It might be a trap."
-                    + "\n\nYou could try to disarm it (30% chance) for a potential reward."
-                    + "\nFailure will result in 1-3 damage."
-                    + "\n\nInvestigate the trap?";
-            case 'treasure_chest':
-                return "You find a sturdy-looking treasure chest.\n\n" +
-                    "Open it?";
             case 'forge':
                 return "Visit the Blacksmith Workshop to enhance or combine your gear using various stations.\n\n" +
                     "Some stations may require a Blacksmith Hammer.\n\n" +
-                    "Enter the workshop?"
+                    "Enter the workshop?";
+            case 'blacksmith':
+                return "Combine two compatible weapons or armors into a stronger version. Requires Blacksmith Hammer.\n\n" +
+                    "Enter the Blacksmith's Forge?";
+            case 'sharpen':
+                return "Use the Sharpening Stone. Select one weapon to either Sharpen (+1 Attack) or Hone (-0.5s Speed).\n\n" +
+                    "Use the stone?";
+            case 'armorsmith':
+                return "Use the Armourer Station. Select one armor piece to either Reinforce (+1 Defense) or Fortify (+3 Max Health). Requires Blacksmith Hammer.\n\n" +
+                    "Use the station?";
+            case 'alchemist':
+                return "Visit the Alchemist to buy powerful temporary combat potions. You will be offered one free potion upon entering!\n\n" +
+                    `Current gold: ${this.player.gold}\n\n` +
+                    "Enter the Alchemist's shop?";
+            case 'trap':
+                return "You notice a set of suspicious traps. You can attempt to disarm them.\n\n" +
+                    "Investigate traps?";
+            case 'treasure_chest':
+                return "You find a sturdy-looking treasure chest. It might be locked.\n\n" +
+                    "Approach the chest?";
             default:
                 return "Unknown encounter type.";
         }
