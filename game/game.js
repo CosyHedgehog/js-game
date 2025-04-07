@@ -26,7 +26,7 @@ class Game {
         { type: 'alchemist', weight: 10 },
         { type: 'treasure_chest', weight: 10 }, 
         { type: 'forge', weight: 10 },
-        { type: 'fishing', weight: 10 },
+        { type: 'fishing', weight: 100 },
         { type: 'trap', weight: 100 }
     ];
 

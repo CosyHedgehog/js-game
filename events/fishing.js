@@ -8,7 +8,7 @@ class Fishing {
     FISHING_AREAS = {
         shoreline: {
             name: 'Shallow Shoreline',
-            description: 'Scrounge near the water\'s edge for anything edible.',
+            description: 'Scrounge near the water\'s edge for anything edible. Contains Small Fish and Medium Fish.',
             fishRange: [1, 2],
             lootTable: [
                 { itemId: 'small_fish', chance: 0.75 },
@@ -19,19 +19,18 @@ class Fishing {
         },
         safe: {
             name: 'Calm Waters',
-            description: 'A peaceful fishing spot. Low risk, low reward.',
+            description: 'A peaceful fishing spot. Low risk, low reward. Contains Small Fish and Medium Fish.',
             fishRange: [1, 3],
             lootTable: [
                 { itemId: 'small_fish', chance: 0.65 },
-                { itemId: 'medium_fish', chance: 0.30 },
-                { itemId: 'large_fish', chance: 0.05 }
+                { itemId: 'medium_fish', chance: 0.35 },
             ],
             monsterChance: 0.1,
             requiresRod: true
         },
         moderate: {
             name: 'Rushing Stream',
-            description: 'A faster flowing area. Medium risk, medium reward.',
+            description: 'A faster flowing area. Medium risk, medium reward. Contains Small Fish, Medium Fish, and Large Fish.',
             fishRange: [2, 4],
             lootTable: [
                 { itemId: 'small_fish', chance: 0.40 },
@@ -43,7 +42,7 @@ class Fishing {
         },
         dangerous: {
             name: 'Deep Waters',
-            description: 'A treacherous fishing spot. High risk, high reward.',
+            description: 'A treacherous fishing spot. High risk, high reward. Contains Small Fish, Medium Fish, and Large Fish.',
             fishRange: [4, 6],
             lootTable: [
                 { itemId: 'small_fish', chance: 0.15 },
@@ -77,14 +76,26 @@ class Fishing {
             const requirementText = needsRod && !hasFishingRod ? '<span class="requirement-missing">(Requires Fishing Rod)</span>' : '';
             const isDisabled = needsRod && !hasFishingRod ? 'disabled' : '';
 
+            // Generate the actual requirement text span OR an empty string
+            const actualRequirement = needsRod && !hasFishingRod ? `<span class="requirement-missing">Requires Fishing Rod</span>` : '';
+
+            // Create placeholder text with the same content for height calculation, but make it invisible via CSS later
+            const placeholder = `<span class="requirement-placeholder">Requires Fishing Rod</span>`;
+
+            // Use the actual requirement if it exists, otherwise use the placeholder structure
+            const requirementContent = actualRequirement || placeholder;
+
             return `
                     <div class="choice-card" data-area="${key}">
                         <h4 class="choice-title">${area.name}</h4>
-                        ${requirementText}
+                        ${requirementContent}
                         <p class="choice-description">${area.description}</p>
                         <div class="monster-stats-grid">
-                            <span class="monster-stat">Fish: ${area.fishRange[0]}-${area.fishRange[1]}</span>
-                            <span class="monster-stat">Monster Chance: ${Math.round(area.monsterChance * 100)}%</span>
+                            <span class="fishing-stat">Fish: ${area.fishRange[0]}-${area.fishRange[1]}</span>
+                            <span class="fishing-stat monster-chance-stat">
+                                <span class="fishing-stat-label">Monster Chance</span>
+                                <span class="fishing-stat-value">${Math.round(area.monsterChance * 100)}%</span>
+                            </span>
                         </div>
                         <button class="choice-start-button" ${isDisabled}>Fish Here</button>
                     </div>

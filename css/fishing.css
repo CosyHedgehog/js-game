@@ -26,3 +26,89 @@
     font-weight: bold;
     margin-left: 5px;
 }
+
+/* Center title and requirement text */
+#fishing-area .choice-card .choice-title,
+#fishing-area .choice-card .requirement-missing {
+    text-align: center;
+    display: block; 
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Ensure requirement text has spacing */
+#fishing-area .choice-card .requirement-missing {
+     margin-bottom: 5px; 
+     color: #ff6b6b;
+     font-size: 0.85em;
+     font-weight: bold;
+}
+
+/* New stat class for fishing */
+.fishing-stat {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid #444;
+    border-radius: 4px;
+    padding: 0.25rem 0.5rem;
+    transition: background-color 0.2s;
+    display: flex;
+    align-items: center; 
+    justify-content: center; 
+    gap: 0.2rem; 
+    cursor: default;
+    text-align: center;
+}
+
+/* Specific style for monster chance stat to stack label and value */
+.fishing-stat.monster-chance-stat {
+    flex-direction: column; 
+    align-items: center; 
+    padding-top: 0.4rem; 
+    padding-bottom: 0.4rem;
+}
+
+/* Style for the label within the stacked stat */
+.fishing-stat-label {
+    font-size: 0.8em; 
+    color: #bbb;
+    line-height: 1;
+}
+
+/* Style for the value within the stacked stat */
+.fishing-stat-value {
+    font-size: 1em; 
+    font-weight: bold;
+    color: #eee;
+    line-height: 1;
+}
+
+/* Make sure the monster-stats-grid still works */
+#fishing-area .monster-stats-grid {
+     margin-top: 10px; 
+}
+
+/* Make placeholder invisible but retain layout space */
+.requirement-placeholder {
+    visibility: hidden; 
+    display: block; 
+    text-align: center; 
+    margin-left: auto; 
+    margin-right: auto; 
+    margin-bottom: 5px; 
+    font-size: 0.85em; 
+    font-weight: bold; 
+}
+
+/* Set default cursor for cards, allowing buttons to override */
+.fishing-areas-container .choice-card {
+    cursor: default;
+}
+
+/* Ensure button within fishing card retains its interactive cursor */
+.fishing-areas-container .choice-card .choice-start-button:not(:disabled) { /* Target only enabled buttons */
+    cursor: pointer; 
+}
+
+.fishing-areas-container .choice-card .choice-start-button:disabled {
+    cursor: not-allowed; /* Standard disabled cursor */
+}
