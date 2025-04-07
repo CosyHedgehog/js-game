@@ -514,7 +514,7 @@ class Combat {
                 ${this.player.health <= 0 ?
                     `<p style="color: #ff4444">Unfortunately, you didn't survive the escape attempt...</p>` :
                     ''}
-                <button id="escape-continue">Continue</button>
+                <button id="escape-continue">${this.player.health <= 0 ? 'Play Again' : 'Continue'}</button>
             `;
 
             messageContainer.innerHTML = content;
@@ -528,7 +528,8 @@ class Combat {
                 backdrop.remove();
                 if (this.player.health <= 0) {
                     this.game.addLog(`You were defeated while trying to escape from the ${this.enemy.name}...`);
-                    this.game.endGame(false);
+                    window.game = new Game();
+                    window.game.start();
                 } else {
                     this.game.addLog(`You successfully fled from the ${this.enemy.name}!`);
                     this.player.resetCombatBuffs();
