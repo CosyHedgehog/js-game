@@ -18,59 +18,88 @@ class Blacksmith {
     showBlacksmithUI() {
         this.ui.clearMainArea();
         this.ui.renderInventory();
+        this.ui.updatePlayerStats(); 
 
-        const hasHammer = this.game.player.inventory.some(item => item && item.id === 'blacksmith_hammer');
-        let hammerWarning = hasHammer ? '' : '<p style="color: #ff4444; font-weight: bold;">Requires: Blacksmith Hammer</p>';
+        // --- Link CSS ---
+        const cssLink = document.getElementById('blacksmith-css');
+        if (!cssLink) {
+            const link = document.createElement('link');
+            link.id = 'blacksmith-css';
+            link.rel = 'stylesheet';
+            link.href = 'css/blacksmith.css';
+            document.head.appendChild(link);
+        }
+        // ---------------
 
+        const mainContent = document.getElementById('main-content');
         const blacksmithArea = document.createElement('div');
         blacksmithArea.id = 'blacksmith-area';
-        blacksmithArea.innerHTML = `
-            <h3>Blacksmith's Forge</h3>
-            ${hammerWarning}
-            <p>Place two compatible items below to forge them into a stronger version.</p>
-            <div class="forge-container">
-                <div class="forge-slots-area">
-                    <div class="forge-slot" id="forge-slot-1">
-                        <div class="forge-slot-label">Item 1</div>
-                        <div class="forge-slot-content">Drag item here</div>
-                    </div>
-                    <div class="forge-symbol">+</div>
-                    <div class="forge-slot" id="forge-slot-2">
-                        <div class="forge-slot-label">Item 2</div>
-                        <div class="forge-slot-content">Drag item here</div>
-                    </div>
-                </div>
-                <div id="forge-preview">Place two compatible items to forge.</div>
-                <button id="forge-button" disabled>Forge Items</button>
-            </div>
-            <button id="blacksmith-leave-button">Leave Forge</button>
-        `;
-
-        document.getElementById('main-content').appendChild(blacksmithArea);
         blacksmithArea.classList.remove('hidden');
 
-        const forgeSlot1 = document.getElementById('forge-slot-1');
-        const forgeSlot2 = document.getElementById('forge-slot-2');
-        const forgeButton = document.getElementById('forge-button');
-        const leaveButton = document.getElementById('blacksmith-leave-button');
+        const hasHammer = this.game.player.inventory.some(item => item && item.id === 'blacksmith_hammer');
+        let hammerWarning = hasHammer ? '' : '<p class="requirement-warning">Requires: Blacksmith Hammer</p>';
+
+        blacksmithArea.innerHTML = `
+            <h3>🔥 Blacksmith's Forge</h3>
+            ${hammerWarning}
+            <p class="ui-description">Place two compatible items below to forge them into a stronger version.</p>
+
+            <div class="blacksmith-content-wrapper">
+                <div class="blacksmith-main-area">
+                    <div class="blacksmith-slots-row"> 
+                        <div class="forge-slot" id="forge-slot-1">
+                            <div class="forge-slot-content">Drag item 1</div>
+                        </div>
+                        <div class="forge-slot" id="forge-slot-2">
+                             <div class="forge-slot-content">Drag item 2</div>
+                        </div>
+                    </div>
+                    <div id="forge-preview" class="item-description">
+                        Place two compatible items to forge.
+                    </div>
+                </div>
+
+                <div class="blacksmith-controls">
+                    <button id="forge-button" class="action-button" disabled>Forge Items</button>
+                    <button id="blacksmith-leave-button" class="leave-button">Leave Forge</button>
+                </div>
+            </div>
+        `;
+
+        const existingArea = document.getElementById('blacksmith-area');
+        if (existingArea) existingArea.remove();
+        mainContent.appendChild(blacksmithArea);
+
+        this.setupBlacksmithEventListeners(blacksmithArea);
+        this.updateForgeButton(); 
+    }
+
+    setupBlacksmithEventListeners(blacksmithArea) {
+        const forgeSlot1 = blacksmithArea.querySelector('#forge-slot-1');
+        const forgeSlot2 = blacksmithArea.querySelector('#forge-slot-2');
+        const forgeButton = blacksmithArea.querySelector('#forge-button');
+        const leaveButton = blacksmithArea.querySelector('#blacksmith-leave-button');
 
         [forgeSlot1, forgeSlot2].forEach((slot, index) => {
+            const targetSlotNum = index + 1;
             slot.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                const sourceIndexStr = this.ui.draggedItemIndex;
-                const sourceIndex = parseInt(sourceIndexStr);
-                const item = this.game.player.inventory[sourceIndex];
-                const targetSlotNum = index + 1;
+                 event.preventDefault();
+                 const sourceIndex = this.ui.draggedItemIndex;
+                 const item = this.ui.draggedItem;
+                 if (sourceIndex === null || item === null) return;
+                 slot.classList.remove('drag-over-valid', 'drag-over-invalid');
 
-                if (this.isValidForgeItem(item, sourceIndex, targetSlotNum)) {
-                    e.dataTransfer.dropEffect = 'move';
-                    slot.classList.add('drag-over-valid');
-                    slot.classList.remove('drag-over-invalid');
-                } else {
-                    e.dataTransfer.dropEffect = 'none';
-                    slot.classList.add('drag-over-invalid');
-                    slot.classList.remove('drag-over-valid');
-                }
+                 const otherSlotNum = targetSlotNum === 1 ? 2 : 1;
+                 const otherSlotElement = document.getElementById(`forge-slot-${otherSlotNum}`);
+                 const otherItemDataString = otherSlotElement?.dataset.itemData;
+                 let otherItem = null;
+                 if(otherItemDataString) try { otherItem = JSON.parse(otherItemDataString); } catch(err) {}
+
+                 if (this.isValidForgeDropTarget(item, otherItem)) {
+                     slot.classList.add('drag-over-valid');
+                 } else {
+                     slot.classList.add('drag-over-invalid');
+                 }
             });
 
             slot.addEventListener('dragleave', (e) => {
@@ -81,72 +110,136 @@ class Blacksmith {
                 e.preventDefault();
                 slot.classList.remove('drag-over-valid', 'drag-over-invalid');
 
-                const sourceIndexStr = this.ui.draggedItemIndex;
-                if (sourceIndexStr === null) return;
-                const parsedIndex = parseInt(sourceIndexStr, 10);
+                const sourceIndexStr = event.dataTransfer.getData('text/plain'); 
+                if (sourceIndexStr === null || sourceIndexStr === undefined || sourceIndexStr === '') return;
 
+                const parsedIndex = parseInt(sourceIndexStr, 10);
                 if (isNaN(parsedIndex)) return;
 
-                const item = this.game.player.inventory[parsedIndex];
-                const targetSlotNum = index + 1;
+                const itemToDrop = this.game.player.inventory[parsedIndex];
 
-                if (!this.isValidForgeItem(item, parsedIndex, targetSlotNum)) {
-                    this.game.addLog("Invalid item combination for forging.");
-                    return;
-                }
+                 const otherSlotNum = targetSlotNum === 1 ? 2 : 1;
+                 const otherSlotElement = document.getElementById(`forge-slot-${otherSlotNum}`);
+                 const otherItemDataString = otherSlotElement?.dataset.itemData;
+                 let otherItem = null;
+                 if(otherItemDataString) try { otherItem = JSON.parse(otherItemDataString); } catch(err) {}
 
-                if (slot.dataset.itemData) {
-                    this.clearForgeSlot(targetSlotNum);
-                }
-                const currentInventoryItem = this.game.player.inventory[parsedIndex];
-                if (!currentInventoryItem || currentInventoryItem.id !== item.id) {
-                    console.warn(`Item at index ${parsedIndex} changed or removed unexpectedly.`);
-                    this.game.addLog("Action interrupted. Please try dragging the item again.");
-                    this.ui.renderInventory();
-                    return;
-                }
-                const removedItem = this.game.player.removeItem(parsedIndex);
-                slot.dataset.itemData = JSON.stringify(removedItem);
-                slot.dataset.originalIndex = parsedIndex;
-                slot.innerHTML = `
-                    <div class="forge-slot-label">Item ${targetSlotNum}</div>
-                    <div class="forge-slot-content">${removedItem.name}</div>
-                `;
-                slot.style.cursor = 'pointer';
-
-                slot.onclick = () => {
+                if (this.isValidForgeDropTarget(itemToDrop, otherItem)) {
                     if (slot.dataset.itemData) {
                         this.clearForgeSlot(targetSlotNum);
                     }
-                };
-                slot.classList.add('crafting-slot-filled');
 
-                this.updateForgeButton();
-                this.ui.renderInventory();
-                this.ui.renderEquipment();
+                    const currentInventoryItem = this.game.player.inventory[parsedIndex];
+                    if (!currentInventoryItem || currentInventoryItem.id !== itemToDrop.id) {
+                        console.warn(`Item at index ${parsedIndex} changed or removed unexpectedly.`);
+                        this.game.addLog("Action interrupted. Please try dragging the item again.");
+                        this.ui.renderInventory();
+                        return;
+                    }
+                    const removedItem = this.game.player.removeItem(parsedIndex);
+
+                    if (!removedItem.baseId && removedItem.id) {
+                        removedItem.baseId = removedItem.id.replace(/_forged.*|_upgraded_\d+/, '');
+                         if (!ITEMS[removedItem.baseId]) {
+                            console.warn(`Could not derive valid baseId for ${removedItem.id}. Falling back to ID.`);
+                            removedItem.baseId = removedItem.id; 
+                         }
+                    }
+
+                    slot.dataset.itemData = JSON.stringify(removedItem);
+                    slot.dataset.originalIndex = parsedIndex; 
+                    slot.innerHTML = `
+                        <div class="forge-slot-content">${removedItem.name}</div>
+                    `;
+                    slot.style.cursor = 'pointer';
+                    slot.onclick = () => {
+                        if (slot.dataset.itemData) {
+                            this.clearForgeSlot(targetSlotNum);
+                        }
+                    };
+                    slot.classList.add('crafting-slot-filled');
+
+                    this.updateForgeButton(); 
+                    this.ui.renderInventory();
+                    this.ui.renderEquipment();
+                } else {
+                     this.game.addLog("Invalid item or combination for forging.");
+                }
             });
         });
 
-        forgeButton.onclick = () => {
-            const slot1 = document.getElementById('forge-slot-1');
-            const slot2 = document.getElementById('forge-slot-2');
-            if (slot1.dataset.itemData && slot2.dataset.itemData) {
-                this.handleForgeItems();
-            } else {
-                console.warn("Forge button clicked but slots not ready.");
-            }
-        };
+        if(forgeButton) {
+            forgeButton.onclick = () => {
+                const slot1 = document.getElementById('forge-slot-1');
+                const slot2 = document.getElementById('forge-slot-2');
+                if (slot1?.dataset.itemData && slot2?.dataset.itemData) {
+                    this.handleForgeItems();
+                } else {
+                    console.warn("Forge button clicked but slots not ready.");
+                }
+            };
+        }
 
-        leaveButton.onclick = function () {
-            this.game.addLog("You leave the Blacksmith's forge.");
-            this.clearForgeSlot(1);
-            this.clearForgeSlot(2);
-            this.game.proceedToNextRound();
-        }.bind(this);
+        if(leaveButton) {
+            leaveButton.onclick = function () {
+                this.game.addLog("You leave the Blacksmith's forge.");
+                this.clearForgeSlot(1);
+                this.clearForgeSlot(2);
+                this.game.proceedToNextRound();
+            }.bind(this);
+        }
     }
 
-       isEnhanced(item) {
-        return item && (item.isReinforced === true || item.isFortified === true || item.isForged === true);
+    isValidForgeDropTarget(item, otherItemInSlot) {
+         if (!item || (item.type !== 'weapon' && item.type !== 'armor') || item.isForged === true) {
+             return false; 
+         }
+         if (!otherItemInSlot) {
+             return true;
+         }
+
+        const itemBaseId = item.baseId || item.id.replace(/_forged.*|_upgraded_\d+/, '');
+        const otherBaseId = otherItemInSlot.baseId || otherItemInSlot.id.replace(/_forged.*|_upgraded_\d+/, '');
+
+         return (item.type === otherItemInSlot.type &&
+                 item.slot === otherItemInSlot.slot &&
+                 itemBaseId === otherBaseId &&
+                 otherItemInSlot.isForged !== true);
+    }
+
+    clearForgeSlot(slotNum, returnItemToInventory = true) {
+        const slotId = `forge-slot-${slotNum}`;
+        const slotElement = document.getElementById(slotId);
+        if (!slotElement) return;
+
+        const itemDataString = slotElement.dataset.itemData;
+        if (itemDataString && returnItemToInventory) { 
+            try {
+                const item = JSON.parse(itemDataString);
+                this.game.player.addItem(item); 
+            } catch (error) {
+                console.error(`Error parsing item data from forge slot ${slotNum}:`, error);
+                this.game.addLog(`Error clearing slot ${slotNum}. Item data corrupted?`);
+            }
+        }
+
+        slotElement.innerHTML = `<div class="forge-slot-content">Drag item ${slotNum}</div>`;
+        slotElement.style.cursor = 'default';
+        slotElement.onclick = null;
+        delete slotElement.dataset.itemData;
+        delete slotElement.dataset.originalIndex;
+        slotElement.classList.remove('crafting-slot-filled');
+
+         if (returnItemToInventory) {
+            this.updateForgeButton();
+            this.ui.renderInventory();
+            this.ui.renderEquipment();
+         } else {
+             this.updateForgeButton(); 
+         }
+
+         const forgeButton = document.getElementById('forge-button');
+         if (forgeButton) forgeButton.disabled = true; 
     }
 
     updateForgeButton() {
@@ -155,286 +248,220 @@ class Blacksmith {
         const forgeButton = document.getElementById('forge-button');
         const forgePreview = document.getElementById('forge-preview');
 
-        if (!slot1 || !slot2 || !forgeButton || !forgePreview) {
-            console.warn("updateForgeButton: One or more required elements not found.");
-            if (forgeButton) forgeButton.disabled = true;
-            if (forgePreview) forgePreview.classList.add('hidden');
-            return;
-        }
+        if (!slot1 || !slot2 || !forgeButton || !forgePreview) return;
+
         const item1DataString = slot1.dataset.itemData;
         const item2DataString = slot2.dataset.itemData;
         const hasHammer = this.game.player.inventory.some(item => item && item.id === 'blacksmith_hammer');
-        let canForge = false;
         let item1 = null;
         let item2 = null;
+        let canForge = false;
+        let previewItem = null;
+        let validationMessage = "Place two compatible items to forge."; 
 
-        if (item1DataString && item2DataString) {
-            try {
-                item1 = JSON.parse(item1DataString);
-                item2 = JSON.parse(item2DataString);
+        if (item1DataString) try { item1 = JSON.parse(item1DataString); } catch(e) { console.error("Error parsing slot 1 data:", e); }
+        if (item2DataString) try { item2 = JSON.parse(item2DataString); } catch(e) { console.error("Error parsing slot 2 data:", e); }
 
-                               canForge = false;
-                if (item1 && item2 && item1.baseId === item2.baseId && item1.type === item2.type && item1.slot === item2.slot && hasHammer) {
-                                       if (item1.isForged !== true && item2.isForged !== true) {
-                        canForge = true;
-                    }
-                }
+        if (item1 && item2) {
+            item1.baseId = item1.baseId || item1.id.replace(/_forged.*|_upgraded_\d+/, '');
+            item2.baseId = item2.baseId || item2.id.replace(/_forged.*|_upgraded_\d+/, '');
 
-            } catch (error) {
-                console.error("Error parsing item data in updateForgeButton:", error);
-                canForge = false;
+            if (!hasHammer) {
+                validationMessage = "Requires Blacksmith Hammer.";
+            } else if (item1.isForged || item2.isForged) {
+                 validationMessage = "Cannot forge an already forged item.";
+            } else if (item1.type !== item2.type || item1.slot !== item2.slot) {
+                 validationMessage = "Items must be of the same type and slot.";
+            } else if (item1.baseId !== item2.baseId) {
+                 validationMessage = "Items must be based on the same original item.";
+            } else {
+                 previewItem = this.previewForgedItem(item1, item2);
+                 if (previewItem) {
+                     canForge = true;
+                     validationMessage = ""; 
+                 } else {
+                     validationMessage = "Error generating forge preview.";
+                 }
             }
+        } else if (item1 || item2) {
+             validationMessage = "Place a second compatible item.";
         }
 
         forgeButton.disabled = !canForge;
 
-        if (canForge && item1 && item2) {            const previewItem = this.previewForgedItem(item1, item2);
+        if (canForge && previewItem) {
+             let previewHTML = `<div class="item-desc-text preview-grid blacksmith-preview-grid">`;
 
-                       let previewHTML = ``;
-            const formatStats = (item, label) => {
-                let statsStr = `<strong>${label}:</strong> ${item.name}<br>`;
-                statsStr += `&nbsp;&nbsp;Atk: ${item.stats?.attack || 0} / Def: ${item.stats?.defense || 0}`; 
-                if (item.stats?.maxHealth) statsStr += ` / MaxHP: +${item.stats.maxHealth}`;
-                if (item.speed) statsStr += ` / Spd: ${item.speed.toFixed(1)}s`;
-                return statsStr + '<br>';
+             previewHTML += `<div class="preview-header"></div>`;
+             previewHTML += `<div class="preview-header">Attack</div>`;
+             previewHTML += `<div class="preview-header">Defense</div>`;
+             previewHTML += `<div class="preview-header">Max HP</div>`;
+             previewHTML += `<div class="preview-header">Speed</div>`;
+
+             const formatRow = (label, item) => {
+                let row = `<div>${label}</div>`;
+                row += `<div class="preview-cell">${item.stats?.attack || '-'}</div>`;
+                row += `<div class="preview-cell">${item.stats?.defense || '-'}</div>`;
+                row += `<div class="preview-cell">${item.stats?.maxHealth ? '+' + item.stats.maxHealth : '-'}</div>`;
+                row += `<div class="preview-cell">${item.speed !== undefined ? item.speed.toFixed(1) + 's' : '-'}</div>`;
+                return row;
             };
 
-            previewHTML += formatStats(item1, "Item 1");
-            previewHTML += formatStats(item2, "Item 2");
+             previewHTML += formatRow("Item 1", item1);
+             previewHTML += formatRow("Item 2", item2);
+             previewHTML += formatRow("Forge", previewItem);
 
-            if (previewItem) {
-                let resultStatsStr = `<strong>Result:</strong> ${previewItem.name}<br>`;
-                resultStatsStr += `&nbsp;&nbsp;Atk: ${previewItem.stats?.attack || 0} / Def: ${previewItem.stats?.defense || 0}`;
-                if (previewItem.stats?.maxHealth) resultStatsStr += ` / MaxHP: +${previewItem.stats.maxHealth}`;
-                if (previewItem.speed) resultStatsStr += ` / Spd: ${previewItem.speed.toFixed(1)}s`;
-                previewHTML += resultStatsStr;
-
-                forgePreview.innerHTML = previewHTML;                forgePreview.classList.remove('hidden');
-            } else {
-                forgeButton.disabled = true;
-                forgePreview.textContent = "Error generating preview.";                forgePreview.classList.remove('hidden');
-            }
+             previewHTML += `</div>`; 
+             forgePreview.innerHTML = previewHTML;
+             forgePreview.classList.remove('hidden'); 
         } else {
-            forgeButton.disabled = true;
-            if (!item1DataString || !item2DataString) {
-                forgePreview.textContent = "Place two items to forge.";
-            } else if (!hasHammer) {
-                forgePreview.textContent = "Requires Blacksmith Hammer.";
-            } else {
-                               const item1Forged = item1 && item1.isForged === true;
-                const item2Forged = item2 && item2.isForged === true;
-                if (item1DataString && item2DataString) {
-                    if (item1Forged || item2Forged) {
-                        forgePreview.textContent = "Cannot forge an already forged item.";
-                    } else if (item1?.baseId !== item2?.baseId) {
-                        forgePreview.textContent = "Items must be based on the same original item.";
-                    } else {
-                        forgePreview.textContent = "Place two compatible items to forge.";                    }
-                } else {
-                    forgePreview.textContent = "Place two items to forge.";
-                }
-            }
+            forgePreview.innerHTML = `<div class="item-desc-text">${validationMessage}</div>`;
             forgePreview.classList.remove('hidden');
         }
     }
 
-    previewForgedItem(item1, item2) {
-        if (!item1 || !item2 || item1.baseId !== item2.baseId) {
-            return null;
-        }
+     handleForgeItems() {
+         const hasHammer = this.game.player.inventory.some(item => item && item.id === 'blacksmith_hammer');
+         if (!hasHammer) {
+             this.game.addLog("You need a Blacksmith Hammer to forge items!");
+             return;
+         }
 
-               if (item1.isForged === true || item2.isForged === true) {
-            console.warn("Attempted to preview forge with already forged item.");            return null;
-        }
+         const slot1 = document.getElementById('forge-slot-1');
+         const slot2 = document.getElementById('forge-slot-2');
 
-        const baseId = item1.baseId;        const baseTemplate = ITEMS[baseId];
-        if (!baseTemplate) {
-            console.error("Base template not found for ID:", baseId);
-            return null;
-        }
+         const item1DataString = slot1?.dataset.itemData;
+         const item2DataString = slot2?.dataset.itemData;
 
-               const outputIsReinforced = item1.isReinforced === true || item2.isReinforced === true;
-        const outputIsFortified = item1.isFortified === true || item2.isFortified === true;
-        const outputIsSharpened = item1.isSharpened === true || item2.isSharpened === true;
-        const outputIsHoned = item1.isHoned === true || item2.isHoned === true;
+         if (!item1DataString || !item2DataString) {
+             console.error("Forge items called but item data missing from one or both slots.");
+             return;
+         }
 
-               const newStats = {};
-               newStats.attack = (item1.stats?.attack || 0) + (item2.stats?.attack || 0);
-        newStats.defense = (item1.stats?.defense || 0) + (item2.stats?.defense || 0);
-        newStats.maxHealth = (item1.stats?.maxHealth || 0) + (item2.stats?.maxHealth || 0);
+         let item1, item2;
+         try {
+             item1 = JSON.parse(item1DataString);
+             item2 = JSON.parse(item2DataString);
+         } catch (error) {
+             console.error("Error parsing item data in handleForgeItems:", error);
+             this.game.addLog("Error: Could not retrieve item data for forging.");
+             return;
+         }
 
-               let namePrefix = "Forged";
-        if (outputIsSharpened) namePrefix += " Sharpened";
-        if (outputIsHoned) namePrefix += " Honed";
-        if (outputIsReinforced) namePrefix += " Reinforced";
-        if (outputIsFortified) namePrefix += " Fortified";
-        const newName = `${namePrefix} ${baseTemplate.name}`;
+         if (!item1 || !item2) return;
 
-               let description = `Two ${baseTemplate.name} forged together, combining their strengths.\n`;
-        if (newStats.attack) description += `Attack: +${newStats.attack}\n`;
-        if (newStats.defense) description += `Defense: +${newStats.defense}\n`;
-        if (newStats.maxHealth) description += `Max HP: +${newStats.maxHealth}\n`;
-        if (baseTemplate.speed) description += `Speed: ${baseTemplate.speed.toFixed(1)}s\n`;               let finalSpeed = baseTemplate.speed;
-        if (outputIsHoned) {
-            finalSpeed = Math.max(0.1, (finalSpeed ?? this.game.player.defaultAttackSpeed) - 0.2);
-                       const speedRegex = /Speed: [\d.]+s\n?/; 
-            if (description.match(speedRegex)) {
-                description = description.replace(speedRegex, `Speed: ${finalSpeed.toFixed(1)}s\n`);
-            } else {
-                description += `Speed: ${finalSpeed.toFixed(1)}s\n`;
-            }
-        }
-        if (baseTemplate.hands) description += `${baseTemplate.hands}-Handed`;
+          const forgedItem = this.previewForgedItem(item1, item2);
+         if (!forgedItem) {
+             this.game.addLog("Cannot forge these items together.");
+             return;
+         }
 
-        const forgedItem = {
-            id: `${baseId}_forged_${outputIsSharpened ? 's' : ''}${outputIsHoned ? 'h' : ''}${outputIsReinforced ? 'r' : ''}${outputIsFortified ? 'f' : ''}`,            baseId: baseId,
-            name: newName,
-            type: item1.type,            slot: item1.slot,
-            stats: newStats,
-            speed: finalSpeed,            hands: baseTemplate.hands,
-            isForged: true,            isSharpened: outputIsSharpened,
-            isHoned: outputIsHoned,
-            isReinforced: outputIsReinforced,            isFortified: outputIsFortified,            description: description.trim()
-        };
+         if (!this.game.player.addItem(forgedItem)) {
+             this.game.addLog("Inventory full! Cannot forge items.");
+             return;
+         }
 
-                      const valueMultiplier = item1.type === 'weapon' ? 1.15 : 1.1;
-        forgedItem.value = Math.floor((item1.value + item2.value) * valueMultiplier);
-        return forgedItem;
-    }
+          const forgeButton = document.getElementById('forge-button');
+          const leaveButton = document.getElementById('blacksmith-leave-button');
+          if (forgeButton) forgeButton.disabled = true;
+          if (leaveButton) leaveButton.disabled = true; 
 
-    handleForgeItems() {
-        const hasHammer = this.game.player.inventory.some(item => item && item.id === 'blacksmith_hammer');
-        if (!hasHammer) {
-            this.game.addLog("You need a Blacksmith Hammer to forge items!");
-            return;
-        }
+         this.clearForgeSlot(1, false); 
+         this.clearForgeSlot(2, false); 
 
-        const slot1 = document.getElementById('forge-slot-1');
-        const slot2 = document.getElementById('forge-slot-2');
+          this.game.addLog(`The Blacksmith forges your ${item1.name} and ${item2.name} into a ${forgedItem.name}!`);
+          this.updateForgeButton(); 
+          this.ui.renderInventory();
+          this.ui.renderEquipment();
 
-        const item1DataString = slot1.dataset.itemData;
-        const item2DataString = slot2.dataset.itemData;
+          const blacksmithArea = document.getElementById('blacksmith-area');
+          if (blacksmithArea) {
+              blacksmithArea.classList.add('upgrade-success-flash');
+              setTimeout(() => {
+                  blacksmithArea.classList.remove('upgrade-success-flash');
+                   if (leaveButton) leaveButton.disabled = false;
+                   this.ui.clearMainArea();
+                   this.game.proceedToNextRound();
+              }, 500);
+          } else {
+               this.ui.clearMainArea();
+               this.game.proceedToNextRound();
+          }
+     }
 
-        if (!item1DataString || !item2DataString) {
-            console.error("Forge items called but item data missing from one or both slots.");
-            return;
-        }
+      previewForgedItem(item1, item2) {
+        item1.baseId = item1.baseId || item1.id.replace(/_forged.*|_upgraded_\d+/, '');
+        item2.baseId = item2.baseId || item2.id.replace(/_forged.*|_upgraded_\d+/, '');
 
-        let item1, item2;
-        try {
-            item1 = JSON.parse(item1DataString);
-            item2 = JSON.parse(item2DataString);
-        } catch (error) {
-            console.error("Error parsing item data in handleForgeItems:", error);
-            this.game.addLog("Error: Could not retrieve item data for forging.");
-            return;
-        }
+         if (!item1 || !item2 || item1.baseId !== item2.baseId) {
+             return null;
+         }
+          const baseId = item1.baseId;
+          const baseTemplate = ITEMS[baseId];
+          if (!baseTemplate) {
+              console.error("Base template not found for ID:", baseId);
+              return null;
+          }
 
-        if (!item1 || !item2) return;
+            const newStats = {
+                attack: (item1.stats?.attack || 0) + (item2.stats?.attack || 0),
+                defense: (item1.stats?.defense || 0) + (item2.stats?.defense || 0),
+                maxHealth: (item1.stats?.maxHealth || 0) + (item2.stats?.maxHealth || 0)
+            };
 
-        const forgedItem = this.previewForgedItem(item1, item2);
-        if (!forgedItem) {
-            this.game.addLog("Cannot forge these items together.");
-            return;
-        }
+            const outputIsReinforced = item1.isReinforced || item2.isReinforced;
+            const outputIsFortified = item1.isFortified || item2.isFortified;
+            const outputIsSharpened = item1.isSharpened || item2.isSharpened;
+            const outputIsHoned = item1.isHoned || item2.isHoned;
 
-        if (!this.game.player.addItem(forgedItem)) {
-            this.game.addLog("Inventory full! Cannot forge items.");
-            return;
-        }
+         let namePrefix = "Forged";
+         if (outputIsSharpened) namePrefix += " Sharpened";
+         if (outputIsHoned) namePrefix += " Honed";
+         if (outputIsReinforced) namePrefix += " Reinforced";
+         if (outputIsFortified) namePrefix += " Fortified";
+         const newName = `${namePrefix} ${baseTemplate.name}`;
 
-        [slot1, slot2].forEach((slot, index) => {
-            const slotNum = index + 1;
-            slot.innerHTML = `
-                <div class="forge-slot-label">Item ${slotNum}</div>
-                <div class="forge-slot-content">Drag item here</div>
-            `;
-            slot.style.cursor = 'default';
-            slot.onclick = null;
-            delete slot.dataset.itemData;
-            delete slot.dataset.originalIndex;
-            slot.classList.remove('crafting-slot-filled');
-        });
-        this.game.addLog(`The Blacksmith forges your ${item1.name} and ${item2.name} into a ${forgedItem.name}!`);
-        this.updateForgeButton();
-        this.ui.renderInventory();
-        this.ui.renderEquipment();
+         let finalSpeed = baseTemplate.speed; 
+         if(outputIsHoned) {
+            finalSpeed = Math.max(0.1, (baseTemplate.speed ?? this.game.player.defaultAttackSpeed) - 0.5);
+         }
 
-        const blacksmithArea = document.getElementById('blacksmith-area');
-        if (blacksmithArea) {
-            blacksmithArea.classList.add('upgrade-success-flash');
-            setTimeout(() => blacksmithArea.classList.remove('upgrade-success-flash'), 500);
-        }
-    }
+         let description = `Two ${baseTemplate.name} forged together.\n`;
+         if (newStats.attack > (baseTemplate.stats?.attack || 0)) description += `Attack: +${newStats.attack}\n`;
+         else if (baseTemplate.stats?.attack) description += `Attack: +${baseTemplate.stats.attack}\n`; 
 
-    clearForgeSlot(slotNum) {
-        const slotId = `forge-slot-${slotNum}`;
-        const slotElement = document.getElementById(slotId);
-        if (!slotElement) {
-            console.error(`Forge slot element not found: ${slotId}`);
-            return;
-        }
+         if (newStats.defense > (baseTemplate.stats?.defense || 0)) description += `Defense: +${newStats.defense}\n`;
+         else if (baseTemplate.stats?.defense) description += `Defense: +${baseTemplate.stats.defense}\n`;
 
-        const itemDataString = slotElement.dataset.itemData;
-        if (itemDataString) {
-            try {
-                const item = JSON.parse(itemDataString);
-                if (this.game.player.addItem(item)) {
-                    this.game.addLog(`Returned ${item.name} to inventory.`);
-                } else {
-                    this.game.addLog(`Inventory full! Failed to return ${item.name}.`);
-                }
-            } catch (error) {
-                console.error(`Error parsing item data from forge slot ${slotNum}:`, error);
-                this.game.addLog(`Error clearing slot ${slotNum}. Item data corrupted?`);
-            }
-        }
+         if (newStats.maxHealth > (baseTemplate.stats?.maxHealth || 0)) description += `Max HP: +${newStats.maxHealth}\n`;
+         else if (baseTemplate.stats?.maxHealth) description += `Max HP: +${baseTemplate.stats.maxHealth}\n`;
 
-        slotElement.innerHTML = `
-            <div class="forge-slot-label">Item ${slotNum}</div>
-            <div class="forge-slot-content">Drag item here</div>
-        `;
-        slotElement.style.cursor = 'default';
-        slotElement.onclick = null;
+          if (finalSpeed !== undefined) description += `Speed: ${finalSpeed.toFixed(1)}s\n`;
+          if (baseTemplate.hands) description += `${baseTemplate.hands}-Handed\n`;
 
-        delete slotElement.dataset.itemData;
-        delete slotElement.dataset.originalIndex;
+         if (outputIsSharpened) description += "Sharpened (+Atk)\n";
+         if (outputIsHoned) description += "Honed (-Speed)\n";
+         if (outputIsReinforced) description += "Reinforced (+Def)\n";
+         if (outputIsFortified) description += "Fortified (+HP)\n";
 
-        slotElement.classList.remove('crafting-slot-filled');
+          const forgedItem = {
+              id: `${baseId}_forged_${Date.now()}`, 
+              baseId: baseId,
+              name: newName,
+              type: item1.type,
+              slot: item1.slot,
+              stats: newStats,
+              speed: finalSpeed,
+              hands: baseTemplate.hands,
+              isForged: true,
+              isSharpened: outputIsSharpened,
+              isHoned: outputIsHoned,
+              isReinforced: outputIsReinforced,
+              isFortified: outputIsFortified,
+              description: description.trim(),
+               value: Math.floor((item1.value + item2.value) * 1.1) 
+          };
+           return forgedItem;
+      }
 
-        this.updateForgeButton();
-        this.ui.renderInventory();
-        this.ui.renderEquipment();
-    }
-
-    isValidForgeItem(item, sourceIndex, targetSlotNum) {
-        if (!item || (item.type !== 'weapon' && item.type !== 'armor')) {
-            return false;
-        }
-
-        const otherSlotNum = targetSlotNum === 1 ? 2 : 1;
-        const otherSlot = document.getElementById(`forge-slot-${otherSlotNum}`);
-        const otherSlotIndexStr = otherSlot?.dataset.itemIndex;
-
-        if (otherSlotIndexStr !== undefined) {
-            const otherSlotIndex = parseInt(otherSlotIndexStr, 10);
-            if (sourceIndex === otherSlotIndex) {
-                return false;
-            }
-            const otherItem = this.game.player.inventory[otherSlotIndex];
-            if (otherItem) {
-                if (item.type !== otherItem.type || item.slot !== otherItem.slot) {
-                    return false;
-                }
-            }
-        }
-
-        const currentTargetSlot = document.getElementById(`forge-slot-${targetSlotNum}`);
-        const currentTargetIndexStr = currentTargetSlot?.dataset.itemIndex;
-        if (currentTargetIndexStr !== undefined && parseInt(currentTargetIndexStr, 10) === sourceIndex) {
-            return false;
-        }
-
-        return true;
-    }
 }

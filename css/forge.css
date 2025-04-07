@@ -1,607 +1,156 @@
+/* css/blacksmith.css */
+
+/* Main container for the blacksmith UI */
 #blacksmith-area {
-    border: 1px solid #444;
-    border-radius: 8px;
-    padding: 10px;
-    height: 100%;
-    width: 100%;
-    box-sizing: border-box;
-    position: relative;
     display: flex;
     flex-direction: column;
+    height: 100%;
+    padding: 20px;
+    background-color: #333;
+    box-sizing: border-box;
+    width: 100%;
 }
 
 #blacksmith-area h3 {
-    margin-top: 0;
-    margin-bottom: 10px;
-    color: #e5e5e5;
-    font-size: 1.6em;
-    text-shadow: 1px 1px 2px #222;
     text-align: center;
-    flex-shrink: 0;
-}
-
-#blacksmith-area p {
-    color: #c0c0c0;
-    margin-bottom: 25px;
-    line-height: 1.5;
-    font-size: 1em;
-    text-align: center;
-    flex-shrink: 0;
-}
-
-.forge-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-    box-sizing: border-box;
-    width: 100%;
-    flex-grow: 1;
-    padding: 10px;
-}
-
-.forge-slots-area {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 15px;
-    width: 100%;
-    margin-bottom: 10px;
-}
-
-.forge-slot {
-    background-color: #333;
-    border: 2px dashed #555;
-    border-radius: 6px;
-    padding: 10px;
-    width: 180px;
-    height: 90px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    transition: all 0.2s;
-    cursor: default;
-    flex-shrink: 0;
-}
-
-.forge-slot.crafting-slot-filled {
-    cursor: pointer;
-    border-style: solid;
-    border-color: #777;
-}
-
-.forge-slot-label {
-    font-size: 0.75em;
-    color: #888;
-    margin-bottom: 5px;
-    text-transform: uppercase;
-    display: none;
-}
-
-.forge-slot.crafting-slot-filled .forge-slot-label {
-    display: block;
-}
-
-.forge-slot-content {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #999;
-    font-size: 0.9em;
-    font-style: italic;
-    flex-grow: 1;
-    overflow: hidden;
-    white-space: normal;
-    text-align: center;
-}
-
-.forge-slot.crafting-slot-filled .forge-slot-content {
-    color: #e0e0e0;
-    font-weight: bold;
-    font-style: normal;
-    font-size: 1em;
-}
-
-.forge-slot:hover:not(.crafting-slot-filled) {
-    border-color: #666;
-    background-color: #3a3a3a;
-}
-
-.forge-slot.drag-over-valid {
-    background: rgba(76, 175, 80, 0.1);
-    border-color: #4CAF50;
-    background-color: #3a5a3a;
-    border-color: #6a8a6a;
-    border-style: solid;
-}
-
-.forge-slot.drag-over-invalid {
-    background: rgba(244, 67, 54, 0.1);
-    border-color: #f44336;
-    background-color: #5a3a3a;
-    border-color: #8a6a6a;
-    border-style: solid;
-}
-
-.forge-symbol {
-    font-size: 2em;
-    color: #999;
-    align-self: center;
-    padding: 0 8px;
-    line-height: 90px;
-}
-
-#forge-preview {
-    background-color: #303030;
-    border: 1px solid #555;
-    border-radius: 4px;
-    padding: 15px;
-    text-align: left;
-    height: 160px;
-    overflow-y: auto;
-    width: 90%;
-    max-width: 500px;
-    color: #b0b0b0;
-    font-size: 0.9em;
-    line-height: 1.7;
-    box-sizing: border-box;
-}
-
-#forge-preview strong {
-    color: #ddd;
-}
-
-#forge-preview br {
-    content: "";
-    display: block;
-    margin-bottom: 0.3em;
-}
-
-#forge-preview.hidden {
-    display: none;
-}
-
-#forge-button {
-    background-color: #e07a2e;
-    color: #fff;
-    border: 1px solid #c76a1e;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    padding: 12px 35px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.2s, transform 0.1s;
-    font-weight: bold;
-    font-size: 1.1em;
-    width: auto;
-}
-
-#forge-button:hover:not(:disabled) {
-    background-color: #f08a3e;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 6px rgba(0,0,0,0.25);
-}
-
-#forge-button:disabled {
-    background-color: #555;
-    color: #999;
-    border-color: #777;
-    cursor: default;
-    opacity: 0.7;
-    box-shadow: none;
-}
-
-#blacksmith-leave-button {
-    background-color: #5a5a5a;
-    color: #ddd;
-    border: 1px solid #777;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.2s, transform 0.1s;
-    display: block;
-    margin: 30px auto 0 auto;
-    font-size: 0.95em;
-    width: fit-content;
-}
-
-#blacksmith-leave-button:hover {
-    background-color: #6a6a6a;
-    transform: translateY(-1px);
-}
-
-.sharpen-container {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.sharpen-slot {
-    background: rgba(0, 0, 0, 0.3);
-    border: 2px dashed #444;
-    border-radius: 8px;
-    padding: 15px;
-    min-height: 100px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-}
-
-.sharpen-slot-label {
-    color: #888;
-    font-size: 0.9em;
-    text-align: center;
-    margin-bottom: 5px;
-}
-
-.sharpen-slot.crafting-slot-filled .sharpen-slot-label {
-    color: #4a9eff;
-}
-
-.sharpen-slot-content {
-    width: 100%;
-    height: 100%;
-}
-
-.sharpen-slot.crafting-slot-filled .sharpen-slot-content {
-    color: #fff;
-    font-weight: bold;
-}
-
-.sharpen-slot:hover {
-    border-color: #666;
-}
-
-.sharpen-slot.drag-over-valid {
-    background: rgba(76, 175, 80, 0.1);
-    border-color: #4CAF50;
-}
-
-.sharpen-slot.drag-over-invalid {
-    background: rgba(244, 67, 54, 0.1);
-    border-color: #f44336;
-}
-
-.armourer-container {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    padding: 15px;
-}
-
-.armourer-slot {
-    background: rgba(0, 0, 0, 0.3);
-    border: 2px dashed #444;
-    border-radius: 8px;
-    padding: 15px;
-    min-height: 100px;
-}
-
-.armourer-slot:hover {
-    border-color: #666;
-}
-
-.armourer-slot.drag-over-valid {
-    background: rgba(76, 175, 80, 0.1);
-    border-color: #4CAF50;
-}
-
-.armourer-slot.drag-over-invalid {
-    background: rgba(244, 67, 54, 0.1);
-    border-color: #f44336;
-}
-
-.armourer-slot-label {
-    color: #888;
-    font-size: 0.9em;
-    text-align: center;
-}
-
-.armourer-slot-content {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     color: #ccc;
-    font-size: 0.9em;
-}
-
-.armourer-slot.crafting-slot-filled .armourer-slot-content {
-    color: #fff;
-}
-
-.armourer-selection-menu {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 15px;
-}
-
-.armourer-item-option {
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid #444;
-    border-radius: 8px;
-    padding: 15px;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.armourer-item-option:hover {
-    border-color: #666;
-}
-
-#forge-armorer-button:disabled,
-#forge-blacksmith-button:disabled {
-    cursor:default;
-}
-
-.forge-prompt {
-    color: #b0b0b0;
-    margin-bottom: 25px;
-    font-size: 1.1em;
-    text-align: center;
+    margin-bottom: 10px;
+    font-size: 1.4em;
     flex-shrink: 0;
+    cursor: default;
 }
 
-.requirement-missing {
-    color: #ff6b6b;
-    font-size: 0.8em;
-    display: block;
-    margin-top: -8px;
-    margin-bottom: 5px;
-}
-
-#forge-leave-button {
-    background-color: #6c757d;
-    color: #fff;
-    border: 1px solid #5a6268;
-    padding: 10px 25px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    font-size: 1em;
-    margin-top: 10px;
-    flex-shrink: 0;
-    align-self: center;
-}
-
-#forge-leave-button:hover {
-    background-color: #5a6268;
-}
-
-#blacksmith-area {
-    border-radius: 8px;
-    max-width: 550px;
-    margin: 20px auto;
-    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+#blacksmith-area .ui-description {
     text-align: center;
-}
-
-#blacksmith-area h3 {
-    margin-top: 0;
-    margin-bottom: 15px;
-    color: #e5e5e5;
-    font-size: 1.5em;
-    text-shadow: 1px 1px 2px #222;
-}
-
-#blacksmith-area p {
-    color: #c0c0c0;
+    color: #aaa;
     margin-bottom: 20px;
-    line-height: 1.5;
+    font-style: italic;
+    flex-shrink: 0;
 }
 
-.forge-container {
+#blacksmith-area .requirement-warning {
+     text-align: center;
+     color: #ff6b6b;
+     font-weight: bold;
+     margin-bottom: 10px;
+     flex-shrink: 0;
+}
+
+.blacksmith-content-wrapper {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    flex-grow: 1;
+    min-height: 0;
+    gap: 20px;
+}
+
+.blacksmith-main-area {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 10px;
+    align-items: center; 
+}
+
+.blacksmith-slots-row {
+    display: flex;
     justify-content: center;
-    flex-wrap: wrap;
+    align-items: center;
+    gap: 20px; 
+    width: 100%;
+    max-width: 400px; 
+    margin-bottom: 20px;
 }
 
 .forge-slot {
-    background-color: #333;
     border: 2px dashed #555;
-    border-radius: 6px;
-    padding: 15px;
-    width: 100px;
-    height: 80px;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    width: 150px; 
+    height: 150px; 
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    transition: background-color 0.2s, border-color 0.2s;
-    cursor: default;
+    background-color: rgba(0, 0, 0, 0.2);
+    transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
+    color: #888;
+    box-sizing: border-box;
 }
+
+.forge-slot.drag-over-valid { background-color: rgba(0, 255, 0, 0.1); border-color: #0f0; }
+.forge-slot.drag-over-invalid { background-color: rgba(255, 0, 0, 0.1); border-color: #f00; }
 
 .forge-slot.crafting-slot-filled {
-    cursor: pointer;
     border-style: solid;
-    border-color: #777;
-}
-
-.forge-slot-label {
-    font-size: 0.8em;
-    color: #888;
-    margin-bottom: 5px;
-    text-transform: uppercase;
-    display: none;
-}
-
-.forge-slot.crafting-slot-filled .forge-slot-label {
-    display: block;
+    border-color: #aaa;
+    background-color: rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 10px rgba(200, 200, 200, 0.4);
 }
 
 .forge-slot-content {
-    color: #999;
-    font-style: italic;
-    flex-grow: 1;
+    font-weight: bold;
+    color: #eee;
+    font-size: 1em;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.9em;
+    text-align: center;
+    width: 100%;
+    flex-grow: 1;
 }
 
 .forge-slot.crafting-slot-filled .forge-slot-content {
-    color: #e0e0e0;
-    font-style: normal;
-    font-weight: bold;
-    font-size: 1em;
-}
-
-.forge-slot:hover:not(.crafting-slot-filled) {
-    background-color: #3a3a3a;
-    border-color: #777;
-}
-
-.forge-slot.drag-over-valid {
-    background-color: #3a5a3a;
-    border-color: #6a8a6a;
-    border-style: solid;
-}
-
-.forge-slot.drag-over-invalid {
-    background-color: #5a3a3a;
-    border-color: #8a6a6a;
-    border-style: solid;
-}
-
-.forge-symbol {
-    font-size: 1.8em;
-    color: #888;
-    align-self: center;
-    padding: 0 5px;
-}
-
-.forge-result {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    min-width: 120px;
+    color: #fff;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+    transform: scale(1.03);
+    transition: color 0.2s, text-shadow 0.2s, transform 0.2s;
 }
 
 #forge-preview {
-    background-color: #383838;
-    border: 1px solid #505050;
+    width: 80%;
+    max-width: 700px; 
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #2a2a2a;
+    border: 1px solid #404040;
+    padding: 15px;
     border-radius: 4px;
-    padding: 8px 12px;
-    margin-top: 5px;
-    color: #b0b0b0;
-    font-size: 0.85em;
-    line-height: 1.4;
-    min-height: 40px;
-    text-align: center;
-    width: 100%;
-}
-
-#forge-preview.hidden {
-    display: none;
-}
-
-#forge-button {
-    background-color: #4a6b4a;
-    color: #fff;
-    border: 1px solid #6a8b6a;
-    padding: 10px 25px;
-    border-radius: 5px;
-    font-size: 1em;
-    cursor: pointer;
-    transition: background-color 0.2s, transform 0.1s;
-    width: 100%;
-}
-
-#forge-button:hover:not(:disabled) {
-    background-color: #5a7b5a;
-    transform: translateY(-1px);
-}
-
-#forge-button:disabled {
-    background-color: #404040;
-    color: #888;
-    border-color: #555;
-    cursor: default;
-    opacity: 0.6;
-}
-
-#blacksmith-leave-button {
-    background-color: #5a5a5a;
-    color: #ddd;
-    border: 1px solid #777;
-    padding: 10px 20px;
-    border-radius: 5px;
-    font-size: 0.95em;
-    cursor: pointer;
-    transition: background-color 0.2s, transform 0.1s;
-    display: block;
-    margin: 25px auto 0 auto;
-    width: fit-content;
-}
-
-#blacksmith-leave-button:hover {
-    background-color: #6a6a6a;
-    transform: translateY(-1px);
-}
-
-#forge-area {
-    border: 1px solid #444;
-    border-radius: 8px;
-    padding: 10px;
-    height: 100%;
-    width: 100%;
-    box-sizing: border-box;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-}
-
-#forge-area h3 {
-    margin-top: 0;
-    margin-bottom: 10px;
-    color: #e5e5e5;
-    font-size: 1.6em;
-    text-shadow: 1px 1px 2px #222;
-    text-align: center;
-    flex-shrink: 0;
-}
-
-#forge-area p {
-    color: #c0c0c0;
-    margin-bottom: 25px;
+    min-height: 180px; 
+    color: #ccc;
     line-height: 1.5;
-    font-size: 1em;
-    text-align: center;
+    box-sizing: border-box;
+    cursor: default;
+}
+
+.blacksmith-controls {
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+    gap: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #444;
     flex-shrink: 0;
 }
 
-.forge-container {
-    box-sizing: border-box;
-    width: 100%;
-    flex-grow: 1;
-    padding: 10px;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-auto-rows: 1fr;
-    gap: 15px;
-}
+/* Reuse shared button classes */
+.action-button { padding: 10px 20px; border: none; border-radius: 4px; font-weight: bold; font-size: 1em; cursor: pointer; transition: all 0.2s; background-color: #4CAF50; color: white; }
+.action-button:hover:not(:disabled) { filter: brightness(1.1); transform: translateY(-1px); }
+.action-button:disabled { background-color: #666; cursor: not-allowed; opacity: 0.7; }
 
-#forge-leave-button:hover {
-    background-color: #5a6268;
-}
+.leave-button { padding: 10px 20px; border: none; border-radius: 4px; font-weight: bold; font-size: 1em; cursor: pointer; transition: all 0.2s; background-color: #f44336; color: white; }
+.leave-button:hover { background-color: #d32f2f; transform: translateY(-1px); }
 
-/* Style for the icon above the title */
-.forge-icon {
-    font-size: 2.5em; /* Adjust size as needed */
-    text-align: center;
-    margin-bottom: 10px;
-    line-height: 1;
-}
+#blacksmith-area.upgrade-success-flash { animation: upgradeFlash 0.5s ease-out; }
 
-/* Ensure title is centered below icon */
-#forge-area .choice-card-content .choice-title {
-    text-align: center;
-    margin-top: 0; /* Remove potential default margin */
-}
+/* Preview Grid Styles */
+#forge-preview .preview-grid { display: grid; grid-template-columns: auto repeat(4, 1fr); gap: 8px 10px; align-items: center; font-size: 1.0em; }
+#forge-preview .preview-header { font-weight: bold; color: #bbb; text-align: center; font-size: 0.9em; padding-bottom: 5px; border-bottom: 1px solid #555; }
+#forge-preview .preview-grid > .preview-header:first-child { border-bottom: none; }
+#forge-preview .preview-grid > div:nth-child(5n+1) { font-weight: bold; text-align: right; color: #ccc; }
+#forge-preview .preview-cell { text-align: center; background-color: rgba(0, 0, 0, 0.15); padding: 4px 6px; border-radius: 3px; font-size: 0.95em; }
+
+#forge-preview .item-desc-text { font-size: 1.0em; color: #cccccc; line-height: 1.5; white-space: pre-line; } 

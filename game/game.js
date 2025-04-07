@@ -37,7 +37,12 @@ class Game {
 
     normalMode() {
         this.player.addItem(this.createItem('wooden_sword'));
+        this.player.addItem(this.createItem('wooden_sword'));
+        this.player.addItem(this.createItem('wooden_sword'));
         this.player.addItem(this.createItem('wooden_shield'));
+        this.player.addItem(this.createItem('wooden_shield'));
+        this.player.addItem(this.createItem('wooden_shield'));
+
         this.player.addItem(this.createItem('bread'));
         this.player.addItem(this.createItem('bread'));
         this.player.addItem(this.createItem('bread'));
