@@ -9,6 +9,7 @@
     background-color: #333;
     box-sizing: border-box;
     width: 100%;
+    cursor: default;
 }
 
 #blacksmith-area h3 {
@@ -89,6 +90,7 @@
     border-color: #aaa;
     background-color: rgba(0, 0, 0, 0.4);
     box-shadow: 0 0 10px rgba(200, 200, 200, 0.4);
+    cursor: pointer;
 }
 
 .forge-slot-content {
@@ -153,4 +155,18 @@
 #forge-preview .preview-grid > div:nth-child(5n+1) { font-weight: bold; text-align: right; color: #ccc; }
 #forge-preview .preview-cell { text-align: center; background-color: rgba(0, 0, 0, 0.15); padding: 4px 6px; border-radius: 3px; font-size: 0.95em; }
 
-#forge-preview .item-desc-text { font-size: 1.0em; color: #cccccc; line-height: 1.5; white-space: pre-line; } 
+#forge-preview .item-desc-text { font-size: 1.0em; color: #cccccc; line-height: 1.5; white-space: pre-line; }
+
+/* Cursor Handling */
+#blacksmith-area {
+    cursor: default;
+}
+
+#forge-button:not(:disabled),
+#blacksmith-leave-button {
+    cursor: pointer;
+}
+
+#forge-button:disabled {
+    cursor: not-allowed;
+} 

@@ -422,3 +422,16 @@
     transform: translateY(-1px);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
+
+/* Cursor Styling for General Choice Cards */
+#choices-area .choice-card {
+    cursor: default; /* Default cursor for the card area */
+}
+
+#choices-area .choice-card .choice-start-button:not(:disabled) {
+    cursor: pointer; /* Pointer for enabled buttons */
+}
+
+#choices-area .choice-card .choice-start-button:disabled {
+    cursor: not-allowed; /* Not-allowed for disabled buttons */
+}

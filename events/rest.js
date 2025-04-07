@@ -156,7 +156,7 @@ class Rest {
         if (restContainer) {
             const continueButton = document.createElement('button');
             continueButton.id = 'rest-continue-button';
-            continueButton.textContent = 'Continue Journey';
+            continueButton.textContent = 'Continue';
             continueButton.onclick = () => this.endRestEvent();
             restContainer.appendChild(continueButton);
         } else {

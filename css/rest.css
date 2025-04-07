@@ -10,6 +10,7 @@
     width: 100%;
     height: 100%;
     box-sizing: border-box;
+    cursor: default;
 }
 
 .rest-campfire-container {
@@ -20,7 +21,7 @@
     align-items: center;
     gap: 15px;
     width: 100%;
-   
+    cursor: default;
 }
 
 .rest-campfire-icon {
@@ -63,6 +64,7 @@
     margin-left: auto;
     margin-right: auto;
     width: fit-content;
+    cursor: pointer;
 }
 
 #rest-continue-button:hover {
@@ -96,6 +98,7 @@
     justify-content: space-between;
     height: 100%;
     box-sizing: border-box;
+    cursor: default;
 }
 
 .rest-card:hover {
@@ -129,6 +132,7 @@
     font-weight: bold;
     width: 100%;
     font-size: 1em;
+    cursor: pointer;
 }
 
 .rest-card button:hover {

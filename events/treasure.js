@@ -6,7 +6,7 @@ class Treasure {
     }
 
     handle() {
-        this.isLocked = Math.random() < 0.25;
+        this.isLocked = Math.random() < 0.35;
         if (this.isLocked) {
             this.game.addLog("You find a sturdy treasure chest. It seems to be locked.");
             this.showLockedChestUI();

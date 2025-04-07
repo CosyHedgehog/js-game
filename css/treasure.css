@@ -51,8 +51,8 @@
     margin-bottom: 10px;
 }
 
-#treasure-picklock-button,
-#treasure-leave-button {
+/* Styles for Picklock Button ONLY */
+#treasure-picklock-button {
     background-color: #7a5a3a;
     color: #ffe0b0;
     border: 1px solid #a08060;
@@ -63,12 +63,33 @@
     transition: background-color 0.2s, transform 0.1s;
 }
 
-#treasure-picklock-button:hover,
-#treasure-leave-button:hover {
+#treasure-picklock-button:hover {
     background-color: #8a6a4a;
     transform: translateY(-1px);
 }
 
+/* Consolidated Styles for Leave Button */
+#treasure-leave-button {
+    background-color: #f44336; /* Red background */
+    color: white;             /* White text */
+    border: none;              /* No border */
+    padding: 10px 20px;       /* Padding */
+    border-radius: 5px;        /* Radius */
+    font-size: 1em;            /* Font size */
+    font-weight: bold;         /* Bold text */
+    cursor: pointer;           /* Pointer cursor */
+    transition: background-color 0.2s, transform 0.1s; /* Transition */
+    width: fit-content;        /* Set width based on content */
+    margin-left: auto;         /* Center the button */
+    margin-right: auto;        /* Center the button */
+}
+
+#treasure-leave-button:hover {
+    background-color: #d32f2f; /* Darker red on hover */
+    transform: translateY(-1px); /* Keep transform */
+}
+
+/* Shared Active State */
 #treasure-picklock-button:active,
 #treasure-leave-button:active {
     transform: translateY(0px);
@@ -82,17 +103,17 @@
   border-color: #fff700;
 }
 
+/* Cursor Handling for Treasure Area (Confirming these are correct) */
+#treasure-area,
+.treasure-container {
+    cursor: default;
+}
+
+#treasure-picklock-button,
 #treasure-leave-button {
-    background-color: #6c757d;
-    color: #fff;
-    border-color: #5a6268;
+    cursor: pointer; /* Ensure buttons are pointer */
 }
 
-#treasure-leave-button:hover {
-    background-color: #5a6268;
-    border-color: #545b62;
+#treasure-picklock-button:disabled { /* Handle potential disabled state */
+    cursor: not-allowed;
 }
-
-#treasure-leave-button:active {
-    transform: translateY(0px);
-} 
