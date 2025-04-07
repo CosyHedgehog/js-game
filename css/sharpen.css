@@ -1,149 +1,253 @@
 #sharpen-area {
-    background-color: #4a4a4a;
-    border: 1px solid #666;
-    border-radius: 8px;
-    padding: 25px;
-    max-width: 450px;
-    margin: 20px auto;
-    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 20px;
+    background-color: #333;
+    box-sizing: border-box;
+    width: 100%;
 }
 
 #sharpen-area h3 {
-    margin-top: 0;
-    margin-bottom: 15px;
-    color: #e5e5e5;
-    font-size: 1.5em;
-    text-shadow: 1px 1px 2px #222;
+    text-align: center;
+    color: #ccc;
+    margin-bottom: 10px;
+    font-size: 1.4em;
+    flex-shrink: 0;
+    cursor: default;
 }
 
-#sharpen-area p {
-    color: #c0c0c0;
+#sharpen-area .ui-description {
+    text-align: center;
+    color: #aaa;
     margin-bottom: 20px;
-    line-height: 1.5;
+    font-style: italic;
+    flex-shrink: 0;
+    cursor: default;
 }
 
-.sharpen-container {
-    margin-bottom: 20px;
+.sharpen-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    min-height: 0;
+    gap: 20px;
+}
+
+.sharpen-main-area {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.sharpen-slot-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
 }
 
 .sharpen-slot {
-    background-color: #333;
     border: 2px dashed #555;
-    border-radius: 6px;
-    padding: 20px;
-    min-height: 60px;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    width: 100%;
+    max-width: 150px;
+    aspect-ratio: 1 / 1;
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    transition: background-color 0.2s, border-color 0.2s;
-    margin: 0 auto 15px auto;
-    max-width: 100px;
-}
-
-.sharpen-slot-label {
-    font-size: 0.8em;
+    background-color: rgba(0, 0, 0, 0.2);
+    transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
     color: #888;
-    margin-bottom: 5px;
-    text-transform: uppercase;
-    display: none;
-}
-
-.sharpen-slot.crafting-slot-filled .sharpen-slot-label {
-    display: block;
-}
-
-.sharpen-slot-content {
-    color: #999;
-    font-style: italic;
-}
-
-.sharpen-slot.crafting-slot-filled .sharpen-slot-content {
-    color: #e0e0e0;
-    font-style: normal;
-    font-weight: bold;
-    font-size: 1.1em;
-}
-
-.sharpen-slot:hover {
-    background-color: #3a3a3a;
-    border-color: #777;
 }
 
 .sharpen-slot.drag-over-valid {
-    background-color: #3a5a3a;
-    border-color: #6a8a6a;
-    border-style: solid;
+    background-color: rgba(0, 255, 0, 0.1);
+    border-color: #0f0;
 }
 
 .sharpen-slot.drag-over-invalid {
-    background-color: #5a3a3a;
-    border-color: #8a6a6a;
+    background-color: rgba(255, 0, 0, 0.1);
+    border-color: #f00;
+}
+
+.sharpen-slot.crafting-slot-filled {
     border-style: solid;
+    border-color: #aaa;
+    background-color: rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 10px rgba(200, 200, 200, 0.4);
+}
+
+.sharpen-slot-content {
+    font-weight: bold;
+    color: #eee;
+    font-size: 1em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    flex-grow: 1;
+}
+
+/* Style for the content div when a weapon is present */
+.sharpen-slot.crafting-slot-filled .sharpen-slot-content {
+    color: #fff; /* Brighter text */
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.6); /* Increased blur and opacity */
+    transform: scale(1.03); /* Slight scale up */
+    transition: color 0.2s, text-shadow 0.2s, transform 0.2s; /* Smooth transition */
 }
 
 #sharpen-preview {
-    background-color: #383838;
-    border: 1px solid #505050;
+    width: 80%;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #2a2a2a;
+    border: 1px solid #404040;
+    padding: 15px;
     border-radius: 4px;
-    padding: 10px 15px;
-    margin-bottom: 20px;
-    color: #b0b0b0;
-    font-size: 0.9em;
-    line-height: 1.6;
-    min-height: 50px;
-}
-
-#sharpen-area .button-container {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-}
-
-#sharpen-attack-button,
-#sharpen-speed-button {
-    background-color: #6a6a6a;
-    color: #fff;
-    border: 1px solid #888;
-    padding: 10px 18px;
-    border-radius: 5px;
-    font-size: 0.95em;
-    cursor: pointer;
-    transition: background-color 0.2s, transform 0.1s;
-}
-
-#sharpen-attack-button:hover:not(:disabled),
-#sharpen-speed-button:hover:not(:disabled) {
-    background-color: #7a7a7a;
-    transform: translateY(-1px);
-}
-
-#sharpen-attack-button:disabled,
-#sharpen-speed-button:disabled {
-    background-color: #404040;
-    color: #888;
-    border-color: #555;
+    min-height: 180px;
+    color: #ccc;
+    font-size: 1.0em;
+    line-height: 1.5;
+    box-sizing: border-box;
     cursor: default;
 }
 
-#sharpen-leave-button {
-    background-color: #5a5a5a;
-    color: #ddd;
-    border: 1px solid #777;
-    padding: 10px 20px;
-    border-radius: 5px;
-    font-size: 0.95em;
-    cursor: pointer;
-    transition: background-color 0.2s, transform 0.1s;
-    display: block;
-    margin: 15px auto 0 auto;
-    width: fit-content;
+.sharpen-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #444;
+    flex-shrink: 0;
 }
 
-#sharpen-leave-button:hover {
-    background-color: #6a6a6a;
+.sharpen-action-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    width: 100%;
+}
+
+.action-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 1em;
+    cursor: pointer;
+    transition: all 0.2s;
+    background-color: #4CAF50;
+    color: white;
+}
+
+.action-button:hover:not(:disabled) {
+    filter: brightness(1.1);
     transform: translateY(-1px);
+}
+
+.action-button:disabled {
+    background-color: #666;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.leave-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 1em;
+    cursor: pointer;
+    transition: all 0.2s;
+    background-color: #f44336;
+    color: white;
+}
+
+.leave-button:hover {
+    background-color: #d32f2f;
+    transform: translateY(-1px);
+}
+
+#sharpen-area.upgrade-success-flash {
+    animation: upgradeFlash 0.5s ease-out;
+}
+
+#sharpen-preview .item-desc-name {
+    font-weight: bold;
+    font-size: 1.1em;
+    color: #ffffff;
+    margin-bottom: 4px;
+}
+
+#sharpen-preview .item-desc-text {
+    font-size: 1.0em;
+    color: #cccccc;
+    line-height: 1.5;
+    white-space: pre-line;
+}
+
+/* Grid styles for the preview table */
+#sharpen-preview .preview-grid {
+    display: grid;
+    grid-template-columns: auto 1fr 1fr 1fr; /* Label, Atk, Spd, DPS */
+    gap: 8px 15px;
+    align-items: center; /* Center content vertically in cells */
+}
+
+#sharpen-preview .preview-header {
+    font-weight: bold;
+    color: #bbb;
+    text-align: center;
+    font-size: 0.9em;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #555;
+}
+
+/* Remove border from the first (empty) header cell */
+#sharpen-preview .preview-grid > .preview-header:first-child {
+    border-bottom: none;
+}
+
+/* Style for row labels (Current, Sharpen, Hone) */
+#sharpen-preview .preview-grid > div:nth-child(4n+1) { /* Target first element of every row */
+    font-weight: bold;
+    text-align: right;
+    color: #ccc;
+}
+
+#sharpen-preview .preview-cell {
+    text-align: center; /* Center data cells */
+    background-color: rgba(0, 0, 0, 0.15); /* Subtle background for cells */
+    padding: 4px 8px;
+    border-radius: 3px;
+}
+
+/* Style for unavailable options (Already Sharpened/Honed) */
+#sharpen-preview .preview-cell.unavailable-option {
+    grid-column: span 3; /* Make cell span across the 3 data columns */
+    text-align: center;
+    font-style: italic;
+    color: #aaa;
+    background-color: transparent; /* No background for this message */
+}
+
+/* Style for the 'Fully Enhanced' message */
+#sharpen-preview .fully-enhanced-message {
+    grid-column: 1 / -1; /* Span all columns */
+    text-align: center;
+    font-weight: bold;
+    color: #FF6B6B;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #555;
 } 

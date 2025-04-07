@@ -19,70 +19,77 @@ class Armoury {
     showArmourerUI() {
         this.ui.clearMainArea();
         this.ui.renderInventory();
-        
-        const mainContent = document.getElementById('main-content');
+        this.ui.updatePlayerStats();
 
-        const hasHammer = this.game.player.inventory.some(item => item && item.id === 'blacksmith_hammer');
-        let hammerWarning = hasHammer ? '' : '<p style="color: #ff4444; font-weight: bold;">Requires: Blacksmith Hammer</p>';
-        
+        const mainContent = document.getElementById('main-content');
         const armourerArea = document.createElement('div');
         armourerArea.id = 'armourer-area';
+        armourerArea.classList.remove('hidden');
+
+        const hasHammer = this.game.player.inventory.some(item => item && item.id === 'blacksmith_hammer');
+        let hammerWarning = hasHammer ? '' : '<p class="requirement-warning">Requires: Blacksmith Hammer</p>';
+
         armourerArea.innerHTML = `
-            <h3>Armourer Station</h3>
+            <h3>🔨 Armourer Station</h3>
             ${hammerWarning}
-            <p>Drag a piece of armor onto the station to enhance its Defense (+1) or Max Health (+3).</p>
+            <p class="ui-description">Drag a piece of armor onto the station to enhance its Defense (+1) or Max Health (+3).</p>
+
+            <div class="armourer-content-wrapper">
+                <div class="armourer-main-area">
+                    <div class="armourer-slot-container">
+                        <div class="armourer-slot">
+                            <div class="armourer-slot-content">Drag armor here</div>
+                        </div>
+                    </div>
+                    <div id="armourer-preview" class="item-description">
+                        Place armor in the slot to see enhancement options
+                    </div>
+                </div>
+
+                <div class="armourer-controls">
+                    <div class="armourer-action-buttons">
+                        <button id="armourer-defense-button" class="action-button" ${!hasHammer ? 'disabled' : ''}>Reinforce (+1 Def)</button>
+                        <button id="armourer-health-button" class="action-button" ${!hasHammer ? 'disabled' : ''}>Fortify (+3 HP)</button>
+                    </div>
+                    <button id="armourer-leave-button" class="leave-button">Leave</button>
+                </div>
+            </div>
         `;
-        
-        const slotContainer = document.createElement('div');
-        slotContainer.className = 'armourer-container';
-        
-        const armorSlot = document.createElement('div');
-        armorSlot.className = 'armourer-slot';
-        armorSlot.innerHTML = `
-            <div class="armourer-slot-label">Armor Slot</div>
-            <div class="armourer-slot-content">Drag armor here</div>
-        `;    
-        
-        const previewArea = document.createElement('div');
-        previewArea.id = 'armourer-preview';
-        previewArea.innerHTML = 'Place armor in the slot to see enhancement options';
-        
-        const buttonContainer = document.createElement('div');
-        buttonContainer.style.display = 'flex';
-        buttonContainer.style.gap = '10px';
-        buttonContainer.style.justifyContent = 'center';
 
-        const enhanceDefenseButton = document.createElement('button');
-        enhanceDefenseButton.id = 'armourer-defense-button';
-        enhanceDefenseButton.textContent = 'Reinforce (+1 Def)';
-        enhanceDefenseButton.disabled = true;
-        enhanceDefenseButton.onclick = () => this.handleArmourEnhancement('defense');
-
-        const enhanceHealthButton = document.createElement('button');
-        enhanceHealthButton.id = 'armourer-health-button';
-        enhanceHealthButton.textContent = 'Fortify (+3 HP)';
-        enhanceHealthButton.disabled = true;
-        enhanceHealthButton.onclick = () => this.handleArmourEnhancement('health');
-        
-        const leaveButton = document.createElement('button');
-        leaveButton.id = 'armourer-leave-button';
-        leaveButton.textContent = 'Leave';
-        leaveButton.onclick = function() { 
-            this.game.addLog("You leave without using the Armourer's tools.");
-            this.game.proceedToNextRound();
-        }.bind(this);
-        
-        slotContainer.appendChild(armorSlot);
-        armourerArea.appendChild(slotContainer);
-        armourerArea.appendChild(previewArea);
-        buttonContainer.appendChild(enhanceDefenseButton);
-        buttonContainer.appendChild(enhanceHealthButton);
-        armourerArea.appendChild(buttonContainer);
-        armourerArea.appendChild(leaveButton);
-        
+        const existingArea = document.getElementById('armourer-area');
+        if (existingArea) existingArea.remove();
         mainContent.appendChild(armourerArea);
 
+        this.setupArmourerEventListeners(armourerArea);
+
+        if (!hasHammer || !armourerArea.querySelector('.armourer-slot').dataset.itemData) {
+             const defenseButton = armourerArea.querySelector('#armourer-defense-button');
+             const healthButton = armourerArea.querySelector('#armourer-health-button');
+             if(defenseButton) defenseButton.disabled = true;
+             if(healthButton) healthButton.disabled = true;
+        }
+    }
+
+    setupArmourerEventListeners(armourerArea) {
         const armourerSlot = armourerArea.querySelector('.armourer-slot');
+        const enhanceDefenseButton = armourerArea.querySelector('#armourer-defense-button');
+        const enhanceHealthButton = armourerArea.querySelector('#armourer-health-button');
+        const leaveButton = armourerArea.querySelector('#armourer-leave-button');
+
+        if (enhanceDefenseButton) {
+             enhanceDefenseButton.onclick = () => this.handleArmourEnhancement('defense');
+        }
+         if (enhanceHealthButton) {
+             enhanceHealthButton.onclick = () => this.handleArmourEnhancement('health');
+        }
+        if (leaveButton) {
+            leaveButton.onclick = function() {
+                this.game.addLog("You leave without using the Armourer's tools.");
+                this.clearArmourerSlot(); 
+                this.game.proceedToNextRound();
+            }.bind(this);
+        }
+
         if (armourerSlot) {
             armourerSlot.addEventListener('dragover', (event) => {
                 event.preventDefault();
@@ -90,7 +97,7 @@ class Armoury {
                 const item = this.ui.draggedItem;
                 if (sourceIndex === null || item === null) return;
                 armourerSlot.classList.remove('drag-over-valid', 'drag-over-invalid');
-                if (item && item.type === 'armor') {
+                if (item && item.type === 'armor') { 
                     armourerSlot.classList.add('drag-over-valid');
                 } else {
                     armourerSlot.classList.add('drag-over-invalid');
@@ -108,71 +115,93 @@ class Armoury {
             armourerSlot.addEventListener('drop', (event) => {
                 event.preventDefault();
                 armourerSlot.classList.remove('drag-over-valid', 'drag-over-invalid');
-                
+
                 const sourceIndexStr = event.dataTransfer.getData('text/plain');
                 if (sourceIndexStr === null || sourceIndexStr === undefined || sourceIndexStr === '') return;
 
                 const sourceIndex = parseInt(sourceIndexStr, 10);
-                const itemToDrop = this.game.player.inventory[sourceIndex]; 
+                const itemToDrop = this.game.player.inventory[sourceIndex];
 
-                if (itemToDrop && itemToDrop.type === 'armor') {
+                if (itemToDrop && itemToDrop.type === 'armor') { 
                     if (armourerSlot.dataset.itemData) {
-                        this.clearArmourerSlot(); 
+                        this.clearArmourerSlot();
                     }
-                    const currentInventoryItem = this.game.player.inventory[sourceIndex]; 
+                    const currentInventoryItem = this.game.player.inventory[sourceIndex];
                     if (!currentInventoryItem || currentInventoryItem.id !== itemToDrop.id) {
                          console.warn(`Item at index ${sourceIndex} changed or removed unexpectedly.`);
                          this.game.addLog("Action interrupted. Please try dragging the item again.");
-                         this.ui.renderInventory(); 
+                         this.ui.renderInventory();
                          return;
                     }
                     const removedItem = this.game.player.removeItem(sourceIndex);
-                    
+
                     armourerSlot.dataset.itemData = JSON.stringify(removedItem);
                     armourerSlot.dataset.originalIndex = sourceIndex;
 
                     armourerSlot.innerHTML = `
-                        <div class="armourer-slot-label">Armor Slot</div>
                         <div class="armourer-slot-content">${removedItem.name}</div>
                     `;
                     armourerSlot.style.cursor = 'pointer';
                     armourerSlot.onclick = () => {
-                        if (armourerSlot.dataset.itemData) { 
+                        if (armourerSlot.dataset.itemData) {
                             this.clearArmourerSlot();
                         }
-                    };    
+                    };
 
+                    armourerSlot.classList.add('crafting-slot-filled');
+
+                    const previewElement = document.getElementById('armourer-preview');
                     const isAlreadyReinforced = removedItem.isReinforced === true;
                     const isAlreadyFortified = removedItem.isFortified === true;
 
-                    const previewElement = document.getElementById('armourer-preview');
-                    const currentDefense = (removedItem.stats.defense || 0);
+                    const currentDefense = (removedItem.stats?.defense || 0);
                     const newDefense = currentDefense + 1;
-                    const currentMaxHealth = (removedItem.stats.maxHealth || 0);
+                    const currentMaxHealth = (removedItem.stats?.maxHealth || 0);
                     const newMaxHealth = currentMaxHealth + 3;
 
-                    let previewHTML = `Current: Def ${currentDefense} / Max HP +${currentMaxHealth}<br>`;
-                    if (isAlreadyReinforced && isAlreadyFortified) {
-                        previewHTML += `<span style="color: #FF0000;">Fully Enhanced!</span>`;
-                    } else if (isAlreadyReinforced) {
-                        previewHTML += `Reinforce: <span style="color: #aaa;">Already Reinforced</span><br>`;
-                        previewHTML += `Fortify:   Def ${currentDefense} / Max HP +${newMaxHealth}`;
-                    } else if (isAlreadyFortified) {
-                        previewHTML += `Reinforce: Def ${newDefense} / Max HP +${currentMaxHealth}<br>`;
-                        previewHTML += `Fortify:   <span style="color: #aaa;">Already Fortified</span>`;
+                    let previewHTML = `<div class="item-desc-text preview-grid armourer-preview-grid">`; 
+
+                    previewHTML += `<div class="preview-header"></div>`; 
+                    previewHTML += `<div class="preview-header">Defense</div>`;
+                    previewHTML += `<div class="preview-header">Max HP</div>`;
+
+                    previewHTML += `<div>Current</div>`;
+                    previewHTML += `<div class="preview-cell">🛡️ ${currentDefense}</div>`;
+                    previewHTML += `<div class="preview-cell">❤️ +${currentMaxHealth}</div>`;
+
+                    previewHTML += `<div>Reinforce</div>`;
+                    if (isAlreadyReinforced) {
+                        previewHTML += `<div class="preview-cell unavailable-option" style="grid-column: span 2;">Already Reinforced</div>`;
                     } else {
-                        previewHTML += `Reinforce: Def ${newDefense} / Max HP +${currentMaxHealth}<br>`;
-                        previewHTML += `Fortify:   Def ${currentDefense} / Max HP +${newMaxHealth}`;
+                        previewHTML += `<div class="preview-cell">🛡️ ${newDefense} (+1)</div>`;
+                        previewHTML += `<div class="preview-cell">❤️ +${currentMaxHealth}</div>`; 
                     }
+
+                    previewHTML += `<div>Fortify</div>`;
+                    if (isAlreadyFortified) {
+                        previewHTML += `<div class="preview-cell unavailable-option" style="grid-column: span 2;">Already Fortified</div>`;
+                    } else {
+                        previewHTML += `<div class="preview-cell">🛡️ ${currentDefense}</div>`; 
+                        previewHTML += `<div class="preview-cell">❤️ +${newMaxHealth} (+3)</div>`;
+                    }
+
+                     if (isAlreadyReinforced && isAlreadyFortified) {
+                        previewHTML += `<div class="fully-enhanced-message" style="grid-column: 1 / -1;">Fully Enhanced!</div>`;
+                    }
+
+                    previewHTML += `</div>`; 
                     previewElement.innerHTML = previewHTML;
 
-                    document.getElementById('armourer-defense-button').disabled = isAlreadyReinforced;
-                    document.getElementById('armourer-health-button').disabled = isAlreadyFortified;
-                    
+                    const defenseButton = document.getElementById('armourer-defense-button');
+                    const healthButton = document.getElementById('armourer-health-button');
+                    const hasHammer = this.game.player.inventory.some(item => item && item.id === 'blacksmith_hammer');
+
+                    if(defenseButton) defenseButton.disabled = isAlreadyReinforced || !hasHammer;
+                    if(healthButton) healthButton.disabled = isAlreadyFortified || !hasHammer;
+
                     this.ui.renderInventory();
                     this.ui.renderEquipment();
 
-                    armourerSlot.classList.add('crafting-slot-filled');
                 } else {
                     this.game.addLog("You can only enhance armor.");
                 }
@@ -205,7 +234,6 @@ class Armoury {
         }
 
         slotElement.innerHTML = `
-            <div class="armourer-slot-label">Armor Slot</div>
             <div class="armourer-slot-content">Drop armor here</div>
         `;
         slotElement.style.cursor = 'default';
@@ -220,7 +248,6 @@ class Armoury {
         const leaveButton = document.getElementById('armourer-leave-button');
         if (enhanceDefenseButton) enhanceDefenseButton.disabled = true;
         if (enhanceHealthButton) enhanceHealthButton.disabled = true;
-        if (leaveButton) leaveButton.disabled = true;
 
         const previewArea = document.getElementById('armourer-preview');
         if (previewArea) {

@@ -25,7 +25,7 @@ class Forge {
                             <div class="forge-icon">🗡️</div> 
                             <h4 class="choice-title">Weapon Station</h4>
                         </div>
-                        <p class="choice-description">Sharpen a weapon Attack (+1) or hone to increase its Speed (-0.2s).</p>
+                        <p class="choice-description">Sharpen a weapon Attack (+1) or hone to increase its Speed (-0.5s).</p>
                         <button id="forge-sharpen-button" class="choice-start-button">Use Stone</button> 
                      </div>
                      <div class="choice-card">

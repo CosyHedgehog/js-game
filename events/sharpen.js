@@ -16,77 +16,76 @@ class Sharpen {
         this.ui.updatePlayerStats();
 
         const mainContent = document.getElementById('main-content');
-
         const sharpenArea = document.createElement('div');
         sharpenArea.id = 'sharpen-area';
+        sharpenArea.classList.remove('hidden');
+
         sharpenArea.innerHTML = `
-            <h3>Sharpening Stone</h3>
-            <p>Drag a weapon onto the stone to enhance its Attack (+1) or Speed (-0.5s).</p> <!-- Updated text -->
+            <h3>🗡️ Sharpening Stone</h3>
+            <p class="ui-description">Drag a weapon onto the stone to enhance its Attack (+1) or Speed (-0.5s).</p>
+
+            <div class="sharpen-content-wrapper"> 
+                <div class="sharpen-main-area"> 
+                    <div class="sharpen-slot-container"> 
+                        <div class="sharpen-slot">
+                            <div class="sharpen-slot-content">Drag weapon here</div>
+                        </div>
+                    </div>
+                    <div id="sharpen-preview" class="item-description"> 
+                        Place a weapon in the slot to see enhancement options
+                    </div>
+                </div>
+
+                <div class="sharpen-controls">
+                    <div class="sharpen-action-buttons">
+                        <button id="sharpen-attack-button" class="action-button" disabled>Sharpen (+1 Attack)</button>
+                        <button id="sharpen-speed-button" class="action-button" disabled>Hone (-0.5s Speed)</button>
+                    </div>
+                    <button id="sharpen-leave-button" class="leave-button">Leave</button>
+                </div>
+            </div>
         `;
 
-        const slotContainer = document.createElement('div');
-        slotContainer.className = 'sharpen-container';
-
-        const weaponSlot = document.createElement('div');
-        weaponSlot.className = 'sharpen-slot';
-        weaponSlot.innerHTML = `
-            <div class="sharpen-slot-label">Weapon Slot</div>
-            <div class="sharpen-slot-content">Drag weapon here</div>
-        `;
-
-        const previewArea = document.createElement('div');
-        previewArea.id = 'sharpen-preview';
-        previewArea.innerHTML = 'Select a weapon to preview enhancements';
-
-        const buttonContainer = document.createElement('div');
-        buttonContainer.style.display = 'flex';
-        buttonContainer.style.gap = '10px';
-        buttonContainer.style.justifyContent = 'center';
-
-        const sharpenAttackButton = document.createElement('button');
-        sharpenAttackButton.id = 'sharpen-attack-button';
-        sharpenAttackButton.textContent = 'Sharpen (+1 Attack)';
-        sharpenAttackButton.disabled = true;
-        sharpenAttackButton.onclick = () => this.handleSharpen('attack');
-
-        const sharpenSpeedButton = document.createElement('button');
-        sharpenSpeedButton.id = 'sharpen-speed-button';
-        sharpenSpeedButton.textContent = 'Hone (-0.5s Speed)';
-        sharpenSpeedButton.disabled = true;
-        sharpenSpeedButton.onclick = () => this.handleSharpen('speed');
-
-        const leaveButton = document.createElement('button');
-        leaveButton.id = 'sharpen-leave-button';
-        leaveButton.textContent = 'Leave';
-        leaveButton.onclick = function () {
-            this.game.addLog("You leave without using the sharpening stone.");
-            this.clearSharpenSlot();
-            this.game.proceedToNextRound();
-        }.bind(this);
-
-        slotContainer.appendChild(weaponSlot);
-        sharpenArea.appendChild(slotContainer);
-        sharpenArea.appendChild(previewArea);
-        buttonContainer.appendChild(sharpenAttackButton);
-        buttonContainer.appendChild(sharpenSpeedButton);
-        sharpenArea.appendChild(buttonContainer);
-        sharpenArea.appendChild(leaveButton);
-
+        const existingArea = document.getElementById('sharpen-area');
+        if (existingArea) existingArea.remove();
         mainContent.appendChild(sharpenArea);
 
+        this.setupSharpenEventListeners(sharpenArea);
+    }
+
+    // Separate function for listeners
+    setupSharpenEventListeners(sharpenArea) {
         const sharpenSlot = sharpenArea.querySelector('.sharpen-slot');
+        const sharpenAttackButton = sharpenArea.querySelector('#sharpen-attack-button');
+        const sharpenSpeedButton = sharpenArea.querySelector('#sharpen-speed-button');
+        const leaveButton = sharpenArea.querySelector('#sharpen-leave-button');
+
+        if (sharpenAttackButton) {
+            sharpenAttackButton.onclick = () => this.handleSharpen('attack');
+        }
+        if (sharpenSpeedButton) {
+            sharpenSpeedButton.onclick = () => this.handleSharpen('speed');
+        }
+        if (leaveButton) {
+            leaveButton.onclick = function () {
+                this.game.addLog("You leave without using the sharpening stone.");
+                this.clearSharpenSlot(); 
+                this.game.proceedToNextRound();
+            }.bind(this);
+        }
+
         if (sharpenSlot) {
             sharpenSlot.addEventListener('dragover', (event) => {
-                event.preventDefault();
-                const sourceIndex = this.ui.draggedItemIndex;
-                const item = this.ui.draggedItem;
-                if (sourceIndex === null || item === null) return;
-                sharpenSlot.classList.remove('drag-over-valid', 'drag-over-invalid');
-                if (item && item.type === 'weapon') {
-                    sharpenSlot.classList.add('drag-over-valid');
-                } else {
-                    sharpenSlot.classList.add('drag-over-invalid');
-                }
+                 event.preventDefault();
+                 const sourceIndex = this.ui.draggedItemIndex;
+                 const item = this.ui.draggedItem;
+                 if (sourceIndex === null || item === null) return;
+                 sharpenSlot.classList.remove('drag-over-valid', 'drag-over-invalid');
+                 if (item && item.type === 'weapon') {
+                     sharpenSlot.classList.add('drag-over-valid');
+                 } else {
+                     sharpenSlot.classList.add('drag-over-invalid');
+                 }
             });
 
             sharpenSlot.addEventListener('dragenter', (event) => {
@@ -98,86 +97,111 @@ class Sharpen {
             });
 
             sharpenSlot.addEventListener('drop', (event) => {
-                event.preventDefault();
-                sharpenSlot.classList.remove('drag-over-valid', 'drag-over-invalid');
+                 event.preventDefault();
+                 sharpenSlot.classList.remove('drag-over-valid', 'drag-over-invalid');
 
-                const sourceIndexStr = event.dataTransfer.getData('text/plain');
-                if (sourceIndexStr === null || sourceIndexStr === undefined || sourceIndexStr === '') {
-                    console.warn("Sharpen drop event received invalid sourceIndexStr:", sourceIndexStr);
-                    return;
-                }
+                 const sourceIndexStr = event.dataTransfer.getData('text/plain');
+                 if (sourceIndexStr === null || sourceIndexStr === undefined || sourceIndexStr === '') {
+                     console.warn("Sharpen drop event received invalid sourceIndexStr:", sourceIndexStr);
+                     return;
+                 }
 
-                const sourceIndex = parseInt(sourceIndexStr, 10);
-                const itemToDrop = this.game.player.inventory[sourceIndex];
+                 const sourceIndex = parseInt(sourceIndexStr, 10);
+                 const itemToDrop = this.game.player.inventory[sourceIndex];
 
-                if (itemToDrop && itemToDrop.type === 'weapon') {
-                    if (sharpenSlot.dataset.itemData) {
-                        this.clearSharpenSlot();
-                    }
+                 if (itemToDrop && itemToDrop.type === 'weapon') {
+                     if (sharpenSlot.dataset.itemData) {
+                         this.clearSharpenSlot();
+                     }
 
-                    const currentInventoryItem = this.game.player.inventory[sourceIndex];
-                    if (!currentInventoryItem || currentInventoryItem.id !== itemToDrop.id) {
-                        console.warn(`Item at index ${sourceIndex} changed or removed unexpectedly.`);
-                        this.game.addLog("Action interrupted. Please try dragging the item again.");
-                        this.ui.renderInventory();
-                        return;
-                    }
-                    const removedItem = this.game.player.removeItem(sourceIndex);
+                     const currentInventoryItem = this.game.player.inventory[sourceIndex];
+                     if (!currentInventoryItem || currentInventoryItem.id !== itemToDrop.id) {
+                         console.warn(`Item at index ${sourceIndex} changed or removed unexpectedly.`);
+                         this.game.addLog("Action interrupted. Please try dragging the item again.");
+                         this.ui.renderInventory();
+                         return;
+                     }
+                     const removedItem = this.game.player.removeItem(sourceIndex);
 
-                    sharpenSlot.dataset.itemData = JSON.stringify(removedItem);
-                    sharpenSlot.dataset.originalIndex = sourceIndex;
+                     sharpenSlot.dataset.itemData = JSON.stringify(removedItem);
+                     sharpenSlot.dataset.originalIndex = sourceIndex;
 
-                    sharpenSlot.innerHTML = `
-                        <div class="sharpen-slot-label">Weapon Slot</div>
-                        <div class="sharpen-slot-content">${removedItem.name}</div>
-                    `;
-                    sharpenSlot.style.cursor = 'pointer';
-                    sharpenSlot.onclick = () => {
-                        if (sharpenSlot.dataset.itemData) {
-                            this.clearSharpenSlot();
-                        }
-                    };
+                     sharpenSlot.innerHTML = `
+                         <div class="sharpen-slot-content">${removedItem.name}</div>
+                     `;
+                     sharpenSlot.style.cursor = 'pointer';
+                     sharpenSlot.onclick = () => {
+                         if (sharpenSlot.dataset.itemData) {
+                             this.clearSharpenSlot();
+                         }
+                     };
 
-                    sharpenSlot.classList.add('crafting-slot-filled');
+                     sharpenSlot.classList.add('crafting-slot-filled');
 
-                    const previewElement = document.getElementById('sharpen-preview');
-                    const isAlreadySharpened = removedItem.isSharpened === true;
-                    const isAlreadyHoned = removedItem.isHoned === true;
+                     const previewElement = document.getElementById('sharpen-preview');
+                     const isAlreadySharpened = removedItem.isSharpened === true;
+                     const isAlreadyHoned = removedItem.isHoned === true;
 
-                    const currentAttack = (removedItem.stats.attack || 0);
-                    const newAttack = currentAttack + 1;
-                    const currentSpeed = (removedItem.speed ?? this.game.player.defaultAttackSpeed);
-                    const newSpeedValue = Math.max(0.1, currentSpeed - 0.5);
-                    const currentDPS = currentSpeed > 0 ? (currentAttack / currentSpeed) : 0;
-                    const sharpenedDPS = currentSpeed > 0 ? (newAttack / currentSpeed) : 0;
-                    const honedDPS = newSpeedValue > 0 ? (currentAttack / newSpeedValue) : 0;
+                     const currentAttack = (removedItem.stats.attack || 0);
+                     const newAttack = currentAttack + 1;
+                     const currentSpeed = (removedItem.speed ?? this.game.player.defaultAttackSpeed);
+                     const newSpeedValue = Math.max(0.1, currentSpeed - 0.5);
+                     const currentDPS = currentSpeed > 0 ? (currentAttack / currentSpeed) : 0;
+                     const sharpenedDPS = currentSpeed > 0 ? (newAttack / currentSpeed) : 0;
+                     const honedDPS = newSpeedValue > 0 ? (currentAttack / newSpeedValue) : 0;
 
-                    let previewHTML = `<strong>Current:</strong> Atk ${currentAttack} / Spd ${currentSpeed.toFixed(1)}s / DPS ${currentDPS.toFixed(1)}<br>`;
-                    if (isAlreadySharpened && isAlreadyHoned) {
-                        previewHTML += `<span style="color: #FF0000;">Fully Enhanced!</span>`;
-                    } else if (isAlreadySharpened) {
-                        previewHTML += `<strong>Sharpen:</strong> <span style="color: #aaa;">Already Sharpened</span><br>`;
-                        previewHTML += `<strong>Hone (-0.5s):</strong> Atk ${currentAttack} / Spd ${newSpeedValue.toFixed(1)}s / DPS ${honedDPS.toFixed(1)}`;
-                    } else if (isAlreadyHoned) {
-                        previewHTML += `<strong>Sharpen:</strong> Atk ${newAttack} (+1) / Spd ${currentSpeed.toFixed(1)}s / DPS ${sharpenedDPS.toFixed(1)}<br>`;
-                        previewHTML += `<strong>Hone (-0.5s):</strong> <span style="color: #aaa;">Already Honed</span>`;
-                    } else {
-                        previewHTML += `<strong>Sharpen:</strong> Atk ${newAttack} (+1) / Spd ${currentSpeed.toFixed(1)}s / DPS ${sharpenedDPS.toFixed(1)}<br>`;
-                        previewHTML += `<strong>Hone (-0.5s):</strong> Atk ${currentAttack} / Spd ${newSpeedValue.toFixed(1)}s / DPS ${honedDPS.toFixed(1)}`;
-                    }
+                     let previewHTML = `<div class="item-desc-text preview-grid">`;
+                     
+                     previewHTML += `<div class="preview-header"></div>`;
+                     previewHTML += `<div class="preview-header">Attack</div>`;
+                     previewHTML += `<div class="preview-header">Speed</div>`;
+                     previewHTML += `<div class="preview-header">DPS</div>`;
 
-                    previewElement.innerHTML = previewHTML;
+                     previewHTML += `<div>Current</div>`;
+                     previewHTML += `<div class="preview-cell">⚔️ ${currentAttack}</div>`;
+                     previewHTML += `<div class="preview-cell">⚡ ${currentSpeed.toFixed(1)}s</div>`;
+                     previewHTML += `<div class="preview-cell">📊 ${currentDPS.toFixed(1)}</div>`;
 
-                    document.getElementById('sharpen-attack-button').disabled = isAlreadySharpened;
-                    document.getElementById('sharpen-speed-button').disabled = isAlreadyHoned || newSpeedValue === currentSpeed;
+                     previewHTML += `<div>Sharpen</div>`;
+                     if (isAlreadySharpened) {
+                         previewHTML += `<div class="preview-cell unavailable-option">Already Sharpened</div>`;
+                     } else {
+                         previewHTML += `<div class="preview-cell">⚔️ ${newAttack} (+1)</div>`;
+                         previewHTML += `<div class="preview-cell">⚡ ${currentSpeed.toFixed(1)}s</div>`;
+                         previewHTML += `<div class="preview-cell">📊 ${sharpenedDPS.toFixed(1)}</div>`;
+                     }
 
-                    this.ui.renderInventory();
-                    this.ui.updatePlayerStats();
-                    this.ui.renderEquipment();
+                     previewHTML += `<div>Hone</div>`;
+                     if (isAlreadyHoned) {
+                         previewHTML += `<div class="preview-cell unavailable-option">Already Honed</div>`;
+                     } else if (newSpeedValue === currentSpeed) {
+                         previewHTML += `<div class="preview-cell unavailable-option">Cannot Hone Further</div>`;
+                     } else {
+                         previewHTML += `<div class="preview-cell">⚔️ ${currentAttack}</div>`;
+                         previewHTML += `<div class="preview-cell">⚡ ${newSpeedValue.toFixed(1)}s (-0.5s)</div>`;
+                         previewHTML += `<div class="preview-cell">📊 ${honedDPS.toFixed(1)}</div>`;
+                     }
+                     
+                     if (isAlreadySharpened && isAlreadyHoned) {
+                         previewHTML += `<div class="fully-enhanced-message">Fully Enhanced!</div>`;
+                     }
+                     
+                     previewHTML += `</div>`;
 
-                } else {
-                    this.game.addLog("You can only place weapons on the sharpening stone.");
-                }
+                     previewElement.innerHTML = previewHTML;
+
+                     const attackButton = document.getElementById('sharpen-attack-button');
+                     const speedButton = document.getElementById('sharpen-speed-button');
+                     if (attackButton) attackButton.disabled = isAlreadySharpened;
+                     if (speedButton) speedButton.disabled = isAlreadyHoned || newSpeedValue === currentSpeed;
+
+                     this.ui.renderInventory();
+                     this.ui.updatePlayerStats();
+                     this.ui.renderEquipment();
+
+                 } else {
+                     this.game.addLog("You can only place weapons on the sharpening stone.");
+                 }
             });
         }
     }
@@ -207,7 +231,6 @@ class Sharpen {
         }
 
         slotElement.innerHTML = `
-                <div class="sharpen-slot-label">Weapon Slot</div>
                 <div class="sharpen-slot-content">Drop weapon here</div>
             `;
         slotElement.style.cursor = 'default';
@@ -222,7 +245,6 @@ class Sharpen {
         const leaveButton = document.getElementById('sharpen-leave-button');
         if (sharpenAttackButton) sharpenAttackButton.disabled = true;
         if (sharpenSpeedButton) sharpenSpeedButton.disabled = true;
-        if (leaveButton) leaveButton.disabled = true;
 
         const previewArea = document.getElementById('sharpen-preview');
         if (previewArea) {
