@@ -40,12 +40,12 @@ class Game {
         { type: 'monster', weight: 30 },
         { type: 'rest', weight: 10 }, // DONE
         { type: 'shop', weight: 10 }, // DONE
-        { type: 'alchemist', weight: 100 }, // DONE
+        { type: 'alchemist', weight: 5 }, // DONE
         { type: 'treasure_chest', weight: 10 }, // DONE
         { type: 'forge', weight: 10 }, // DONE
         { type: 'fishing', weight: 10 }, // DONE
         { type: 'trap', weight: 10 }, // DONE
-        { type: 'weapon_merchant', weight: 100 }
+        { type: 'weapon_merchant', weight: 5 }
     ];
 
     start() {

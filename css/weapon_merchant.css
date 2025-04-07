@@ -1,5 +1,3 @@
-/* css/weapon_merchant.css - Simplified */
-
 #weapon-merchant-area {
     /* Keep basic container styles - assuming dimensions/padding might be unique */
     padding: 20px;
@@ -23,15 +21,6 @@
     flex-shrink: 0; /* Prevent shrinking */
 }
 
-/* Shop info might inherit fine, but specify if needed */
-/* #weapon-merchant-area .shop-info { ... } */
-
-/* Rely on shop.css for .shop-content layout */
-/* Rely on shop.css for .shop-items-container grid */
-/* Rely on shop.css for base .shop-item styles */
-/* Rely on shop.css for base .shop-item-info, .shop-item-name */
-
-/* Specific Price Styling for Discount */
 #weapon-merchant-area .shop-item-price .original-price {
     text-decoration: line-through;
     color: #888;
@@ -44,35 +33,20 @@
     font-weight: bold; /* Ensure discounted price is bold */
     font-size: 1em; /* Ensure matches base price size */
 }
-/* Note: Base .shop-item-price styles (size, base color, base bolding) come from shop.css */
 
-
-/* Rely on shop.css for base .shop-item-button styles */
-
-/* Override for ACTIVE buy button color AND cursor */
 #weapon-merchant-area .shop-item-button:not(:disabled):not(.item-bought *) {
     background-color: #4CAF50;
     color: white;
     border-color: #3a8a3e;
     cursor: pointer; /* Explicitly set pointer for active buttons */
 }
-/* Hover for active button */
 #weapon-merchant-area .shop-item-button:hover:not(:disabled):not(.item-bought *) {
     background-color: #45a049;
     /* Rely on shop.css for transform effect if applicable */
 }
 
-/* Rely on shop.css for base disabled style */
-
-/* Rely on shop.css for base .item-description, .item-desc-name, .item-desc-text */
-
-/* Rely on shared styles or shop.css for the leave button */
-/* Explicitly ensure leave button has pointer and correct alignment */
 #weapon-merchant-leave-button {
     cursor: pointer;
     align-self: center; /* Prevent stretching and center */
      /* Inherit background, padding etc. from a shared class or define needed overrides */
 }
-#weapon-merchant-leave-button:hover {
-     /* Styles inherited or explicitly defined */
-} 
