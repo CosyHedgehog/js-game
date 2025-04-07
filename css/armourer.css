@@ -6,6 +6,7 @@
     background-color: #333;
     box-sizing: border-box;
     width: 100%;
+    cursor: default;
 }
 
 #armourer-area h3 {
@@ -72,6 +73,7 @@
     background-color: rgba(0, 0, 0, 0.2);
     transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
     color: #888;
+    cursor: default;
 }
 
 .armourer-slot.drag-over-valid { background-color: rgba(0, 255, 0, 0.1); border-color: #0f0; }
@@ -82,6 +84,7 @@
     border-color: #aaa;
     background-color: rgba(0, 0, 0, 0.4);
     box-shadow: 0 0 10px rgba(200, 200, 200, 0.4);
+    cursor: pointer;
 }
 
 .armourer-slot-content {

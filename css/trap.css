@@ -109,4 +109,17 @@
     gap: 0.5rem;
     cursor: default;
     text-align: center; 
+}
+
+/* Cursor Handling for Trap Area */
+#trap-area .choice-card {
+    cursor: default; /* Default cursor for cards */
+}
+
+#trap-area .choice-card .choice-start-button:not(:disabled) {
+    cursor: pointer; /* Pointer for enabled buttons */
+}
+
+#trap-area .choice-card .choice-start-button:disabled {
+    cursor: not-allowed; /* Not-allowed for disabled buttons */
 } 

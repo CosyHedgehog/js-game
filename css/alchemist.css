@@ -7,6 +7,7 @@
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
+    cursor: default; /* Default for the whole area */
 }
 
 #alchemist-area h3 {
@@ -80,3 +81,18 @@
     background-color: #66BB6A;
 }
 /* --- End Free Item Styling --- */
+
+/* Cursor Handling for Alchemist Area */
+#alchemist-area .shop-item {
+    cursor: default; /* Default for item cards */
+}
+
+#alchemist-area .shop-item-button:not(:disabled) {
+    cursor: pointer; /* Pointer for enabled buy buttons */
+}
+
+#alchemist-area .shop-item-button:disabled {
+    cursor: not-allowed; /* Not-allowed for disabled buy buttons */
+}
+
+/* Assuming leave button uses shared class .leave-button which already has cursor: pointer */

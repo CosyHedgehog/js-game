@@ -80,6 +80,7 @@
     transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
     color: #888;
     box-sizing: border-box;
+    cursor: default;
 }
 
 .forge-slot.drag-over-valid { background-color: rgba(0, 255, 0, 0.1); border-color: #0f0; }
@@ -168,5 +169,18 @@
 }
 
 #forge-button:disabled {
+    cursor: not-allowed;
+}
+
+/* Cursor Handling for Initial Forge Choices */
+.forge-container .choice-card {
+    cursor: default;
+}
+
+.forge-container .choice-start-button:not(:disabled) {
+    cursor: pointer;
+}
+
+.forge-container .choice-start-button:disabled {
     cursor: not-allowed;
 } 

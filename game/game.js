@@ -21,13 +21,13 @@ class Game {
 
     EVENT_PROBABILITY = [
         { type: 'monster', weight: 30 },
-        { type: 'rest', weight: 10 }, 
-        { type: 'shop', weight: 10 },
-        { type: 'alchemist', weight: 10 },
-        { type: 'treasure_chest', weight: 10 }, 
+        { type: 'rest', weight: 10 }, // DONE
+        { type: 'shop', weight: 100 },
+        { type: 'alchemist', weight: 10 }, // DONE
+        { type: 'treasure_chest', weight: 10 }, // DONE
         { type: 'forge', weight: 10 }, // DONE
         { type: 'fishing', weight: 10 }, // DONE
-        { type: 'trap', weight: 100 } // DONE
+        { type: 'trap', weight: 10 } // DONE
     ];
 
     start() {
