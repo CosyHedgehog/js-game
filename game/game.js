@@ -25,9 +25,9 @@ class Game {
         { type: 'shop', weight: 10 },
         { type: 'alchemist', weight: 10 },
         { type: 'treasure_chest', weight: 10 }, 
-        { type: 'forge', weight: 100 },
+        { type: 'forge', weight: 10 },
         { type: 'fishing', weight: 10 },
-        { type: 'trap', weight: 10 }
+        { type: 'trap', weight: 100 }
     ];
 
     start() {
@@ -37,10 +37,6 @@ class Game {
 
     normalMode() {
         this.player.addItem(this.createItem('wooden_sword'));
-        this.player.addItem(this.createItem('wooden_sword'));
-        this.player.addItem(this.createItem('wooden_sword'));
-        this.player.addItem(this.createItem('wooden_shield'));
-        this.player.addItem(this.createItem('wooden_shield'));
         this.player.addItem(this.createItem('wooden_shield'));
 
         this.player.addItem(this.createItem('bread'));
@@ -70,6 +66,7 @@ class Game {
         this.player.addItem(this.createItem('bread'));
         this.player.addItem(this.createItem('bread'));
         this.player.addItem(this.createItem('bread'));
+        // this.player.addItem(this.createItem('thief_tools'));
 
         this.ui.gameScreen?.classList.remove('hidden');
 
