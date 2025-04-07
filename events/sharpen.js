@@ -153,33 +153,33 @@ class Sharpen {
                      let previewHTML = `<div class="item-desc-text preview-grid">`;
                      
                      previewHTML += `<div class="preview-header"></div>`;
-                     previewHTML += `<div class="preview-header">Attack</div>`;
-                     previewHTML += `<div class="preview-header">Speed</div>`;
-                     previewHTML += `<div class="preview-header">DPS</div>`;
+                     previewHTML += `<div class="preview-header">⚔️ Attack</div>`;
+                     previewHTML += `<div class="preview-header">⚡ Speed</div>`;
+                     previewHTML += `<div class="preview-header">📊 DPS</div>`;
 
                      previewHTML += `<div>Current</div>`;
-                     previewHTML += `<div class="preview-cell">⚔️ ${currentAttack}</div>`;
-                     previewHTML += `<div class="preview-cell">⚡ ${currentSpeed.toFixed(1)}s</div>`;
-                     previewHTML += `<div class="preview-cell">📊 ${currentDPS.toFixed(1)}</div>`;
+                     previewHTML += `<div class="preview-cell">${currentAttack}</div>`;
+                     previewHTML += `<div class="preview-cell">${currentSpeed.toFixed(1)}s</div>`;
+                     previewHTML += `<div class="preview-cell">${currentDPS.toFixed(1)}</div>`;
 
                      previewHTML += `<div>Sharpen</div>`;
                      if (isAlreadySharpened) {
-                         previewHTML += `<div class="preview-cell unavailable-option">Already Sharpened</div>`;
+                         previewHTML += `<div class="preview-cell unavailable-option" style="grid-column: span 3;">Already Sharpened</div>`;
                      } else {
-                         previewHTML += `<div class="preview-cell">⚔️ ${newAttack} (+1)</div>`;
-                         previewHTML += `<div class="preview-cell">⚡ ${currentSpeed.toFixed(1)}s</div>`;
-                         previewHTML += `<div class="preview-cell">📊 ${sharpenedDPS.toFixed(1)}</div>`;
+                         previewHTML += `<div class="preview-cell">${newAttack} (+1)</div>`;
+                         previewHTML += `<div class="preview-cell">${currentSpeed.toFixed(1)}s</div>`;
+                         previewHTML += `<div class="preview-cell">${sharpenedDPS.toFixed(1)}</div>`;
                      }
 
                      previewHTML += `<div>Hone</div>`;
                      if (isAlreadyHoned) {
-                         previewHTML += `<div class="preview-cell unavailable-option">Already Honed</div>`;
+                         previewHTML += `<div class="preview-cell unavailable-option" style="grid-column: span 3;">Already Honed</div>`;
                      } else if (newSpeedValue === currentSpeed) {
-                         previewHTML += `<div class="preview-cell unavailable-option">Cannot Hone Further</div>`;
+                         previewHTML += `<div class="preview-cell unavailable-option" style="grid-column: span 3;">Cannot Hone Further</div>`;
                      } else {
-                         previewHTML += `<div class="preview-cell">⚔️ ${currentAttack}</div>`;
-                         previewHTML += `<div class="preview-cell">⚡ ${newSpeedValue.toFixed(1)}s (-0.5s)</div>`;
-                         previewHTML += `<div class="preview-cell">📊 ${honedDPS.toFixed(1)}</div>`;
+                         previewHTML += `<div class="preview-cell">${currentAttack}</div>`;
+                         previewHTML += `<div class="preview-cell">${newSpeedValue.toFixed(1)}s (-0.5s)</div>`;
+                         previewHTML += `<div class="preview-cell">${honedDPS.toFixed(1)}</div>`;
                      }
                      
                      if (isAlreadySharpened && isAlreadyHoned) {

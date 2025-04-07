@@ -161,28 +161,28 @@ class Armoury {
 
                     let previewHTML = `<div class="item-desc-text preview-grid armourer-preview-grid">`; 
 
-                    previewHTML += `<div class="preview-header"></div>`; 
-                    previewHTML += `<div class="preview-header">Defense</div>`;
-                    previewHTML += `<div class="preview-header">Max HP</div>`;
+                    previewHTML += `<div class="preview-header"></div>`;
+                    previewHTML += `<div class="preview-header">🛡️ Defense</div>`;
+                    previewHTML += `<div class="preview-header">❤️ Max HP</div>`;
 
                     previewHTML += `<div>Current</div>`;
-                    previewHTML += `<div class="preview-cell">🛡️ ${currentDefense}</div>`;
-                    previewHTML += `<div class="preview-cell">❤️ +${currentMaxHealth}</div>`;
+                    previewHTML += `<div class="preview-cell">${currentDefense}</div>`;
+                    previewHTML += `<div class="preview-cell">+${currentMaxHealth}</div>`;
 
                     previewHTML += `<div>Reinforce</div>`;
                     if (isAlreadyReinforced) {
                         previewHTML += `<div class="preview-cell unavailable-option" style="grid-column: span 2;">Already Reinforced</div>`;
                     } else {
-                        previewHTML += `<div class="preview-cell">🛡️ ${newDefense} (+1)</div>`;
-                        previewHTML += `<div class="preview-cell">❤️ +${currentMaxHealth}</div>`; 
+                        previewHTML += `<div class="preview-cell">${newDefense} (+1)</div>`;
+                        previewHTML += `<div class="preview-cell">+${currentMaxHealth}</div>`; 
                     }
 
                     previewHTML += `<div>Fortify</div>`;
                     if (isAlreadyFortified) {
                         previewHTML += `<div class="preview-cell unavailable-option" style="grid-column: span 2;">Already Fortified</div>`;
                     } else {
-                        previewHTML += `<div class="preview-cell">🛡️ ${currentDefense}</div>`; 
-                        previewHTML += `<div class="preview-cell">❤️ +${newMaxHealth} (+3)</div>`;
+                        previewHTML += `<div class="preview-cell">${currentDefense}</div>`; 
+                        previewHTML += `<div class="preview-cell">+${newMaxHealth} (+3)</div>`;
                     }
 
                      if (isAlreadyReinforced && isAlreadyFortified) {

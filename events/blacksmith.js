@@ -21,12 +21,12 @@ class Blacksmith {
         this.ui.updatePlayerStats(); 
 
         // --- Link CSS ---
-        const cssLink = document.getElementById('blacksmith-css');
+        const cssLink = document.getElementById('forge-css');
         if (!cssLink) {
             const link = document.createElement('link');
-            link.id = 'blacksmith-css';
+            link.id = 'forge-css';
             link.rel = 'stylesheet';
-            link.href = 'css/blacksmith.css';
+            link.href = 'css/forge.css';
             document.head.appendChild(link);
         }
         // ---------------
@@ -293,10 +293,10 @@ class Blacksmith {
              let previewHTML = `<div class="item-desc-text preview-grid blacksmith-preview-grid">`;
 
              previewHTML += `<div class="preview-header"></div>`;
-             previewHTML += `<div class="preview-header">Attack</div>`;
-             previewHTML += `<div class="preview-header">Defense</div>`;
-             previewHTML += `<div class="preview-header">Max HP</div>`;
-             previewHTML += `<div class="preview-header">Speed</div>`;
+             previewHTML += `<div class="preview-header">⚔️ Attack</div>`;
+             previewHTML += `<div class="preview-header">🛡️ Defense</div>`;
+             previewHTML += `<div class="preview-header">❤️ Max HP</div>`;
+             previewHTML += `<div class="preview-header">⚡ Speed</div>`;
 
              const formatRow = (label, item) => {
                 let row = `<div>${label}</div>`;
