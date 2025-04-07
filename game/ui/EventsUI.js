@@ -41,6 +41,19 @@ class EventsUI {
                 cardContent.appendChild(difficultyBadge);
             }
 
+            if (encounter.type === 'weapon_merchant' && encounter.discountPercent) {
+                const discountBadge = document.createElement('div');
+                discountBadge.className = `difficulty-badge difficulty-easy`;
+                discountBadge.textContent = `${encounter.discountPercent}% OFF`;
+                discountBadge.style.backgroundColor = '#4CAF50';
+                discountBadge.style.position = 'absolute';
+                discountBadge.style.top = '8px';
+                discountBadge.style.right = '8px';
+                discountBadge.style.fontSize = '0.8em';
+                discountBadge.style.padding = '3px 6px';
+                cardContent.appendChild(discountBadge);
+            }
+
             const eventIcon = document.createElement('span');
             eventIcon.className = 'event-icon';
             if (choice.encounter.type === 'monster') {

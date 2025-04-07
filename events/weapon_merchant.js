@@ -3,13 +3,17 @@ class WeaponMerchant {
     constructor(game, ui) {
         this.game = game;
         this.ui = ui;
+        this.currentDiscountPercent = 0; // Initialize property
     }
 
-    handle() {
+    handle(encounter) {
         this.game.state = 'weapon_merchant';
         this.game.addLog("You encounter a traveling arms dealer.");
         const currentRound = this.game.currentRound;
-        const numWeaponsToOffer = this.game.getRandomInt(2, 3); // Offer 2 or 3 weapons
+        const numWeaponsToOffer = this.game.getRandomInt(2, 3);
+
+        // *** Use discount from encounter object AND Store it ***
+        this.currentDiscountPercent = encounter.discountPercent || 10; // Store it on the instance
 
         // Define weapon pools using arrays from items.js
         const weaponPools = {
@@ -55,13 +59,13 @@ class WeaponMerchant {
                 const item = this.game.createItem(randomWeaponId);
                 if (item) {
                     const baseValue = item.value || 0;
-                    // Calculate the ACTUAL price the player pays (1.2x base + variance)
-                    const buyPrice = Math.ceil(baseValue * 1.2 + this.game.getRandomInt(0, Math.floor(baseValue * 0.1)));
-                    // Calculate the crossed-out "original" price (10% higher than buyPrice)
-                    const originalPrice = Math.ceil(buyPrice * 1.1); // Or buyPrice / 0.9 for exact inverse
+                    // Calculate standard shop price (1.3x base + variance)
+                    const originalPrice = Math.ceil(baseValue * 1.3 + this.game.getRandomInt(0, Math.floor(baseValue * 0.1)));
+                    // Use the stored discount percent
+                    const buyPrice = Math.floor(originalPrice * (1 - this.currentDiscountPercent / 100));
 
-                    item.originalPrice = originalPrice; // Store the higher, crossed-out price
-                    item.buyPrice = buyPrice;         // Store the actual price player pays
+                    item.originalPrice = originalPrice; // Store the shop price (crossed out)
+                    item.buyPrice = buyPrice;         // Store the actual discounted price
                     offeredItems.push(item);
                 }
             }
@@ -78,7 +82,8 @@ class WeaponMerchant {
 
         // Store offered items (can use game.currentShopItems or a new property if needed)
         this.game.currentShopItems = offeredItems; // Reusing shop item storage for simplicity
-        this.showWeaponMerchantUI(offeredItems);
+        // *** Pass stored discount percent to UI function ***
+        this.showWeaponMerchantUI(offeredItems, this.currentDiscountPercent);
     }
 
     // Use the same weighting logic as the Shop/Alchemist
@@ -100,19 +105,19 @@ class WeaponMerchant {
 
     // --- UI, Event Listeners, Buy/Leave Logic (To be added/adapted from Shop/Alchemist) ---
 
-    showWeaponMerchantUI(items) {
+    showWeaponMerchantUI(items, discountPercent) {
         this.ui.clearMainArea();
         const merchantArea = this.ui.weaponMerchantArea;
         merchantArea.classList.remove('hidden');
         merchantArea.id = 'weapon-merchant-area'; // Use a unique ID
         merchantArea.innerHTML = `
-             <h3>🗡️ Traveling Arms Dealer <span style="color: #4CAF50;">(10% OFF!)</span></h3>
+             <h3>Traveling Arms Dealer <span style="color: #4CAF50;">(${discountPercent}% OFF!)</span></h3>
              <p class="shop-info">A selection of fine weaponry, traveler.</p>
              <div class="shop-content">
                  <div class="shop-items-container">
                      ${items.map((item, index) => {
                          const isBought = item.bought === true;
-                         const canAfford = this.game.player.gold >= item.buyPrice; // Check against actual buy price
+                         const canAfford = this.game.player.gold >= item.buyPrice;
                          return `
                              <div class="shop-item ${isBought ? 'item-bought' : ''}" data-item-id="${item.id}">
                                  <div class="shop-item-info">
@@ -206,7 +211,7 @@ class WeaponMerchant {
          }
      }
 
-     handleWeaponMerchantBuy(itemIndex) { // Index refers to game.currentShopItems
+     handleWeaponMerchantBuy(itemIndex) {
          if (!this.game || !this.game.currentShopItems || itemIndex < 0 || itemIndex >= this.game.currentShopItems.length) {
               console.error("Invalid item index for merchant buy:", itemIndex);
               return;
@@ -229,8 +234,8 @@ class WeaponMerchant {
          this.game.addLog(`Bought ${item.name} for ${item.buyPrice} gold.`);
          this.game.currentShopItems[itemIndex].bought = true; // Mark as bought for this session
 
-         // Re-render the UI to show "Bought" and disable button/update affordance
-         this.showWeaponMerchantUI(this.game.currentShopItems);
+         // *** Re-render using the stored discount percent ***
+         this.showWeaponMerchantUI(this.game.currentShopItems, this.currentDiscountPercent);
 
          this.ui.updatePlayerStats();
          this.ui.renderInventory();

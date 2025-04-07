@@ -25,6 +25,15 @@ class Game {
         this.blacksmith = new Blacksmith(this, this.ui);
         this.trap = new Trap(this, this.ui);
         this.weaponMerchant = new WeaponMerchant(this, this.ui);
+
+        this.weightedDiscounts = [
+            { percent: 10, weight: 2 },
+            { percent: 15, weight: 3 },
+            { percent: 20, weight: 4 },
+            { percent: 25, weight: 3 },
+            { percent: 30, weight: 2 },
+        ];
+        this.totalDiscountWeight = this.weightedDiscounts.reduce((sum, d) => sum + d.weight, 0);
     }
 
     EVENT_PROBABILITY = [
@@ -279,9 +288,9 @@ class Game {
         let randomRoll = Math.random() * totalWeight;
         let chosenEncounter = null;
 
-        for (const encounter of this.EVENT_PROBABILITY) {
-            if (randomRoll < encounter.weight) {
-                chosenEncounter = { type: encounter.type };
+        for (const encounterProb of this.EVENT_PROBABILITY) {
+            if (randomRoll < encounterProb.weight) {
+                chosenEncounter = { type: encounterProb.type };
 
                 if (chosenEncounter.type === 'monster') {
                     let monsterPool = [];
@@ -307,10 +316,12 @@ class Game {
                         console.error(`Monster pool empty for round ${this.currentRound}! Cannot select monster.`);
                         chosenEncounter = { type: 'rest' };
                     }
+                } else if (chosenEncounter.type === 'weapon_merchant') {
+                    chosenEncounter.discountPercent = this.getRandomMerchantDiscount();
                 }
                 break;
             }
-            randomRoll -= encounter.weight;
+            randomRoll -= encounterProb.weight;
         }
 
         if (!chosenEncounter) {
@@ -448,9 +459,12 @@ class Game {
                 return "You find a sturdy-looking treasure chest. It might be locked.\n\n" +
                     "Approach the chest?";
             case 'weapon_merchant':
-                return "You see a Traveling Arms Dealer offering a selection of weapons.\n\n" +
-                       `Current gold: ${this.player.gold}\n\n` +
-                       "Approach the merchant?";
+                let details = "You see a Traveling Arms Dealer offering a selection of weapons.\n\n";
+                if (encounter.discountPercent) {
+                    details += `<span style="color: #4CAF50; font-weight:bold;">Offering ${encounter.discountPercent}% OFF today!</span>\n\n`;
+                }
+                details += `Current gold: ${this.player.gold}\n\nApproach the merchant?`;
+                return details;
             default:
                 return "Unknown encounter type.";
         }
@@ -497,7 +511,7 @@ class Game {
                 new Forge(this, this.ui).handle();
                 break;
             case 'weapon_merchant':
-                this.weaponMerchant.handle();
+                this.weaponMerchant.handle(encounter);
                 break;
             default:
                 this.addLog("Unknown encounter type selected.");
@@ -801,5 +815,16 @@ class Game {
 
         this.ui.updatePlayerStats();
         this.ui.renderEquipment();
+    }
+
+    getRandomMerchantDiscount() {
+        let randomWeight = Math.random() * this.totalDiscountWeight;
+        for (const discountInfo of this.weightedDiscounts) {
+            randomWeight -= discountInfo.weight;
+            if (randomWeight <= 0) {
+                return discountInfo.percent;
+            }
+        }
+        return 10; // Fallback just in case
     }
 }

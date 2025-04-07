@@ -1,4 +1,4 @@
-const COMMON_WEAPONS = ['wooden_dagger', 'wooden_sword', 'wooden_hammer', 'rusty_sword'];
+const COMMON_WEAPONS = ['wooden_dagger', 'wooden_sword', 'wooden_hammer'];
 const COMMON_ARMOR = ['leather_helm', 'leather_armor', 'leather_legs', 'wooden_shield'];
 const COMMON_ITEMS = [...COMMON_WEAPONS, ...COMMON_ARMOR];
 
@@ -22,11 +22,6 @@ const RARE_POTIONS = ['greater_attack_potion', 'greater_defense_potion', 'greate
 
 
 const ITEMS = {
-       'rusty_sword': {
-        id: 'rusty_sword', name: 'Rusty Sword', type: 'weapon', slot: 'weapon', hands: 1,
-        stats: { attack: 1 }, speed: 2.0, value: 4,
-        description: 'A somewhat rusted sword.\nAttack: +1\nSpeed: 2.0s\n1-Handed'
-    },
     'wooden_dagger': {
         id: 'wooden_dagger', name: 'Wooden Dagger', type: 'weapon', slot: 'weapon', hands: 1,
         stats: { attack: 1 }, speed: 1.4, value: 4,

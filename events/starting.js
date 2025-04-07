@@ -31,7 +31,6 @@ class Starting {
         //         startingGold: 5
         //     },
         //     items: [
-        //         { id: 'rusty_sword', count: 1 },
         //         { id: 'fishing_rod', count: 1 },
         //         { id: 'large_fish', count: 3 },
         //         { id: 'medium_fish', count: 3 },
