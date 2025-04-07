@@ -2,7 +2,7 @@ class Player {
     constructor() {
         this.gold = 0;
         this.maxHealth = 10;
-        this.health = 1;
+        this.health = 10;
         this.baseAttack = 1;
         this.baseDefense = 1;
         this.inventory = new Array(18).fill(null);
