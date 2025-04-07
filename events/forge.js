@@ -21,21 +21,30 @@ class Forge {
         forgeArea.innerHTML = `
             <div class="forge-container"> 
                      <div class="choice-card"> 
-                         <h4 class="choice-title">Weapon Station</h4>
-                         <p class="choice-description">Sharpen a weapon Attack (+1) or hone to increase its Speed (-0.2s).</p>
-                         <button id="forge-sharpen-button" class="choice-start-button">Use Stone</button> 
+                        <div class="choice-card-content"> 
+                            <div class="forge-icon">🗡️</div> 
+                            <h4 class="choice-title">Weapon Station</h4>
+                        </div>
+                        <p class="choice-description">Sharpen a weapon Attack (+1) or hone to increase its Speed (-0.2s).</p>
+                        <button id="forge-sharpen-button" class="choice-start-button">Use Stone</button> 
                      </div>
                      <div class="choice-card">
-                         <h4 class="choice-title">Armour Station</h4>
-                         ${hammerRequirementArmorer}
-                         <p class="choice-description">Reinforce armor's Defense (+1) or Fortify its Max Health (+3).</p>
-                         <button id="forge-armorer-button" class="choice-start-button" ${!hasHammer ? 'disabled' : ''}>Use Station</button>
+                        <div class="choice-card-content"> 
+                            <div class="forge-icon">🔨</div> 
+                            <h4 class="choice-title">Armour Station</h4>
+                        </div>
+                        ${hammerRequirementArmorer}
+                        <p class="choice-description">Reinforce armor's Defense (+1) or Fortify its Max Health (+3).</p>
+                        <button id="forge-armorer-button" class="choice-start-button" ${!hasHammer ? 'disabled' : ''}>Use Station</button>
                      </div>
                      <div class="choice-card">
-                         <h4 class="choice-title">Forge</h4>
-                         ${hammerRequirementBlacksmith}
-                         <p class="choice-description">Combine two identical items (weapon or armor) into a stronger version.</p>
-                         <button id="forge-blacksmith-button" class="choice-start-button" ${!hasHammer ? 'disabled' : ''}>Use Anvil</button>
+                        <div class="choice-card-content"> 
+                            <div class="forge-icon">🔥</div> 
+                            <h4 class="choice-title">Forge</h4>
+                        </div>
+                        ${hammerRequirementBlacksmith}
+                        <p class="choice-description">Combine two identical items (weapon or armor) into a stronger version.</p>
+                        <button id="forge-blacksmith-button" class="choice-start-button" ${!hasHammer ? 'disabled' : ''}>Use Anvil</button>
                      </div>
                  
             </div>
