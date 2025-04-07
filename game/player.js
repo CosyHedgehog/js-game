@@ -70,6 +70,16 @@ class Player {
         return totalDefense;
     }
 
+    // --- Added Getters for Temporary Bonuses ---
+    getTempAttackBonus() {
+        return this.tempAttack;
+    }
+
+    getTempDefenseBonus() {
+        return this.tempDefense;
+    }
+    // -----------------------------------------
+
     takeDamage(amount) {
         const defenseRoll = game.rollDamage(this.getDefense());
         const actualBlocked = Math.min(amount, defenseRoll);

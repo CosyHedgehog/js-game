@@ -21,11 +21,11 @@ class Game {
 
     EVENT_PROBABILITY = [
         { type: 'monster', weight: 30 },
-        { type: 'rest', weight: 100 }, // DONE
+        { type: 'rest', weight: 10 }, // DONE
         { type: 'shop', weight: 10 }, // DONE
         { type: 'alchemist', weight: 10 }, // DONE
         { type: 'treasure_chest', weight: 10 }, // DONE
-        { type: 'forge', weight: 10 }, // DONE
+        { type: 'forge', weight: 100 }, // DONE
         { type: 'fishing', weight: 10 }, // DONE
         { type: 'trap', weight: 10 } // DONE
     ];
@@ -60,8 +60,15 @@ class Game {
 
         this.player.addItem(this.createItem('wooden_sword'));
         this.player.addItem(this.createItem('wooden_shield'));
-        this.player.addItem(this.createItem('wooden_shield'));
-        this.player.addItem(this.createItem('wooden_sword'));
+        this.player.addItem(this.createItem('speed_potion'));
+        this.player.addItem(this.createItem('greater_speed_potion'));
+        this.player.addItem(this.createItem('greater_speed_potion'));
+        this.player.addItem(this.createItem('speed_potion'));
+        this.player.addItem(this.createItem('attack_potion'));
+        this.player.addItem(this.createItem('defense_potion'));
+        this.player.addItem(this.createItem('greater_attack_potion'));
+        this.player.addItem(this.createItem('greater_attack_potion'));
+        this.player.addItem(this.createItem('greater_defense_potion'));
         this.player.addItem(this.createItem('blacksmith_hammer'));
         this.player.addItem(this.createItem('bread'));
         this.player.addItem(this.createItem('bread'));

@@ -10,11 +10,11 @@ class StatsUI {
         if (this.ui.statHealth) this.ui.statHealth.textContent = player.health;
         if (this.ui.statMaxHealth) this.ui.statMaxHealth.textContent = player.getMaxHealth();
 
-        let attackBase = player.baseAttack + (player.equipment.weapon !== null ? (this.ui.game.player.inventory[player.equipment.weapon]?.stats?.attack || 0) : 0) + (player.equipment.ring !== null ? (this.ui.game.player.inventory[player.equipment.ring]?.stats?.attack || 0) : 0);
-        let attackText = `${attackBase}`;
-
-        const maxAttack = player.getAttack();
-        let attackTooltip = this.ui.tooltipCache.attack.get(maxAttack);
+        const totalAttack = player.getAttack();
+        const tempAttackBonus = player.getTempAttackBonus();
+        console.log(`[StatsUI Log] Attack Values: total=${totalAttack}, tempBonus=${tempAttackBonus}`);
+        let attackText = `${totalAttack}`;
+        let attackTooltip = this.ui.tooltipCache.attack.get(totalAttack);
 
         if (!attackTooltip) {
             attackTooltip = "<b>Max damage<\/b><br><br>Chance to hit:<br>";
@@ -23,7 +23,7 @@ class StatsUI {
             for (let def = 0; def <= 10; def++) {
                 let hits = 0;
                 for (let i = 0; i < numSimulations; i++) {
-                    const attackRoll = Math.floor(Math.random() * (maxAttack + 1));
+                    const attackRoll = Math.floor(Math.random() * (totalAttack + 1));
                     const defenseRoll = Math.floor(Math.random() * (def + 1));
                     if (attackRoll > defenseRoll) {
                         hits++;
@@ -33,27 +33,22 @@ class StatsUI {
                 attackTooltip += `${def} Def: <b>${hitChance.toFixed(1)}%</b><br>`;
             }
 
-            this.ui.tooltipCache.attack.set(maxAttack, attackTooltip);
+            this.ui.tooltipCache.attack.set(totalAttack, attackTooltip);
         }
 
-        if (player.tempAttack > 0) {
-            attackText += ` <span class="boosted-stat">(+${player.tempAttack})</span>`;
-            attackTooltip = attackTooltip + `<br>Boosted by +${player.tempAttack} (temporary, lasts until combat ends).`;
+        if (tempAttackBonus > 0) {
+            attackText += ` <span class="boosted-stat">(+${tempAttackBonus})</span>`;
+            attackTooltip = attackTooltip + `<br>Boosted by +${tempAttackBonus} (temporary, lasts until combat ends).`;
         }
 
         if (this.ui.statAttack) this.ui.statAttack.innerHTML = attackText;
         if (this.ui.statAttackElement) this.ui.statAttackElement.dataset.tooltipText = attackTooltip;
 
-        let defenseBase = player.baseDefense;
-        Object.values(player.equipment).forEach(index => {
-            if (index !== null && this.ui.game.player.inventory[index]?.stats?.defense) {
-                defenseBase += this.ui.game.player.inventory[index].stats.defense;
-            }
-        });
-        let defenseText = `${defenseBase}`;
-
-        const maxDefense = player.getDefense();
-        let defenseTooltip = this.ui.tooltipCache.defense.get(maxDefense);
+        const totalDefense = player.getDefense();
+        const tempDefenseBonus = player.getTempDefenseBonus();
+        console.log(`[StatsUI Log] Defense Values: total=${totalDefense}, tempBonus=${tempDefenseBonus}`);
+        let defenseText = `${totalDefense}`;
+        let defenseTooltip = this.ui.tooltipCache.defense.get(totalDefense);
 
         if (!defenseTooltip) {
             defenseTooltip = "<b>Max block<\/b><br><br>Chance to block:<br>";
@@ -63,7 +58,7 @@ class StatsUI {
                 let blocks = 0;
                 for (let i = 0; i < numSimulations; i++) {
                     const attackRoll = Math.floor(Math.random() * (atk + 1));
-                    const defenseRoll = Math.floor(Math.random() * (maxDefense + 1));
+                    const defenseRoll = Math.floor(Math.random() * (totalDefense + 1));
                     if (defenseRoll >= attackRoll) {
                         blocks++;
                     }
@@ -72,12 +67,12 @@ class StatsUI {
                 defenseTooltip += `${atk} Atk: <b>${blockChance.toFixed(1)}%</b><br>`;
             }
 
-            this.ui.tooltipCache.defense.set(maxDefense, defenseTooltip);
+            this.ui.tooltipCache.defense.set(totalDefense, defenseTooltip);
         }
 
-        if (player.tempDefense > 0) {
-            defenseText += ` <span class="boosted-stat">(+${player.tempDefense})</span>`;
-            defenseTooltip = defenseTooltip + `<br>Boosted by +${player.tempDefense} (temporary, lasts until combat ends).`;
+        if (tempDefenseBonus > 0) {
+            defenseText += ` <span class="boosted-stat">(+${tempDefenseBonus})</span>`;
+            defenseTooltip = defenseTooltip + `<br>Boosted by +${tempDefenseBonus} (temporary, lasts until combat ends).`;
         }
         if (this.ui.statDefense) this.ui.statDefense.innerHTML = defenseText;
         if (this.ui.statDefenseElement) this.ui.statDefenseElement.dataset.tooltipText = defenseTooltip;
@@ -85,15 +80,16 @@ class StatsUI {
         const baseSpeed = player.equipment.weapon !== null ? (this.ui.game.player.inventory[player.equipment.weapon]?.speed ?? player.defaultAttackSpeed) : player.defaultAttackSpeed;
         let finalSpeed = Math.max(0.5, baseSpeed - player.tempSpeedReduction);
         let speedText = `${finalSpeed.toFixed(1)}s`;
-        let speedTooltip = "Time between your attacks (lower is faster).";
+        let speedTooltip = "Time between your attacks (lower is faster, minimum 0.5s).";
         if (player.tempSpeedReduction > 0) {
             speedText += ` <span class="boosted-stat">(-${player.tempSpeedReduction.toFixed(1)}s)</span>`;
-            speedTooltip = `Time between your attacks (lower is faster).<br>Boosted by -${player.tempSpeedReduction.toFixed(1)}s (temporary, lasts until combat ends).`;
+            speedTooltip = `Time between your attacks (lower is faster, minimum 0.5s).<br>Boosted by -${player.tempSpeedReduction.toFixed(1)}s (temporary, lasts until combat ends).`;
         }
-        if (this.ui.statSpeed) this.ui.statSpeed.innerHTML = speedText; if (this.ui.statSpeedElement) this.ui.statSpeedElement.dataset.tooltipText = speedTooltip;
+        if (this.ui.statSpeed) this.ui.statSpeed.innerHTML = speedText;
+        if (this.ui.statSpeedElement) this.ui.statSpeedElement.dataset.tooltipText = speedTooltip;
 
         const attackSpeed = player.getAttackSpeed();
-        const cacheKey = `${maxAttack}_${attackSpeed}`;
+        const cacheKey = `${totalAttack}_${attackSpeed}`;
         let dpsTooltip = this.ui.tooltipCache.dps.get(cacheKey);
 
         if (!dpsTooltip) {
@@ -103,7 +99,7 @@ class StatsUI {
             for (let def = 0; def <= 10; def++) {
                 let totalDamage = 0;
                 for (let i = 0; i < numSimulations; i++) {
-                    const attackRoll = Math.floor(Math.random() * (maxAttack + 1));
+                    const attackRoll = Math.floor(Math.random() * (totalAttack + 1));
                     const defenseRoll = Math.floor(Math.random() * (def + 1));
                     const damage = Math.max(0, attackRoll - defenseRoll);
                     totalDamage += damage;
@@ -119,7 +115,9 @@ class StatsUI {
         if (this.ui.statDpsElement) this.ui.statDpsElement.dataset.tooltipText = dpsTooltip;
 
         if (this.ui.statGold) this.ui.statGold.textContent = player.gold;
-        if (this.ui.statGoldElement) this.ui.statGoldElement.dataset.tooltipText = "Your current wealth."; if (this.ui.statHealthElement) this.ui.statHealthElement.dataset.tooltipText = "Current Health / Maximum Health"; if (this.ui.statDps) this.ui.statDps.textContent = (player.getAttack() / player.getAttackSpeed()).toFixed(1);
+        if (this.ui.statGoldElement) this.ui.statGoldElement.dataset.tooltipText = "Your current wealth.";
+        if (this.ui.statHealthElement) this.ui.statHealthElement.dataset.tooltipText = "Current Health / Maximum Health";
+        if (this.ui.statDps) this.ui.statDps.textContent = (totalAttack / attackSpeed).toFixed(1);
 
         if (this.ui.statRound && this.ui.game && this.ui.roundAreaElement) {
             const currentRound = this.ui.game.currentRound;
@@ -171,8 +169,8 @@ class StatsUI {
             this.ui.areaDescriptionElement.dataset.tooltipText = areaTooltip;
         }
 
-        const attack = this.ui.game.player.getAttack();
-        const speed = this.ui.game.player.getAttackSpeed();
+        const attack = player.getAttack();
+        const speed = player.getAttackSpeed();
         const dps = speed > 0 ? (attack / speed) : 0;
         this.ui.statDps.textContent = dps.toFixed(1);
     }
