@@ -1,5 +1,7 @@
 class EndUI {
-    constructor(ui) { this.ui = ui; }
+    constructor(ui) { 
+        this.ui = ui; 
+    }
 
     render(win) {
         const backdrop = document.createElement('div');
@@ -15,29 +17,29 @@ class EndUI {
                 <h2>Victory!</h2>
                 <p>You have defeated the Ancient Dragon and saved the realm!</p>
                 <p>Congratulations on completing your quest.</p>
+                <button id="play-again-button">Play Again</button>
             `;
         } else {
             content = `
                 <h2>Game Over</h2>
                 <p>Your journey has come to an end...</p>
                 <p>Better luck on your next adventure!</p>
+                <button id="play-again-button">Play Again</button>
             `;
         }
-
-        content += `<button id="play-again-button">Play Again</button>`;
         container.innerHTML = content;
         document.body.appendChild(container);
 
-        const playAgainButton = document.getElementById('play-again-button');
+        const playAgainButton = container.querySelector('#play-again-button');
         if (playAgainButton) {
-            playAgainButton.onclick = () => {
-
-                window.game = new Game();
-                window.game.start();
-
+            playAgainButton.addEventListener('click', () => {
                 backdrop.remove();
                 container.remove();
-            };
+                window.game = new Game();
+                window.game.start();
+            });
+        } else {
+            console.error('Could not find play-again-button within the container!');
         }
     }
 }

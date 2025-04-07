@@ -651,17 +651,22 @@ class Game {
     }
 
     endGame(playerWon) {
+        // Prevent multiple executions
+        if (this.state === 'win' || this.state === 'game_over') {
+            console.warn('[Game] endGame called again when already in state:', this.state);
+            return; 
+        }
+
         if (playerWon) {
             this.state = 'win';
             this.addLog("YOU WIN!");
             this.ui.showEndScreen(true);
+            clearInterval(this.currentCombat.intervalId);
+            this.currentCombat.intervalId = null; 
         } else {
             this.state = 'game_over';
             this.addLog("GAME OVER");
             this.ui.showEndScreen(false);
-        }
-        if (this.currentCombat && this.currentCombat.intervalId) {
-            clearInterval(this.currentCombat.intervalId);
         }
     }
 

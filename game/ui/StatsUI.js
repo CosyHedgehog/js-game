@@ -12,7 +12,6 @@ class StatsUI {
 
         const totalAttack = player.getAttack();
         const tempAttackBonus = player.getTempAttackBonus();
-        console.log(`[StatsUI Log] Attack Values: total=${totalAttack}, tempBonus=${tempAttackBonus}`);
         let attackText = `${totalAttack}`;
         let attackTooltip = this.ui.tooltipCache.attack.get(totalAttack);
 
@@ -46,7 +45,6 @@ class StatsUI {
 
         const totalDefense = player.getDefense();
         const tempDefenseBonus = player.getTempDefenseBonus();
-        console.log(`[StatsUI Log] Defense Values: total=${totalDefense}, tempBonus=${tempDefenseBonus}`);
         let defenseText = `${totalDefense}`;
         let defenseTooltip = this.ui.tooltipCache.defense.get(totalDefense);
 

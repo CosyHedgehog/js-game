@@ -92,20 +92,14 @@ class Trap {
 
         // Attach listeners to the new buttons
         const trapButtons = trapArea.querySelectorAll('.choice-start-button');
-        console.log('[Trap Log] Found buttons:', trapButtons);
 
         trapButtons.forEach((button, index) => {
-            console.log(`[Trap Log] Processing button ${index}:`, button, 'Disabled:', button.disabled);
             if (!button.disabled) {
-                console.log(`[Trap Log] Button ${index} is NOT disabled. Adding listener.`);
-
                 const handleTrapClick = function(event) {
-                    console.log('[Trap Log] handleTrapClick triggered for event:', event);
                     const clickedButton = event.currentTarget;
                     const choiceCard = clickedButton.closest('.choice-card');
                     if (choiceCard) {
                         const areaKey = choiceCard.dataset.risk;
-                        console.log(`[Trap Log] Got areaKey: ${areaKey}`);
                         if (areaKey) {
                             this.startTrapDisarm(areaKey);
                         } else {
@@ -122,8 +116,6 @@ class Trap {
     }
 
     startTrapDisarm(areaKey) {
-        console.log(`[Trap Log] Entering startTrapDisarm with areaKey: ${areaKey}`); // Log 6
-
         const area = this.TRAP_REWARDS[areaKey];
         // Ensure area exists before proceeding
         if (!area) {
@@ -140,35 +132,16 @@ class Trap {
             return;
         }
 
-        console.log(`[Trap Log] Passed validation for ${areaKey}.`); // Log 7
-
         this.game.addLog(`You attempt to disarm the ${area.name}...`);
-        console.log(`[Trap Log] Added disarm attempt log for ${areaKey}.`); // Log 8
-
         let successChance = area.disarmChance;
-
-        // --- Restore bonus logic, keep internal log commented ---
-        // Check hasTools again for the bonus, even if not required
         if (hasTools) {
             successChance += 0.2;
-            // Avoid duplicate log if already required & checked
-            // if (!requiresTools) {
-            //      this.game.addLog("Your Thief's Tools aid your attempt..."); // Keep commented for now
-            // }
         }
-        // ------------------------------------------------------
-
-         // Ensure successChance is within valid range [0, 1]
          successChance = Math.max(0, Math.min(1, successChance));
-        console.log(`[Trap Log] Calculated success chance for ${areaKey}: ${successChance}`); // Log 9 (Bonus)
-
 
         const roll = Math.random();
-         console.log(`[Trap Log] Rolled ${roll} against success chance ${successChance}`); // Log 10 (Bonus)
-
 
         if (roll <= successChance) {
-            console.log(`[Trap Log] Disarm successful for ${areaKey}.`); // Log 11 (Bonus)
             const rewardItemId = area.itemPool[Math.floor(Math.random() * area.itemPool.length)];
             const rewardItem = this.game.createItem(rewardItemId);
             // Check if item creation was successful before accessing itemData
@@ -185,7 +158,6 @@ class Trap {
             this.game.enterLootState(0, [rewardItem]); // Pass rewardItem in an array
             this.game.ui.updatePlayerStats();
         } else {
-            console.log(`[Trap Log] Disarm failed for ${areaKey}.`); // Log 12 (Bonus)
             const damageTaken = this.game.getRandomInt(area.damageRange[0], area.damageRange[1]);
             this.game.player.takeRawDamage(damageTaken);
             // Target the stats grid within the specific card for the splat (slightly higher)
@@ -197,14 +169,9 @@ class Trap {
             this.game.addLog(failMsg);
 
             if (this.game.player.health <= 0) {
-                console.log(`[Trap Log] Player health <= 0 after trap failure.`); // Log 13 (Bonus)
                 this.game.endGame(false);
                 return;
             }
-
-             // console.log(`[Trap Log] Player survived trap failure. Proceeding.`); // Log 14 (Bonus) -- Removed proceed logic
-             // this.game.proceedToNextRound(); // REMOVED - Player stays in trap selection on non-lethal failure
-
         }
     }
 }
