@@ -23,7 +23,7 @@ class Game {
         { type: 'monster', weight: 30 },
         { type: 'rest', weight: 10 }, // DONE
         { type: 'shop', weight: 10 }, // DONE
-        { type: 'alchemist', weight: 10 }, // DONE
+        { type: 'alchemist', weight: 100 }, // DONE
         { type: 'treasure_chest', weight: 10 }, // DONE
         { type: 'forge', weight: 10 }, // DONE
         { type: 'fishing', weight: 10 }, // DONE
@@ -50,13 +50,14 @@ class Game {
     }
 
     devMode() {
-        this.currentRound = 9;
+        this.currentRound = 25;
         // this.state = 'area_transition';
         this.state = 'choosing';
         this.currentArea = "wolf_den";
         // this.pendingAreaTransitionName = "Giants pass";
         this.player.health = 1000;
         this.player.baseAttack = 6;
+        this.player.gold = 1000;
 
         this.player.addItem(this.createItem('wooden_sword'));
         this.player.addItem(this.createItem('wooden_shield'));

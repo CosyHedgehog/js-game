@@ -1,6 +1,11 @@
-const COMMON_ITEMS = ['wooden_dagger', 'wooden_sword', 'wooden_hammer', 'wooden_shield', 'leather_helm', 'leather_armor', 'leather_legs']
-const UNCOMMON_ITEMS = ['iron_dagger', 'iron_sword', 'iron_hammer', 'iron_helm', 'iron_armor', 'iron_legs']
-const RARE_ITEMS = ['steel_dagger', 'steel_sword', 'steel_hammer', 'steel_helm', 'steel_armor', 'steel_legs', 'steel_shield']
+const COMMON_ITEMS = ['wooden_dagger', 'wooden_sword', 'wooden_hammer', 
+                      'leather_helm', 'leather_armor', 'leather_legs', 'wooden_shield']
+
+const UNCOMMON_ITEMS = ['iron_dagger', 'iron_sword', 'iron_hammer', 
+                        'iron_helm', 'iron_armor', 'iron_legs', 'iron_shield']
+
+const RARE_ITEMS = ['steel_dagger', 'steel_sword', 'steel_hammer', 
+                    'steel_helm',   'steel_armor', 'steel_legs', 'steel_shield']
 
 const COMMON_FOOD = ['bread', 'small_fish']
 const UNCOMMON_FOOD = ['medium_fish', 'cooked_meat']
@@ -8,8 +13,9 @@ const RARE_FOOD = ['large_fish']
 
 const COMMON_TOOLS = ['fishing_rod', 'blacksmith_hammer', 'thief_tools']
 
-const COMMON_POTIONS = ['health_potion', 'attack_potion', 'defense_potion', 'speed_potion']
-const UNCOMMON_POTIONS = ['greater_health_potion', 'greater_attack_potion', 'greater_defense_potion', 'greater_speed_potion']
+const COMMON_POTIONS = ['health_potion', 'attack_potion', 'defense_potion']
+const UNCOMMON_POTIONS = ['speed_potion', 'greater_health_potion']
+const RARE_POTIONS = ['greater_attack_potion', 'greater_defense_potion', 'greater_speed_potion']
 
 
 const ITEMS = {

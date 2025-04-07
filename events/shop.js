@@ -170,64 +170,93 @@ class Shop {
     generateShopItems(count) {
         const numItems = this.game.getRandomInt(3, 8);
         const items = [];
+        const currentRound = this.game.currentRound; // Get current round
 
-        const itemTiers = {
-            early: {
-                items: [
-                    'wooden_sword', 'rusty_sword', 'leather_helm', 'leather_armor',
-                    'leather_legs', 'wooden_shield', 'bread', 'cooked_meat',
-                    'health_potion', 'fishing_rod', 'blacksmith_hammer', 'thief_tools'
-                ],
-                weight: 70
-            },
-            mid: {
-                items: [
-                    'iron_sword', 'iron_helm', 'iron_armor',
-                    'iron_legs', 'iron_shield', 'health_potion'
-                ],
-                weight: 25
-            },
-            late: {
-                items: [
-                    'steel_sword', 'steel_greatsword', 'steel_helm', 'steel_armor',
-                    'steel_legs', 'steel_shield', 'greater_health_potion'
-                ],
-                weight: 5
-            }
+        // Define item pools (as before)
+        const itemPools = {
+            early: [...COMMON_ITEMS, ...COMMON_TOOLS],
+            mid: [...UNCOMMON_ITEMS, ...COMMON_TOOLS],
+            late: [...RARE_ITEMS, ...COMMON_TOOLS]
         };
+
+        // Get weights based on the current round
+        const tierWeights = this.getTierWeights(currentRound);
+        const totalWeight = Object.values(tierWeights).reduce((sum, weight) => sum + weight, 0); // Should be 100
 
         const availableItems = new Set();
 
         while (availableItems.size < numItems) {
-            const roll = Math.random() * 100;
-            let selectedTier;
+            // Use the total weight calculated from the dynamic weights
+            const roll = Math.random() * totalWeight;
+            let selectedTierName;
             let cumWeight = 0;
 
-            for (const [tier, data] of Object.entries(itemTiers)) {
-                cumWeight += data.weight;
+            // Determine tier based on dynamic weights
+            for (const [tierName, weight] of Object.entries(tierWeights)) {
+                cumWeight += weight;
                 if (roll < cumWeight) {
-                    selectedTier = data;
+                    selectedTierName = tierName;
                     break;
                 }
             }
 
-            const tierItems = selectedTier.items;
+            // Handle edge case if roll is very close to totalWeight
+            if (!selectedTierName) {
+                selectedTierName = 'late'; // Default to last tier
+            }
+
+            const tierItems = itemPools[selectedTierName];
+
+            if (!tierItems || tierItems.length === 0) {
+                console.warn(`Selected tier "${selectedTierName}" has no items. Skipping iteration.`);
+                continue;
+            }
+
             const randomItem = tierItems[this.game.getRandomInt(0, tierItems.length - 1)];
 
-            if (!availableItems.has(randomItem)) {
+            if (ITEMS[randomItem] && !availableItems.has(randomItem)) {
                 availableItems.add(randomItem);
+            } else if (!ITEMS[randomItem]) {
+                console.warn(`Item ID "${randomItem}" selected from tier arrays but not found in ITEMS data.`);
             }
         }
 
+        // Create item instances (as before)
         for (const itemId of availableItems) {
-            const itemData = this.game.createItem(itemId);
-            if (itemData) {
-                itemData.buyPrice = Math.ceil(itemData.value * 1.3 + this.game.getRandomInt(0, Math.floor(itemData.value * 0.2)));
-                items.push(itemData);
-            }
+             const itemData = this.game.createItem(itemId);
+             if (itemData) {
+                 const baseValue = itemData.value || 0;
+                 itemData.buyPrice = Math.ceil(baseValue * 1.3 + this.game.getRandomInt(0, Math.floor(baseValue * 0.2)));
+                 items.push(itemData);
+             } else {
+                  console.warn(`Failed to create item instance for ID: ${itemId}`);
+             }
         }
 
         return items;
+    }
+
+    // Helper function to get weights based on round ranges (increments of 5)
+    getTierWeights(round) {
+        if (round <= 5) {
+            // Rounds 1-5: Almost exclusively early
+            return { early: 90, mid: 10, late: 0 };
+        } else if (round <= 10) {
+            // Rounds 6-10: Early focus, introduce mid
+            return { early: 70, mid: 25, late: 5 };
+        } else if (round <= 15) {
+            // Rounds 11-15: Balanced early/mid, slight late chance
+            return { early: 45, mid: 45, late: 10 };
+        } else if (round <= 20) {
+            // Rounds 16-20: Mid focus, growing late chance
+            return { early: 20, mid: 55, late: 25 };
+        } else if (round <= 25) {
+            // Rounds 21-25: Mid/Late focus, less early
+            return { early: 5, mid: 45, late: 50 };
+        } else {
+            // Rounds 26-30: Late focus, phasing out early
+            return { early: 0, mid: 30, late: 70 };
+        }
     }
 
     handleRerollShop() {
