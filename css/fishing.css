@@ -110,5 +110,5 @@
 }
 
 .fishing-areas-container .choice-card .choice-start-button:disabled {
-    cursor: not-allowed; /* Standard disabled cursor */
+    cursor: default; /* Changed from not-allowed */
 }

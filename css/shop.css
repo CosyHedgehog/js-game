@@ -118,7 +118,7 @@
 
 .shop-item-button:disabled {
     background-color: #666;
-    cursor: not-allowed;
+    cursor: default;
     border-color: #555;
     opacity: 0.6;
 }
@@ -153,7 +153,7 @@
 
 #shop-reroll-button:disabled {
     background: #666;
-    cursor: not-allowed;
+    cursor: default;
     opacity: 0.7;
 }
 
@@ -234,5 +234,5 @@
 .shop-item-button:disabled,
 #shop-reroll-button:disabled,
 #shop-leave-button:disabled {
-    cursor: not-allowed;
+    cursor: default;
 }

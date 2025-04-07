@@ -115,5 +115,5 @@
 }
 
 #treasure-picklock-button:disabled { /* Handle potential disabled state */
-    cursor: not-allowed;
+    cursor: default; /* Changed from not-allowed */
 }

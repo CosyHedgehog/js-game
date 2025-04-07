@@ -92,7 +92,7 @@
 }
 
 #alchemist-area .shop-item-button:disabled {
-    cursor: not-allowed; /* Not-allowed for disabled buy buttons */
+    cursor: default; /* Changed from not-allowed */
 }
 
 /* Assuming leave button uses shared class .leave-button which already has cursor: pointer */

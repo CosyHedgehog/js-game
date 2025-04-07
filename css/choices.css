@@ -433,5 +433,5 @@
 }
 
 #choices-area .choice-card .choice-start-button:disabled {
-    cursor: not-allowed; /* Not-allowed for disabled buttons */
+    cursor: default; /* Changed from not-allowed */
 }

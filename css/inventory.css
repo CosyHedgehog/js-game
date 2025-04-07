@@ -354,3 +354,9 @@
    
     animation: shopGlow 1s infinite alternate;
 }
+
+#inventory-area .action-button:disabled {
+    background-color: #666;
+    cursor: default;
+    opacity: 0.6;
+}
