@@ -9,6 +9,7 @@
     margin-bottom: auto;
     width: 100%;
     box-sizing: border-box;
+    cursor: default;
 }
 
 #round-indicator-area {
@@ -62,6 +63,7 @@
     position: relative;
     border: 1px solid #333;
     min-height: 200px;
+    cursor: default;
 }
 
 .combatant-name {
@@ -637,6 +639,15 @@
 #stat-round.round-number-animated {
     display: inline-block; /* Needed for transform */
     animation: round-number-update 0.5s ease-out;
+}
+
+/* Confirming button cursor styles */
+#combat-run-button:not(:disabled) {
+    cursor: pointer;
+}
+
+#combat-run-button:disabled {
+    cursor: not-allowed;
 }
 
 

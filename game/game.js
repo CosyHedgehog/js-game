@@ -21,8 +21,8 @@ class Game {
 
     EVENT_PROBABILITY = [
         { type: 'monster', weight: 30 },
-        { type: 'rest', weight: 10 }, // DONE
-        { type: 'shop', weight: 100 },
+        { type: 'rest', weight: 100 }, // DONE
+        { type: 'shop', weight: 10 }, // DONE
         { type: 'alchemist', weight: 10 }, // DONE
         { type: 'treasure_chest', weight: 10 }, // DONE
         { type: 'forge', weight: 10 }, // DONE
