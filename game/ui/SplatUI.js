@@ -17,7 +17,7 @@ class SplatUI {
         splat.style.left = '50%';
 
         if (!selector.startsWith('.inventory-slot')) {
-            const x = Math.random() * 60 - 20;
+            const x = Math.random() * 100 - 50;
             splat.style.setProperty('--splat-offset-x', `${x}px`);
         }
 

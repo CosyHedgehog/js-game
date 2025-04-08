@@ -287,12 +287,11 @@ class Combat {
 
         if (this.enemy.breathAttackTimer !== null && this.enemy.breathAttackTimer <= 0) {
             this.enemyBreathAttack();
-            if (this.checkCombatEnd()) return;
             this.enemy.breathAttackTimer = this.enemy.breathAttackInterval;
         }
 
         if (this.enemy.timedStunTimer !== null && this.enemy.timedStunTimer <= 0) {
-            this.enemyTimedStunAttack(); if (this.checkCombatEnd()) return; this.enemy.timedStunTimer = this.enemy.timedStunInterval;
+            this.enemy.timedStunTimer = this.enemy.timedStunInterval;
         }
 
         if (this.enemy.attackTimer <= 0) {
@@ -340,8 +339,6 @@ class Combat {
                 }, 800);
             }
         }
-        if (this.checkCombatEnd()) return;
-
         this.checkCombatEnd();
     }
 
@@ -467,7 +464,6 @@ class Combat {
             clearInterval(this.intervalId); this.intervalId = null;
 
             setTimeout(() => {
-
                 this.endCombat(true);
             }, 700);
 
@@ -475,6 +471,7 @@ class Combat {
             playerWon = true;
             return combatEnded;
         } else if (this.player.health <= 0) {
+            this.ui.updateCombatantHealth('player', this.player.health, this.player.maxHealth, 0, 0, true);
             this.game.addLog(`You were defeated by the ${this.enemy.name}...`);
             clearInterval(this.intervalId); this.intervalId = null;
 
@@ -482,7 +479,7 @@ class Combat {
 
             setTimeout(() => {
                 this.game.endGame(false);
-            }, 500); 
+            }, 700); 
             combatEnded = true;
             playerWon = false;
         }

@@ -276,6 +276,7 @@
 
 .damage-splat.burn {
     color: #ff8c00;
+    font-size: 2.5em;
     text-shadow: 0 0 3px #ff4500, 0 0 5px #ff0000;
 }
 

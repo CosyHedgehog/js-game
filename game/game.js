@@ -82,7 +82,7 @@ class Game {
     }
 
     devMode() {
-        this.currentRound = 15;
+        this.currentRound = 29;
         // this.state = 'area_transition';
         this.state = 'choosing';
         this.currentArea = "giants_pass";
@@ -96,16 +96,6 @@ class Game {
         this.player.addItem(this.createItem('speed_potion'));
         this.player.addItem(this.createItem('restoration_potion'));
         this.player.addItem(this.createItem('greater_restoration_potion'));
-        this.player.addItem(this.createItem('greater_speed_potion'));
-        this.player.addItem(this.createItem('speed_potion'));
-        this.player.addItem(this.createItem('attack_potion'));
-        this.player.addItem(this.createItem('defense_potion'));
-        this.player.addItem(this.createItem('greater_attack_potion'));
-        this.player.addItem(this.createItem('greater_attack_potion'));
-        this.player.addItem(this.createItem('greater_defense_potion'));
-        this.player.addItem(this.createItem('blacksmith_hammer'));
-        this.player.addItem(this.createItem('bread'));
-        this.player.addItem(this.createItem('bread'));
         this.player.addItem(this.createItem('bread'));
         // this.player.addItem(this.createItem('thief_tools'));
 
