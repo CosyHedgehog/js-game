@@ -205,13 +205,13 @@ class Combat {
 
         const healthPercent = this.enemy.health / this.enemy.maxHealth;
 
-        // Handle generic speed increase mechanic
         if (this.enemy.speedIncreaseThreshold && this.enemy.speedIncreasePercent) {
             const baseSpeed = this.enemy.speed; // Original speed from definition
-            // Define fasterSpeed *before* using it
             const fasterSpeed = baseSpeed * (1 - this.enemy.speedIncreasePercent); 
             const wasSpeedIncreased = this.enemy.currentSpeed === fasterSpeed;
             const shouldIncreaseSpeed = healthPercent < this.enemy.speedIncreaseThreshold;
+
+            console.log(baseSpeed, fasterSpeed, shouldIncreaseSpeed, wasSpeedIncreased);
 
             if (shouldIncreaseSpeed && !wasSpeedIncreased) {
                 this.enemy.currentSpeed = fasterSpeed;
@@ -230,8 +230,9 @@ class Combat {
                 if (enemySpdStat) {
                     enemySpdStat.classList.add('stat-highlight-speed');
                 }
-
-            } else if (!shouldIncreaseSpeed && wasSpeedIncreased) {
+                console.log("speed increased");
+            } else if (!shouldIncreaseSpeed && !wasSpeedIncreased) {
+                console.log("speed decreased");
                 this.enemy.currentSpeed = baseSpeed;
                 const enemySide = document.querySelector('.enemy-side');
                 const enemySpdStat = document.getElementById('combat-enemy-spd');
@@ -479,7 +480,7 @@ class Combat {
             console.error("checkCombatEnd", this.enemy.health, this.player.health);
 
             setTimeout(() => {
-                this.game.endGame(false);
+                this.endCombat(false);
             }, 700); 
             combatEnded = true;
             playerWon = false;

@@ -27,11 +27,11 @@ class Game {
         this.weaponMerchant = new WeaponMerchant(this, this.ui);
 
         this.weightedDiscounts = [
-            { percent: 10, weight: 2 },
-            { percent: 15, weight: 3 },
-            { percent: 20, weight: 4 },
-            { percent: 25, weight: 3 },
             { percent: 30, weight: 2 },
+            { percent: 35, weight: 3 },
+            { percent: 40, weight: 4 },
+            { percent: 45, weight: 3 },
+            { percent: 50, weight: 2 },
         ];
         this.totalDiscountWeight = this.weightedDiscounts.reduce((sum, d) => sum + d.weight, 0);
 
@@ -45,7 +45,7 @@ class Game {
     }
 
     EVENT_PROBABILITY = [
-        { type: 'monster', weight: 30 },
+        { type: 'monster', weight: 40 },
         { type: 'rest', weight: 10 }, // DONE
         { type: 'shop', weight: 10 }, // DONE
         { type: 'alchemist', weight: 5 }, // DONE
@@ -57,10 +57,8 @@ class Game {
     ];
 
     start() {
-        // this.devMode();
-        this.normalMode();
-
-
+        this.devMode();
+        // this.normalMode();
         // Start the global game tick
         this.lastGlobalTickTime = Date.now(); // Initialize before starting
         if (this.globalTickIntervalId) clearInterval(this.globalTickIntervalId); // Clear previous if any
@@ -70,11 +68,13 @@ class Game {
 
     normalMode() {
         this.player.addItem(this.createItem('wooden_sword'));
+        this.player.addItem(this.createItem('bread'));
+        this.player.addItem(this.createItem('bread'));
         this.player.addItem(this.createItem('wooden_shield'));
+        this.player.equipItem(0);
+        this.player.equipItem(3);
+        this.player.addItem(this.createItem('bread'));
 
-        this.player.addItem(this.createItem('bread'));
-        this.player.addItem(this.createItem('bread'));
-        this.player.addItem(this.createItem('bread'));
         this.state = 'area_transition';
         this.ui.renderArea(AREA_CONFIG[0].areas[this.currentArea].name);
         this.ui.gameScreen?.classList.remove('hidden');
@@ -86,10 +86,10 @@ class Game {
         this.currentRound = 9;
         // this.state = 'area_transition';
         this.state = 'choosing';
-        this.currentArea = "spider_den";
+        this.currentArea = "wolf_den";
         // this.pendingAreaTransitionName = "Giants pass";
         this.player.health = 15;
-        this.player.baseAttack = 1;
+        this.player.baseAttack = 5;
         this.player.gold = 1000;
 
         this.player.addItem(this.createItem('wooden_sword'));
@@ -265,6 +265,7 @@ class Game {
             const encounter = this.getRandomEvent();
 
             const encounterKey = encounter.type === 'monster' ? encounter.monsterId : encounter.type;
+            // const encounterKey = encounter.type;
 
             if (!usedEncounters.has(encounterKey)) {
                 usedEncounters.add(encounterKey);
@@ -300,7 +301,7 @@ class Game {
                 chosenEncounter = { type: encounterProb.type };
 
                 if (chosenEncounter.type === 'monster') {
-                    let monsterPool = [];
+                    let monsterPoolIds = [];
                     let currentTier = null;
 
                     for (const tier of AREA_CONFIG) {
@@ -311,14 +312,54 @@ class Game {
                     }
 
                     if (currentTier && currentTier.areas && currentTier.areas[this.currentArea] && currentTier.areas[this.currentArea].monsters) {
-                        monsterPool = currentTier.areas[this.currentArea].monsters;
+                        monsterPoolIds = currentTier.areas[this.currentArea].monsters;
                     } else {
                         console.warn(`Could not determine monster pool for round ${this.currentRound} and area ${this.currentArea} using AREA_CONFIG.`);
-                        monsterPool = [];
+                        monsterPoolIds = [];
                     }
 
-                    if (monsterPool.length > 0) {
-                        chosenEncounter.monsterId = monsterPool[this.getRandomInt(0, monsterPool.length - 1)];
+                    if (monsterPoolIds.length > 0) {
+                        const easyMonsters = monsterPoolIds.filter(id => MONSTERS[id]?.difficulty === 'easy');
+                        const mediumMonsters = monsterPoolIds.filter(id => MONSTERS[id]?.difficulty === 'medium');
+                        const hardMonsters = monsterPoolIds.filter(id => MONSTERS[id]?.difficulty === 'hard');
+
+                        console.log("easyMonsters", easyMonsters);
+                        console.log("mediumMonsters", mediumMonsters);
+                        console.log("hardMonsters", hardMonsters);
+
+                        const difficultyRoll = Math.random() * 100;
+                        let selectedMonsterId = null;
+
+                        console.log("difficultyRoll", difficultyRoll);
+
+                        if (difficultyRoll < 60 && easyMonsters.length > 0) {
+                            console.log("selecting easy monster");
+                            selectedMonsterId = easyMonsters[this.getRandomInt(0, easyMonsters.length - 1)];
+                        } else if (difficultyRoll < 90 && mediumMonsters.length > 0) { // 60 + 30
+                            console.log("selecting medium monster");
+                            selectedMonsterId = mediumMonsters[this.getRandomInt(0, mediumMonsters.length - 1)];
+                        } else if (hardMonsters.length > 0) { // 90 + 10
+                            console.log("selecting hard monster");
+                            selectedMonsterId = hardMonsters[this.getRandomInt(0, hardMonsters.length - 1)];
+                        }
+
+                        // Fallbacks if preferred difficulty pool is empty
+                        if (!selectedMonsterId) {
+                           if (mediumMonsters.length > 0) {
+                                selectedMonsterId = mediumMonsters[this.getRandomInt(0, mediumMonsters.length - 1)];
+                           } else if (easyMonsters.length > 0) {
+                                selectedMonsterId = easyMonsters[this.getRandomInt(0, easyMonsters.length - 1)];
+                           } else if (hardMonsters.length > 0) { // Should have been caught above, but safe fallback
+                                selectedMonsterId = hardMonsters[this.getRandomInt(0, hardMonsters.length - 1)];
+                           } else {
+                                // Last resort: pick any monster if categorized lists failed
+                                console.warn(`Could not select monster by difficulty for round ${this.currentRound} in area ${this.currentArea}. Picking randomly from pool.`);
+                                selectedMonsterId = monsterPoolIds[this.getRandomInt(0, monsterPoolIds.length - 1)];
+                           }
+                        }
+
+                        chosenEncounter.monsterId = selectedMonsterId;
+
                     } else {
                         console.error(`Monster pool empty for round ${this.currentRound}! Cannot select monster.`);
                         chosenEncounter = { type: 'rest' };

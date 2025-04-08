@@ -8,8 +8,8 @@ class Fishing {
     FISHING_AREAS = {
         shoreline: {
             name: 'Shallow Shoreline',
-            description: 'Scrounge near the water\'s edge for anything edible. Contains Small Fish and Medium Fish.',
-            fishRange: [1, 2],
+            description: 'Scrounge near the water\'s edge for anything edible. Small Fish (75%) and Medium Fish (25%).',
+            fishRange: [1, 3],
             lootTable: [
                 { itemId: 'small_fish', chance: 0.75 },
                 { itemId: 'medium_fish', chance: 0.25 }
@@ -19,8 +19,8 @@ class Fishing {
         },
         safe: {
             name: 'Calm Waters',
-            description: 'A peaceful fishing spot. Low risk, low reward. Contains Small Fish and Medium Fish.',
-            fishRange: [1, 3],
+            description: 'A peaceful spot. Contains Small Fish (65%) and Medium Fish (35%).',
+            fishRange: [2, 4],
             lootTable: [
                 { itemId: 'small_fish', chance: 0.65 },
                 { itemId: 'medium_fish', chance: 0.35 },
@@ -30,8 +30,8 @@ class Fishing {
         },
         moderate: {
             name: 'Rushing Stream',
-            description: 'A faster flowing area. Medium risk, medium reward. Contains Small Fish, Medium Fish, and Large Fish.',
-            fishRange: [2, 4],
+            description: 'A faster flowing area. Small Fish (40%), Medium Fish (45%), and Large Fish (15%).',
+            fishRange: [3, 5],
             lootTable: [
                 { itemId: 'small_fish', chance: 0.40 },
                 { itemId: 'medium_fish', chance: 0.45 },
@@ -42,7 +42,7 @@ class Fishing {
         },
         dangerous: {
             name: 'Deep Waters',
-            description: 'A treacherous fishing spot. High risk, high reward. Contains Small Fish, Medium Fish, and Large Fish.',
+            description: 'A treacherous fishing spot. Small Fish (15%), Medium Fish (50%), and Large Fish (35%).',
             fishRange: [4, 6],
             lootTable: [
                 { itemId: 'small_fish', chance: 0.15 },

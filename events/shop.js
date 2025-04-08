@@ -168,7 +168,7 @@ class Shop {
     }
 
     generateShopItems(count) {
-        const numItems = this.game.getRandomInt(3, 6);
+        const numItems = this.game.getRandomInt(3, 8);
         const items = [];
         const currentRound = this.game.currentRound; // Get current round
 
