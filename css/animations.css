@@ -664,3 +664,22 @@
 .debuff-glow {
     animation: debuffGlow 2s ease-in-out infinite;
 }
+
+/* Fade In/Out for Body */
+@keyframes fadeOutAnimation {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+@keyframes fadeInAnimation {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.body-fade-out {
+    animation: fadeOutAnimation 0.5s ease-out forwards;
+}
+
+.body-fade-in {
+    animation: fadeInAnimation 0.5s ease-in forwards;
+}

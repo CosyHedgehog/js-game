@@ -57,8 +57,9 @@ class Game {
     ];
 
     start() {
-        this.devMode();
-        // this.normalMode();
+        // this.devMode();
+        this.normalMode();
+
 
         // Start the global game tick
         this.lastGlobalTickTime = Date.now(); // Initialize before starting
@@ -82,13 +83,13 @@ class Game {
     }
 
     devMode() {
-        this.currentRound = 19;
+        this.currentRound = 9;
         // this.state = 'area_transition';
         this.state = 'choosing';
-        this.currentArea = "giants_pass";
+        this.currentArea = "spider_den";
         // this.pendingAreaTransitionName = "Giants pass";
-        this.player.health = 5;
-        this.player.baseAttack = 6;
+        this.player.health = 15;
+        this.player.baseAttack = 1;
         this.player.gold = 1000;
 
         this.player.addItem(this.createItem('wooden_sword'));
@@ -105,6 +106,7 @@ class Game {
 
         this.ui.renderAll();
         this.addLog("Game started with your chosen equipment.");
+
     }
 
     addLog(message) {
@@ -117,6 +119,9 @@ class Game {
 
     proceedToNextRound() {
         if (this.state === 'win' || this.state === 'game_over') return;
+
+        this.ui.showEndScreen(false);
+        this.ui.showEndScreen(false);
 
         const nextRound = this.currentRound + 1;
 
