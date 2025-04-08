@@ -10,6 +10,38 @@ class StatsUI {
         if (this.ui.statHealth) this.ui.statHealth.textContent = player.health;
         if (this.ui.statMaxHealth) this.ui.statMaxHealth.textContent = player.getMaxHealth();
 
+        // Display Heal Over Time info
+        let totalRemainingHot = 0;
+        let hotTooltipText = "";
+        const isHealingActive = player.healOverTimeEffects && player.healOverTimeEffects.length > 0;
+        const healthStatItem = this.ui.statHealthElement?.closest('.stat-item'); // Find the parent stat-item
+
+        if (isHealingActive) {
+            totalRemainingHot = player.healOverTimeEffects.reduce((sum, effect) => sum + effect.remaining, 0);
+            const totalRatePerTick = player.healOverTimeEffects.reduce((sum, effect) => sum + effect.rate, 0);
+            const interval = player.healOverTimeEffects[0].interval;
+            // Calculate approximate time remaining
+            let secondsRemaining = 0;
+            if (totalRatePerTick > 0) { // Avoid division by zero
+                secondsRemaining = Math.ceil((totalRemainingHot / totalRatePerTick) * interval);
+            }
+            hotTooltipText = `<br>Healing +${totalRatePerTick} HP every ${interval}s in combat (~${secondsRemaining} seconds left).`;
+            healthStatItem?.classList.add('stat-item-healing'); // Add class to parent
+        } else {
+             healthStatItem?.classList.remove('stat-item-healing'); // Remove class from parent
+        }
+
+        // --- Display HP without (+X) ---
+        if (this.ui.statHealth) this.ui.statHealth.textContent = player.health; 
+        // --- End HP Display ---
+
+        // Set the combined tooltip on the correct element
+        let baseHealthTooltip = "Current Health / Maximum Health";
+        if (this.ui.statHealthElement) { // Target the correct element for tooltip
+           // Combine base tooltip with HoT details if active
+           this.ui.statHealthElement.dataset.tooltipText = baseHealthTooltip + hotTooltipText; 
+        }
+
         const totalAttack = player.getAttack();
         const tempAttackBonus = player.getTempAttackBonus();
         let attackText = `${totalAttack}`;
@@ -114,7 +146,6 @@ class StatsUI {
 
         if (this.ui.statGold) this.ui.statGold.textContent = player.gold;
         if (this.ui.statGoldElement) this.ui.statGoldElement.dataset.tooltipText = "Your current wealth.";
-        if (this.ui.statHealthElement) this.ui.statHealthElement.dataset.tooltipText = "Current Health / Maximum Health";
         if (this.ui.statDps) this.ui.statDps.textContent = (totalAttack / attackSpeed).toFixed(1);
 
         if (this.ui.statRound && this.ui.game && this.ui.roundAreaElement) {

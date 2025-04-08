@@ -207,7 +207,38 @@ class CombatUI {
             healthBar.classList.remove('damage-taken');
             void healthBar.offsetWidth;
             healthBar.classList.add('damage-taken');
+
             this.ui.createDamageSplat('.player-side', damage, splatType, blocked, fullBlock);
+
+            const player = this.ui.game.player;
+            const isHealing = player.healOverTimeEffects && player.healOverTimeEffects.length > 0;
+
+            if (isHealing) {
+                healthBar.classList.add('player-healing-effect');
+                // Add tooltip if not already present
+                if (!healthBar._tooltipEnterHandler) {
+                     const enterHandler = (e) => {
+                        this.ui.showTooltip("You are healing over time.", this.ui.statTooltip, e);
+                    };
+                    const leaveHandler = () => {
+                        this.ui.hideTooltip(this.ui.statTooltip);
+                    };
+                    healthBar.addEventListener('mouseenter', enterHandler);
+                    healthBar.addEventListener('mouseleave', leaveHandler);
+                    healthBar._tooltipEnterHandler = enterHandler;
+                    healthBar._tooltipLeaveHandler = leaveHandler;
+                }
+            } else {
+                healthBar.classList.remove('player-healing-effect');
+                // Remove tooltip if present
+                 if (healthBar._tooltipEnterHandler) {
+                    healthBar.removeEventListener('mouseenter', healthBar._tooltipEnterHandler);
+                    healthBar.removeEventListener('mouseleave', healthBar._tooltipLeaveHandler);
+                    delete healthBar._tooltipEnterHandler;
+                    delete healthBar._tooltipLeaveHandler;
+                    this.ui.hideTooltip(this.ui.statTooltip); // Hide if visible
+                }
+            }
 
         } else if (who === 'enemy') {
             this.ui.combatEnemyHp.textContent = `${current}/${max}`;

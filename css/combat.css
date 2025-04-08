@@ -650,4 +650,14 @@
     cursor: default;
 }
 
+@keyframes player-healing-pulse {
+  0% { box-shadow: 0 0 5px 2px rgba(76, 175, 80, 0.5); }
+  50% { box-shadow: 0 0 10px 4px rgba(102, 187, 106, 0.8); }
+  100% { box-shadow: 0 0 5px 2px rgba(76, 175, 80, 0.5); }
+}
+
+.player-healing-effect {
+  animation: player-healing-pulse 1.5s infinite ease-in-out;
+}
+
 

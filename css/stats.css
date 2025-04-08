@@ -210,3 +210,13 @@
     font-weight: bold;
     margin-left: 4px;
 }
+
+.boosted-stat {
+    color: #4CAF50;
+    font-weight: bold;
+}
+
+.stat-item-healing span#stat-health-2 {
+    color: #4CAF50 !important;
+    font-weight: bold;
+}

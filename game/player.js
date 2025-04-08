@@ -20,6 +20,7 @@ class Player {
         this.tempAttack = 0;
         this.tempDefense = 0;
         this.tempSpeedReduction = 0;
+        this.healOverTimeEffects = [];
         this.activeEffects = {};
         this.isStunned = false;
     }
@@ -220,6 +221,25 @@ class Player {
         }
 
         if (item.type === 'consumable') {
+            // Handle Heal Over Time Potions FIRST
+            if (item.healOverTime) {
+                const hotData = item.healOverTime;
+                this.healOverTimeEffects.push({
+                    remaining: hotData.total,
+                    rate: hotData.rate,
+                    interval: hotData.interval,
+                    tickCooldown: hotData.interval
+                });
+                console.log(this.healOverTimeEffects);
+                this.inventory[index] = null;
+                return {
+                    success: true,
+                    message: `Used ${item.name}. Started healing.`, item: item,
+                    actionDelay: item.isPotion ? 0 : 2.0 // Assuming HoT potions follow normal potion rules
+                };
+            }
+
+            // Handle Stat-Boosting Potions
             if (item.stats) {
                 let buffType = null;
                 let buffAmount = 0;

@@ -17,8 +17,8 @@ const RARE_FOOD = ['large_fish']
 const COMMON_TOOLS = ['fishing_rod', 'blacksmith_hammer', 'thief_tools']
 
 const COMMON_POTIONS = ['health_potion', 'attack_potion', 'defense_potion']
-const UNCOMMON_POTIONS = ['speed_potion', 'greater_health_potion']
-const RARE_POTIONS = ['greater_attack_potion', 'greater_defense_potion', 'greater_speed_potion']
+const UNCOMMON_POTIONS = ['speed_potion', 'greater_health_potion', 'restoration_potion']
+const RARE_POTIONS = ['greater_attack_potion', 'greater_defense_potion', 'greater_speed_potion', 'greater_restoration_potion']
 
 
 const ITEMS = {
@@ -192,6 +192,17 @@ const ITEMS = {
         id: 'greater_speed_potion', name: 'Greater Speed Potion', type: 'consumable', useAction: 'Drink',
         stats: { tempSpeed: 0.4 }, value: 11, isPotion: true,
         description: 'A fizzing yellow potion.\nReduces attack time by 0.4s. Removed after combat.\nNo combat delay.'
+    },
+
+    'restoration_potion': {
+        id: 'restoration_potion', name: 'Restoration Potion', type: 'consumable', useAction: 'Drink',
+        healOverTime: { total: 15, rate: 1, interval: 2 }, value: 8, isPotion: true,
+        description: 'A swirling green potion.\\nRestores 15 HP over 30 seconds.\\nNo combat delay.'
+    },
+    'greater_restoration_potion': {
+        id: 'greater_restoration_potion', name: 'Greater Restoration Potion', type: 'consumable', useAction: 'Drink',
+        healOverTime: { total: 15, rate: 2, interval: 2 }, value: 12, isPotion: true,
+        description: 'A potent swirling green potion.\\nRestores 15 HP over 15 seconds.\\nNo combat delay.'
     },
 
        'fishing_rod': {

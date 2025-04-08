@@ -34,6 +34,14 @@ class Game {
             { percent: 30, weight: 2 },
         ];
         this.totalDiscountWeight = this.weightedDiscounts.reduce((sum, d) => sum + d.weight, 0);
+
+        // Global Tick Properties
+        this.globalTickIntervalId = null;
+        this.globalTickRate = 500; // Tick every 500ms
+        this.lastGlobalTickTime = Date.now();
+
+        // Bind methods
+        this.addLog = this.addLog.bind(this);
     }
 
     EVENT_PROBABILITY = [
@@ -49,8 +57,14 @@ class Game {
     ];
 
     start() {
-        // this.devMode();
-        this.normalMode();
+        this.devMode();
+        // this.normalMode();
+
+        // Start the global game tick
+        this.lastGlobalTickTime = Date.now(); // Initialize before starting
+        if (this.globalTickIntervalId) clearInterval(this.globalTickIntervalId); // Clear previous if any
+        // THIS LINE sets up the repeated call:
+        this.globalTickIntervalId = setInterval(() => this.gameTick(), this.globalTickRate); 
     }
 
     normalMode() {
@@ -73,14 +87,15 @@ class Game {
         this.state = 'choosing';
         this.currentArea = "giants_pass";
         // this.pendingAreaTransitionName = "Giants pass";
-        this.player.health = 1;
+        this.player.health = 5;
         this.player.baseAttack = 6;
         this.player.gold = 1000;
 
         this.player.addItem(this.createItem('wooden_sword'));
         this.player.addItem(this.createItem('wooden_shield'));
         this.player.addItem(this.createItem('speed_potion'));
-        this.player.addItem(this.createItem('greater_speed_potion'));
+        this.player.addItem(this.createItem('restoration_potion'));
+        this.player.addItem(this.createItem('greater_restoration_potion'));
         this.player.addItem(this.createItem('greater_speed_potion'));
         this.player.addItem(this.createItem('speed_potion'));
         this.player.addItem(this.createItem('attack_potion'));
@@ -651,22 +666,16 @@ class Game {
     }
 
     endGame(playerWon) {
-        // Prevent multiple executions
-        if (this.state === 'win' || this.state === 'game_over') {
-            console.warn('[Game] endGame called again when already in state:', this.state);
-            return; 
-        }
-
-        if (playerWon) {
-            this.state = 'win';
-            this.addLog("YOU WIN!");
-            this.ui.showEndScreen(true);
+        console.log("Game ended.", playerWon ? "Player won" : "Player lost");
+        this.ui.showEndScreen(playerWon);
+        if (this.currentCombat && this.currentCombat.intervalId) {
             clearInterval(this.currentCombat.intervalId);
-            this.currentCombat.intervalId = null; 
-        } else {
-            this.state = 'game_over';
-            this.addLog("GAME OVER");
-            this.ui.showEndScreen(false);
+            this.currentCombat = null;
+        }
+        // Clear the global tick interval
+        if (this.globalTickIntervalId) {
+            clearInterval(this.globalTickIntervalId);
+            this.globalTickIntervalId = null;
         }
     }
 
@@ -831,5 +840,45 @@ class Game {
             }
         }
         return 10; // Fallback just in case
+    }
+
+    gameTick() {
+        const now = Date.now();
+        console.log("gameTick", now);
+        const delta = now - this.lastGlobalTickTime;
+        this.lastGlobalTickTime = now;
+        const tickSeconds = delta / 1000;
+
+        if (this.player.healOverTimeEffects && this.player.healOverTimeEffects.length > 0) {
+            let needsUIUpdate = false;
+            for (let i = this.player.healOverTimeEffects.length - 1; i >= 0; i--) {
+                const hot = this.player.healOverTimeEffects[i];
+                hot.tickCooldown = Math.max(0, hot.tickCooldown - tickSeconds);
+
+                if (hot.tickCooldown <= 0 && hot.remaining > 0) {
+                    //const healAmount = Math.min(hot.rate, hot.remaining);
+                    const actualHeal = this.player.heal(hot.rate); // Use player.heal to not exceed max HP
+                    hot.remaining -= actualHeal; // Decrease remaining by the potential heal amount
+
+                    if (actualHeal >= 0) {
+                        this.addLog(`<span style="color: #66bb6a; font-style: italic;">Restoration heals you for ${actualHeal} HP.</span>`);
+                        needsUIUpdate = true;
+                    }
+
+                    this.ui.updatePlayerStats();
+                    if (this.currentCombat) {
+                         this.ui.updateCombatantHealth('player', this.player.health, this.player.getMaxHealth(), actualHeal, 0, true);
+                    }
+
+                    hot.tickCooldown = hot.interval; // Reset cooldown
+
+                    if (hot.remaining <= 0) {
+                        this.addLog(`<span style="font-style: italic;">A restoration effect wears off.</span>`);
+                        this.player.healOverTimeEffects.splice(i, 1); // Remove effect
+                        needsUIUpdate = true; // Update UI when effect ends too
+                    }
+                }
+            }
+        }
     }
 }

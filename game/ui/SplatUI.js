@@ -42,6 +42,7 @@ class SplatUI {
                 splat.textContent = amount;
             }
         } else if (type === 'heal' || type === 'potion-heal') {
+            console.log("heal", amount);
             splat.textContent = '+' + amount;
         } else if (type === 'poison' || type === 'burn') { splat.textContent = amount; } else if (type === 'buff-attack') {
             splat.textContent = `+${amount} Atk`;

@@ -26,6 +26,7 @@ class Combat {
         this.timeScale = this.tickRate / 1000;
         this.isPlayerTurn = false;
         this.isEnemyTurn = false;
+        this.lastTickTime = Date.now();
 
         this.player.attackTimer = 0;
         this.enemy.attackTimer = 0;
@@ -46,7 +47,10 @@ class Combat {
     start() {
         this.game.addLog(`Combat started: Player vs ${this.enemy.name}!`);
 
-        this.player.activeEffects = {};
+        this.player.attackTimer = 0;
+        this.enemy.attackTimer = 0;
+        this.player.pendingActionDelay = 0;
+        this.player.attackTimerPaused = false;
 
         const playerSide = document.querySelector('.player-side');
         if (playerSide) {
@@ -99,6 +103,8 @@ class Combat {
         }
 
         this.intervalId = setInterval(() => this.tick(), this.tickRate);
+
+        this.lastTickTime = Date.now();
 
         if (this.game.ui.roundAreaElement) {
             this.game.ui.roundAreaElement.classList.remove('round-miniboss', 'round-finalboss');
@@ -440,6 +446,7 @@ class Combat {
             }
             this.ui.renderInventory();
             this.ui.updateCombatStats(this.player, this.enemy);
+            this.ui.updatePlayerStats();
         } else {
             this.game.addLog(useResult.message);
         }
@@ -541,6 +548,7 @@ class Combat {
 
     endCombat(playerWon, ranAway = false) {
         this.player.resetCombatBuffs();
+        this.player.healOverTimeEffects = [];
 
         const enemySide = document.querySelector('.enemy-side');
         const enemySpdStat = document.getElementById('combat-enemy-spd');
@@ -551,6 +559,7 @@ class Combat {
             enemySpdStat.classList.remove('stat-highlight-speed');
         }
         this.player.activeEffects = {};
+        this.player.healOverTimeEffects = [];
 
         if (playerWon) {
             this.game.addLog(`You defeated the ${this.enemy.name}!`);
