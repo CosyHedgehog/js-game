@@ -120,9 +120,6 @@ class Game {
     proceedToNextRound() {
         if (this.state === 'win' || this.state === 'game_over') return;
 
-        this.ui.showEndScreen(false);
-        this.ui.showEndScreen(false);
-
         const nextRound = this.currentRound + 1;
 
         let encounterGenerated = false;
