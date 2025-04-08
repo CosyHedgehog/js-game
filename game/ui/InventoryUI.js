@@ -132,7 +132,7 @@ class InventoryUI {
                 }
 
                 let isStunnedAndFood = false;
-                if (this.ui.game.state === 'combat' && this.ui.game.player.isStunned && item.useAction === 'Eat') {
+                if (this.ui.game.state === 'combat' && this.ui.game.player.isStunned) {
                     isStunnedAndFood = true;
                     slot.classList.add('food-stunned');
                     slot.style.cursor = 'default'; slot.dataset.isStunnedFood = 'true';
