@@ -64,14 +64,14 @@ class Game {
         { type: 'alchemist', weight: 5 }, // DONE
         { type: 'treasure_chest', weight: 10 }, // DONE
         { type: 'forge', weight: 10 }, // DONE
-        { type: 'fishing', weight: 10 }, // DONE
+        { type: 'fishing', weight: 100 }, // DONE
         { type: 'trap', weight: 10 }, // DONE
         { type: 'weapon_merchant', weight: 5 }
     ];
 
     start() {
-        // this.devMode();
-        this.normalMode();
+        this.devMode();
+        // this.normalMode();
         this.lastGlobalTickTime = Date.now();
         if (this.globalTickIntervalId) clearInterval(this.globalTickIntervalId);
         this.globalTickIntervalId = setInterval(() => this.gameTick(), this.globalTickRate);
@@ -113,7 +113,7 @@ class Game {
         this.player.addItem(this.createItem('bread'));
         this.player.addItem(this.createItem('thief_tools'));
         this.player.addItem(this.createItem('blacksmith_hammer'));
-        this.player.addItem(this.createItem('fishing_rod'));
+        // this.player.addItem(this.createItem('fishing_rod'));
 
 
         

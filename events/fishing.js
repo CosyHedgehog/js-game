@@ -7,49 +7,53 @@ class Fishing {
 
     FISHING_AREAS = {
         shoreline: {
-            name: 'Shallow Shoreline',
-            description: 'Scrounge near the water\'s edge for anything edible. Small Fish (75%) and Medium Fish (25%).',
-            fishRange: [1, 3],
+            name: '🐚 Shallow Shoreline',
+            description: 'Scrounge near the water\'s edge. <br>Fish: <b>Small (75%)</b> - <b>Medium (25%)</b>.',
+            fishRange: [1, 2],
             lootTable: [
                 { itemId: 'small_fish', chance: 0.75 },
                 { itemId: 'medium_fish', chance: 0.25 }
             ],
+            ringChance: 0.05,
             monsterChance: 0.05,
             requiresRod: false
         },
         safe: {
-            name: 'Calm Waters',
-            description: 'A peaceful spot. Contains Small Fish (65%) and Medium Fish (35%).',
-            fishRange: [2, 4],
+            name: '🐟 Calm Waters',
+            description: 'A peaceful spot. <br>Fish: <b>Small (50%)</b> - <b>Medium (50%)</b>.',
+            fishRange: [3, 5],
             lootTable: [
-                { itemId: 'small_fish', chance: 0.65 },
-                { itemId: 'medium_fish', chance: 0.35 },
+                { itemId: 'small_fish', chance: 0.50 },
+                { itemId: 'medium_fish', chance: 0.50 }
             ],
-            monsterChance: 0.1,
+            ringChance: 0.10,
+            monsterChance: 0,
             requiresRod: true
         },
         moderate: {
-            name: 'Rushing Stream',
-            description: 'A faster flowing area. Small Fish (40%), Medium Fish (45%), and Large Fish (15%).',
-            fishRange: [3, 5],
+            name: '🐠 Rushing Stream',
+            description: 'A faster flowing area. <br>Fish: <b>Small (40%)</b> - <b>Medium (40%)</b> - <b>Large (20%)</b>',
+            fishRange: [2, 3],
             lootTable: [
                 { itemId: 'small_fish', chance: 0.40 },
-                { itemId: 'medium_fish', chance: 0.45 },
-                { itemId: 'large_fish', chance: 0.15 }
+                { itemId: 'medium_fish', chance: 0.40 },
+                { itemId: 'large_fish', chance: 0.20 }
             ],
-            monsterChance: 0.3,
+            ringChance: 0.30,
+            monsterChance: 0.10,
             requiresRod: true
         },
         dangerous: {
-            name: 'Deep Waters',
-            description: 'A treacherous fishing spot. Small Fish (15%), Medium Fish (50%), and Large Fish (35%).',
-            fishRange: [4, 6],
+            name: '🦈 Deep Waters',
+            description: 'A treacherous fishing spot. <br>Fish: <b>Medium (30%)</b> - <b>Large (70%)</b>.',
+            fishRange: [1, 2],
             lootTable: [
-                { itemId: 'small_fish', chance: 0.15 },
-                { itemId: 'medium_fish', chance: 0.50 },
-                { itemId: 'large_fish', chance: 0.35 }
+                { itemId: 'small_fish', chance: 0.0 },
+                { itemId: 'medium_fish', chance: 0.30 },
+                { itemId: 'large_fish', chance: 0.70 }
             ],
-            monsterChance: 0.6,
+            ringChance: 0.60,
+            monsterChance: 0.40,
             requiresRod: true
         }
     };
@@ -73,28 +77,27 @@ class Fishing {
             <div class="fishing-areas-container">
                 ${Object.entries(this.FISHING_AREAS).map(([key, area]) => {
             const needsRod = area.requiresRod === true;
-            const requirementText = needsRod && !hasFishingRod ? '<span class="requirement-missing">(Requires Fishing Rod)</span>' : '';
             const isDisabled = needsRod && !hasFishingRod ? 'disabled' : '';
-
-            // Generate the actual requirement text span OR an empty string
             const actualRequirement = needsRod && !hasFishingRod ? `<span class="requirement-missing">Requires Fishing Rod</span>` : '';
-
-            // Create placeholder text with the same content for height calculation, but make it invisible via CSS later
             const placeholder = `<span class="requirement-placeholder">Requires Fishing Rod</span>`;
-
-            // Use the actual requirement if it exists, otherwise use the placeholder structure
             const requirementContent = actualRequirement || placeholder;
+
+            const updatedDescription = area.description;
 
             return `
                     <div class="choice-card" data-area="${key}">
                         <h4 class="choice-title">${area.name}</h4>
                         ${requirementContent}
-                        <p class="choice-description">${area.description}</p>
+                        <p class="choice-description">${updatedDescription}</p>
                         <div class="monster-stats-grid">
                             <span class="fishing-stat">Fish: ${area.fishRange[0]}-${area.fishRange[1]}</span>
                             <span class="fishing-stat monster-chance-stat">
                                 <span class="fishing-stat-label">Monster Chance</span>
                                 <span class="fishing-stat-value">${Math.round(area.monsterChance * 100)}%</span>
+                            </span>
+                            <span class="fishing-stat">
+                                <span class="fishing-stat-label">Treasure Chance</span>
+                                <span class="fishing-stat-value">${Math.round(area.ringChance * 100)}%</span>
                             </span>
                         </div>
                         <button class="choice-start-button" ${isDisabled}>Fish Here</button>
@@ -114,6 +117,56 @@ class Fishing {
         });
     }
 
+    // Helper function to get a random ring based on the area
+    getRandomRingForArea(areaKey) {
+        let pool = [];
+        let weights = [];
+
+        switch (areaKey) {
+            case 'shoreline':
+            case 'safe':
+                pool = COMMON_RINGS;
+                // Equal chance for all common rings
+                weights = pool.map(() => 1);
+                break;
+            case 'moderate':
+                pool = [...COMMON_RINGS, ...UNCOMMON_RINGS];
+                // Weighted: e.g., 70% common, 30% uncommon total chance
+                weights = pool.map(ringId => COMMON_RINGS.includes(ringId) ? 7 : 3); // Higher weight for common
+                break;
+            case 'dangerous':
+                pool = [...COMMON_RINGS, ...UNCOMMON_RINGS];
+                 // Weighted: e.g., 40% common, 60% uncommon total chance
+                weights = pool.map(ringId => COMMON_RINGS.includes(ringId) ? 4 : 6); // Higher weight for uncommon
+                break;
+            default:
+                console.warn("Unknown fishing area key for ring selection:", areaKey);
+                return null; // Or return a default common ring?
+        }
+
+        if (pool.length === 0) return null;
+
+        const totalWeight = weights.reduce((sum, weight) => sum + weight, 0);
+        let randomWeight = Math.random() * totalWeight;
+        let chosenRingId = null;
+
+        for (let i = 0; i < pool.length; i++) {
+            randomWeight -= weights[i];
+            if (randomWeight <= 0) {
+                chosenRingId = pool[i];
+                break;
+            }
+        }
+
+         // Fallback if something goes wrong (e.g., rounding issues)
+         if (!chosenRingId) {
+             chosenRingId = pool[pool.length - 1];
+         }
+
+        return chosenRingId;
+    }
+
+
     startFishing(areaKey) {
         const area = this.FISHING_AREAS[areaKey];
         if (!area) {
@@ -126,7 +179,7 @@ class Fishing {
             const hasFishingRod = this.game.player.inventory.some(item => item && item.id === 'fishing_rod');
             if (!hasFishingRod) {
                 this.game.addLog("You need a Fishing Rod to fish here!");
-                this.game.proceedToNextRound();
+                // No need to proceed, just return and let the player choose again
                 return;
             }
         }
@@ -135,25 +188,45 @@ class Fishing {
         const fishCaughtCount = this.game.getRandomInt(area.fishRange[0], area.fishRange[1]);
         const caughtItems = [];
 
+        // Check for bonus ring drop first (once per attempt)
+        if (area.ringChance && Math.random() < area.ringChance) {
+            const ringId = this.getRandomRingForArea(areaKey);
+            if (ringId) {
+                const ringItem = this.game.createItem(ringId);
+                if (ringItem) {
+                    caughtItems.push(ringItem);
+                    this.game.addLog("Alongside the fish, you find something shimmering!");
+                } else {
+                    console.error(`Failed to create bonus ring item with ID: ${ringId}`);
+                }
+            }
+        }
+
         const currentLootTable = area.lootTable;
         for (let i = 0; i < fishCaughtCount; i++) {
             const roll = Math.random();
             let cumulative = 0;
-            for (const fish of currentLootTable) {
-                cumulative += fish.chance;
+
+            for (const lootEntry of currentLootTable) {
+                cumulative += lootEntry.chance;
                 if (roll < cumulative) {
-                    const fishItem = this.game.createItem(fish.itemId);
-                    if (fishItem) {
-                        caughtItems.push(fishItem);
+                    const itemId = lootEntry.itemId;
+                    if (itemId) {
+                        const createdItem = this.game.createItem(itemId);
+                        if (createdItem) {
+                            caughtItems.push(createdItem);
+                        } else {
+                            console.error(`Failed to create item with ID: ${itemId}`);
+                        }
                     }
-                    break;
+                    break; // Exit inner loop once an item type is determined
                 }
             }
         }
 
         if (Math.random() < area.monsterChance) {
             this.game.addLog("Suddenly, something emerges from the water!");
-            const monsterId = 'river_troll';
+            const monsterId = 'river_troll'; // TODO: Make monster dynamic based on area?
             const monsterData = MONSTERS[monsterId];
             if (!monsterData) {
                 console.error("Monster data not found:", monsterId);
@@ -161,11 +234,17 @@ class Fishing {
                 this.game.proceedToNextRound();
                 return;
             }
+            // Need to pass the ui object to the Combat constructor
             this.game.currentCombat = new Combat(this.game.player, monsterData, this.game, this.ui);
             this.game.state = 'combat';
             this.game.currentCombat.start();
         } else {
-            this.game.enterLootState(0, caughtItems);
+             if (caughtItems.length > 0) {
+                this.game.enterLootState(0, caughtItems);
+             } else {
+                 this.game.addLog("You didn't find anything useful this time.");
+                 this.game.proceedToNextRound(); // Proceed if nothing caught
+             }
         }
     }
 }

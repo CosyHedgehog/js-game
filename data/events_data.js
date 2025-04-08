@@ -45,9 +45,9 @@ const EVENTS_DATA = {
         buttonText: 'Enter Workshop'
     },
     'fishing': {
-        weight: 10,
+        weight: 100,
         choiceText: "Go Fishing!",
-        detailsTemplate: "Approach the water's edge. Choose a fishing spot with varying rewards and risks (Requires Fishing Rod for deeper waters).\n\nGo fishing?",
+        detailsTemplate: "Approach the water's edge. Choose a fishing spot with varying rewards and risks (Requires Fishing Rod for deeper waters). Chance of finding treasures.\n\nGo fishing?",
         handler: 'FishingHandler',
         icon: '🎣',
         buttonText: 'Go Fishing'
