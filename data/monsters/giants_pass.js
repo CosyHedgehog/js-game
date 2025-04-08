@@ -55,7 +55,7 @@ const GIANTS_PASS_MONSTER_DATA = {
         goldDrop: [20, 35],
         isMiniBoss: true,
         hasTimedStun: true,
-        timedStunInterval: 15,
+        timedStunInterval: 3,
         timedStunDuration: 4,
         description: "A lumbering giant with a single, hateful eye.",
         mechanics: "Hurls a massive boulder every 15 seconds, causing a shockwave that stuns you for 4 seconds!",

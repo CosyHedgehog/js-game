@@ -82,7 +82,7 @@ class Game {
     }
 
     devMode() {
-        this.currentRound = 29;
+        this.currentRound = 19;
         // this.state = 'area_transition';
         this.state = 'choosing';
         this.currentArea = "giants_pass";

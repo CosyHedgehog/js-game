@@ -291,6 +291,7 @@ class Combat {
         }
 
         if (this.enemy.timedStunTimer !== null && this.enemy.timedStunTimer <= 0) {
+            this.enemyTimedStunAttack();
             this.enemy.timedStunTimer = this.enemy.timedStunInterval;
         }
 
@@ -636,7 +637,10 @@ class Combat {
     }
 
     enemyTimedStunAttack() {
+        console.log("enemyTimedStunAttack", this.enemy.hasTimedStun);
         if (!this.enemy.hasTimedStun) return;
+
+        console.log("enemyTimedStunAttack", this.enemy.hasTimedStun);
         this.player.attackTimerPaused = true;
         this.player.pendingActionDelay = this.enemy.timedStunDuration;
         this.player.isStunned = true; this.player.activeEffects.stun = {

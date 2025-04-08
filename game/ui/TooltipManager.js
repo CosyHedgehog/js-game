@@ -22,17 +22,37 @@ class TooltipManager {
         tooltipElement.innerHTML = text;
         tooltipElement.classList.remove('hidden');
 
-        let top = event.clientY + 15;
-        let left = event.clientX + 15;
-        tooltipElement.style.left = '0px';
-        tooltipElement.style.top = '0px';
+        const xOffset = 15; // Pixels to the right
+        const yOffset = 15; // Pixels below
+        const flipGap = 10; // Gap from cursor when flipping
+        const boundaryPadding = 10; // Min distance from viewport edges
+
+        // Initial position calculation
+        let top = event.clientY + yOffset;
+        let left = event.clientX + xOffset;
+
+        // Temporarily place off-screen to measure size correctly
+        tooltipElement.style.left = '-9999px';
+        tooltipElement.style.top = '-9999px';
         const rect = tooltipElement.getBoundingClientRect();
         const vw = window.innerWidth;
         const vh = window.innerHeight;
-        if (left + rect.width > vw - 20) { left = event.clientX - rect.width - 15; }
-        if (top + rect.height > vh - 20) { top = event.clientY - rect.height - 15; }
-        left = Math.max(10, left);
-        top = Math.max(10, top);
+
+        // Check/adjust for right boundary
+        if (left + rect.width > vw - boundaryPadding) {
+            left = event.clientX - rect.width - flipGap;
+        }
+
+        // Check/adjust for bottom boundary
+        if (top + rect.height > vh - boundaryPadding) {
+            top = event.clientY - rect.height - flipGap;
+        }
+
+        // Ensure it doesn't go off top or left boundaries
+        left = Math.max(boundaryPadding, left);
+        top = Math.max(boundaryPadding, top);
+
+        // Final position setting
         tooltipElement.style.left = `${left}px`;
         tooltipElement.style.top = `${top}px`;
     }

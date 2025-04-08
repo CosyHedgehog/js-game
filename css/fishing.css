@@ -1,7 +1,6 @@
 #fishing-area {
     padding: 10px;
     display: flex;
-    flex-direction: column;
     gap: 15px;
     height: 100%;
     width: 100%;
