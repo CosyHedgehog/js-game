@@ -12,9 +12,9 @@ class Game {
         this.currentCombat = null;
         this.currentShopItems = [];
         this.shopCanReroll = false;
-        this.pendingLoot = null; 
+        this.pendingLoot = null;
         this.currentArea = Math.random() < 0.5 ? 'spider_cave' : 'wolf_den';
-        this.pendingAreaTransitionName = null; 
+        this.pendingAreaTransitionName = null;
         this.pendingNewAreaId = null;
         this.lastDefeatedEnemyName = null;
 
@@ -64,7 +64,7 @@ class Game {
         this.lastGlobalTickTime = Date.now(); // Initialize before starting
         if (this.globalTickIntervalId) clearInterval(this.globalTickIntervalId); // Clear previous if any
         // THIS LINE sets up the repeated call:
-        this.globalTickIntervalId = setInterval(() => this.gameTick(), this.globalTickRate); 
+        this.globalTickIntervalId = setInterval(() => this.gameTick(), this.globalTickRate);
     }
 
     normalMode() {
@@ -442,7 +442,7 @@ class Game {
             }
             case 'rest':
                 return `Rest at this campsite to restore and increase your health. \n\n` +
-                       `Do you want to rest here?`;
+                    `Do you want to rest here?`;
             case 'shop':
                 return "Visit a merchant to buy and sell items.\n\n" +
                     `Current gold: ${this.player.gold}.\n\n` +
@@ -544,12 +544,12 @@ class Game {
                 this.currentCombat.ui.updateCombatTimers(
                     this.player.attackTimer,
                     this.currentCombat.enemy.attackTimer,
-                    0, 
-                    this.currentCombat.enemy.breathAttackTimer, 
+                    0,
+                    this.currentCombat.enemy.breathAttackTimer,
                     this.currentCombat.enemy.breathAttackInterval);
             }
 
-            this.ui.renderInventory(); 
+            this.ui.renderInventory();
             this.ui.renderEquipment();
             this.ui.updatePlayerStats();
         } else {
@@ -591,18 +591,18 @@ class Game {
                 this.ui.renderInventory();
                 if (useResult.item?.healAmount !== undefined) {
                     const slotSelector = `.inventory-slot[data-index="${inventoryIndex}"]`;
-                    const amountToShow = useResult.healedAmount || 0; 
+                    const amountToShow = useResult.healedAmount || 0;
                     const splatType = useResult.item?.isPotion ? 'potion-heal' : 'heal';
                     this.ui.createDamageSplat(slotSelector, amountToShow, splatType);
                 } else if (useResult.item?.healOverTime != undefined) {
                     const slotSelector = `.inventory-slot[data-index="${inventoryIndex}"]`;
-                    const amountToShow = useResult.item?.healOverTime.heal; 
+                    const amountToShow = useResult.item?.healOverTime.heal;
                     const splatType = useResult.item?.isPotion ? 'potion-heal' : 'heal';
                     this.ui.createDamageSplat(slotSelector, amountToShow, splatType);
                 } else if (useResult.buffType) {
                     const slotSelector = `.inventory-slot[data-index="${inventoryIndex}"]`;
                     const buffAmount = useResult.buffAmount;
-                    const buffSplatType = `buff-${useResult.buffType}`; 
+                    const buffSplatType = `buff-${useResult.buffType}`;
                     this.ui.createDamageSplat(slotSelector, buffAmount, buffSplatType);
                 }
 
@@ -805,9 +805,9 @@ class Game {
         this.addLog(`--- Round ${this.currentRound} ---`);
         this.addLog(`You venture into ${this.pendingAreaTransitionName}!`);
         this.ui.renderRound(this.currentRound, this.maxRounds);
-        this.pendingAreaTransitionName = null; 
+        this.pendingAreaTransitionName = null;
         this.pendingNewAreaId = null;
-        this.state = 'choosing'; 
+        this.state = 'choosing';
         this.ui.clearMainArea();
         let encounterGenerated = false;
         let currentTier = null;
@@ -866,9 +866,8 @@ class Game {
                     if (actualHeal >= 0) { // Log even if heal is 0 (e.g., full health)
                         this.addLog(`<span style="color: #66bb6a; font-style: italic;">Restoration heals you for ${actualHeal} HP.</span>`);
                     }
-                    this.ui.updatePlayerStats(); // Update stats after heal
                     if (this.currentCombat) {
-                         this.ui.updateCombatantHealth('player', this.player.health, this.player.getMaxHealth(), actualHeal, 0, true);
+                        this.ui.updateCombatantHealth('player', this.player.health, this.player.getMaxHealth(), actualHeal, 0, true);
                     }
                     hot.tickCooldown = hot.interval; // Reset cooldown for next tick
                 }
@@ -878,6 +877,7 @@ class Game {
                     this.ui.updatePlayerStats();
                 }
             }
+            this.ui.updatePlayerStats(); // Update stats after heal
         }
     }
 }
