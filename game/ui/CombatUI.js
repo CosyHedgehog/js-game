@@ -237,7 +237,6 @@ class CombatUI {
                 }
             } else {
                 healthBar.classList.remove('player-healing-effect');
-                console.log('removing healing effect');
                 // Remove tooltip if present
                  if (healthBar._tooltipEnterHandler) {
                     healthBar.removeEventListener('mouseenter', healthBar._tooltipEnterHandler);

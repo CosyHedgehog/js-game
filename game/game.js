@@ -323,23 +323,14 @@ class Game {
                         const mediumMonsters = monsterPoolIds.filter(id => MONSTERS[id]?.difficulty === 'medium');
                         const hardMonsters = monsterPoolIds.filter(id => MONSTERS[id]?.difficulty === 'hard');
 
-                        console.log("easyMonsters", easyMonsters);
-                        console.log("mediumMonsters", mediumMonsters);
-                        console.log("hardMonsters", hardMonsters);
-
                         const difficultyRoll = Math.random() * 100;
                         let selectedMonsterId = null;
 
-                        console.log("difficultyRoll", difficultyRoll);
-
                         if (difficultyRoll < 60 && easyMonsters.length > 0) {
-                            console.log("selecting easy monster");
                             selectedMonsterId = easyMonsters[this.getRandomInt(0, easyMonsters.length - 1)];
                         } else if (difficultyRoll < 90 && mediumMonsters.length > 0) { // 60 + 30
-                            console.log("selecting medium monster");
                             selectedMonsterId = mediumMonsters[this.getRandomInt(0, mediumMonsters.length - 1)];
                         } else if (hardMonsters.length > 0) { // 90 + 10
-                            console.log("selecting hard monster");
                             selectedMonsterId = hardMonsters[this.getRandomInt(0, hardMonsters.length - 1)];
                         }
 
@@ -705,7 +696,6 @@ class Game {
     }
 
     endGame(playerWon) {
-        console.log("Game ended.", playerWon ? "Player won" : "Player lost");
         this.ui.showEndScreen(playerWon);
 
 

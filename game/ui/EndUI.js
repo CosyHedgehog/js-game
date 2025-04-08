@@ -30,7 +30,6 @@ class EndUI {
         container.innerHTML = content;
         document.body.appendChild(container);
         const playAgainButtons = document.querySelectorAll('#play-again-button');
-        console.log("playAgainButtons", playAgainButtons);
         if (playAgainButtons.length > 0) {
             playAgainButtons.forEach(button => {
                 button.addEventListener('click', () => {

@@ -210,9 +210,6 @@ class Combat {
             const fasterSpeed = baseSpeed * (1 - this.enemy.speedIncreasePercent); 
             const wasSpeedIncreased = this.enemy.currentSpeed === fasterSpeed;
             const shouldIncreaseSpeed = healthPercent < this.enemy.speedIncreaseThreshold;
-
-            console.log(baseSpeed, fasterSpeed, shouldIncreaseSpeed, wasSpeedIncreased);
-
             if (shouldIncreaseSpeed && !wasSpeedIncreased) {
                 this.enemy.currentSpeed = fasterSpeed;
                 this.game.addLog(`<span style="color: #64b5f6;">${this.enemy.name} quickens its movements!</span>`);
@@ -230,9 +227,7 @@ class Combat {
                 if (enemySpdStat) {
                     enemySpdStat.classList.add('stat-highlight-speed');
                 }
-                console.log("speed increased");
             } else if (!shouldIncreaseSpeed && !wasSpeedIncreased) {
-                console.log("speed decreased");
                 this.enemy.currentSpeed = baseSpeed;
                 const enemySide = document.querySelector('.enemy-side');
                 const enemySpdStat = document.getElementById('combat-enemy-spd');
@@ -638,10 +633,7 @@ class Combat {
     }
 
     enemyTimedStunAttack() {
-        console.log("enemyTimedStunAttack", this.enemy.hasTimedStun);
         if (!this.enemy.hasTimedStun) return;
-
-        console.log("enemyTimedStunAttack", this.enemy.hasTimedStun);
         this.player.attackTimerPaused = true;
         this.player.pendingActionDelay = this.enemy.timedStunDuration;
         this.player.isStunned = true; this.player.activeEffects.stun = {
