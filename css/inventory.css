@@ -76,19 +76,6 @@
     box-shadow: 0 0 10px rgba(33, 150, 243, 0.3);
 }
 
-.inventory-slot.equipped::after {
-    content: "E";
-    position: absolute;
-    top: 2px;
-    right: 2px;
-    background: #2196F3;
-    color: white;
-    font-size: 0.7em;
-    padding: 2px 4px;
-    border-radius: 3px;
-    font-weight: bold;
-}
-
 .item-name {
     font-size: 0.9em;
     font-weight: bold;
@@ -220,20 +207,6 @@
     border-color: #777;
     transform: scale(1.03);
     z-index: 5;
-}
-
-.inventory-slot.equipped::after {
-   
-    content: "E";
-    position: absolute;
-    top: 2px;
-    right: 2px;
-    background: #2196F3;
-    color: white;
-    font-size: 0.7em;
-    padding: 2px 4px;
-    border-radius: 3px;
-    font-weight: bold;
 }
 
 .inventory-slot .equipped-slot-indicator {

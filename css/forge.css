@@ -183,4 +183,13 @@
 
 .forge-container .choice-start-button:disabled {
     cursor: default;
+}
+
+.requirement-missing {
+    color: #f44336;
+    font-style: italic;
+    font-size: 0.9em;
+    margin-top: 5px;
+    text-align: center; /* Center the text horizontally */
+    width: 100%; /* Ensure the element spans full width */
 } 
