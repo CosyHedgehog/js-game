@@ -38,6 +38,13 @@ class CombatUI {
         const enemyRegenTimerContainer = document.querySelector('.regen-timer');
         const enemyRegenTimerBar = document.querySelector('.enemy-regen-timer');
 
+        const playerHealthBar = document.querySelector('.player-health');
+        if (this.ui.game.player.healOverTimeEffects && this.ui.game.player.healOverTimeEffects.length > 0) {
+            playerHealthBar.classList.add('player-healing-effect');
+        } else {
+            playerHealthBar.classList.remove('player-healing-effect');
+        }
+
         if (playerTimerEl) playerTimerEl.textContent = playerTimer.toFixed(1);
         if (playerTimerBar) {
             const playerTotalTime = this.ui.game.player.getAttackSpeed();
@@ -230,6 +237,7 @@ class CombatUI {
                 }
             } else {
                 healthBar.classList.remove('player-healing-effect');
+                console.log('removing healing effect');
                 // Remove tooltip if present
                  if (healthBar._tooltipEnterHandler) {
                     healthBar.removeEventListener('mouseenter', healthBar._tooltipEnterHandler);

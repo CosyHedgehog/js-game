@@ -11,41 +11,48 @@ class StatsUI {
         if (this.ui.statMaxHealth) this.ui.statMaxHealth.textContent = player.getMaxHealth();
 
         // Display Heal Over Time info
-        let totalRemainingHot = 0;
         let hotTooltipText = "";
         const isHealingActive = player.healOverTimeEffects && player.healOverTimeEffects.length > 0;
         const healthStatItem = this.ui.statHealthElement?.closest('.stat-item'); // Find the parent stat-item
 
+        let healthText = `${player.health}`; // Default health text
+
         if (isHealingActive) {
-            // Find the maximum remaining time among active effects
+            // Find the maximum remaining time among active effects (needed for display)
             const maxTimeLeft = player.healOverTimeEffects.reduce((max, effect) => Math.max(max, effect.timeLeft), 0);
-            const totalHealPerTick = player.healOverTimeEffects.reduce((sum, effect) => sum + effect.heal, 0);
-            const interval = player.healOverTimeEffects[0].interval; // Assume consistent interval
             
-            hotTooltipText = `<br>Healing +${totalHealPerTick} HP every ${interval}s in combat (~${Math.ceil(maxTimeLeft)} seconds left).`;
-            healthStatItem?.classList.add('stat-item-healing'); // Add class to parent
+            // Update health text to include max time left
+            healthText = `${player.health} (${Math.ceil(maxTimeLeft)}s)`; 
+
+            // Generate tooltip text by listing each effect
+            hotTooltipText = ""; // Reset
+            player.healOverTimeEffects.forEach(effect => {
+                hotTooltipText += `<br>Healing +${effect.heal} HP every ${effect.interval}s (~${Math.ceil(effect.timeLeft)}s left)`;
+            });
+             
+            healthStatItem?.classList.add('stat-item-healing'); // Add class for green color
         } else {
-            healthStatItem?.classList.remove('stat-item-healing'); // Remove class from parent
+             healthStatItem?.classList.remove('stat-item-healing'); // Remove class for green color
         }
 
-        // --- Display HP without (+X) ---
-        if (this.ui.statHealth) this.ui.statHealth.textContent = player.health; 
+        // --- Display HP (potentially with time) ---
+        if (this.ui.statHealth) this.ui.statHealth.textContent = healthText; // Display number and time suffix
         // --- End HP Display ---
 
         // Set the combined tooltip on the correct element
-        let baseHealthTooltip = "Current Health / Maximum Health";
+        let baseHealthTooltip = "Health / Max Health";
         if (this.ui.statHealthElement) { // Target the correct element for tooltip
-           // Combine base tooltip with HoT details if active
-           let currentHotTooltip = ""; // Start with base tooltip
-           if (player.healOverTimeEffects && player.healOverTimeEffects.length > 0) {
-               // Find the maximum remaining time again
-               const maxTimeLeft = player.healOverTimeEffects.reduce((max, effect) => Math.max(max, effect.timeLeft), 0);
-               const totalHealPerTick = player.healOverTimeEffects.reduce((sum, effect) => sum + effect.heal, 0);
-               const interval = player.healOverTimeEffects[0].interval; 
+            // Combine base tooltip with HoT details if active
 
-               currentHotTooltip = `<br>Healing +${totalHealPerTick} HP every ${interval}s in combat (~${Math.ceil(maxTimeLeft)} seconds left).`;
-           }
-           this.ui.statHealthElement.dataset.tooltipText = baseHealthTooltip + currentHotTooltip; // Combine
+            // Rebuild the HoT part here as well to ensure consistency
+            let currentHotTooltipLines = "";
+            if (isHealingActive) {
+                 player.healOverTimeEffects.forEach(effect => {
+                    currentHotTooltipLines += `<br>Healing +${effect.heal} HP every ${effect.interval}s (~${Math.ceil(effect.timeLeft)}s left)`;
+                });
+            }
+
+           this.ui.statHealthElement.dataset.tooltipText = baseHealthTooltip + currentHotTooltipLines; 
         }
 
         const totalAttack = player.getAttack();
@@ -75,7 +82,7 @@ class StatsUI {
 
         if (tempAttackBonus > 0) {
             attackText += ` <span class="boosted-stat">(+${tempAttackBonus})</span>`;
-            attackTooltip = attackTooltip + `<br>Boosted by +${tempAttackBonus} (temporary, lasts until combat ends).`;
+            attackTooltip = attackTooltip + `<br>Boosted by +${tempAttackBonus} <br> (until combat ends).`;
         }
 
         if (this.ui.statAttack) this.ui.statAttack.innerHTML = attackText;
@@ -108,7 +115,7 @@ class StatsUI {
 
         if (tempDefenseBonus > 0) {
             defenseText += ` <span class="boosted-stat">(+${tempDefenseBonus})</span>`;
-            defenseTooltip = defenseTooltip + `<br>Boosted by +${tempDefenseBonus} (temporary, lasts until combat ends).`;
+            defenseTooltip = defenseTooltip + `<br>Boosted by +${tempDefenseBonus} <br> (until combat ends).`;
         }
         if (this.ui.statDefense) this.ui.statDefense.innerHTML = defenseText;
         if (this.ui.statDefenseElement) this.ui.statDefenseElement.dataset.tooltipText = defenseTooltip;
@@ -119,7 +126,7 @@ class StatsUI {
         let speedTooltip = "Time between your attacks (lower is faster, minimum 0.5s).";
         if (player.tempSpeedReduction > 0) {
             speedText += ` <span class="boosted-stat">(-${player.tempSpeedReduction.toFixed(1)}s)</span>`;
-            speedTooltip = `Time between your attacks (lower is faster, minimum 0.5s).<br>Boosted by -${player.tempSpeedReduction.toFixed(1)}s (temporary, lasts until combat ends).`;
+            speedTooltip = `Time between your attacks <br> (lower is faster, minimum 0.5s).<br>Boosted by -${player.tempSpeedReduction.toFixed(1)}s <br> (until combat ends).`;
         }
         if (this.ui.statSpeed) this.ui.statSpeed.innerHTML = speedText;
         if (this.ui.statSpeedElement) this.ui.statSpeedElement.dataset.tooltipText = speedTooltip;
