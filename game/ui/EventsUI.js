@@ -18,21 +18,24 @@ class EventsUI {
             }
 
             const encounter = choice.encounter;
+            const eventType = encounter.type;
+            const eventData = EVENTS_DATA[eventType] || {}; // Get data or empty object
             let difficultyText = '';
             let difficultyClass = '';
 
             const cardContent = document.createElement('div');
             cardContent.classList.add('choice-card-content');
 
-            if (encounter.type === 'monster') {
+            if (eventType === 'monster') {
                 card.classList.add('choice-monster');
                 const monster = MONSTERS[encounter.monsterId];
                 if (monster && monster.difficulty) {
-                    difficultyClass = 'difficulty-' + monster.difficulty; difficultyText = monster.difficulty.toUpperCase();
+                    difficultyClass = 'difficulty-' + monster.difficulty;
+                    difficultyText = monster.difficulty.toUpperCase();
                 } else {
                     difficultyClass = 'difficulty-unknown';
                     difficultyText = '???';
-                    console.warn(`Monster ${encounter.monsterId} is missing the difficulty property.`);
+                    console.warn(`Monster ${encounter.monsterId} is missing difficulty property.`);
                 }
 
                 const difficultyBadge = document.createElement('div');
@@ -41,7 +44,7 @@ class EventsUI {
                 cardContent.appendChild(difficultyBadge);
             }
 
-            if (encounter.type === 'weapon_merchant' && encounter.discountPercent) {
+            if (eventType === 'weapon_merchant' && encounter.discountPercent) {
                 const discountBadge = document.createElement('div');
                 discountBadge.className = `difficulty-badge difficulty-easy`;
                 discountBadge.textContent = `${encounter.discountPercent}% OFF`;
@@ -56,24 +59,11 @@ class EventsUI {
 
             const eventIcon = document.createElement('span');
             eventIcon.className = 'event-icon';
-            if (choice.encounter.type === 'monster') {
-                const monster = MONSTERS[choice.encounter.monsterId];
-                eventIcon.textContent = monster.icon || '⚔️';
+            if (eventType === 'monster') {
+                const monster = MONSTERS[encounter.monsterId];
+                eventIcon.textContent = monster?.icon || '⚔️';
             } else {
-                switch (choice.encounter.type) {
-                    case 'rest': eventIcon.textContent = '🏕️'; break;
-                    case 'shop': eventIcon.textContent = '🏪'; break;
-                    case 'forge': eventIcon.textContent = '⚒️'; break;
-                    case 'fishing': eventIcon.textContent = '🎣'; break;
-                    case 'blacksmith': eventIcon.textContent = '🔨'; break;
-                    case 'sharpen': eventIcon.textContent = '⚔️'; break;
-                    case 'armorsmith': eventIcon.textContent = '🛡️'; break;
-                    case 'alchemist': eventIcon.textContent = '⚗️'; break;
-                    case 'trap': eventIcon.textContent = '⚡'; break;
-                    case 'treasure_chest': eventIcon.textContent = '💎'; break;
-                    case 'weapon_merchant': eventIcon.textContent = '🗡️'; break;
-                    default: eventIcon.textContent = '❓';
-                }
+                eventIcon.textContent = eventData.icon || '❓';
             }
             cardContent.appendChild(eventIcon);
 
@@ -85,7 +75,7 @@ class EventsUI {
             const description = document.createElement('div');
             description.classList.add('choice-description');
 
-            if (encounter.type === 'monster') {
+            if (eventType === 'monster') {
                 const monster = MONSTERS[encounter.monsterId];
                 if (monster) {
                     let descriptionHTML = '';
@@ -114,27 +104,12 @@ class EventsUI {
 
             const startButton = document.createElement('button');
             startButton.className = 'choice-start-button';
+            startButton.textContent = eventData.buttonText || 'Start';
 
-            switch (encounter.type) {
-                case 'monster':
-                    startButton.textContent = 'Fight';
-                    if (difficultyClass) {
-                        startButton.classList.add(difficultyClass);
-                    }
-                    break;
-                case 'rest': startButton.textContent = 'Rest'; break;
-                case 'shop': startButton.textContent = 'Enter Shop'; break;
-                case 'forge': startButton.textContent = 'Enter Workshop'; break;
-                case 'fishing': startButton.textContent = 'Go Fishing'; break;
-                case 'blacksmith': startButton.textContent = 'Visit Blacksmith'; break;
-                case 'sharpen': startButton.textContent = 'Use Stone'; break;
-                case 'armorsmith': startButton.textContent = 'Use Tools'; break;
-                case 'alchemist': startButton.textContent = 'Enter Shop'; break;
-                case 'trap': startButton.textContent = 'Investigate'; break;
-                case 'treasure_chest': startButton.textContent = 'Open Chest'; break;
-                case 'weapon_merchant': startButton.textContent = 'Visit Merchant'; break;
-                default: startButton.textContent = 'Start';
+            if (eventType === 'monster' && difficultyClass) {
+                startButton.classList.add(difficultyClass);
             }
+
             startButton.onclick = (e) => {
                 e.stopPropagation();
                 this.confirmChoice(index);

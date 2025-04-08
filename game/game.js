@@ -35,13 +35,26 @@ class Game {
         ];
         this.totalDiscountWeight = this.weightedDiscounts.reduce((sum, d) => sum + d.weight, 0);
 
-        // Global Tick Properties
         this.globalTickIntervalId = null;
         this.globalTickRate = 500; // Tick every 500ms
         this.lastGlobalTickTime = Date.now();
 
-        // Bind methods
         this.addLog = this.addLog.bind(this);
+
+        this.eventHandlers = {
+            // Map string identifiers from EVENTS_DATA to actual handlers
+            'MonsterHandler': Monster, // Store the Class itself
+            'RestHandler': Rest,       // Store the Class itself
+            'ShopHandler': this.shop,  // Store the instance
+            'AlchemistHandler': this.alchemist, // Store the instance
+            'TreasureHandler': Treasure, // Store the Class itself
+            'ForgeHandler': Forge,     // Store the Class itself
+            'FishingHandler': Fishing, // Store the Class itself
+            'TrapHandler': this.trap,  // Store the instance
+            'WeaponMerchantHandler': this.weaponMerchant // Store the instance
+            // Add mappings for Blacksmith, Sharpen, Armorsmith if they become separate events again
+        };
+        // --- End Handler Registry ---
     }
 
     EVENT_PROBABILITY = [
@@ -58,11 +71,8 @@ class Game {
 
     start() {
         this.devMode();
-        // this.normalMode();
-        // Start the global game tick
-        this.lastGlobalTickTime = Date.now(); // Initialize before starting
-        if (this.globalTickIntervalId) clearInterval(this.globalTickIntervalId); // Clear previous if any
-        // THIS LINE sets up the repeated call:
+        this.lastGlobalTickTime = Date.now();
+        if (this.globalTickIntervalId) clearInterval(this.globalTickIntervalId);
         this.globalTickIntervalId = setInterval(() => this.gameTick(), this.globalTickRate);
     }
 
@@ -93,13 +103,19 @@ class Game {
         this.player.gold = 1000;
 
         this.player.addItem(this.createItem('wooden_sword'));
+        this.player.addItem(this.createItem('wooden_sword'));
+        this.player.addItem(this.createItem('wooden_shield'));
         this.player.addItem(this.createItem('wooden_shield'));
         this.player.addItem(this.createItem('speed_potion'));
         this.player.addItem(this.createItem('restoration_potion'));
         this.player.addItem(this.createItem('greater_restoration_potion'));
         this.player.addItem(this.createItem('bread'));
-        // this.player.addItem(this.createItem('thief_tools'));
+        this.player.addItem(this.createItem('thief_tools'));
+        this.player.addItem(this.createItem('blacksmith_hammer'));
+        this.player.addItem(this.createItem('fishing_rod'));
 
+
+        
         this.ui.gameScreen?.classList.remove('hidden');
 
         this.generateEventChoices();
@@ -292,114 +308,109 @@ class Game {
     }
 
     getRandomEvent() {
-        const totalWeight = this.EVENT_PROBABILITY.reduce((sum, enc) => sum + enc.weight, 0);
-        let randomRoll = Math.random() * totalWeight;
-        let chosenEncounter = null;
+        // Calculate total weight from EVENTS_DATA
+        const eventTypes = Object.keys(EVENTS_DATA);
+        // Filter out types with 0 or undefined weight just in case
+        const validEventTypes = eventTypes.filter(type => EVENTS_DATA[type] && EVENTS_DATA[type].weight > 0);
+        const totalWeight = validEventTypes.reduce((sum, type) => sum + EVENTS_DATA[type].weight, 0);
 
-        for (const encounterProb of this.EVENT_PROBABILITY) {
-            if (randomRoll < encounterProb.weight) {
-                chosenEncounter = { type: encounterProb.type };
-
-                if (chosenEncounter.type === 'monster') {
-                    let monsterPoolIds = [];
-                    let currentTier = null;
-
-                    for (const tier of AREA_CONFIG) {
-                        if (this.currentRound >= tier.startRound && this.currentRound <= tier.endRound) {
-                            currentTier = tier;
-                            break;
-                        }
-                    }
-
-                    if (currentTier && currentTier.areas && currentTier.areas[this.currentArea] && currentTier.areas[this.currentArea].monsters) {
-                        monsterPoolIds = currentTier.areas[this.currentArea].monsters;
-                    } else {
-                        console.warn(`Could not determine monster pool for round ${this.currentRound} and area ${this.currentArea} using AREA_CONFIG.`);
-                        monsterPoolIds = [];
-                    }
-
-                    if (monsterPoolIds.length > 0) {
-                        const easyMonsters = monsterPoolIds.filter(id => MONSTERS[id]?.difficulty === 'easy');
-                        const mediumMonsters = monsterPoolIds.filter(id => MONSTERS[id]?.difficulty === 'medium');
-                        const hardMonsters = monsterPoolIds.filter(id => MONSTERS[id]?.difficulty === 'hard');
-
-                        const difficultyRoll = Math.random() * 100;
-                        let selectedMonsterId = null;
-
-                        if (difficultyRoll < 60 && easyMonsters.length > 0) {
-                            selectedMonsterId = easyMonsters[this.getRandomInt(0, easyMonsters.length - 1)];
-                        } else if (difficultyRoll < 90 && mediumMonsters.length > 0) { // 60 + 30
-                            selectedMonsterId = mediumMonsters[this.getRandomInt(0, mediumMonsters.length - 1)];
-                        } else if (hardMonsters.length > 0) { // 90 + 10
-                            selectedMonsterId = hardMonsters[this.getRandomInt(0, hardMonsters.length - 1)];
-                        }
-
-                        // Fallbacks if preferred difficulty pool is empty
-                        if (!selectedMonsterId) {
-                           if (mediumMonsters.length > 0) {
-                                selectedMonsterId = mediumMonsters[this.getRandomInt(0, mediumMonsters.length - 1)];
-                           } else if (easyMonsters.length > 0) {
-                                selectedMonsterId = easyMonsters[this.getRandomInt(0, easyMonsters.length - 1)];
-                           } else if (hardMonsters.length > 0) { // Should have been caught above, but safe fallback
-                                selectedMonsterId = hardMonsters[this.getRandomInt(0, hardMonsters.length - 1)];
-                           } else {
-                                // Last resort: pick any monster if categorized lists failed
-                                console.warn(`Could not select monster by difficulty for round ${this.currentRound} in area ${this.currentArea}. Picking randomly from pool.`);
-                                selectedMonsterId = monsterPoolIds[this.getRandomInt(0, monsterPoolIds.length - 1)];
-                           }
-                        }
-
-                        chosenEncounter.monsterId = selectedMonsterId;
-
-                    } else {
-                        console.error(`Monster pool empty for round ${this.currentRound}! Cannot select monster.`);
-                        chosenEncounter = { type: 'rest' };
-                    }
-                } else if (chosenEncounter.type === 'weapon_merchant') {
-                    chosenEncounter.discountPercent = this.getRandomMerchantDiscount();
-                }
-                break;
-            }
-            randomRoll -= encounterProb.weight;
+        if (totalWeight <= 0) {
+             console.error("Total event weight is zero or negative. Check EVENTS_DATA.");
+             return { type: 'rest' }; // Fallback
         }
 
-        if (!chosenEncounter) {
-            console.warn("No encounter chosen based on weights, defaulting to rest.");
-            chosenEncounter = { type: 'rest' };
+        let randomRoll = Math.random() * totalWeight;
+        let chosenEventType = null;
+
+        for (const type of validEventTypes) {
+            if (randomRoll < EVENTS_DATA[type].weight) {
+                chosenEventType = type;
+                break;
+            }
+            randomRoll -= EVENTS_DATA[type].weight;
+        }
+
+        if (!chosenEventType) {
+            console.warn("No event type chosen based on weights, defaulting to rest.");
+            chosenEventType = 'rest'; // Fallback
+        }
+
+        let chosenEncounter = { type: chosenEventType };
+
+        // --- Handle specific event setup ---
+        if (chosenEventType === 'monster') {
+            // Monster selection logic remains the same (area, difficulty)
+            let monsterPoolIds = [];
+            let currentTier = null;
+            // Find current tier based on this.currentRound
+             for (const tier of AREA_CONFIG) {
+                 if (this.currentRound >= tier.startRound && this.currentRound <= tier.endRound) {
+                     currentTier = tier;
+                     break;
+                 }
+             }
+
+            if (currentTier && currentTier.areas && currentTier.areas[this.currentArea] && currentTier.areas[this.currentArea].monsters) {
+                monsterPoolIds = currentTier.areas[this.currentArea].monsters;
+            } else {
+                 console.warn(`Could not determine monster pool for round ${this.currentRound} and area ${this.currentArea}.`);
+                 monsterPoolIds = [];
+             }
+
+            if (monsterPoolIds.length > 0) {
+                 // Select monsterId based on difficulty weighting
+                 const easyMonsters = monsterPoolIds.filter(id => MONSTERS[id]?.difficulty === 'easy');
+                 const mediumMonsters = monsterPoolIds.filter(id => MONSTERS[id]?.difficulty === 'medium');
+                 const hardMonsters = monsterPoolIds.filter(id => MONSTERS[id]?.difficulty === 'hard');
+                 const difficultyRoll = Math.random() * 100;
+                 let selectedMonsterId = null;
+
+                 if (difficultyRoll < 60 && easyMonsters.length > 0) {
+                     selectedMonsterId = easyMonsters[this.getRandomInt(0, easyMonsters.length - 1)];
+                 } else if (difficultyRoll < 90 && mediumMonsters.length > 0) { // 60 + 30
+                     selectedMonsterId = mediumMonsters[this.getRandomInt(0, mediumMonsters.length - 1)];
+                 } else if (hardMonsters.length > 0) { // 90 + 10
+                      selectedMonsterId = hardMonsters[this.getRandomInt(0, hardMonsters.length - 1)];
+                 }
+
+                 // Fallbacks if preferred difficulty pool is empty
+                 if (!selectedMonsterId) {
+                    if (mediumMonsters.length > 0) {
+                         selectedMonsterId = mediumMonsters[this.getRandomInt(0, mediumMonsters.length - 1)];
+                    } else if (easyMonsters.length > 0) {
+                         selectedMonsterId = easyMonsters[this.getRandomInt(0, easyMonsters.length - 1)];
+                    } else if (hardMonsters.length > 0) { // Should have been caught above, but safe fallback
+                         selectedMonsterId = hardMonsters[this.getRandomInt(0, hardMonsters.length - 1)];
+                    } else {
+                         // Last resort: pick any monster if categorized lists failed
+                         console.warn(`Could not select monster by difficulty for round ${this.currentRound} in area ${this.currentArea}. Picking randomly from pool.`);
+                         selectedMonsterId = monsterPoolIds[this.getRandomInt(0, monsterPoolIds.length - 1)];
+                    }
+                 }
+                chosenEncounter.monsterId = selectedMonsterId;
+            } else {
+                console.error(`Monster pool empty for round ${this.currentRound}! Cannot select monster.`);
+                chosenEncounter = { type: 'rest' }; // Fallback to rest if no monsters
+            }
+        } else if (EVENTS_DATA[chosenEventType]?.needsDiscount) {
+            // Add discount if the event definition requires it
+            chosenEncounter.discountPercent = this.getRandomMerchantDiscount();
         }
 
         return chosenEncounter;
     }
 
     getEncounterText(encounter) {
-        switch (encounter.type) {
-            case 'monster':
-                return `${MONSTERS[encounter.monsterId]?.name || 'Unknown Monster'}`;
-            case 'rest':
-                return 'Rest Site';
-            case 'shop':
-                return 'Shop';
-            case 'forge':
-                return 'Blacksmith Workshop';
-            case 'fishing':
-                return 'Go Fishing!';
-            case 'blacksmith':
-                return "Visit Blacksmith";
-            case 'sharpen':
-                return "Use Sharpening Stone";
-            case 'armorsmith':
-                return "Visit Armorsmith";
-            case 'alchemist':
-                return "Visit Alchemist";
-            case 'trap':
-                return "Disarm Trap";
-            case 'treasure_chest':
-                return "Treasure Chest";
-            case 'weapon_merchant':
-                return "Traveling Merchant";
-            default:
-                return 'Unknown Encounter';
+        const eventType = encounter.type;
+
+        if (eventType === 'monster') {
+            // Handle monster name dynamically
+            return MONSTERS[encounter.monsterId]?.name || 'Unknown Monster';
         }
+
+        // Get text from the data file using the event type as the key
+        const eventData = EVENTS_DATA[eventType];
+        return eventData?.choiceText || 'Unknown Encounter';
     }
 
     generateBossEncounter() {
@@ -449,113 +460,107 @@ class Game {
     }
 
     getEncounterDetails(encounter) {
-        switch (encounter.type) {
-            case 'monster':
-            case 'mini-boss':
-            case 'boss': {
-                const monster = MONSTERS[encounter.monsterId];
-                if (!monster) return "Error: Monster data not found.";
-                let details = `${monster.name}\n` +
-                    `Health: ${monster.health} // Attack: ${monster.attack} // Defense: ${monster.defense} // Attack Speed: ${monster.speed}s // ` +
-                    `Gold Drop: ${monster.goldDrop[0]}-${monster.goldDrop[1]}\n\n`;
-                if (monster.description) {
-                    details += `${monster.description}\n\n`; // Add the description
-                }
-                details += `This will start a combat encounter. Are you ready to fight?`;
-                return details;
+        const eventType = encounter.type;
+
+        if (eventType === 'monster') {
+            // Monster details generation remains dynamic
+            const monster = MONSTERS[encounter.monsterId];
+            if (!monster) return "Error: Monster data not found.";
+            let details = `${monster.name}\\n` + // Use double backslash for newline in template literal passed to UI
+                `Health: ${monster.health} // Attack: ${monster.attack} // Defense: ${monster.defense} // Attack Speed: ${monster.speed}s // ` +
+                `Gold Drop: ${monster.goldDrop[0]}-${monster.goldDrop[1]}\\n\\n`;
+            if (monster.description) {
+                details += `${monster.description}\\n\\n`;
             }
-            case 'rest':
-                return `Rest at this campsite to restore and increase your health. \n\n` +
-                    `Do you want to rest here?`;
-            case 'shop':
-                return "Visit a merchant to buy and sell items.\n\n" +
-                    `Current gold: ${this.player.gold}.\n\n` +
-                    "Enter shop?";
-            case 'fishing':
-                return "Approach the water's edge. Choose a fishing spot with varying rewards and risks (Requires Fishing Rod for deeper waters).\n\n" +
-                    "Go fishing?";
-            case 'forge':
-                return "Visit the Blacksmith Workshop to enhance or combine your gear using various stations.\n\n" +
-                    "Some stations may require a Blacksmith Hammer.\n\n" +
-                    "Enter the workshop?";
-            case 'blacksmith':
-                return "Combine two compatible weapons or armors into a stronger version. Requires Blacksmith Hammer.\n\n" +
-                    "Enter the Blacksmith's Forge?";
-            case 'sharpen':
-                return "Use the Sharpening Stone. Select one weapon to either Sharpen (+1 Attack) or Hone (-0.5s Speed).\n\n" +
-                    "Use the stone?";
-            case 'armorsmith':
-                return "Use the Armourer Station. Select one armor piece to either Reinforce (+1 Defense) or Fortify (+3 Max Health). Requires Blacksmith Hammer.\n\n" +
-                    "Use the station?";
-            case 'alchemist':
-                return "Visit the Alchemist to buy powerful temporary combat potions. You will be offered one free potion upon entering!\n\n" +
-                    `Current gold: ${this.player.gold}\n\n` +
-                    "Enter the Alchemist's shop?";
-            case 'trap':
-                return "You notice a set of suspicious traps. You can attempt to disarm them.\n\n" +
-                    "Investigate traps?";
-            case 'treasure_chest':
-                return "You find a sturdy-looking treasure chest. It might be locked.\n\n" +
-                    "Approach the chest?";
-            case 'weapon_merchant':
-                let details = "You see a Traveling Arms Dealer offering a selection of weapons.\n\n";
-                if (encounter.discountPercent) {
-                    details += `<span style="color: #4CAF50; font-weight:bold;">Offering ${encounter.discountPercent}% OFF today!</span>\n\n`;
-                }
-                details += `Current gold: ${this.player.gold}\n\nApproach the merchant?`;
-                return details;
-            default:
-                return "Unknown encounter type.";
+            details += `This will start a combat encounter. Are you ready to fight?`;
+            return details;
         }
+
+        const eventData = EVENTS_DATA[eventType];
+        if (!eventData || !eventData.detailsTemplate) {
+            return "Details not available for this encounter.";
+        }
+
+        // Simple templating for dynamic values
+        let details = eventData.detailsTemplate;
+        // Replace placeholders (use double backslash for literal \n if needed by UI)
+        details = details.replace(/\{\{playerGold\}\}/g, this.player.gold);
+        // Handle optional discount text
+        if (eventType === 'weapon_merchant' && encounter.discountPercent) {
+             const discountHtml = `<span style="color: #4CAF50; font-weight:bold;">Offering ${encounter.discountPercent}% OFF today!</span>\\n\\n`;
+             details = details.replace(/\{\{discountText\}\}/g, discountHtml);
+        } else {
+            details = details.replace(/\{\{discountText\}\}/g, ''); // Remove placeholder if no discount
+        }
+         // Add more replacements here if other templates need dynamic data (e.g., {{currentRound}})
+
+        // Ensure newlines from the template are preserved for HTML display if needed
+        details = details.replace(/\\n/g, '<br>'); // Example conversion for HTML display
+
+        return details;
     }
 
     startEncounter(encounter) {
         this.ui.choicesArea.innerHTML = '';
         this.ui.choicesArea.classList.add('hidden');
 
-        switch (encounter.type) {
-            case 'monster':
-            case 'mini-boss':
-            case 'boss':
-                new Monster(this, this.ui).handle(encounter.monsterId);
-                break;
-            case 'rest':
-                new Rest(this, this.ui).handle();
-                break;
-            case 'shop':
-                this.shop.handle();
-                break;
-            case 'fishing':
-                new Fishing(this, this.ui).handle();
-                break;
-            case 'blacksmith':
-                this.blacksmith.handle();
-                break;
-            case 'sharpen':
-                this.sharpen.handle();
-                break;
-            case 'armorsmith':
-                this.armorsmith.handle();
-                break;
-            case 'alchemist':
-                this.alchemist.handle();
-                break;
-            case 'trap':
-                this.trap.handle();
-                break;
-            case 'treasure_chest':
-                new Treasure(this, this.ui).handle();
-                break;
-            case 'forge':
-                new Forge(this, this.ui).handle();
-                break;
-            case 'weapon_merchant':
-                this.weaponMerchant.handle(encounter);
-                break;
-            default:
-                this.addLog("Unknown encounter type selected.");
-                this.proceedToNextRound();
+        const eventType = encounter.type;
+        const handlerId = EVENTS_DATA[eventType]?.handler; // Get handler ID from data
+
+        if (!handlerId) {
+            this.addLog(`Unknown encounter type or handler ID for: ${eventType}`);
+            this.proceedToNextRound();
+            return;
         }
+
+        // --- Use the registry ---
+        const handler = this.eventHandlers[handlerId];
+
+        if (!handler) {
+            this.addLog(`Handler not found in registry for ID: ${handlerId}`);
+            this.proceedToNextRound();
+            return;
+        }
+
+        try {
+            // Check if the handler is a class (needs instantiation) or an instance
+            // A common check for classes: it's a function and its prototype has a constructor pointing back to itself
+            if (typeof handler === 'function' && handler.prototype?.constructor === handler) {
+                // It's likely a class constructor (e.g., Rest, Fishing, Monster, Forge, Treasure)
+                if (handlerId === 'MonsterHandler') {
+                    // Monster needs the monsterId passed to handle
+                    if (encounter.monsterId) {
+                        new handler(this, this.ui).handle(encounter.monsterId);
+                    } else {
+                        console.error("Monster encounter chosen but no monsterId provided.");
+                        this.proceedToNextRound(); // Fallback
+                    }
+                } else {
+                    // Instantiate and call handle for other classes
+                    new handler(this, this.ui).handle();
+                }
+            } else if (handler && typeof handler.handle === 'function') {
+                // It's likely an instance with a handle method (e.g., this.shop, this.alchemist, this.trap, this.weaponMerchant)
+                 if (handlerId === 'WeaponMerchantHandler') {
+                     // WeaponMerchant needs the full encounter object for discount
+                     handler.handle(encounter);
+                 } else {
+                    // Other instances just need handle called
+                    handler.handle();
+                 }
+            } else {
+                // Handler exists in registry but doesn't fit expected patterns
+                this.addLog(`Invalid handler registered for ID: ${handlerId}`);
+                console.error(`Invalid handler for ${handlerId}:`, handler);
+                this.proceedToNextRound();
+            }
+        } catch (error) {
+             this.addLog(`Error executing handler for ${handlerId}: ${error.message}`);
+             console.error(`Error in handler ${handlerId}:`, error);
+             // Optional: Add more robust error handling, maybe don't proceed?
+             this.proceedToNextRound();
+        }
+        // --- End registry usage ---
     }
 
     handleEquipItem(index) {
