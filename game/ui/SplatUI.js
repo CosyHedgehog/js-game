@@ -22,7 +22,8 @@ class SplatUI {
         }
 
         if (selector.startsWith('.inventory-slot')) {
-            splat.style.top = '25%'; splat.classList.add('inventory-splat');
+            splat.style.top = '25%'; 
+            splat.classList.add('inventory-splat');
         } else if (selector.includes('.trap-area-option')) {
             splat.style.top = '30%';
         } else if (selector === '#rest-area .rest-campfire-container') {
@@ -42,14 +43,15 @@ class SplatUI {
                 splat.textContent = amount;
             }
         } else if (type === 'heal' || type === 'potion-heal') {
-            console.log("heal", amount);
             splat.textContent = '+' + amount;
-        } else if (type === 'poison' || type === 'burn') { splat.textContent = amount; } else if (type === 'buff-attack') {
-            splat.textContent = `+${amount} Atk`;
+        } else if (type === 'poison' || type === 'burn') { 
+            splat.textContent = amount; 
+        } else if (type === 'buff-attack') {
+            splat.textContent = `+${amount}`;
         } else if (type === 'buff-defense') {
-            splat.textContent = `+${amount} Def`;
+            splat.textContent = `+${amount}`;
         } else if (type === 'buff-speed') {
-            splat.textContent = `-${amount.toFixed(1)}s Spd`;
+            splat.textContent = `-${amount.toFixed(1)}s`;
         } else {
             splat.textContent = '+' + amount;
         }

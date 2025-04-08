@@ -225,17 +225,18 @@ class Player {
             if (item.healOverTime) {
                 const hotData = item.healOverTime;
                 this.healOverTimeEffects.push({
-                    remaining: hotData.total,
-                    rate: hotData.rate,
+                    timeLeft: hotData.duration,
+                    duration: hotData.duration,
+                    heal: hotData.heal,
                     interval: hotData.interval,
                     tickCooldown: hotData.interval
                 });
-                console.log(this.healOverTimeEffects);
                 this.inventory[index] = null;
                 return {
                     success: true,
                     message: `Used ${item.name}. Started healing.`, item: item,
-                    actionDelay: item.isPotion ? 0 : 2.0 // Assuming HoT potions follow normal potion rules
+                    actionDelay: item.isPotion ? 0 : 2.0,
+                    item: item
                 };
             }
 

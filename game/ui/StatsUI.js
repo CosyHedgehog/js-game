@@ -17,18 +17,15 @@ class StatsUI {
         const healthStatItem = this.ui.statHealthElement?.closest('.stat-item'); // Find the parent stat-item
 
         if (isHealingActive) {
-            totalRemainingHot = player.healOverTimeEffects.reduce((sum, effect) => sum + effect.remaining, 0);
-            const totalRatePerTick = player.healOverTimeEffects.reduce((sum, effect) => sum + effect.rate, 0);
-            const interval = player.healOverTimeEffects[0].interval;
-            // Calculate approximate time remaining
-            let secondsRemaining = 0;
-            if (totalRatePerTick > 0) { // Avoid division by zero
-                secondsRemaining = Math.ceil((totalRemainingHot / totalRatePerTick) * interval);
-            }
-            hotTooltipText = `<br>Healing +${totalRatePerTick} HP every ${interval}s in combat (~${secondsRemaining} seconds left).`;
+            // Find the maximum remaining time among active effects
+            const maxTimeLeft = player.healOverTimeEffects.reduce((max, effect) => Math.max(max, effect.timeLeft), 0);
+            const totalHealPerTick = player.healOverTimeEffects.reduce((sum, effect) => sum + effect.heal, 0);
+            const interval = player.healOverTimeEffects[0].interval; // Assume consistent interval
+            
+            hotTooltipText = `<br>Healing +${totalHealPerTick} HP every ${interval}s in combat (~${Math.ceil(maxTimeLeft)} seconds left).`;
             healthStatItem?.classList.add('stat-item-healing'); // Add class to parent
         } else {
-             healthStatItem?.classList.remove('stat-item-healing'); // Remove class from parent
+            healthStatItem?.classList.remove('stat-item-healing'); // Remove class from parent
         }
 
         // --- Display HP without (+X) ---
@@ -39,7 +36,16 @@ class StatsUI {
         let baseHealthTooltip = "Current Health / Maximum Health";
         if (this.ui.statHealthElement) { // Target the correct element for tooltip
            // Combine base tooltip with HoT details if active
-           this.ui.statHealthElement.dataset.tooltipText = baseHealthTooltip + hotTooltipText; 
+           let currentHotTooltip = ""; // Start with base tooltip
+           if (player.healOverTimeEffects && player.healOverTimeEffects.length > 0) {
+               // Find the maximum remaining time again
+               const maxTimeLeft = player.healOverTimeEffects.reduce((max, effect) => Math.max(max, effect.timeLeft), 0);
+               const totalHealPerTick = player.healOverTimeEffects.reduce((sum, effect) => sum + effect.heal, 0);
+               const interval = player.healOverTimeEffects[0].interval; 
+
+               currentHotTooltip = `<br>Healing +${totalHealPerTick} HP every ${interval}s in combat (~${Math.ceil(maxTimeLeft)} seconds left).`;
+           }
+           this.ui.statHealthElement.dataset.tooltipText = baseHealthTooltip + currentHotTooltip; // Combine
         }
 
         const totalAttack = player.getAttack();

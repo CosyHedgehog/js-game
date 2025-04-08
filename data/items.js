@@ -92,7 +92,7 @@ const ITEMS = {
         stats: { defense: 2 }, value: 10,
         description: 'A solid metal shield.\nDefense: +2'
     },
-       'steel_dagger': {
+    'steel_dagger': {
         id: 'steel_dagger', name: 'Steel Dagger', type: 'weapon', slot: 'weapon', hands: 1,
         stats: { attack: 3 }, speed: 1.4, value: 14,
         description: 'A fine steel dagger.\nAttack: +3\nSpeed: 1.4s\n1-Handed'
@@ -127,7 +127,7 @@ const ITEMS = {
         stats: { defense: 3 }, value: 17,
         description: 'A superior shield.\nDefense: +3'
     },
-       'bread': {
+    'bread': {
         id: 'bread', name: 'Bread', type: 'consumable', useAction: 'Eat',
         healAmount: 3, value: 2,
         description: 'A crusty loaf of bread.\nHeals 3 HP.'
@@ -152,8 +152,7 @@ const ITEMS = {
         healAmount: 8, value: 4,
         description: 'An impressive fish.\nHeals 8 HP.'
     },
-
-       'health_potion': {
+    'health_potion': {
         id: 'health_potion', name: 'Health Potion', type: 'consumable', useAction: 'Drink',
         healAmount: 15, value: 6, isPotion: true,
         description: 'A bubbling red potion.\nHeals 15 HP.\nNo combat delay.'
@@ -193,19 +192,17 @@ const ITEMS = {
         stats: { tempSpeed: 0.4 }, value: 11, isPotion: true,
         description: 'A fizzing yellow potion.\nReduces attack time by 0.4s. Removed after combat.\nNo combat delay.'
     },
-
     'restoration_potion': {
         id: 'restoration_potion', name: 'Restoration Potion', type: 'consumable', useAction: 'Drink',
-        healOverTime: { total: 15, rate: 1, interval: 2 }, value: 8, isPotion: true,
-        description: 'A swirling green potion.\\nRestores 15 HP over 30 seconds.\\nNo combat delay.'
+        healOverTime: { duration: 30, heal: 1, interval: 2 }, value: 8, isPotion: true,
+        description: 'A swirling green potion. Heals 1 HP every 2 seconds. Lasts 30s. No combat delay.'
     },
     'greater_restoration_potion': {
         id: 'greater_restoration_potion', name: 'Greater Restoration Potion', type: 'consumable', useAction: 'Drink',
-        healOverTime: { total: 15, rate: 2, interval: 2 }, value: 12, isPotion: true,
-        description: 'A potent swirling green potion.\\nRestores 15 HP over 15 seconds.\\nNo combat delay.'
+        healOverTime: { duration: 30, heal: 2, interval: 2 }, value: 16, isPotion: true,
+        description: 'A potent swirling green potion. Heals 2 HP every 2 seconds. Lasts 30 seconds. No combat delay.'
     },
-
-       'fishing_rod': {
+    'fishing_rod': {
         id: 'fishing_rod', name: 'Fishing Rod', type: 'tool', value: 2,
         description: 'A simple fishing rod.\nRequired for fishing.'
     },
@@ -217,8 +214,8 @@ const ITEMS = {
         id: 'thief_tools', name: "Thief's Tools", type: 'tool', value: 3,
         description: 'A set of tools for delicate work.\nIncreases trap disarm chance by 20%.'
     },
-
-       'ring_of_the_dragon': {        id: 'ring_of_the_dragon', name: 'Dragon Ring', type: 'armor', slot: 'ring',
+    'ring_of_the_dragon': {        
+        id: 'ring_of_the_dragon', name: 'Dragon Ring', type: 'armor', slot: 'ring',
         stats: { attack: 2, defense: 2 }, value: 50,
         description: 'A powerful ring imbued with dragon magic.\nAttack: +2\nDefense: +2'
     }

@@ -589,15 +589,21 @@ class Game {
                 this.addLog(useResult.message);
 
                 this.ui.renderInventory();
-
                 if (useResult.item?.healAmount !== undefined) {
                     const slotSelector = `.inventory-slot[data-index="${inventoryIndex}"]`;
-                    const amountToShow = useResult.healedAmount || 0; const splatType = useResult.item?.isPotion ? 'potion-heal' : 'heal';
+                    const amountToShow = useResult.healedAmount || 0; 
+                    const splatType = useResult.item?.isPotion ? 'potion-heal' : 'heal';
+                    this.ui.createDamageSplat(slotSelector, amountToShow, splatType);
+                } else if (useResult.item?.healOverTime != undefined) {
+                    const slotSelector = `.inventory-slot[data-index="${inventoryIndex}"]`;
+                    const amountToShow = useResult.item?.healOverTime.heal; 
+                    const splatType = useResult.item?.isPotion ? 'potion-heal' : 'heal';
                     this.ui.createDamageSplat(slotSelector, amountToShow, splatType);
                 } else if (useResult.buffType) {
                     const slotSelector = `.inventory-slot[data-index="${inventoryIndex}"]`;
                     const buffAmount = useResult.buffAmount;
-                    const buffSplatType = `buff-${useResult.buffType}`; this.ui.createDamageSplat(slotSelector, buffAmount, buffSplatType);
+                    const buffSplatType = `buff-${useResult.buffType}`; 
+                    this.ui.createDamageSplat(slotSelector, buffAmount, buffSplatType);
                 }
 
                 this.ui.updatePlayerStats();
@@ -668,6 +674,8 @@ class Game {
     endGame(playerWon) {
         console.log("Game ended.", playerWon ? "Player won" : "Player lost");
         this.ui.showEndScreen(playerWon);
+
+
         if (this.currentCombat && this.currentCombat.intervalId) {
             clearInterval(this.currentCombat.intervalId);
             this.currentCombat = null;
@@ -844,39 +852,30 @@ class Game {
 
     gameTick() {
         const now = Date.now();
-        console.log("gameTick", now);
         const delta = now - this.lastGlobalTickTime;
         this.lastGlobalTickTime = now;
         const tickSeconds = delta / 1000;
 
-        if (this.player.healOverTimeEffects && this.player.healOverTimeEffects.length > 0) {
-            let needsUIUpdate = false;
+        if (this.player.healOverTimeEffects && this.player.healOverTimeEffects.length > 0 && this.player.health > 0) {
             for (let i = this.player.healOverTimeEffects.length - 1; i >= 0; i--) {
                 const hot = this.player.healOverTimeEffects[i];
+                hot.timeLeft = Math.max(0, hot.timeLeft - tickSeconds);
                 hot.tickCooldown = Math.max(0, hot.tickCooldown - tickSeconds);
-
-                if (hot.tickCooldown <= 0 && hot.remaining > 0) {
-                    //const healAmount = Math.min(hot.rate, hot.remaining);
-                    const actualHeal = this.player.heal(hot.rate); // Use player.heal to not exceed max HP
-                    hot.remaining -= actualHeal; // Decrease remaining by the potential heal amount
-
-                    if (actualHeal >= 0) {
+                if (hot.tickCooldown <= 0 && hot.timeLeft > 0) {
+                    const actualHeal = this.player.heal(hot.heal); // Use hot.heal instead of hot.rate
+                    if (actualHeal >= 0) { // Log even if heal is 0 (e.g., full health)
                         this.addLog(`<span style="color: #66bb6a; font-style: italic;">Restoration heals you for ${actualHeal} HP.</span>`);
-                        needsUIUpdate = true;
                     }
-
-                    this.ui.updatePlayerStats();
+                    this.ui.updatePlayerStats(); // Update stats after heal
                     if (this.currentCombat) {
                          this.ui.updateCombatantHealth('player', this.player.health, this.player.getMaxHealth(), actualHeal, 0, true);
                     }
-
-                    hot.tickCooldown = hot.interval; // Reset cooldown
-
-                    if (hot.remaining <= 0) {
-                        this.addLog(`<span style="font-style: italic;">A restoration effect wears off.</span>`);
-                        this.player.healOverTimeEffects.splice(i, 1); // Remove effect
-                        needsUIUpdate = true; // Update UI when effect ends too
-                    }
+                    hot.tickCooldown = hot.interval; // Reset cooldown for next tick
+                }
+                if (hot.timeLeft <= 0) {
+                    this.addLog(`<span style="font-style: italic;">A restoration effect wears off.</span>`);
+                    this.player.healOverTimeEffects.splice(i, 1);
+                    this.ui.updatePlayerStats();
                 }
             }
         }

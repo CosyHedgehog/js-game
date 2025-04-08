@@ -282,7 +282,7 @@ class Combat {
             this.playerAttack();
             playerActed = true;
             this.player.attackTimer = this.player.getAttackSpeed();
-            if (this.checkCombatEnd()) return;
+            // if (this.checkCombatEnd()) return;
         }
 
         if (this.enemy.breathAttackTimer !== null && this.enemy.breathAttackTimer <= 0) {
@@ -299,7 +299,7 @@ class Combat {
             this.enemyAttack();
             enemyActed = true;
             this.enemy.attackTimer = this.enemy.currentSpeed;
-            if (this.checkCombatEnd()) return;
+            // if (this.checkCombatEnd()) return;
         }
     }
 
@@ -477,9 +477,13 @@ class Combat {
         } else if (this.player.health <= 0) {
             this.game.addLog(`You were defeated by the ${this.enemy.name}...`);
             clearInterval(this.intervalId); this.intervalId = null;
+
+            console.error("checkCombatEnd", this.enemy.health, this.player.health);
+
             setTimeout(() => {
                 this.game.endGame(false);
-            }, 1000); combatEnded = true;
+            }, 500); 
+            combatEnded = true;
             playerWon = false;
         }
 
@@ -548,7 +552,6 @@ class Combat {
 
     endCombat(playerWon, ranAway = false) {
         this.player.resetCombatBuffs();
-        this.player.healOverTimeEffects = [];
 
         const enemySide = document.querySelector('.enemy-side');
         const enemySpdStat = document.getElementById('combat-enemy-spd');
@@ -559,7 +562,6 @@ class Combat {
             enemySpdStat.classList.remove('stat-highlight-speed');
         }
         this.player.activeEffects = {};
-        this.player.healOverTimeEffects = [];
 
         if (playerWon) {
             this.game.addLog(`You defeated the ${this.enemy.name}!`);
