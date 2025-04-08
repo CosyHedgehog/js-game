@@ -27,7 +27,7 @@ class StatsUI {
             // Generate tooltip text by listing each effect
             hotTooltipText = ""; // Reset
             player.healOverTimeEffects.forEach(effect => {
-                hotTooltipText += `<br>Healing +${effect.heal} HP every ${effect.interval}s (~${Math.ceil(effect.timeLeft)}s left)`;
+                hotTooltipText += `<br>Healing +${effect.heal} HP every ${effect.interval}s)`;
             });
              
             healthStatItem?.classList.add('stat-item-healing'); // Add class for green color
@@ -48,7 +48,7 @@ class StatsUI {
             let currentHotTooltipLines = "";
             if (isHealingActive) {
                  player.healOverTimeEffects.forEach(effect => {
-                    currentHotTooltipLines += `<br>Healing +${effect.heal} HP every ${effect.interval}s (~${Math.ceil(effect.timeLeft)}s left)`;
+                    currentHotTooltipLines += `<br>Healing +${effect.heal} HP every ${effect.interval}s`;
                 });
             }
 

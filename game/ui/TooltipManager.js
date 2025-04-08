@@ -60,22 +60,34 @@ class TooltipManager {
 
         const playerHealthBarContainer = document.querySelector('.player-side .health-bar-container');
 
-        const poisonEnterHandler = (e) => {
-            if (this.ui.game?.player?.activeEffects?.poison) {
-                this.showTooltip("You are poisoned!", this.ui.statTooltip, e);
+        const healthBarEnterHandler = (e) => {
+            const player = this.ui.game?.player;
+            if (!player) return;
+
+            let tooltipText = 'Health';
+            
+            if (player.healOverTimeEffects && player.healOverTimeEffects.length > 0) {
+                tooltipText = `You are healing over time.`;
             }
+
+            if (player.activeEffects?.poison) {
+                tooltipText += "<br>You are poisoned!";
+            }
+
+            this.showTooltip(tooltipText, this.ui.statTooltip, e);
         };
-        const poisonLeaveHandler = () => {
+
+        const healthBarLeaveHandler = () => {
             this.hideTooltip(this.ui.statTooltip);
         };
 
         if (playerHealthBarContainer) {
             playerHealthBarContainer.removeEventListener('mouseenter', playerHealthBarContainer._tooltipEnterHandler);
             playerHealthBarContainer.removeEventListener('mouseleave', playerHealthBarContainer._tooltipLeaveHandler);
-            playerHealthBarContainer.addEventListener('mouseenter', poisonEnterHandler);
-            playerHealthBarContainer.addEventListener('mouseleave', poisonLeaveHandler);
-            playerHealthBarContainer._tooltipEnterHandler = poisonEnterHandler;
-            playerHealthBarContainer._tooltipLeaveHandler = poisonLeaveHandler;
+            playerHealthBarContainer.addEventListener('mouseenter', healthBarEnterHandler);
+            playerHealthBarContainer.addEventListener('mouseleave', healthBarLeaveHandler);
+            playerHealthBarContainer._tooltipEnterHandler = healthBarEnterHandler;
+            playerHealthBarContainer._tooltipLeaveHandler = healthBarLeaveHandler;
         } else {
             console.warn("Combat Tooltip Listener: Player health bar container not found.");
         }

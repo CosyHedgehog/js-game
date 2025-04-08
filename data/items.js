@@ -154,13 +154,13 @@ const ITEMS = {
     },
     'health_potion': {
         id: 'health_potion', name: 'Health Potion', type: 'consumable', useAction: 'Drink',
-        healAmount: 15, value: 6, isPotion: true,
-        description: 'A bubbling red potion.\nHeals 15 HP.\nNo combat delay.'
+        healAmount: 10, value: 6, isPotion: true,
+        description: 'A bubbling red potion.\nHeals 10 HP.\nNo combat delay.'
     },
     'greater_health_potion': {
         id: 'greater_health_potion', name: 'Greater Health Potion', type: 'consumable', useAction: 'Drink',
-        healAmount: 25, value: 8, isPotion: true,
-        description: 'A large healing potion.\nHeals 25 HP.\nNo combat delay.'
+        healAmount: 20, value: 8, isPotion: true,
+        description: 'A large healing potion.\nHeals 20 HP.\nNo combat delay.'
     },
     'attack_potion': {
         id: 'attack_potion', name: 'Attack Potion', type: 'consumable', useAction: 'Drink',
@@ -195,12 +195,12 @@ const ITEMS = {
     'restoration_potion': {
         id: 'restoration_potion', name: 'Restoration Potion', type: 'consumable', useAction: 'Drink',
         healOverTime: { duration: 30, heal: 1, interval: 2 }, value: 8, isPotion: true,
-        description: 'A swirling green potion. Heals 1 HP every 2 seconds. Lasts 30s. No combat delay.'
+        description: 'A swirling green potion.\nHeals +1 HP every 2s. Lasts 30s.\nNo combat delay.'
     },
     'greater_restoration_potion': {
         id: 'greater_restoration_potion', name: 'Greater Restoration Potion', type: 'consumable', useAction: 'Drink',
         healOverTime: { duration: 30, heal: 2, interval: 2 }, value: 16, isPotion: true,
-        description: 'A potent swirling green potion. Heals 2 HP every 2 seconds. Lasts 30 seconds. No combat delay.'
+        description: 'A potent swirling green potion.\nHeals +2 HP every 2s. Lasts 30s.\nNo combat delay.'
     },
     'fishing_rod': {
         id: 'fishing_rod', name: 'Fishing Rod', type: 'tool', value: 2,

@@ -857,6 +857,8 @@ class Game {
         const tickSeconds = delta / 1000;
 
         if (this.player.healOverTimeEffects && this.player.healOverTimeEffects.length > 0 && this.player.health > 0) {
+            let totalHeal =0;
+            let healThisTick = false;
             for (let i = this.player.healOverTimeEffects.length - 1; i >= 0; i--) {
                 const hot = this.player.healOverTimeEffects[i];
                 hot.timeLeft = Math.max(0, hot.timeLeft - tickSeconds);
@@ -866,16 +868,18 @@ class Game {
                     if (actualHeal >= 0) { // Log even if heal is 0 (e.g., full health)
                         this.addLog(`<span style="color: #66bb6a; font-style: italic;">Restoration heals you for ${actualHeal} HP.</span>`);
                     }
-                    if (this.currentCombat) {
-                        this.ui.updateCombatantHealth('player', this.player.health, this.player.getMaxHealth(), actualHeal, 0, true);
-                    }
                     hot.tickCooldown = hot.interval; // Reset cooldown for next tick
+                    totalHeal += actualHeal;
+                    healThisTick = true;
                 }
                 if (hot.timeLeft <= 0) {
                     this.addLog(`<span style="font-style: italic;">A restoration effect wears off.</span>`);
                     this.player.healOverTimeEffects.splice(i, 1);
                     this.ui.updatePlayerStats();
                 }
+            }
+            if (this.currentCombat && healThisTick) {
+                this.ui.updateCombatantHealth('player', this.player.health, this.player.getMaxHealth(), totalHeal, 0, true);
             }
             this.ui.updatePlayerStats(); // Update stats after heal
         }
