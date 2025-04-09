@@ -13,7 +13,7 @@ const EVENTS_DATA = {
         buttonText: 'Rest'
     },
     'shop': {
-        weight: 100,
+        weight: 10,
         choiceText: "Shop",
         detailsTemplate: "Visit a merchant to buy and sell items.\n\nCurrent gold: {{playerGold}}.\n\nEnter shop?",
         handler: 'ShopHandler',
@@ -45,7 +45,7 @@ const EVENTS_DATA = {
         buttonText: 'Enter Workshop'
     },
     'fishing': {
-        weight: 100,
+        weight: 10,
         choiceText: "Go Fishing!",
         detailsTemplate: "Approach the water's edge. Choose a fishing spot with varying rewards and risks (Requires Fishing Rod for deeper waters). Chance of finding treasures.\n\nGo fishing?",
         handler: 'FishingHandler',

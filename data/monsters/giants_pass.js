@@ -1,68 +1,53 @@
 const GIANTS_PASS_MONSTER_DATA = {
     'hill_giant_grunt': {
         name: 'Hill Giant Grunt', 
-        health: 28, 
-        attack: 3, 
-        defense: 2, 
-        speed: 2.5, 
-        goldDrop: [3, 6],
+        health: 16, 
+        attack: 4, 
+        defense: 1, 
+        speed: 3.0, 
+        goldDrop: [5, 9],
         difficulty: 'easy',
         description: "A dim-witted but large giant wandering the pass.",
         lootTable: [
-            { itemTier: 'commonFood', chance: 0.7 },
-            { itemTier: 'uncommonFood', chance: 0.2 },
-            { itemTier: 'commonItem', chance: 0.2 },
+            { itemTier: 'uncommonFood', chance: 0.70 },
+            { itemTier: 'uncommonItem', chance: 0.30 },
         ]
     },
-    'giant_gatekeeper': {
-        name: 'Giant Gatekeeper', 
-        health: 40, 
-        attack: 4, 
+    'moss_giant': {
+        name: 'Moss Giant', 
+        health: 18, 
+        attack: 5, 
         defense: 5, 
         speed: 3.0, 
         goldDrop: [6, 12],
         difficulty: 'medium',
         description: "A vigilant giant tasked with guarding the pass.",
         lootTable: [
-            { itemTier: 'uncommonFood', chance: 0.5 },
-            { itemTier: 'commonItem', chance: 0.25 },
-            { itemTier: 'uncommonItem', chance: 0.15 },
-            { itemId: 'minor_defense_potion', chance: 0.05 },
-        ]
-    },
-    'moss_giant': {
-        name: 'Moss Giant', 
-        health: 35, 
-        attack: 5, 
-        defense: 3, 
-        speed: 2.8,
-        goldDrop: [5, 9],
-        difficulty: 'hard',
-        description: "A hulking giant covered in thick moss.",
-        mechanics: "Regenerates 1 health every 5 seconds.",
-        lootTable: [
-            { itemTier: 'uncommonFood', chance: 0.6 },
-            { itemTier: 'commonItem', chance: 0.3 },
-            { itemTier: 'uncommonItem', chance: 0.1 },
+            { itemTier: 'uncommonFood', chance: 1.00 },
+            { itemTier: 'uncommonItem', chance: 0.40 },
         ]
     },
     'cyclops_stone_thrower': {
         name: 'Cyclops Stone-Thrower', 
         health: 60, 
-        attack: 5, 
+        attack: 8, 
         defense: 8, 
-        speed: 3.0,
-        goldDrop: [20, 35],
+        speed: 3.5,
+        goldDrop: [15, 30],
         isMiniBoss: true,
         hasTimedStun: true,
-        timedStunInterval: 3,
+        timedStunInterval: 12,
         timedStunDuration: 4,
         description: "A lumbering giant with a single, hateful eye.",
         mechanics: "Hurls a massive boulder every 15 seconds, causing a shockwave that stuns you for 4 seconds!",
         lootTable: [
-            { itemId: 'greater_defense_potion', chance: 0.4 }, 
-            { itemTier: 'uncommonItem', chance: 0.2 },
-            { itemId: 'ring_of_the_guardian', chance: 0.05 } 
+            { itemTier: 'commonFood', chance: 0.50 },
+            { itemTier: 'uncommonFood', chance: 1.00 },
+            { itemTier: 'commonItem', chance: 0.10 },
+            { itemTier: 'uncommonItem', chance: 0.30 },
+            { itemTier: 'rareItem', chance: 0.60 },
+            { itemId: 'greater_defense_potion', chance: 0.25 },
+            { itemId: 'ring_of_fortitude', chance: 0.05 }
         ]
     },
 }; 

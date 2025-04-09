@@ -70,21 +70,20 @@ class Game {
     ];
 
     start() {
-        this.devMode();
-        // this.normalMode();
+        // this.devMode();
+        this.normalMode();
         this.lastGlobalTickTime = Date.now();
         if (this.globalTickIntervalId) clearInterval(this.globalTickIntervalId);
         this.globalTickIntervalId = setInterval(() => this.gameTick(), this.globalTickRate);
     }
 
     normalMode() {
-        this.player.addItem(this.createItem('wooden_sword'));
+        this.player.addItem(this.createItem('wooden_hammer'));
         this.player.addItem(this.createItem('bread'));
         this.player.addItem(this.createItem('bread'));
-        this.player.addItem(this.createItem('wooden_shield'));
+        this.player.addItem(this.createItem('bread'));
+
         this.player.equipItem(0);
-        this.player.equipItem(3);
-        this.player.addItem(this.createItem('bread'));
 
         this.state = 'area_transition';
         this.ui.renderArea(AREA_CONFIG[0].areas[this.currentArea].name);

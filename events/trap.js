@@ -10,28 +10,28 @@ class Trap {
             description: 'A simple trap with low risk and low reward.',
             disarmChance: 0.7,
             damageRange: [1, 2],
-            itemPool: ['bread', 'cooked_meat', 'wooden_shield', 'leather_helm']
+            itemPool: COMMON_ITEMS
         },
         risky: {
             name: 'Risky Trap',
             description: 'A dangerous trap with high damage but good disarm chance.',
             disarmChance: 0.4,
             damageRange: [1, 4],
-            itemPool: ['leather_armor', 'leather_legs', 'health_potion']
+            itemPool: [...COMMON_ITEMS, ...UNCOMMON_ITEMS]
         },
         challenging: {
             name: 'Challenging Trap',
             description: 'A complex trap difficult to disarm.',
             disarmChance: 0.2,
             damageRange: [2, 5],
-            itemPool: ['iron_helm', 'iron_sword', 'iron_armor', 'speed_potion']
+            itemPool: UNCOMMON_ITEMS
         },
         deadly: {
             name: 'Deadly Trap',
             description: 'A highly dangerous trap with high risk and high reward.',
             disarmChance: 0.1,
             damageRange: [3, 7],
-            itemPool: ['steel_greatsword', 'steel_armor', 'dragon_ring']
+            itemPool: RARE_ITEMS
         }
     };
 

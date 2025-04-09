@@ -55,18 +55,29 @@ class WeaponMerchant {
             const randomWeaponId = tierWeapons[this.game.getRandomInt(0, tierWeapons.length - 1)];
 
             if (ITEMS[randomWeaponId] && !offeredItemIds.has(randomWeaponId)) {
-                offeredItemIds.add(randomWeaponId);
-                const item = this.game.createItem(randomWeaponId);
-                if (item) {
-                    const baseValue = item.value || 0;
+                offeredItemIds.add(randomWeaponId); // Add base ID to prevent duplicates of base item
+                const baseItem = this.game.createItem(randomWeaponId);
+                if (baseItem) {
+                    const modifiedItem = this.applyWeaponPrefix(baseItem); // Apply prefix potentially
+                    
+                    // Check if a prefix was applied and update the offered set check
+                    // to prevent duplicate prefixes of the same base item
+                    if(modifiedItem.id !== baseItem.id && offeredItemIds.has(modifiedItem.id)) {
+                        continue; // Already offered this prefix variant, try again
+                    }
+                    if(modifiedItem.id !== baseItem.id) {
+                        offeredItemIds.add(modifiedItem.id); // Add prefixed ID
+                    }
+
+                    const baseValue = modifiedItem.value || 0;
                     // Calculate standard shop price (1.3x base + variance)
                     const originalPrice = Math.ceil(baseValue * 1.3 + this.game.getRandomInt(0, Math.floor(baseValue * 0.1)));
                     // Use the stored discount percent
                     const buyPrice = Math.floor(originalPrice * (1 - this.currentDiscountPercent / 100));
 
-                    item.originalPrice = originalPrice; // Store the shop price (crossed out)
-                    item.buyPrice = buyPrice;         // Store the actual discounted price
-                    offeredItems.push(item);
+                    modifiedItem.originalPrice = originalPrice; // Store the shop price (crossed out)
+                    modifiedItem.buyPrice = buyPrice;         // Store the actual discounted price
+                    offeredItems.push(modifiedItem);
                 }
             }
             // Loop continues if duplicate was selected
@@ -102,6 +113,48 @@ class WeaponMerchant {
             return { early: 0, mid: 30, late: 70 };
         }
     }
+
+    // --- NEW FUNCTION to apply prefixes ---
+    applyWeaponPrefix(item) {
+        const prefixRoll = Math.random();
+        let prefix = null;
+        let bonusAttack = 0;
+        let valueMultiplier = 1.0;
+
+        // Adjust chances as needed
+        if (prefixRoll < 0.1) { // 10% chance for Sharpened
+            prefix = "Sharpened";
+            bonusAttack = 2;
+            valueMultiplier = 1.5;
+        } else if (prefixRoll < 0.3) { // 20% chance for Honed (total 30% chance for any prefix)
+            prefix = "Honed";
+            bonusAttack = 1;
+            valueMultiplier = 1.2;
+        }
+
+        if (prefix) {
+            // Create a deep copy to avoid modifying the original item definition
+            const newItem = JSON.parse(JSON.stringify(item)); 
+            
+            newItem.name = `${prefix} ${item.name}`; // Add prefix to name
+            newItem.id = `${prefix.toLowerCase()}_${item.id}`; // Create unique ID
+            newItem.stats = newItem.stats || {};
+            newItem.stats.attack = (newItem.stats.attack || 0) + bonusAttack;
+            newItem.value = Math.ceil((newItem.value || 0) * valueMultiplier);
+            
+            // Update description (simple approach)
+            newItem.description = newItem.description ? newItem.description.replace(/\nAttack: \+\d+/g, `\nAttack: +${newItem.stats.attack}`) : `A ${prefix.toLowerCase()} version of ${item.name}.\nAttack: +${newItem.stats.attack}`;
+            if (!newItem.description.includes(`\nAttack: +${newItem.stats.attack}`)) { // Append if not replaced
+                 newItem.description += `\nAttack: +${newItem.stats.attack}`;
+            }
+            newItem.description += `\n(${prefix}: +${bonusAttack} Attack)`; // Add explicit note
+
+            return newItem; // Return the modified copy
+        }
+
+        return item; // Return original item if no prefix applied
+    }
+    // --- End NEW FUNCTION ---
 
     // --- UI, Event Listeners, Buy/Leave Logic (To be added/adapted from Shop/Alchemist) ---
 
