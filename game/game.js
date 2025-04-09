@@ -690,6 +690,16 @@ class Game {
         this.ui.renderInventory();
     }
 
+    requestItemDeletion(index) {
+        const item = this.player.inventory[index];
+        if (!item) {
+            console.warn(`Deletion requested for empty slot index: ${index}`);
+            return; // No item to delete
+        }
+
+        this.handleDestroyItem(index); // Call existing destroy logic directly
+    }
+
     endGame(playerWon) {
         this.ui.showEndScreen(playerWon);
 

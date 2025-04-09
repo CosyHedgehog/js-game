@@ -333,3 +333,33 @@
     cursor: default;
     opacity: 0.6;
 }
+
+.delete-item-button {
+    display: none;
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    background-color: rgba(200, 50, 50, 0.7);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 16px;
+    text-align: center;
+    cursor: pointer;
+    z-index: 10;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.inventory-slot:hover .delete-item-button {
+    display: block;
+}
+
+.delete-item-button:hover {
+    background-color: rgba(220, 30, 30, 0.9);
+    transform: scale(1.1);
+}

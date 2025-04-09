@@ -43,7 +43,20 @@ class InventoryUI {
                 if (item.name.length > MAX_NAME_LENGTH) {
                     displayName = item.name.substring(0, MAX_NAME_LENGTH - 1) + '…';
                 }
-                slot.textContent = displayName;
+                const itemNameSpan = document.createElement('span');
+                itemNameSpan.textContent = displayName;
+                slot.appendChild(itemNameSpan);
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.classList.add('delete-item-button');
+                deleteBtn.textContent = '×';
+                deleteBtn.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    this.ui.game.requestItemDeletion(index);
+                    this.ui.hideTooltip(this.ui.itemTooltip);
+                });
+                slot.appendChild(deleteBtn);
+
                 slot.draggable = true;
                 slot.addEventListener('dragstart', (event) => {
                     event.dataTransfer.setData('text/plain', index.toString());
@@ -113,9 +126,6 @@ class InventoryUI {
 
                     slot.addEventListener('mouseenter', (e) => {
                         let currentTooltipContent = '';
-                        // if (currentActionText) {
-                        //     currentTooltipContent += `<div class="tooltip-action">${currentActionText}</div>`;
-                        // }
                         currentTooltipContent += `<div class="tooltip-item-name">${item.name}</div>`;
                         currentTooltipContent += item.description || 'No description';
 
@@ -188,6 +198,9 @@ class InventoryUI {
                     slot.appendChild(chip);
                 } else {
                     slot.classList.remove('equipped');
+                    const existingChip = slot.querySelector('.equipped-slot-chip, .food-action-chip, .tool-action-chip, .potion-action-chip');
+                    if (existingChip) existingChip.remove();
+
                     if (item.type === 'consumable' && item.useAction === 'Eat') {
                         const foodChip = document.createElement('span');
                         foodChip.classList.add('food-action-chip');
