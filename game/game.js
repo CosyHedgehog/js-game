@@ -94,7 +94,7 @@ class Game {
     }
 
     devMode() {
-        this.currentRound = 9;
+        this.currentRound = 1;
         // this.state = 'area_transition';
         this.state = 'choosing';
         this.currentArea = "wolf_den";
@@ -103,17 +103,8 @@ class Game {
         this.player.baseAttack = 5;
         this.player.gold = 1000;
 
-        this.player.addItem(this.createItem('wooden_sword'));
-        this.player.addItem(this.createItem('wooden_sword'));
-        this.player.addItem(this.createItem('wooden_shield'));
-        this.player.addItem(this.createItem('wooden_shield'));
-        this.player.addItem(this.createItem('speed_potion'));
-        this.player.addItem(this.createItem('restoration_potion'));
-        this.player.addItem(this.createItem('greater_restoration_potion'));
-        this.player.addItem(this.createItem('bread'));
-        this.player.addItem(this.createItem('thief_tools'));
-        this.player.addItem(this.createItem('blacksmith_hammer'));
-        // this.player.addItem(this.createItem('fishing_rod'));
+        this.player.addItem(this.createItem('ring_of_strength'));
+        this.player.addItem(this.createItem('fishing_rod'));
 
 
         

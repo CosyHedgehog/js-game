@@ -21,7 +21,7 @@ const FOOD = {
     },
     'large_fish': {
         id: 'large_fish', name: 'Large Fish', type: 'consumable', useAction: 'Eat', rarity: 'rare',
-        healAmount: 8, value: 4,
+        healAmount: 8, value: 3,
         description: 'An impressive fish.\nHeals 8 HP.'
     }
 }; 

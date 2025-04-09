@@ -11,7 +11,8 @@ const ITEMS = {
     ...ARMOR,
     ...POTIONS,
     ...FOOD,
-    ...TOOLS
+    ...TOOLS,
+    ...RINGS
 };
 
 // Dynamically generate rarity lists for weapons and armor
@@ -34,8 +35,8 @@ const UNCOMMON_ARMOR = filterItems(ITEMS, 'uncommon', ['armor']);
 const RARE_ARMOR = filterItems(ITEMS, 'rare', ['armor']);
 
 // Dynamically generate rarity lists for rings
-const COMMON_RINGS = filterItems(ITEMS, 'common', ['armor']).filter(key => ITEMS[key].slot === 'ring');
-const UNCOMMON_RINGS = filterItems(ITEMS, 'uncommon', ['armor']).filter(key => ITEMS[key].slot === 'ring');
+const COMMON_RINGS = filterItems(ITEMS, 'common', ['ring']).filter(key => ITEMS[key].slot === 'ring');
+const UNCOMMON_RINGS = filterItems(ITEMS, 'uncommon', ['ring']).filter(key => ITEMS[key].slot === 'ring');
 
 const COMMON_FOOD = filterItems(ITEMS, 'common', ['consumable']).filter(key => !ITEMS[key].isPotion);
 const UNCOMMON_FOOD = filterItems(ITEMS, 'uncommon', ['consumable']).filter(key => !ITEMS[key].isPotion);

@@ -81,7 +81,7 @@ class InventoryUI {
                     };
                     slot.classList.add('shop-sellable');
                 } else {
-                    if (item.type === 'weapon' || item.type === 'armor') {
+                    if (item.type === 'weapon' || item.type === 'armor' || item.type === 'ring') {
                         originalActionText = isEquipped ? '[Unequip]' : '[Equip]';
                         originalClickHandler = (event) => {
                             event.stopPropagation();

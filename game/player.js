@@ -141,7 +141,7 @@ class Player {
         }
 
         const itemToEquip = this.inventory[index];
-        if (itemToEquip.type !== 'weapon' && itemToEquip.type !== 'armor') {
+        if (itemToEquip.type !== 'weapon' && itemToEquip.type !== 'armor' && itemToEquip.type !== 'ring') {
             return { success: false, message: "Cannot equip this item type." };
         }
 

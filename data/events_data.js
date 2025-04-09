@@ -13,7 +13,7 @@ const EVENTS_DATA = {
         buttonText: 'Rest'
     },
     'shop': {
-        weight: 10,
+        weight: 100,
         choiceText: "Shop",
         detailsTemplate: "Visit a merchant to buy and sell items.\n\nCurrent gold: {{playerGold}}.\n\nEnter shop?",
         handler: 'ShopHandler',

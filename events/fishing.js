@@ -9,7 +9,7 @@ class Fishing {
         shoreline: {
             name: '🐚 Shallow Shoreline',
             description: 'Scrounge near the water\'s edge. <br>Fish: <b>Small (75%)</b> - <b>Medium (25%)</b>.',
-            fishRange: [1, 2],
+            fishRange: [1, 3],
             lootTable: [
                 { itemId: 'small_fish', chance: 0.75 },
                 { itemId: 'medium_fish', chance: 0.25 }
@@ -20,39 +20,36 @@ class Fishing {
         },
         safe: {
             name: '🐟 Calm Waters',
-            description: 'A peaceful spot. <br>Fish: <b>Small (50%)</b> - <b>Medium (50%)</b>.',
-            fishRange: [3, 5],
+            description: 'A peaceful spot. Home to a school of medium fish. <br>Fish: <b>Medium (100%)</b>.',
+            fishRange: [3, 4],
             lootTable: [
-                { itemId: 'small_fish', chance: 0.50 },
-                { itemId: 'medium_fish', chance: 0.50 }
+                { itemId: 'medium_fish', chance: 1 }
             ],
-            ringChance: 0.10,
+            ringChance: 0.20,
             monsterChance: 0,
             requiresRod: true
         },
         moderate: {
             name: '🐠 Rushing Stream',
-            description: 'A faster flowing area. <br>Fish: <b>Small (40%)</b> - <b>Medium (40%)</b> - <b>Large (20%)</b>',
-            fishRange: [2, 3],
+            description: 'A faster flowing area. <br>Fish: <b>Small (50%)</b> - <b>Medium (50%)</b>',
+            fishRange: [4, 8],
             lootTable: [
-                { itemId: 'small_fish', chance: 0.40 },
-                { itemId: 'medium_fish', chance: 0.40 },
-                { itemId: 'large_fish', chance: 0.20 }
+                { itemId: 'small_fish', chance: 0.50 },
+                { itemId: 'medium_fish', chance: 0.50 },
             ],
-            ringChance: 0.30,
+            ringChance: 0.10,
             monsterChance: 0.10,
             requiresRod: true
         },
         dangerous: {
             name: '🦈 Deep Waters',
-            description: 'A treacherous fishing spot. <br>Fish: <b>Medium (30%)</b> - <b>Large (70%)</b>.',
+            description: 'A treacherous fishing spot. <br>Fish: <b>Medium (40%)</b> - <b>Large (60%)</b>.',
             fishRange: [1, 2],
             lootTable: [
-                { itemId: 'small_fish', chance: 0.0 },
-                { itemId: 'medium_fish', chance: 0.30 },
-                { itemId: 'large_fish', chance: 0.70 }
+                { itemId: 'medium_fish', chance: 0.40 },
+                { itemId: 'large_fish', chance: 0.60 }
             ],
-            ringChance: 0.60,
+            ringChance: 0.30,
             monsterChance: 0.40,
             requiresRod: true
         }
@@ -84,6 +81,11 @@ class Fishing {
 
             const updatedDescription = area.description;
 
+        //     <span class="fishing-stat monster-chance-stat">
+        //     <span class="fishing-stat-label">Monster Chance</span>
+        //     <span class="fishing-stat-value">${Math.round(area.monsterChance * 100)}%</span>
+        // </span>
+
             return `
                     <div class="choice-card" data-area="${key}">
                         <h4 class="choice-title">${area.name}</h4>
@@ -91,10 +93,6 @@ class Fishing {
                         <p class="choice-description">${updatedDescription}</p>
                         <div class="monster-stats-grid">
                             <span class="fishing-stat">Fish: ${area.fishRange[0]}-${area.fishRange[1]}</span>
-                            <span class="fishing-stat monster-chance-stat">
-                                <span class="fishing-stat-label">Monster Chance</span>
-                                <span class="fishing-stat-value">${Math.round(area.monsterChance * 100)}%</span>
-                            </span>
                             <span class="fishing-stat">
                                 <span class="fishing-stat-label">Treasure Chance</span>
                                 <span class="fishing-stat-value">${Math.round(area.ringChance * 100)}%</span>
@@ -126,22 +124,17 @@ class Fishing {
             case 'shoreline':
             case 'safe':
                 pool = COMMON_RINGS;
-                // Equal chance for all common rings
                 weights = pool.map(() => 1);
                 break;
             case 'moderate':
                 pool = [...COMMON_RINGS, ...UNCOMMON_RINGS];
-                // Weighted: e.g., 70% common, 30% uncommon total chance
-                weights = pool.map(ringId => COMMON_RINGS.includes(ringId) ? 7 : 3); // Higher weight for common
                 break;
             case 'dangerous':
                 pool = [...COMMON_RINGS, ...UNCOMMON_RINGS];
-                 // Weighted: e.g., 40% common, 60% uncommon total chance
-                weights = pool.map(ringId => COMMON_RINGS.includes(ringId) ? 4 : 6); // Higher weight for uncommon
                 break;
             default:
                 console.warn("Unknown fishing area key for ring selection:", areaKey);
-                return null; // Or return a default common ring?
+                return null;
         }
 
         if (pool.length === 0) return null;
@@ -224,27 +217,27 @@ class Fishing {
             }
         }
 
-        if (Math.random() < area.monsterChance) {
-            this.game.addLog("Suddenly, something emerges from the water!");
-            const monsterId = 'river_troll'; // TODO: Make monster dynamic based on area?
-            const monsterData = MONSTERS[monsterId];
-            if (!monsterData) {
-                console.error("Monster data not found:", monsterId);
-                this.game.addLog("An unknown creature appears!");
-                this.game.proceedToNextRound();
-                return;
-            }
-            // Need to pass the ui object to the Combat constructor
-            this.game.currentCombat = new Combat(this.game.player, monsterData, this.game, this.ui);
-            this.game.state = 'combat';
-            this.game.currentCombat.start();
-        } else {
+        // if (Math.random() < area.monsterChance) {
+        //     this.game.addLog("Suddenly, something emerges from the water!");
+        //     const monsterId = 'river_troll'; // TODO: Make monster dynamic based on area?
+        //     const monsterData = MONSTERS[monsterId];
+        //     if (!monsterData) {
+        //         console.error("Monster data not found:", monsterId);
+        //         this.game.addLog("An unknown creature appears!");
+        //         this.game.proceedToNextRound();
+        //         return;
+        //     }
+        //     // Need to pass the ui object to the Combat constructor
+        //     this.game.currentCombat = new Combat(this.game.player, monsterData, this.game, this.ui);
+        //     this.game.state = 'combat';
+        //     this.game.currentCombat.start();
+        // } else {
              if (caughtItems.length > 0) {
                 this.game.enterLootState(0, caughtItems);
              } else {
                  this.game.addLog("You didn't find anything useful this time.");
                  this.game.proceedToNextRound(); // Proceed if nothing caught
              }
-        }
+        // }
     }
 }
