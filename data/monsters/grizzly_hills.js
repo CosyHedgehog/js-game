@@ -35,7 +35,7 @@ const GRIZZLY_HILLS_MONSTER_DATA = {
         speed: 2.5, 
         goldDrop: [15, 30],
         isMiniBoss: true,
-        enrageThreshold: 0.4,
+        enrageThreshold: 0.3,
         enrageAttackMultiplier: 3,
         description: "A massive grizzly bear, ferocious when cornered.",
         mechanics: "Becomes enraged below 40% health, attacking with significantly more power!",

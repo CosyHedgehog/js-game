@@ -93,13 +93,13 @@ class Game {
     }
 
     devMode() {
-        this.currentRound = 1;
+        this.currentRound = 29;
         // this.state = 'area_transition';
         this.state = 'choosing';
         this.currentArea = "wolf_den";
         // this.pendingAreaTransitionName = "Giants pass";
-        this.player.health = 10;
-        this.player.baseAttack = 1;
+        this.player.health = 1000;
+        this.player.baseAttack = 10;
         this.player.gold = 0;
 
         this.player.addItem(this.createItem('wooden_hammer'));

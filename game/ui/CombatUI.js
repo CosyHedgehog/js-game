@@ -149,8 +149,6 @@ class CombatUI {
             this.ui.combatEnemyDef.textContent = `🛡️ ${enemy.currentDefense}`;
             if (enemy.scalesHardened) {
                 this.ui.combatEnemyDef.classList.add('hardened');
-            } else if (enemy.packTacticsActive) {
-                this.ui.combatEnemyDef.classList.add('hardened');
             } else {
                 this.ui.combatEnemyDef.classList.remove('hardened');
             }

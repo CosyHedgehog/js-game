@@ -239,18 +239,28 @@
 }
 
 @keyframes scales-harden-effect {
-    0%, 100% {
-        background: rgba(0, 0, 0, 0.3);
-        border-color: rgba(255, 255, 255, 0.1);
-        transform: scale(1);
-        filter: brightness(1);
+    0% {
+        border-color: #a0b0c0;
+        background: linear-gradient(135deg, #5a6a7a, #708090);
+        filter: brightness(0.5);
+    }
+
+    25% {
+        background: linear-gradient(135deg, #5a6a7a, #708090);
+        border-color: #a0b0c0;
+        filter: brightness(0.8);
     }
 
     50% {
         background: linear-gradient(135deg, #5a6a7a, #708090);
         border-color: #a0b0c0;
-        transform: scale(1.01);
-        filter: brightness(1.1);
+        filter: brightness(1.0);
+    }
+
+    100% {
+        border-color: #a0b0c0;
+        background: linear-gradient(135deg, #5a6a7a, #708090);
+        filter: brightness(1.3);
     }
 }
 

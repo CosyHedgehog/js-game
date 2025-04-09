@@ -346,7 +346,7 @@
 }
 
 .enemy-scales-harden {
-    animation: scales-harden-effect 1s ease-out forwards;
+    animation: scales-harden-effect 1.2s ease-in;
 }
 
 .player-breath-hit {

@@ -262,6 +262,21 @@ class Combat {
             }
         }
 
+        if (this.enemy.hardenThreshold && this.enemy.hardenDefenseBonus) {
+            let shouldHarden = healthPercent < this.enemy.hardenThreshold;
+            if (shouldHarden && !this.enemy.scalesHardened) {
+                this.enemy.currentDefense += this.enemy.hardenDefenseBonus;
+                this.enemy.scalesHardened = true;
+                const enemySide = document.querySelector('.enemy-side');
+                enemySide.classList.add('enemy-scales-harden');
+                setTimeout(() => {
+                    enemySide.classList.remove('enemy-scales-harden');
+                }, 1200);
+            } else if (!shouldHarden && this.enemy.scalesHardened) {
+                this.enemy.currentDefense = this.enemy.defense;
+            }
+        }
+
         this.ui.updateCombatTimers(
             this.player.attackTimer,
             this.enemy.attackTimer,

@@ -21,7 +21,7 @@ const SPIDER_CAVE_MONSTER_DATA = {
         speed: 2.0, 
         goldDrop: [3, 7],
         description: "A cunning spider that specializes in defense.",
-        difficulty: 'easy',
+        difficulty: 'medium',
         lootTable: [
             { itemTier: 'commonFood', chance: 1.00 },
             { itemTier: 'commonItem', chance: 0.40 },
