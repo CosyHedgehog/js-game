@@ -38,7 +38,7 @@ class Loot {
         let shouldLockHeight = false;
         if (!lockedHeight) { // Only check if height isn't already locked
             const initialItemCount = (loot.gold > 0 ? 1 : 0) + (loot.items ? loot.items.length : 0);
-            if (initialItemCount >= 5) {
+            if (initialItemCount >= 1) {
                 shouldLockHeight = true;
             }
         }
