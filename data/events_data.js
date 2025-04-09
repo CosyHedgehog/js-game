@@ -61,7 +61,7 @@ const EVENTS_DATA = {
         buttonText: 'Investigate'
     },
     'weapon_merchant': {
-        weight: 5,
+        weight: 0,
         choiceText: "Traveling Merchant",
         detailsTemplate: "You see a Traveling Arms Dealer offering a selection of weapons.\n\n{{discountText}}Current gold: {{playerGold}}\n\nApproach the merchant?",
         handler: 'WeaponMerchantHandler',
