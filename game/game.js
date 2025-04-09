@@ -99,9 +99,9 @@ class Game {
         this.state = 'choosing';
         this.currentArea = "wolf_den";
         // this.pendingAreaTransitionName = "Giants pass";
-        this.player.health = 15;
-        this.player.baseAttack = 5;
-        this.player.gold = 1000;
+        this.player.health = 10;
+        this.player.baseAttack = 1;
+        this.player.gold = 0;
 
         this.player.addItem(this.createItem('wooden_hammer'));
         this.player.addItem(this.createItem('wooden_shield'));
