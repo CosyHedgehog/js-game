@@ -220,41 +220,34 @@ class Game {
     collectLoot() {
         if (!this.pendingLoot) return;
 
-        const unLootedItems = this.pendingLoot.items ?
-            this.pendingLoot.items.filter(item => !item.looted).length : 0;
-
-        const freeSlots = this.player.inventory.filter(slot => slot === null).length;
-
-        if (unLootedItems > freeSlots) {
-            this.addLog(`Not enough inventory space! You need ${unLootedItems} free slots.`);
-            return;
-        }
-
+        // Always collect gold first
         if (this.pendingLoot.gold > 0) {
             this.player.addGold(this.pendingLoot.gold);
             this.addLog(`Collected ${this.pendingLoot.gold} gold.`);
-            this.pendingLoot.gold = 0;
+            this.pendingLoot.gold = 0; // Mark gold as collected
         }
 
-        let allItemsCollected = true;
+        let itemsTaken = 0;
         if (this.pendingLoot.items) {
-            this.pendingLoot.items.forEach(item => {
-                if (!item.looted) {
-                    if (this.player.addItem(item)) {
-                        item.looted = true;
-                        this.addLog(`Picked up ${item.name}.`);
-                    } else {
-                        this.addLog(`Failed to pick up ${item.name} - inventory might be full!`);
-                        allItemsCollected = false;
-                    }
+            const itemsToLoot = this.pendingLoot.items.filter(item => !item.looted);
+            for (let i = 0; i < itemsToLoot.length; i++) {
+                const item = itemsToLoot[i];
+                if (this.player.addItem(item)) {
+                    item.looted = true; // Mark item as collected in the original pendingLoot array
+                    itemsTaken++;
+                    this.addLog(`Picked up ${item.name}.`);
+                } else {
+                    this.addLog(`Inventory full! Could not pick up ${item.name}.`);
+                    break; // Stop trying to add items if inventory is full
                 }
-            });
+            }
         }
 
-        this.ui.updatePlayerStats();
-        this.ui.renderInventory();
+        // Refresh the loot UI to show remaining items/update buttons
+        new Loot(this, this.ui).handle(this.pendingLoot);
 
-        if (allItemsCollected) {
+        // If all loot was successfully taken, automatically continue
+        if (this.isAllLootCollected()) {
             this.continueLoot();
         }
     }
@@ -628,6 +621,11 @@ class Game {
                 }
 
                 this.ui.updatePlayerStats();
+
+                // If currently looting, refresh loot UI to update button states
+                if (this.state === 'looting' && this.pendingLoot) {
+                    new Loot(this, this.ui).handle(this.pendingLoot);
+                }
             } else {
                 this.addLog(useResult.message);
             }
@@ -710,41 +708,36 @@ class Game {
     handleIndividualLoot(type, index) {
         if (!this.pendingLoot) return;
 
+        let itemTaken = false;
+        let itemName = '';
+
         if (type === 'gold' && this.pendingLoot.gold > 0) {
             this.player.addGold(this.pendingLoot.gold);
-            this.addLog(`Collected ${this.pendingLoot.gold} gold.`);
+            itemName = `${this.pendingLoot.gold} Gold`;
+            this.addLog(`Collected ${itemName}.`);
             this.pendingLoot.gold = 0;
-
-            this.ui.updatePlayerStats();
-
-            if (this.isAllLootCollected()) {
-                this.continueLoot();
-            } else {
-                new Loot(this, this.ui).handle(this.pendingLoot);
-            }
-        } else if (type === 'item' && this.pendingLoot.items[index]) {
+            itemTaken = true;
+        } else if (type === 'item' && this.pendingLoot.items && index >= 0 && index < this.pendingLoot.items.length) {
             const item = this.pendingLoot.items[index];
-            if (item.looted) {
-                return;
-            }
-            const freeSlot = this.player.findFreeInventorySlot();
-            if (freeSlot === -1) {
-                this.addLog("Inventory is full!");
-                return;
-            }
-            if (this.player.addItem(item)) {
-                item.looted = true;
-                this.addLog(`Picked up ${item.name}.`);
-                this.ui.updatePlayerStats();
-                this.ui.renderInventory();
-                if (this.isAllLootCollected()) {
-                    this.continueLoot();
+            if (item && !item.looted) {
+                itemName = item.name;
+                if (this.player.addItem(item)) {
+                    item.looted = true;
+                    this.addLog(`Picked up ${itemName}.`);
+                    itemTaken = true;
                 } else {
-                    new Loot(this, this.ui).handle(this.pendingLoot);
+                    this.addLog(`Inventory full! Could not pick up ${itemName}.`);
                 }
-            } else {
-                this.addLog("Failed to pick up item - inventory might be full!");
             }
+        }
+
+        // Refresh the loot UI regardless of success to update button states etc.
+        new Loot(this, this.ui).handle(this.pendingLoot);
+
+        // Check if all loot is now collected after taking this item
+        if (this.isAllLootCollected()) {
+            // If everything is taken, automatically proceed
+            this.continueLoot(); 
         }
     }
 
@@ -763,6 +756,13 @@ class Game {
 
     continueLoot() {
         this.pendingLoot = null;
+
+        // Clear locked height when leaving loot screen
+        const lootArea = this.ui.lootArea;
+        if (lootArea && lootArea.dataset.lockedHeight) {
+            delete lootArea.dataset.lockedHeight;
+            lootArea.style.height = ''; // Remove inline style
+        }
 
         const defeatedName = this.lastDefeatedEnemyName;
         this.lastDefeatedEnemyName = null;

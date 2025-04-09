@@ -3,54 +3,63 @@
     border: 1px solid #555;
     border-radius: 8px;
     padding: 20px;
-    margin-top: auto;
-    margin-bottom: auto;
-    margin-left: auto;
-    margin-right: auto;
-    position: relative;
-    transform: translateY(20px);
-    width: 700px;
+    width: 75%;
+    height: auto;
+    margin: auto;
     box-sizing: border-box;
     cursor: default;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    min-height: 200px;
+    max-height: 60vh;
 }
 
 #loot-area h3 {
     color: #ffd700;
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     font-size: 1.4em;
     text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+    flex-shrink: 0;
 }
 
 .loot-display-area {
     width: 100%;
-    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow: hidden;
+    min-height: 0;
 }
 
 .loot-items-container {
-    gap: 15px;
     overflow-y: auto;
     width: 100%;
-    margin-bottom: 15px;
-    max-height: 300px;
-    min-height: 100px;
     box-sizing: border-box;
+    flex-grow: 1;
+    min-height: 50px;
+    scrollbar-gutter: stable;
+    padding-left: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }
 
 #loot-item-description {
     background: #2a2a2a;
     border: 1px solid #404040;
     border-radius: 4px;
-    padding: 12px;
-    min-height: 60px;
+    padding: 12px 15px;
     color: #ccc;
     white-space: pre-line;
     overflow-y: auto;
-    width: 100%;
+    width: calc(100% - 30px);
     box-sizing: border-box;
-    margin-bottom: 15px;
-    margin-top: 0;
-    height: 150px;
+    margin: 15px auto 0 auto;
+    height: 120px;
+    flex-shrink: 0;
     cursor: default;
 }
 
@@ -58,8 +67,9 @@
     display: flex;
     justify-content: center;
     gap: 15px;
-    margin-top: 20px;
+    margin-top: 15px;
     flex-wrap: wrap;
+    flex-shrink: 0;
 }
 
 .loot-gold-container {
@@ -176,6 +186,7 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
    
     background: #45a049;
+
 }
 
 #loot-continue-button {
@@ -198,6 +209,30 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
+#loot-take-all-button:disabled,
+.loot-item-button:disabled {
+    background: #d3d3d3 !important;
+    background-color: #d3d3d3 !important;
+    background-image: none !important;
+    color: #a9a9a9 !important;
+    cursor: default !important;
+    border-color: #bdbdbd !important;
+    box-shadow: none !important;
+    transform: none !important;
+    padding: 10px !important;
+}
+
+#loot-take-all-button:disabled:hover,
+.loot-item-button:disabled:hover {
+    background: #d3d3d3 !important;
+    background-color: #d3d3d3 !important;
+    background-image: none !important;
+    transform: none !important;
+    box-shadow: none !important;
+    padding: 10px !important;
+    cursor: default !important;
+}
+
 .loot-empty-message {
     text-align: center;
     color: #888;
@@ -206,3 +241,4 @@
    
    
 }
+
