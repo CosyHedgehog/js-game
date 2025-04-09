@@ -635,13 +635,19 @@ class Game {
     handleDestroyItem(inventoryIndex) {
         const item = this.player.inventory[inventoryIndex]; if (!item) return;
 
-        this.player.unequipItem(inventoryIndex);
+        this.player.unequipItem(inventoryIndex); // Unequip first if necessary
 
         const removedItem = this.player.removeItem(inventoryIndex);
         if (removedItem) {
             this.addLog(`Destroyed ${removedItem.name}.`);
             this.ui.renderInventory();
-            this.ui.renderEquipment(); this.ui.updatePlayerStats();
+            this.ui.renderEquipment(); 
+            this.ui.updatePlayerStats();
+
+            // If currently looting, refresh loot UI to update button states
+            if (this.state === 'looting' && this.pendingLoot) {
+                new Loot(this, this.ui).handle(this.pendingLoot);
+            }
         }
     }
 
