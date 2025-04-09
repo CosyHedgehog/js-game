@@ -152,6 +152,7 @@ class Player {
             return { success: false, message: "Item cannot be equipped in any slot." };
         }
 
+        // Handle unequipping shield if equipping 2H weapon
         if (itemToEquip.type === 'weapon' && itemToEquip.hands === 2 && this.equipment.shield !== null) {
             const shieldIndex = this.equipment.shield;
             const unequipResult = this.unequipItem(shieldIndex);
@@ -160,8 +161,14 @@ class Player {
             }
             game?.addLog(`Unequipped ${this.inventory[shieldIndex]?.name} to equip 2H weapon.`);
         }
+        // Handle unequipping 2H weapon if equipping shield
         if (itemToEquip.slot === 'shield' && this.equipment.weapon !== null && this.inventory[this.equipment.weapon]?.hands === 2) {
-            return { success: false, message: "Cannot equip shield with a 2-handed weapon equipped." };
+            const weaponIndex = this.equipment.weapon;
+            const unequipResult = this.unequipItem(weaponIndex);
+            if (!unequipResult.success) {
+                return { success: false, message: "Could not unequip 2H weapon to equip shield (should not happen unless logic error)." };
+            }
+            game?.addLog(`Unequipped ${this.inventory[weaponIndex]?.name} to equip shield.`);
         }
 
         const currentlyEquippedIndex = this.equipment[slot];
