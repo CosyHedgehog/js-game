@@ -278,7 +278,6 @@ class Combat {
             this.playerAttack();
             playerActed = true;
             this.player.attackTimer = this.player.getAttackSpeed();
-            // if (this.checkCombatEnd()) return;
         }
 
         if (this.enemy.breathAttackTimer !== null && this.enemy.breathAttackTimer <= 0) {
@@ -295,7 +294,6 @@ class Combat {
             this.enemyAttack();
             enemyActed = true;
             this.enemy.attackTimer = this.enemy.currentSpeed;
-            // if (this.checkCombatEnd()) return;
         }
     }
 

@@ -105,9 +105,19 @@ class Game {
 
         this.player.addItem(this.createItem('ring_of_strength'));
         this.player.addItem(this.createItem('fishing_rod'));
+        this.player.addItem(this.createItem('ring_of_swiftness'));
+        this.player.addItem(this.createItem('speed_potion'));
+        this.player.addItem(this.createItem('greater_speed_potion'));
+        this.player.addItem(this.createItem('health_potion'));
+        this.player.addItem(this.createItem('greater_health_potion'));
+        this.player.addItem(this.createItem('attack_potion'));
+        this.player.addItem(this.createItem('greater_attack_potion'));
+        this.player.addItem(this.createItem('defense_potion'));
+        this.player.addItem(this.createItem('greater_defense_potion'));
+        this.player.addItem(this.createItem('restoration_potion'));
+        this.player.addItem(this.createItem('greater_restoration_potion'));
 
 
-        
         this.ui.gameScreen?.classList.remove('hidden');
 
         this.generateEventChoices();

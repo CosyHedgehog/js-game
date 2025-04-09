@@ -121,7 +121,8 @@ class StatsUI {
         if (this.ui.statDefenseElement) this.ui.statDefenseElement.dataset.tooltipText = defenseTooltip;
 
         const baseSpeed = player.equipment.weapon !== null ? (this.ui.game.player.inventory[player.equipment.weapon]?.speed ?? player.defaultAttackSpeed) : player.defaultAttackSpeed;
-        let finalSpeed = Math.max(0.5, baseSpeed - player.tempSpeedReduction);
+        const ringReduction = player.equipment.ring !== null ? (this.ui.game.player.inventory[player.equipment.ring]?.stats?.speedBonus ?? 0) : 0;
+        let finalSpeed = Math.max(0.5, baseSpeed - player.tempSpeedReduction - ringReduction);
         let speedText = `${finalSpeed.toFixed(1)}s`;
         let speedTooltip = "Time between your attacks (lower is faster, minimum 0.5s).";
         if (player.tempSpeedReduction > 0) {

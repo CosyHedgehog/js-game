@@ -50,8 +50,10 @@ class Player {
 
     getAttackSpeed() {
         const weaponIndex = this.equipment.weapon;
-        const baseSpeed = weaponIndex !== null ? (this.inventory[weaponIndex]?.speed ?? this.defaultAttackSpeed) : this.defaultAttackSpeed;
-
+        let baseSpeed = weaponIndex !== null ? (this.inventory[weaponIndex]?.speed ?? this.defaultAttackSpeed) : this.defaultAttackSpeed;
+        if(this.equipment.ring != null && this.inventory[this.equipment.ring]?.stats?.speedBonus) {
+            baseSpeed = baseSpeed - this.inventory[this.equipment.ring].stats.speedBonus;
+        }
         let totalSpeedReduction = this.tempSpeedReduction;
         const ringIndex = this.equipment.ring;
         if (ringIndex !== null && this.inventory[ringIndex]?.stats?.speedReduction) {
