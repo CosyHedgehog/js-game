@@ -143,7 +143,7 @@ class Shrine {
         if (this.game.player.health > (this.game.player.getMaxHealth() - maxHealthCost)) {
              this.game.player.health = this.game.player.getMaxHealth() - maxHealthCost;
         }
-        this.game.player.baseMaxHealth -= maxHealthCost;
+        this.game.player.maxHealth -= maxHealthCost;
         this.game.addLog(`You offer your essence. Max HP permanently reduced by ${maxHealthCost}.`);
         this.ui.updatePlayerStats(); // Update stats after HP changes
         
@@ -172,7 +172,7 @@ class Shrine {
         const speedChange = 0.2;
         const splat2Text = speedChange;
         const splat2Type = 'buff-speed';
-        this.game.player.defaultAttackSpeed = Math.max(0.5, this.game.player.defaultAttackSpeed - speedChange);
+        this.game.player.shrineSpeedReduction += speedChange;
         this.game.addLog(`Your movements quicken. Attack Speed reduced by ${speedChange}s (Now ${this.game.player.defaultAttackSpeed.toFixed(1)}s).`);
         this.ui.updatePlayerStats();
         this.showCompletionMessage("You feel lighter, faster.", splat1Text, splat1Type, splat2Text, splat2Type);

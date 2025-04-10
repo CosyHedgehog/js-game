@@ -122,7 +122,8 @@ class StatsUI {
 
         const baseSpeed = player.equipment.weapon !== null ? (this.ui.game.player.inventory[player.equipment.weapon]?.speed ?? player.defaultAttackSpeed) : player.defaultAttackSpeed;
         const ringReduction = player.equipment.ring !== null ? (this.ui.game.player.inventory[player.equipment.ring]?.stats?.speedBonus ?? 0) : 0;
-        let finalSpeed = Math.max(0.5, baseSpeed - player.tempSpeedReduction - ringReduction);
+        let shrineReduction = player.shrineSpeedReduction;
+        let finalSpeed = Math.max(0.5, baseSpeed - player.tempSpeedReduction - ringReduction - shrineReduction);
         let speedText = `${finalSpeed.toFixed(1)}s`;
         let speedTooltip = "Time between your attacks (lower is faster, minimum 0.5s).";
         if (player.tempSpeedReduction > 0) {

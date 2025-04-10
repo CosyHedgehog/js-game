@@ -20,6 +20,7 @@ class Player {
         this.tempAttack = 0;
         this.tempDefense = 0;
         this.tempSpeedReduction = 0;
+        this.shrineSpeedReduction = 0;
         this.healOverTimeEffects = [];
         this.activeEffects = {};
         this.isStunned = false;
@@ -58,6 +59,9 @@ class Player {
         const ringIndex = this.equipment.ring;
         if (ringIndex !== null && this.inventory[ringIndex]?.stats?.speedReduction) {
             totalSpeedReduction += this.inventory[ringIndex].stats.speedReduction;
+        }
+        if (this.shrineSpeedReduction) {
+            totalSpeedReduction += this.shrineSpeedReduction;
         }
 
         return Math.max(0.5, baseSpeed - totalSpeedReduction);
