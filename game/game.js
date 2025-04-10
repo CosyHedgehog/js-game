@@ -51,7 +51,8 @@ class Game {
             'ForgeHandler': Forge,     // Store the Class itself
             'FishingHandler': Fishing, // Store the Class itself
             'TrapHandler': this.trap,  // Store the instance
-            'WeaponMerchantHandler': this.weaponMerchant // Store the instance
+            'WeaponMerchantHandler': this.weaponMerchant, // Store the instance
+            'ShrineHandler': new Shrine(this, this.ui) // Add new Shrine handler instance
             // Add mappings for Blacksmith, Sharpen, Armorsmith if they become separate events again
         };
         // --- End Handler Registry ---
@@ -101,7 +102,7 @@ class Game {
         // this.pendingAreaTransitionName = "Giants pass";
         this.player.health = 1000;
         this.player.baseAttack = 10;
-        this.player.gold = 0;
+        this.player.gold = 1000;
 
         this.player.addItem(this.createItem('wooden_hammer'));
         this.player.addItem(this.createItem('wooden_shield'));

@@ -68,6 +68,7 @@ class CacheManager {
         this.ui.statDps = document.getElementById('stat-dps-2');
         this.ui.tooltipCache = { attack: new Map(), defense: new Map(), dps: new Map() };
         this.ui.weaponMerchantArea = document.getElementById('weapon-merchant-area');
+        this.ui.shrineArea = document.getElementById('shrine-area');
 
         this.cacheDynamicElements();
     }
@@ -128,6 +129,7 @@ class CacheManager {
         if (!this.ui.combatEnemyDef) this.ui.combatEnemyDef = document.getElementById('combat-enemy-def');
         if (!this.ui.combatPlayerTimerContainer) this.ui.combatPlayerTimerContainer = document.querySelector('.player-side .attack-timer:not(.breath-timer)');
         if (!this.ui.combatEnemyTimerContainer) this.ui.combatEnemyTimerContainer = document.querySelector('.enemy-side .attack-timer:not(.breath-timer)');
+        if (!this.ui.shrineArea) this.ui.shrineArea = document.getElementById('shrine-area');
     }
 
     clearMainArea() {
@@ -135,14 +137,15 @@ class CacheManager {
         this.ui.choicesArea.classList.add('hidden');
         this.ui.combatArea?.classList.add('hidden');
         this.ui.combatArea?.classList.remove('combat-ending');
-        this.ui.shopArea.classList.add('hidden');
-        this.ui.restArea.classList.add('hidden');
-        this.ui.lootArea.classList.add('hidden');
-        this.ui.fishingArea.classList.add('hidden');
-        this.ui.outputLogArea.classList.add('hidden');
-        this.ui.treasureArea.classList.add('hidden');
-        this.ui.forgeArea.classList.add('hidden');
-        this.ui.weaponMerchantArea.classList.add('hidden');
+        this.ui.shopArea?.classList.add('hidden');
+        this.ui.restArea?.classList.add('hidden');
+        this.ui.lootArea?.classList.add('hidden');
+        this.ui.fishingArea?.classList.add('hidden');
+        this.ui.outputLogArea?.classList.add('hidden');
+        this.ui.treasureArea?.classList.add('hidden');
+        this.ui.forgeArea?.classList.add('hidden');
+        this.ui.weaponMerchantArea?.classList.add('hidden');
+        this.ui.shrineArea?.classList.add('hidden');
         document.getElementById('trap-area')?.classList.add('hidden');
         document.getElementById('blacksmith-area')?.remove();
         document.getElementById('sharpen-area')?.remove();

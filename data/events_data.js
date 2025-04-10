@@ -29,7 +29,7 @@ const EVENTS_DATA = {
         buttonText: 'Enter Shop'
     },
     'treasure_chest': {
-        weight: 10,
+        weight: 5,
         choiceText: "Treasure Chest",
         detailsTemplate: "You find a sturdy-looking treasure chest. It might be locked.\n\nApproach the chest?",
         handler: 'TreasureHandler',
@@ -53,20 +53,29 @@ const EVENTS_DATA = {
         buttonText: 'Go Fishing'
     },
     'trap': {
-        weight: 10,
+        weight: 5,
         choiceText: "Disarm Trap",
         detailsTemplate: "You notice a set of suspicious traps. You can attempt to disarm them.\n\nInvestigate traps?",
         handler: 'TrapHandler',
         icon: '⚡',
         buttonText: 'Investigate'
     },
-    'weapon_merchant': {
-        weight: 0,
-        choiceText: "Traveling Merchant",
-        detailsTemplate: "You see a Traveling Arms Dealer offering a selection of weapons.\n\n{{discountText}}Current gold: {{playerGold}}\n\nApproach the merchant?",
-        handler: 'WeaponMerchantHandler',
-        needsDiscount: true,
-        icon: '🗡️',
-        buttonText: 'Visit Merchant'
+    'ancient_shrine': {
+        weight: 5,
+        choiceText: "Ancient Shrine",
+        detailsTemplate: "An ancient shrine pulses with power. You feel you can draw upon it, but it demands a price. Choose your sacrifice?",
+        handler: 'ShrineHandler',
+        icon: '🗿',
+        buttonText: 'Approach Shrine'
     }
 };
+
+// 'weapon_merchant': {
+//     weight: 0,
+//     choiceText: "Traveling Merchant",
+//     detailsTemplate: "You see a Traveling Arms Dealer offering a selection of weapons.\n\n{{discountText}}Current gold: {{playerGold}}\n\nApproach the merchant?",
+//     handler: 'WeaponMerchantHandler',
+//     needsDiscount: true,
+//     icon: '🗡️',
+//     buttonText: 'Visit Merchant'
+// },

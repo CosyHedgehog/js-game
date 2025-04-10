@@ -13,7 +13,6 @@ class SplatUI {
         const splat = document.createElement('div');
         splat.className = `damage-splat ${type}`;
         splat.style.position = 'absolute';
-
         splat.style.left = '50%';
 
         if (!selector.startsWith('.inventory-slot')) {
@@ -26,7 +25,7 @@ class SplatUI {
             splat.classList.add('inventory-splat');
         } else if (selector.includes('.trap-area-option')) {
             splat.style.top = '30%';
-        } else if (selector === '#rest-area .rest-campfire-container') {
+        } else if (selector === '#rest-area .rest-campfire-container' || selector === '#shrine-area .shrine-icon') {
             splat.style.top = '30%';
         } else if (selector === '.escape-message-container') { splat.style.top = '1%'; } else if (selector === '#trap-area') {
             const y = Math.random() * 60 - 20;
@@ -53,7 +52,7 @@ class SplatUI {
         } else if (type === 'buff-speed') {
             splat.textContent = `-${amount.toFixed(1)}s`;
         } else {
-            splat.textContent = '+' + amount;
+            splat.textContent = amount;
         }
 
         container.appendChild(splat);
