@@ -61,7 +61,7 @@ const EVENTS_DATA = {
         buttonText: 'Investigate'
     },
     'ancient_shrine': {
-        weight: 100,
+        weight: 5,
         choiceText: "Ancient Shrine",
         detailsTemplate: "An ancient shrine pulses with power. You feel you can draw upon it, but it demands a price. Choose your sacrifice?",
         handler: 'ShrineHandler',
