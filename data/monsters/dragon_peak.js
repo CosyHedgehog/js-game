@@ -38,7 +38,7 @@ const DRAGON_PEAK_MONSTER_DATA = {
         hasBreathAttack: true,
         breathAttackInterval: 12,        
         breathAttackDamage: [4, 8],        
-        hardenThreshold: 0.95,        
+        hardenThreshold: 0.25,        
         hardenDefenseBonus: 5,        
         description: "An ancient dragon.",
         mechanics: "Firebreath every 12 seconds, dealing 4-8 damage that cannot be blocked and burns the player over 4 seconds.\n\n Hardens below 25% health, increasing defense by 5.",
