@@ -28,7 +28,8 @@ const WOLF_DEN_MONSTER_DATA = {
         ]
     },
     'silverfang': {
-        name: 'Silverfang', 
+        name: 'Silverfang',
+        icon: '🐺',
         health: 25, 
         attack: 4, 
         defense: 0, 

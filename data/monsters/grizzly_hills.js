@@ -29,6 +29,7 @@ const GRIZZLY_HILLS_MONSTER_DATA = {
     },
     'raging_grizzly': {
         name: 'Raging Grizzly', 
+        icon: '🐻',
         health: 50, 
         attack: 5, 
         defense: 6, 

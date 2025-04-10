@@ -28,7 +28,8 @@ const GIANTS_PASS_MONSTER_DATA = {
         ]
     },
     'cyclops_stone_thrower': {
-        name: 'Cyclops Stone-Thrower', 
+        name: 'Cyclops Stone-Thrower',
+        icon: '🧌',
         health: 60, 
         attack: 8, 
         defense: 8, 

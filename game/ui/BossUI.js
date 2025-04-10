@@ -34,10 +34,15 @@ class BossUI {
         }
         cardContent.appendChild(difficultyBadge);
 
-        const eventIcon = document.createElement('span');
-        eventIcon.className = 'event-icon';
-        eventIcon.textContent = bossData.icon;
-        cardContent.appendChild(eventIcon);
+        // Add specific boss/miniboss icon above title if it exists
+        if (bossData.icon) {
+            const bossIconDiv = document.createElement('div');
+            bossIconDiv.textContent = bossData.icon;
+            bossIconDiv.style.fontSize = '2.5em'; // Control size
+            bossIconDiv.style.textAlign = 'center'; // Center align
+            bossIconDiv.style.marginBottom = '10px'; // Space below
+            cardContent.appendChild(bossIconDiv); // Add BEFORE title
+        }
 
         const title = document.createElement('h3');
         title.classList.add('choice-title');

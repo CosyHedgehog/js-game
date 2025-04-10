@@ -29,6 +29,7 @@ const SPIDER_CAVE_MONSTER_DATA = {
     },
     'venox': {
         name: 'Venox', 
+        icon: '🕷️',
         health: 25, 
         attack: 2, 
         defense: 3, 

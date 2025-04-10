@@ -11,8 +11,9 @@
 }
 
 .choice-card {
-    background: #2a2a2a;
-    border: 2px solid #3a3a3a;
+    /* background-image: linear-gradient(to bottom, #3a3a3a, #2a2a2a); */
+    background-color: #2a2a2a;
+    border: 2px solid #4a4a4a;
     border-radius: 8px;
     padding: 20px;
     transition: all 0.3s ease;
@@ -28,6 +29,7 @@
     transform: translateY(-2px);
     border-color: #555;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #333333;
 }
 
 .choice-card-content {
@@ -39,23 +41,22 @@
 }
 
 .choice-title {
-    font-size: 1.5em;
+    font-size: 1.3em;
+    margin-bottom: 10px;
     font-weight: bold;
-    margin: 10px 0;
-    color: #ffffff;
+    text-align: center;
 }
 
 .choice-description {
-    color: #cccccc;
     font-size: 0.9em;
-    line-height: 1.5;
-    max-height: 250px;
-    overflow-y: auto;
-    padding-right: 10px;
-    flex-grow: 1;
-    padding: 10px 0;
     margin-bottom: 15px;
-    scrollbar-width: thin;
+    line-height: 1.4;
+    flex-grow: 1;
+    overflow-y: auto; 
+    max-height: 110px; 
+    text-align: center;
+    border-radius: 5px;
+    box-sizing: border-box;
 }
 
 .choice-description::-webkit-scrollbar {
@@ -73,14 +74,16 @@
 }
 
 .event-icon {
-    font-size: 1.5em;
-    margin-right: 10px;
+    font-size: 2.5em;
+    display: block;
+    text-align: center;
+    margin-bottom: 10px;
 }
 
 .difficulty-badge {
     position: absolute;
     top: 10px;
-    right: 10px;
+    left: 10px;
     padding: 3px 8px;
     border-radius: 12px;
     font-size: 0.75em;
@@ -132,9 +135,9 @@
 }
 
 .monster-description {
-    margin: 10px 0;
     display: flex;
     flex-direction: column;
+    text-align: center;
 }
 
 .monster-description p {
@@ -365,19 +368,23 @@
     margin-bottom: 10px;
     color: #b0bec5;
     font-style: normal;
-    text-align: left;
+    text-align: center;
 }
 
 .choice-description .monster-stats-summary {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 5px 10px;
     margin-bottom: 10px;
-    text-align: left;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .choice-description .monster-stats-summary div {
     white-space: nowrap;
+    padding: 2px 4px;
+    border-radius: 3px;
 }
 
 .choice-description .monster-mechanics-summary {

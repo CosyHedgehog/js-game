@@ -187,6 +187,7 @@
 }
 
 .choice-card.miniboss-card .choice-description {
+    max-height: 300px;
     text-align: center;
 }
 

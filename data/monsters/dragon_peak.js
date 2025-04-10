@@ -29,6 +29,7 @@ const DRAGON_PEAK_MONSTER_DATA = {
     },
     'ancient_dragon': {
         name: 'Ancient Dragon', 
+        icon: '🐲',
         health: 100, 
         attack: 10, 
         defense: 10, 
