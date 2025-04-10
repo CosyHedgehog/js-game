@@ -71,7 +71,7 @@ class Game {
     ];
 
     start() {
-        // this.devMode();
+    this.devMode();
         this.normalMode();
         this.lastGlobalTickTime = Date.now();
         if (this.globalTickIntervalId) clearInterval(this.globalTickIntervalId);
@@ -100,8 +100,9 @@ class Game {
         this.state = 'choosing';
         this.currentArea = "spider_cave";
         // this.pendingAreaTransitionName = "Giants pass";
-        this.player.health = 1000;
-        this.player.baseAttack = 10;
+        this.player.health = 2;
+        this.player.baseAttack = 1;
+        this.player.maxHealth = 2;
         this.player.gold = 1000;
 
         this.player.addItem(this.createItem('wooden_hammer'));

@@ -39,7 +39,7 @@ class Treasure {
         treasureArea.innerHTML = `
             <div class="treasure-container locked">
                 <h3>Locked Treasure Chest</h3>
-                <p>The chest is securely locked. What will you do?</p>
+                <p>The chest is securely locked.</p>
                 <div class="treasure-buttons">
                     ${buttonsHTML}
                 </div>

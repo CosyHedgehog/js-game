@@ -115,12 +115,6 @@ class Shrine {
         this.game.addLog(`You offer your vitality. The shrine drains ${healthCost} HP.`);
         this.ui.updatePlayerStats();
 
-        if (this.game.player.health <= 0) {
-            this.game.addLog("Your sacrifice was too great...");
-            this.game.endGame(false); 
-            return;
-        }
-
         const splat2Text = '1 Atk';
         const splat2Type = 'buff-attack';
         this.game.player.baseAttack += 1;
@@ -135,11 +129,6 @@ class Shrine {
         const splat1Text = `-${maxHealthCost} Max HP`;
         const splat1Type = 'damage'; 
         
-        if (this.game.player.getMaxHealth() - maxHealthCost <= 0) {
-             this.game.addLog("Your life essence is too weak for this sacrifice!");
-             this.addContinueButton(true); 
-             return;
-        }
         // Adjust current health *before* changing max health base value
         if (this.game.player.health > (this.game.player.getMaxHealth() - maxHealthCost)) {
              this.game.player.health = this.game.player.getMaxHealth() - maxHealthCost;
@@ -148,7 +137,7 @@ class Shrine {
         this.game.player.shrineDefenseIncrease += 1;
         this.game.addLog(`You offer your essence. Max HP permanently reduced by ${maxHealthCost}.`);
         this.ui.updatePlayerStats(); // Update stats after HP changes
-        
+
         const splat2Text = '1 Def';
         const splat2Type = 'buff-defense';
         this.game.player.baseDefense += 1;
@@ -196,7 +185,16 @@ class Shrine {
                 }
                 if (splat2Text !== null && splat2Type !== null) {
                     setTimeout(() => {
-                         this.ui.createDamageSplat(targetSelector, splat2Text, splat2Type);
+                         if (this.game.player.health <= 0) {
+                            this.game.addLog("Your sacrifice was too great...");
+                            this.game.endGame(false); 
+                            return;
+                        }
+                        this.ui.createDamageSplat(targetSelector, splat2Text, splat2Type);
+
+                        let button = document.getElementById('shrine-continue-button');
+                        button.disabled = false;
+
                     }, splat1Text !== null ? 700 : 50); 
                 }
             }, 50); 
@@ -221,6 +219,7 @@ class Shrine {
             const continueButton = document.createElement('button');
             continueButton.id = 'shrine-continue-button';
             continueButton.textContent = 'Continue';
+            continueButton.disabled = true;
             continueButton.onclick = () => this.endShrineEvent();
             // Append to shrineArea itself or a specific inner container
             shrineContainer.appendChild(continueButton);

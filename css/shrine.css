@@ -218,6 +218,12 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
+#shrine-continue-button:disabled { 
+    background-color: #666; 
+    cursor: default; 
+    opacity: 0.7; 
+}
+
 /* Splat overrides */
 #shrine-area .damage-splat {
     font-size: 0.75em; /* Attempt to reduce size (default might be larger) */

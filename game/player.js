@@ -102,6 +102,7 @@ class Player {
     }
 
     heal(amount) {
+        if (this.health == 0) return 0;
         const maxHealth = this.getMaxHealth();
         const healedAmount = Math.min(amount, maxHealth - this.health);
         this.health = Math.min(maxHealth, this.health + amount);
