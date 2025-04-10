@@ -113,3 +113,11 @@
 .fishing-areas-container .choice-card .choice-start-button:disabled {
     cursor: default; /* Changed from not-allowed */
 }
+
+/* Make fishing buttons chunkier */
+#fishing-area .choice-start-button {
+    padding: 12px 15px; /* Increase vertical padding */
+    font-size: 1.0em; /* Slightly larger font */
+    font-weight: bold; /* Ensure bold */
+    /* Optionally adjust border-radius or other properties */
+}

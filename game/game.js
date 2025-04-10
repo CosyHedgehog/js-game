@@ -71,7 +71,7 @@ class Game {
     ];
 
     start() {
-    this.devMode();
+        // this.devMode();
         this.normalMode();
         this.lastGlobalTickTime = Date.now();
         if (this.globalTickIntervalId) clearInterval(this.globalTickIntervalId);
