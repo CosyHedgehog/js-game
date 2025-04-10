@@ -78,13 +78,14 @@ class Game {
     }
 
     normalMode() {
-        this.player.addItem(this.createItem('wooden_hammer'));
+        this.player.addItem(this.createItem('wooden_sword'));
         this.player.addItem(this.createItem('bread'));
         this.player.addItem(this.createItem('bread'));
+        this.player.addItem(this.createItem('wooden_shield'));
         this.player.addItem(this.createItem('bread'));
 
         this.player.equipItem(0);
-
+        this.player.equipItem(3);
         this.state = 'area_transition';
         this.ui.renderArea(AREA_CONFIG[0].areas[this.currentArea].name);
         this.ui.gameScreen?.classList.remove('hidden');
@@ -93,10 +94,10 @@ class Game {
     }
 
     devMode() {
-        this.currentRound = 29;
+        this.currentRound = 9;
         // this.state = 'area_transition';
         this.state = 'choosing';
-        this.currentArea = "wolf_den";
+        this.currentArea = "spider_cave";
         // this.pendingAreaTransitionName = "Giants pass";
         this.player.health = 1000;
         this.player.baseAttack = 10;

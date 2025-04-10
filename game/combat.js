@@ -372,8 +372,9 @@ class Combat {
         }
         this.game.addLog(logMessage);
 
-        if (this.enemy.appliesPoison && damageDealt > 0) {
-            const poisonProcChance = this.enemy.poisonChance || 1; if (Math.random() < poisonProcChance) {
+        if (this.enemy.appliesPoison) {
+            const poisonProcChance = this.enemy.poisonChance || 1; 
+            if (Math.random() < poisonProcChance) {
                 if (!this.player.activeEffects.poison) {
                     this.player.activeEffects.poison = {
                         damageRange: this.enemy.poisonDamage,

@@ -28,7 +28,7 @@ class BossUI {
         if (isFinalBoss) {
             difficultyBadge.style.backgroundColor = '#f44336'; difficultyBadge.textContent = 'BOSS';
         } else if (isMiniBoss) {
-            difficultyBadge.style.backgroundColor = '#FF9800'; difficultyBadge.textContent = 'MINI-BOSS';
+            difficultyBadge.style.backgroundColor = '#FF9800'; difficultyBadge.textContent = 'BOSS';
         } else {
             difficultyBadge.style.display = 'none';
         }
