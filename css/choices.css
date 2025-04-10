@@ -430,6 +430,28 @@
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
+/* Define the pulsing glow animation */
+@keyframes pulse-white-glow {
+    0% {
+        /* box-shadow: 0 0 8px 2px rgba(255, 255, 240, 0.4); */ /* Original */
+        box-shadow: 0 0 6px 1px rgba(255, 255, 240, 0.35); /* Smaller start */
+    }
+    50% {
+        /* box-shadow: 0 0 16px 5px rgba(255, 255, 255, 0.8); */ /* Original */
+        box-shadow: 0 0 10px 3px rgba(255, 255, 255, 0.7); /* Smaller peak */
+    }
+    100% {
+        /* box-shadow: 0 0 8px 2px rgba(255, 255, 240, 0.4); */ /* Original */
+        box-shadow: 0 0 6px 1px rgba(255, 255, 240, 0.35); /* Smaller end */
+    }
+}
+
+/* Apply pulsing glow animation to Shrine choice button */
+.choice-start-button.shrine-choice {
+    animation: pulse-white-glow 2.5s infinite ease-in-out; /* Apply the animation */
+    border: 1px solid rgba(255, 255, 220, 0.3); /* Keep a very faint static border */
+}
+
 /* Cursor Styling for General Choice Cards */
 #choices-area .choice-card {
     cursor: default; /* Default cursor for the card area */

@@ -1,3 +1,16 @@
+// Configuration for Shrine event values
+const SHRINE_ATTACK_INCREASE = 1;
+const SHRINE_DEFENSE_INCREASE = 1;
+const SHRINE_SPEED_REDUCTION = 0.2;
+
+// Configuration for Shrine costs based on round
+const SHRINE_COSTS_R1_5   = { hp: 5,  maxHp: 1, gold: 5  };
+const SHRINE_COSTS_R6_10  = { hp: 8,  maxHp: 2, gold: 8  };
+const SHRINE_COSTS_R11_15 = { hp: 11, maxHp: 3, gold: 11 };
+const SHRINE_COSTS_R16_20 = { hp: 14, maxHp: 4, gold: 14 };
+const SHRINE_COSTS_R21_25 = { hp: 17, maxHp: 5, gold: 17 };
+const SHRINE_COSTS_R26_30 = { hp: 20, maxHp: 6, gold: 20 };
+
 class Shrine {
     constructor(game, ui) {
         this.game = game;
@@ -17,17 +30,17 @@ class Shrine {
     // Helper to get costs based on round
     getShrineCosts(round) {
         if (round <= 5) {
-            return { hp: 5, maxHp: 1, gold: 5 };
+            return SHRINE_COSTS_R1_5;
         } else if (round <= 10) {
-            return { hp: 8, maxHp: 2, gold: 8 };
+            return SHRINE_COSTS_R6_10;
         } else if (round <= 15) {
-            return { hp: 11, maxHp: 3, gold: 11 };
+            return SHRINE_COSTS_R11_15;
         } else if (round <= 20) {
-            return { hp: 14, maxHp: 4, gold: 14 };
+            return SHRINE_COSTS_R16_20;
         } else if (round <= 25) {
-            return { hp: 17, maxHp: 5, gold: 17 };
+            return SHRINE_COSTS_R21_25;
         } else { // 26-30
-            return { hp: 20, maxHp: 6, gold: 20 };
+            return SHRINE_COSTS_R26_30;
         }
     }
 
@@ -59,8 +72,8 @@ class Shrine {
                         <p class="shrine-card-desc">Gain raw power.</p>
                         <div class="shrine-card-effect">
                              <div class="shrine-stats-grid"> 
-                                <span class="shrine-stat shrine-cost">-${this.currentHpCost} HP</span>
-                                <span class="shrine-stat"><strong>Attack +1</strong></span>
+                                <span class="shrine-stat shrine-cost">${this.currentHpCost} HP</span>
+                                <span class="shrine-stat"><strong>+${SHRINE_ATTACK_INCREASE} Atk</strong></span>
                             </div>
                         </div>
                     </div> 
@@ -72,8 +85,8 @@ class Shrine {
                         <p class="shrine-card-desc">Harden your form.</p>
                         <div class="shrine-card-effect">
                             <div class="shrine-stats-grid"> 
-                                <span class="shrine-stat shrine-cost">-${this.currentMaxHpCost} Max HP</span>
-                                <span class="shrine-stat"><strong>Defense +1</strong></span>
+                                <span class="shrine-stat shrine-cost">${this.currentMaxHpCost} Max HP</span>
+                                <span class="shrine-stat"><strong>+${SHRINE_DEFENSE_INCREASE} Def </strong></span>
                             </div>
                         </div>
                     </div> 
@@ -85,8 +98,8 @@ class Shrine {
                         <p class="shrine-card-desc">Quicken your reflexes.</p>
                         <div class="shrine-card-effect">
                             <div class="shrine-stats-grid"> 
-                                <span class="shrine-stat shrine-cost">${this.currentGoldCost} Gold</span>
-                                <span class="shrine-stat"><strong>Speed -0.2s</strong></span>
+                                <span class="shrine-stat shrine-cost">-${this.currentGoldCost} Gold</span>
+                                <span class="shrine-stat"><strong>-${SHRINE_SPEED_REDUCTION.toFixed(1)}s</strong></span>
                             </div>
                         </div>
                     </div> 
@@ -115,11 +128,11 @@ class Shrine {
         this.game.addLog(`You offer your vitality. The shrine drains ${healthCost} HP.`);
         this.ui.updatePlayerStats();
 
-        const splat2Text = '1 Atk';
+        const splat2Text = `${SHRINE_ATTACK_INCREASE} Atk`;
         const splat2Type = 'buff-attack';
-        this.game.player.baseAttack += 1;
-        this.game.player.shrineAttackIncrease += 1;
-        this.game.addLog("Raw power surges through you. Attack +1.");
+        this.game.player.baseAttack += SHRINE_ATTACK_INCREASE;
+        this.game.player.shrineAttackIncrease += SHRINE_ATTACK_INCREASE;
+        this.game.addLog(`Raw power surges through you. Attack +${SHRINE_ATTACK_INCREASE}.`);
         this.ui.updatePlayerStats();
         this.showCompletionMessage("Power courses through you.", splat1Text, splat1Type, splat2Text, splat2Type);
     }
@@ -134,14 +147,15 @@ class Shrine {
              this.game.player.health = this.game.player.getMaxHealth() - maxHealthCost;
         }
         this.game.player.maxHealth -= maxHealthCost;
-        this.game.player.shrineDefenseIncrease += 1;
+        this.game.player.shrineDefenseIncrease += SHRINE_DEFENSE_INCREASE;
         this.game.addLog(`You offer your essence. Max HP permanently reduced by ${maxHealthCost}.`);
         this.ui.updatePlayerStats(); // Update stats after HP changes
 
-        const splat2Text = '1 Def';
+        const splat2Text = `${SHRINE_DEFENSE_INCREASE} Def`;
         const splat2Type = 'buff-defense';
-        this.game.player.baseDefense += 1;
-        this.game.addLog("Your form hardens. Defense +1.");
+        this.game.player.baseDefense += SHRINE_DEFENSE_INCREASE;
+        this.game.player.shrineDefenseIncrease += SHRINE_DEFENSE_INCREASE;
+        this.game.addLog(`Your form hardens. Defense +${SHRINE_DEFENSE_INCREASE}.`);
         this.ui.updatePlayerStats(); // Update again after defense change
         this.showCompletionMessage("Your form feels tougher.", splat1Text, splat1Type, splat2Text, splat2Type);
     }
@@ -160,11 +174,13 @@ class Shrine {
         this.game.addLog(`You offer ${goldCost} gold to the shrine.`);
         this.ui.updatePlayerStats();
 
-        const speedChange = 0.2;
+        const speedChange = SHRINE_SPEED_REDUCTION;
         const splat2Text = speedChange;
         const splat2Type = 'buff-speed';
         this.game.player.shrineSpeedReduction += speedChange;
-        this.game.addLog(`Your movements quicken. Attack Speed reduced by ${speedChange}s (Now ${this.game.player.defaultAttackSpeed.toFixed(1)}s).`);
+        // Get the *actual* new speed after applying all modifiers for the log message
+        const newSpeed = this.game.player.getAttackSpeed();
+        this.game.addLog(`Your movements quicken. Attack Speed reduced by ${speedChange.toFixed(1)}s (Now ${newSpeed.toFixed(1)}s).`);
         this.ui.updatePlayerStats();
         this.showCompletionMessage("You feel lighter, faster.", splat1Text, splat1Type, splat2Text, splat2Type);
     }
@@ -195,7 +211,7 @@ class Shrine {
                         let button = document.getElementById('shrine-continue-button');
                         button.disabled = false;
 
-                    }, splat1Text !== null ? 700 : 50); 
+                    }, splat1Text !== null ? 500 : 50); 
                 }
             }, 50); 
 

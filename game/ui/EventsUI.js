@@ -110,6 +110,11 @@ class EventsUI {
                 startButton.classList.add(difficultyClass);
             }
 
+            // Add shrine glow class if applicable
+            if (eventType === 'ancient_shrine') {
+                startButton.classList.add('shrine-choice');
+            }
+
             startButton.onclick = (e) => {
                 e.stopPropagation();
                 this.confirmChoice(index);

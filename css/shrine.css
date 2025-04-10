@@ -29,7 +29,7 @@
 
 @keyframes shrine-pulse {
     0% { text-shadow: 0 0 8px rgba(255, 215, 0, 0.5); }
-    50% { text-shadow: 0 0 20px rgba(255, 255, 220, 0.9), 0 0 10px rgba(255, 215, 0, 0.6); } /* Brighter peak, dual shadow */
+    50% { text-shadow: 0 0 25px rgba(255, 255, 220, 0.9), 0 0 10px rgba(255, 215, 0, 0.6); } /* Brighter peak, dual shadow */
     100% { text-shadow: 0 0 8px rgba(255, 215, 0, 0.5); }
 }
 
@@ -67,9 +67,9 @@
 }
 
 .shrine-card {
-    background-color: #222;
+    background-color: #22222293;
     border: 2px solid #3a3a3a;
-    border-radius: 8px;
+    border-radius: 16px;
     padding: 20px;
     transition: all 0.3s ease;
     cursor: default;
