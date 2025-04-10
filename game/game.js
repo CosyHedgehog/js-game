@@ -95,7 +95,7 @@ class Game {
     }
 
     devMode() {
-        this.currentRound = 9;
+        this.currentRound = 1;
         // this.state = 'area_transition';
         this.state = 'choosing';
         this.currentArea = "spider_cave";
@@ -109,6 +109,9 @@ class Game {
         this.player.addItem(this.createItem('wooden_sword'));
         this.player.addItem(this.createItem('fishing_rod'));
 
+        this.player.addItem(this.createItem('attack_potion'));
+        this.player.addItem(this.createItem('defense_potion'));
+        this.player.addItem(this.createItem('speed_potion'));
 
         this.ui.gameScreen?.classList.remove('hidden');
 

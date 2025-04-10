@@ -124,6 +124,7 @@ class Shrine {
         const splat2Text = '1 Atk';
         const splat2Type = 'buff-attack';
         this.game.player.baseAttack += 1;
+        this.game.player.shrineAttackIncrease += 1;
         this.game.addLog("Raw power surges through you. Attack +1.");
         this.ui.updatePlayerStats();
         this.showCompletionMessage("Power courses through you.", splat1Text, splat1Type, splat2Text, splat2Type);
@@ -144,6 +145,7 @@ class Shrine {
              this.game.player.health = this.game.player.getMaxHealth() - maxHealthCost;
         }
         this.game.player.maxHealth -= maxHealthCost;
+        this.game.player.shrineDefenseIncrease += 1;
         this.game.addLog(`You offer your essence. Max HP permanently reduced by ${maxHealthCost}.`);
         this.ui.updatePlayerStats(); // Update stats after HP changes
         

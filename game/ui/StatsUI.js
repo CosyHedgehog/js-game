@@ -81,8 +81,12 @@ class StatsUI {
         }
 
         if (tempAttackBonus > 0) {
-            attackText += ` <span class="boosted-stat">(+${tempAttackBonus})</span>`;
+            attackText += ` <span class=\"boosted-stat\">(+${tempAttackBonus})</span>`;
             attackTooltip = attackTooltip + `<br>Boosted by +${tempAttackBonus} <br> (until combat ends).`;
+        }
+        // Add shrine contribution to tooltip if applicable
+        if (player.shrineAttackIncrease > 0) {
+             attackTooltip += `<br>+${player.shrineAttackIncrease} from shrine`;
         }
 
         if (this.ui.statAttack) this.ui.statAttack.innerHTML = attackText;
@@ -114,8 +118,12 @@ class StatsUI {
         }
 
         if (tempDefenseBonus > 0) {
-            defenseText += ` <span class="boosted-stat">(+${tempDefenseBonus})</span>`;
+            defenseText += ` <span class=\"boosted-stat\">(+${tempDefenseBonus})</span>`;
             defenseTooltip = defenseTooltip + `<br>Boosted by +${tempDefenseBonus} <br> (until combat ends).`;
+        }
+        // Add shrine contribution to tooltip if applicable
+        if (player.shrineDefenseIncrease > 0) {
+            defenseTooltip += `<br>+${player.shrineDefenseIncrease} from shrine`;
         }
         if (this.ui.statDefense) this.ui.statDefense.innerHTML = defenseText;
         if (this.ui.statDefenseElement) this.ui.statDefenseElement.dataset.tooltipText = defenseTooltip;
@@ -125,10 +133,14 @@ class StatsUI {
         let shrineReduction = player.shrineSpeedReduction;
         let finalSpeed = Math.max(0.5, baseSpeed - player.tempSpeedReduction - ringReduction - shrineReduction);
         let speedText = `${finalSpeed.toFixed(1)}s`;
-        let speedTooltip = "Time between your attacks (lower is faster, minimum 0.5s).";
+        let speedTooltip = "Time between your attacks <br> (lower is faster, minimum 0.5s).";
         if (player.tempSpeedReduction > 0) {
-            speedText += ` <span class="boosted-stat">(-${player.tempSpeedReduction.toFixed(1)}s)</span>`;
+            speedText += ` <span class=\"boosted-stat\">(-${player.tempSpeedReduction.toFixed(1)}s)</span>`;
             speedTooltip = `Time between your attacks <br> (lower is faster, minimum 0.5s).<br>Boosted by -${player.tempSpeedReduction.toFixed(1)}s <br> (until combat ends).`;
+        }
+         // Add shrine contribution to tooltip if applicable
+        if (player.shrineSpeedReduction > 0) {
+            speedTooltip += `<br>-${player.shrineSpeedReduction.toFixed(1)}s from shrine`;
         }
         if (this.ui.statSpeed) this.ui.statSpeed.innerHTML = speedText;
         if (this.ui.statSpeedElement) this.ui.statSpeedElement.dataset.tooltipText = speedTooltip;

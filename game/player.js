@@ -20,6 +20,8 @@ class Player {
         this.tempAttack = 0;
         this.tempDefense = 0;
         this.tempSpeedReduction = 0;
+        this.shrineAttackIncrease = 0;
+        this.shrineDefenseIncrease = 0;
         this.shrineSpeedReduction = 0;
         this.healOverTimeEffects = [];
         this.activeEffects = {};
