@@ -363,3 +363,51 @@
     background-color: rgba(220, 30, 30, 0.9);
     transform: scale(1.1);
 }
+
+/* Define ooze shimmer animation */
+@keyframes ooze-shimmer {
+    0% {
+        background: linear-gradient(135deg, 
+            rgba(110, 170, 70, 0.6) 25%, 
+            rgba(139, 195, 74, 0.5) 50%, 
+            rgba(110, 170, 70, 0.6) 75%);
+        background-size: 200% 200%;
+        background-position: 0% 50%;
+    }
+    50% {
+        background: linear-gradient(135deg, 
+            rgba(110, 170, 70, 0.5) 25%, 
+            rgba(139, 195, 74, 0.6) 50%, 
+            rgba(110, 170, 70, 0.5) 75%);
+        background-size: 200% 200%;
+        background-position: 100% 50%;
+    }
+    100% {
+        background: linear-gradient(135deg, 
+            rgba(110, 170, 70, 0.6) 25%, 
+            rgba(139, 195, 74, 0.5) 50%, 
+            rgba(110, 170, 70, 0.6) 75%);
+        background-size: 200% 200%;
+        background-position: 0% 50%;
+    }
+}
+
+/* Style for slimed items */
+.inventory-slot.item-slimed {
+    border-color: #8BC34A !important; /* Keep static border color */
+    cursor: not-allowed;
+    position: relative;
+    overflow: hidden;
+    /* animation: pulse-slime-border 1.8s infinite ease-in-out; */ /* Removed box-shadow pulse */
+}
+
+/* Green overlay for slimed items */
+.inventory-slot.item-slimed::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    /* background-color: rgba(120, 180, 80, 0.55); */ /* Replaced with animated gradient */
+    z-index: 1;
+    pointer-events: none;
+    animation: ooze-shimmer 3s infinite linear; /* Apply shimmer animation */
+}

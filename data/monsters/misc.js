@@ -1,13 +1,4 @@
 const MISC_MONSTER_DATA = {
-    'giant_rat': { 
-        name: 'Giant Rat', health: 10, attack: 1, defense: 1, speed: 1.5, goldDrop: [1, 3],
-        lootTable: [
-            { itemTier: 'commonFood', chance: 0.5 },
-            { itemTier: 'uncommonFood', chance: 0.3 },
-            { itemTier: 'commonItem', chance: 0.2 },
-            { itemTier: 'uncommonItem', chance: 0.05 },
-        ]
-    },
     'cave_bat': {        name: 'Cave bat', health: 15, attack: 1, defense: 2, speed: 2, goldDrop: [2, 4],
         lootTable: [
             { itemTier: 'commonFood', chance: 0.4 },

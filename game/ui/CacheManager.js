@@ -43,6 +43,7 @@ class CacheManager {
         this.ui.combatEnemyStunTimerContainer = document.querySelector('.enemy-side .stun-timer');
         this.ui.combatEnemyStunTimerText = document.getElementById('combat-enemy-stun-timer');
         this.ui.combatEnemyStunTimerBar = document.querySelector('.enemy-stun-timer');
+        this.ui.combatEnemySlimeTimerContainer = document.querySelector('.enemy-side .slime-timer');
         this.ui.shopItemsContainer = document.getElementById('shop-items');
         this.ui.shopRerollButton = document.getElementById('shop-reroll-button');
         this.ui.outputLogArea = document.getElementById('output-log-area');

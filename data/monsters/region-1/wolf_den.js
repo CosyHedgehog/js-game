@@ -16,9 +16,9 @@ const WOLF_DEN_MONSTER_DATA = {
     'wolf': {
         name: 'Wolf',
         health: 11, 
-        attack: 3, 
+        attack: 2, 
         defense: 0, 
-        speed: 1.5, 
+        speed: 1.2, 
         goldDrop: [4, 8],
         description: "A large, powerful wolf with sharp fangs.",
         difficulty: 'medium',

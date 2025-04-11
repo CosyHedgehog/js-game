@@ -5,4 +5,5 @@ const MONSTERS = {
     ...(typeof GIANTS_PASS_MONSTER_DATA !== 'undefined' ? GIANTS_PASS_MONSTER_DATA : {}),
     ...(typeof DRAGON_PEAK_MONSTER_DATA !== 'undefined' ? DRAGON_PEAK_MONSTER_DATA : {}),
     ...(typeof MISC_MONSTER_DATA !== 'undefined' ? MISC_MONSTER_DATA : {}),
+    ...(typeof BLIGHTED_SWAMP_MONSTER_DATA !== 'undefined' ? BLIGHTED_SWAMP_MONSTER_DATA : {}),
 };

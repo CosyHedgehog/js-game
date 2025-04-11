@@ -23,7 +23,8 @@ class CombatUI {
     updateCombatTimers(playerTimer, enemyTimer, playerDelay = 0,
         enemyBreathTimer, enemyBreathInterval,
         enemyStunTimer, enemyStunInterval,
-        enemyRegenTimer, enemyRegenInterval) {
+        enemyRegenTimer, enemyRegenInterval,
+        enemySlimeTimer, enemySlimeInterval) {
             const playerTimerEl = document.getElementById('combat-player-timer');
         const playerTimerBar = document.querySelector('.player-timer');
         const enemyTimerEl = document.getElementById('combat-enemy-timer');
@@ -37,6 +38,9 @@ class CombatUI {
         const enemyRegenTimerEl = document.getElementById('combat-enemy-regen-timer');
         const enemyRegenTimerContainer = document.querySelector('.regen-timer');
         const enemyRegenTimerBar = document.querySelector('.enemy-regen-timer');
+        const enemySlimeTimerEl = document.getElementById('combat-enemy-slime-timer');
+        const enemySlimeTimerContainer = document.querySelector('.slime-timer');
+        const enemySlimeTimerBar = document.querySelector('.enemy-slime-timer');
 
         const playerHealthBar = document.querySelector('.player-health');
         if (this.ui.game.player.healOverTimeEffects && this.ui.game.player.healOverTimeEffects.length > 0) {
@@ -114,6 +118,19 @@ class CombatUI {
                 }
             } else {
                 enemyRegenTimerContainer.classList.add('hidden');
+            }
+        }
+
+        if (enemySlimeTimerContainer) {
+            if (enemySlimeInterval !== null && enemySlimeInterval > 0) {
+                enemySlimeTimerContainer.classList.remove('hidden');
+                if (enemySlimeTimerEl) enemySlimeTimerEl.textContent = enemySlimeTimer.toFixed(1);
+                if (enemySlimeTimerBar) {
+                    const slimeProgress = 1 - (enemySlimeTimer / enemySlimeInterval);
+                    enemySlimeTimerBar.style.width = `${Math.min(100, slimeProgress * 100)}%`;
+                }
+            } else {
+                enemySlimeTimerContainer.classList.add('hidden');
             }
         }
     }
@@ -198,7 +215,10 @@ class CombatUI {
             enemy.timedStunTimer,
             enemy.timedStunInterval,
             enemy.regenerationTimer,
-            enemy.regenerationInterval);
+            enemy.regenerationInterval,
+            enemy.slimeAttackTimer,
+            enemy.slimeInterval
+        );
     }
 
     updateCombatantHealth(who, current, max, damage = 0, blocked = 0, isHeal = false, fullBlock = false) {

@@ -134,7 +134,6 @@ class Loot {
                     if (measuredHeight > 0) { // Ensure measurement is valid
                          lootArea.dataset.lockedHeight = measuredHeight + 'px';
                          lootArea.style.height = measuredHeight + 'px';
-                         console.log(`Loot area height locked to: ${measuredHeight}px`); // Debug log
                     }
                  });
              }

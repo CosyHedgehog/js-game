@@ -13,7 +13,19 @@ class Game {
         this.currentShopItems = [];
         this.shopCanReroll = false;
         this.pendingLoot = null;
-        this.currentArea = Math.random() < 0.5 ? 'spider_cave' : 'wolf_den';
+        let initialAreaId = null;
+        const firstTier = AREA_CONFIG[0];
+        if (firstTier && firstTier.areas) {
+            const tier1AreaIds = Object.keys(firstTier.areas);
+            if (tier1AreaIds.length > 0) {
+                const randomIndex = Math.floor(Math.random() * tier1AreaIds.length);
+                initialAreaId = tier1AreaIds[randomIndex];
+            }
+        }
+        if (!initialAreaId) {
+            console.error("Could not determine initial area from AREA_CONFIG Tier 1! Defaulting to null.");
+        }
+        this.currentArea = initialAreaId;
         this.pendingAreaTransitionName = null;
         this.pendingNewAreaId = null;
         this.lastDefeatedEnemyName = null;
@@ -95,24 +107,30 @@ class Game {
     }
 
     devMode() {
-        this.currentRound = 19;
+        this.currentRound = 9;
         // this.state = 'area_transition';
         this.state = 'choosing';
-        this.currentArea = "grizzly_hills";
+        this.currentArea = "decrepit_cellar";
         // this.pendingAreaTransitionName = "Giants pass";
-        this.player.health = 1;
-        this.player.baseAttack = 1;
-        this.player.maxHealth = 20;
+        this.player.health = 15;
+        this.player.maxHealth = 15;
         this.player.gold = 1000;
+        this.player.baseAttack = 2;
+        this.player.baseDefense = 3;
 
-        this.player.addItem(this.createItem('wooden_hammer'));
         this.player.addItem(this.createItem('wooden_shield'));
         this.player.addItem(this.createItem('wooden_sword'));
+        this.player.equipItem(0);
+        this.player.equipItem(1);
         this.player.addItem(this.createItem('fishing_rod'));
-
-        this.player.addItem(this.createItem('attack_potion'));
-        this.player.addItem(this.createItem('defense_potion'));
-        this.player.addItem(this.createItem('speed_potion'));
+        this.player.addItem(this.createItem('bread'));
+        this.player.addItem(this.createItem('bread'));
+        this.player.addItem(this.createItem('bread'));
+        this.player.addItem(this.createItem('bread'));
+        this.player.addItem(this.createItem('bread'));
+        this.player.addItem(this.createItem('bread'));
+        this.player.addItem(this.createItem('bread'));
+        this.player.addItem(this.createItem('bread'));
 
         this.ui.gameScreen?.classList.remove('hidden');
 
@@ -559,6 +577,9 @@ class Game {
         if (result.success) {
             this.addLog(`Equipped ${result.item.name}.`);
 
+            // reset attack timer to 0
+            // this.player.attackTimer = this.player.getAttackSpeed();
+
             if (this.state === 'combat' && this.currentCombat && result.item.type === 'weapon') {
                 this.player.attackTimer = this.player.getAttackSpeed();
                 this.currentCombat.ui.updateCombatTimers(
@@ -566,7 +587,14 @@ class Game {
                     this.currentCombat.enemy.attackTimer,
                     0,
                     this.currentCombat.enemy.breathAttackTimer,
-                    this.currentCombat.enemy.breathAttackInterval);
+                    this.currentCombat.enemy.breathAttackInterval,
+                    this.currentCombat.enemy.timedStunTimer,
+                    this.currentCombat.enemy.timedStunInterval,
+                    this.currentCombat.enemy.regenerationTimer,
+                    this.currentCombat.enemy.regenerationInterval,
+                    this.currentCombat.enemy.slimeAttackTimer,
+                    this.currentCombat.enemy.slimeInterval
+                );
             }
 
             this.ui.renderInventory();

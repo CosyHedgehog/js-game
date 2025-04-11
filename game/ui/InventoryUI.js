@@ -35,6 +35,8 @@ class InventoryUI {
             });
 
             slot.classList.remove('slot-empty', 'slot-filled', 'dragging', 'equipped', 'food-stunned');
+            slot.classList.remove('item-slimed');
+            delete slot.dataset.isSlimed;
 
             if (item) {
                 slot.classList.remove('slot-empty');
@@ -141,6 +143,8 @@ class InventoryUI {
                     }
                 }
 
+                let isSlimed = this.ui.game.player.slimedItems && this.ui.game.player.slimedItems[index] > 0;
+
                 let isStunnedAndFood = false;
                 if (this.ui.game.state === 'combat' && this.ui.game.player.isStunned) {
                     isStunnedAndFood = true;
@@ -158,6 +162,9 @@ class InventoryUI {
                     let currentActionText = originalActionText;
                     if (slot.dataset.isStunnedFood === 'true') {
                         currentActionText = "[You are stunned!]";
+                    } else if (slot.dataset.isSlimed === 'true') {
+                        const remainingTime = this.ui.game.player.slimedItems[index];
+                        currentActionText = `<span style='color: #8BC34A;'>[Slimed! Cannot Use (${remainingTime.toFixed(1)}s)]</span>`;
                     }
 
                     let tooltipContent = '';
@@ -178,7 +185,8 @@ class InventoryUI {
                 slot._tooltipEnterHandler = enterHandler;
                 slot._tooltipLeaveHandler = leaveHandler;
 
-                slot.removeEventListener('click', slot._clickHandler); if (originalClickHandler && !isStunnedAndFood) {
+                slot.removeEventListener('click', slot._clickHandler);
+                if (originalClickHandler && !isStunnedAndFood) {
                     slot.addEventListener('click', originalClickHandler);
                     slot._clickHandler = originalClickHandler; slot.style.cursor = 'pointer';
                 } else if (!isStunnedAndFood) {
@@ -216,6 +224,21 @@ class InventoryUI {
                         potionChip.classList.add('potion-action-chip');
                         potionChip.textContent = 'Potion';
                         slot.appendChild(potionChip);
+                    }
+                }
+
+                if (isSlimed) {
+                    slot.classList.add('item-slimed');
+                    slot.dataset.isSlimed = 'true';
+                    if (slot._clickHandler) {
+                        slot.removeEventListener('click', slot._clickHandler);
+                        delete slot._clickHandler;
+                    }
+                } else {
+                    if (originalClickHandler && !isStunnedAndFood && !slot._clickHandler) {
+                        slot.addEventListener('click', originalClickHandler);
+                        slot._clickHandler = originalClickHandler;
+                        slot.style.cursor = 'pointer';
                     }
                 }
 

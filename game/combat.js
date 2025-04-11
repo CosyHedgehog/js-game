@@ -17,7 +17,8 @@ class Combat {
             regenerationActive: enemy.name === 'Moss Giant',
             regenerationTimer: enemy.name === 'Moss Giant' ? 5 : 0,
             regenerationAmount: enemy.name === 'Moss Giant' ? 1 : 0,
-            regenerationInterval: enemy.name === 'Moss Giant' ? 5 : null
+            regenerationInterval: enemy.name === 'Moss Giant' ? 5 : null,
+            slimeAttackTimer: enemy.hasSlimeAttack ? enemy.slimeInterval : null
         };
         this.game = game;
         this.ui = ui;
@@ -34,6 +35,7 @@ class Combat {
         this.player.attackTimerPaused = false;
 
         this.player.activeEffects = {};
+        this.player.slimedItems = {};
 
         const runButton = document.getElementById('combat-run-button');
         if (runButton) {
@@ -138,6 +140,9 @@ class Combat {
         }
         if (this.enemy.timedStunTimer !== null) {
             this.enemy.timedStunTimer = Math.max(0, this.enemy.timedStunTimer - this.timeScale);
+        }
+        if (this.enemy.slimeAttackTimer !== null) {
+            this.enemy.slimeAttackTimer = Math.max(0, this.enemy.slimeAttackTimer - this.timeScale);
         }
 
         if (this.enemy.ferocityActive) {
@@ -286,7 +291,9 @@ class Combat {
             this.enemy.timedStunTimer,
             this.enemy.timedStunInterval,
             this.enemy.regenerationTimer,
-            this.enemy.regenerationInterval
+            this.enemy.regenerationInterval,
+            this.enemy.slimeAttackTimer,
+            this.enemy.slimeInterval
         );
         this.ui.updateCombatStats(this.player, this.enemy);
         if (!this.player.attackTimerPaused && this.player.attackTimer <= 0) {
@@ -309,6 +316,19 @@ class Combat {
             this.enemyAttack();
             enemyActed = true;
             this.enemy.attackTimer = this.enemy.currentSpeed;
+        }
+
+        for (const index in this.player.slimedItems) {
+            this.player.slimedItems[index] = Math.max(0, this.player.slimedItems[index] - tickSeconds);
+            if (this.player.slimedItems[index] <= 0) {
+                delete this.player.slimedItems[index];
+                this.ui.renderInventory();
+            }
+        }
+
+        if (this.enemy.slimeAttackTimer !== null && this.enemy.slimeAttackTimer <= 0) {
+            this.enemySlimeAttack();
+            this.enemy.slimeAttackTimer = this.enemy.slimeInterval;
         }
     }
 
@@ -445,7 +465,9 @@ class Combat {
                     this.enemy.timedStunTimer,
                     this.enemy.timedStunInterval,
                     this.enemy.regenerationTimer,
-                    this.enemy.regenerationInterval
+                    this.enemy.regenerationInterval,
+                    this.enemy.slimeAttackTimer,
+                    this.enemy.slimeInterval
                 );
             }
             if (useResult.item?.healAmount) {
@@ -569,8 +591,11 @@ class Combat {
         if (enemySpdStat) {
             enemySpdStat.classList.remove('stat-highlight-speed');
         }
+        this.player.slimedItems = {};
         this.player.activeEffects = {};
 
+
+        
         if (playerWon) {
             this.game.addLog(`You defeated the ${this.enemy.name}!`);
 
@@ -665,5 +690,96 @@ class Combat {
         this.ui.createDamageSplat('.player-side', 'Stunned!', 'stun');
 
         this.ui.renderInventory();
+    }
+
+    enemySlimeAttack() {
+        if (!this.enemy.hasSlimeAttack) return;
+
+        // Find all occupied inventory slot indices
+        const occupiedIndices = [];
+        this.player.inventory.forEach((item, index) => {
+            if (item) {
+                occupiedIndices.push(index);
+            }
+        });
+
+        if (occupiedIndices.length === 0) {
+            this.game.addLog(`${this.enemy.name} tries to slime your items, but your inventory is empty!`);
+            return;
+        }
+
+        // Determine how many items to slime (up to 3, or fewer if inventory has less)
+    const numToSlime = Math.min(this.game.getRandomInt(2, 6), occupiedIndices.length);
+        const targets = [];
+        const availableIndices = [...occupiedIndices]; // Copy to avoid modifying original
+
+        // Select distinct random indices
+        for (let i = 0; i < numToSlime; i++) {
+            if (availableIndices.length === 0) break; // Should not happen if numToSlime is correct, but safety check
+            const randomIndex = this.game.getRandomInt(0, availableIndices.length - 1);
+            targets.push(availableIndices.splice(randomIndex, 1)[0]); // Pick and remove index
+        }
+
+        if (targets.length === 0) return; // No targets selected
+
+        let equippedWeaponSlimed = false;
+        this.game.addLog(`<span style="color: #8BC34A;">${this.enemy.name} launches a volley of slime!</span>`);
+
+        // Process each targeted slot
+        targets.forEach(index => {
+            const item = this.player.inventory[index];
+            if (!item) return; // Should not happen, but safety check
+
+            const alreadySlimed = this.player.slimedItems[index] > 0;
+            this.player.slimedItems[index] = this.enemy.slimeDuration;
+
+            if (alreadySlimed) {
+                this.game.addLog(`<span style="color: #8BC34A;">Your ${item.name} gets re-slimed! (Duration refreshed)</span>`);
+            } else {
+                this.game.addLog(`<span style="color: #8BC34A;">Your ${item.name} is covered in slime! (Cannot use for ${this.enemy.slimeDuration.toFixed(1)}s)</span>`);
+            }
+
+            // Check if the item is equippable and equipped
+            if (item.type === 'weapon' || item.type === 'armor' || item.type === 'ring') {
+                let isEquipped = false;
+                let equippedSlotName = null;
+
+                for (const slotName in this.player.equipment) {
+                     // Check if the slot corresponds to the item type and if the index matches
+                     if (this.player.equipment[slotName] === index) {
+                         // Basic type check (can be refined if slot names != item types)
+                         if ((slotName === 'weapon' && item.type === 'weapon') ||
+                             (slotName !== 'weapon' && item.type === 'armor') || // Simple check for armor slots
+                             (slotName === 'ring' && item.type === 'ring')) {
+                                isEquipped = true;
+                                equippedSlotName = slotName;
+                                break;
+                         }
+                     }
+                }
+
+                if (isEquipped) {
+                    this.game.handleUnequipItem(index, true); // Unequip silently
+                    this.game.addLog(`The slime forces you to unequip your ${item.name}!`);
+                    // Reset attack timer ONLY if it was the weapon
+                    if (equippedSlotName === 'weapon') {
+                        this.player.attackTimer = this.player.getAttackSpeed();
+                        this.game.addLog(`Your attack is interrupted!`);
+                        equippedWeaponSlimed = true; // Flag that weapon was slimed
+                    }
+                }
+            }
+        });
+
+        // Update inventory UI & show splat animation once
+        this.ui.renderInventory();
+        this.ui.createDamageSplat('.player-side', 'Slime!', 'slime');
+        const playerSideElement = document.querySelector('.player-side');
+        if (playerSideElement) {
+            playerSideElement.classList.add('slimed-hit-animation');
+            setTimeout(() => {
+                playerSideElement.classList.remove('slimed-hit-animation');
+            }, 1000);
+        }
     }
 }

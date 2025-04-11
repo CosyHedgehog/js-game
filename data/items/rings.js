@@ -16,7 +16,7 @@ const RINGS = {
     },
     'ring_of_swiftness': {
         id: 'ring_of_swiftness', name: 'Ring of Swiftness', type: 'ring', slot: 'ring', rarity: 'common',
-        stats: { speedBonus: 0.2 }, value: 12, // Assuming speedBonus reduces attack timer
+        stats: { speedBonus: 0.2 }, value: 12,
         description: 'Feels lighter than air.\nAttack Speed: +0.1'
     },
     'ring_of_might': {

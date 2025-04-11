@@ -58,14 +58,14 @@ class BossUI {
                 </div>
                 <div class="monster-stats-grid">
                     <div class="monster-stat">
-                        <span class="stat-icon">❤️ Health</span>
-                        <span class="stat-value">${bossData.health}</span>
-                        <span class="stat-label">Health</span>
-                    </div>
-                    <div class="monster-stat">
                         <span class="stat-icon">⚔️ Attack</span>
                         <span class="stat-value">${bossData.attack}</span>
                         <span class="stat-label">Attack</span>
+                    </div>
+                    <div class="monster-stat">
+                        <span class="stat-icon">❤️ Health</span>
+                        <span class="stat-value">${bossData.health}</span>
+                        <span class="stat-label">Health</span>
                     </div>
                     <div class="monster-stat">
                         <span class="stat-icon">🛡️ Defense</span>

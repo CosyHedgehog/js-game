@@ -1,7 +1,7 @@
 const SPIDER_CAVE_MONSTER_DATA = {
     'giant_spider': {
         name: 'Giant Spider', 
-        health: 7, 
+        health: 9, 
         attack: 2, 
         defense: 0, 
         speed: 1.8, 
@@ -15,10 +15,10 @@ const SPIDER_CAVE_MONSTER_DATA = {
     },
     'web_weaver': {
         name: 'Web Weaver', 
-        health: 10, 
+        health: 14, 
         attack: 2, 
         defense: 1, 
-        speed: 2.0, 
+        speed: 1.8, 
         goldDrop: [3, 7],
         description: "A cunning spider.",
         difficulty: 'medium',

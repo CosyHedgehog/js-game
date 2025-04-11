@@ -3,17 +3,23 @@ const AREA_CONFIG = [
         startRound: 1,
         endRound: 10,
         areas: {
-            'spider_cave': {
-                name: "Spider Cave",
-                tooltip: "A dark cave filled with various species of giant spiders. Watch out for their poison!",
-                monsters: ['giant_spider', 'web_weaver', 'poison_crawler'],
-                miniBoss: 'venox'
-            },
-            'wolf_den': {
-                name: "Wolf Den",
-                tooltip: "A dangerous den inhabited by fierce wolves. Be wary of their swift attacks!",
-                monsters: ['wolf_pup', 'wolf', 'dire_wolf'],
-                miniBoss: 'silverfang'
+            // 'spider_cave': {
+            //     name: "Spider Cave",
+            //     tooltip: "A dark cave filled with various species of giant spiders. Watch out for their poison!",
+            //     monsters: ['giant_spider', 'web_weaver'],
+            //     miniBoss: 'venox'
+            // },
+            // 'wolf_den': {
+            //     name: "Wolf Den",
+            //     tooltip: "A dangerous den inhabited by fierce wolves. Be wary of their swift attacks!",
+            //     monsters: ['wolf_pup', 'wolf'],
+            //     miniBoss: 'silverfang'
+            // },
+            'blighted_swamp': {
+                name: "Blighted Swamp",
+                tooltip: "A swamp filled with various creatures that have been corrupted by the blight. Be careful of their poison!",
+                monsters: ['giant_frog', 'mutated_mushroom'],
+                miniBoss: 'globulus'
             },
         }
     },

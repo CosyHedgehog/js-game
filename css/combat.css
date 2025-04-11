@@ -650,4 +650,46 @@
   animation: player-healing-pulse 1.5s infinite ease-in-out;
 }
 
+/* Slime Timer Bar */
+.slime-timer .timer-bar {
+    background-color: #8BC34A; /* Green color for slime */
+}
+
+.slime-timer .timer-text {
+    /* Optional: specific text styling */
+}
+
+/* Slime hit animation keyframes */
+@keyframes player-slimed-overlay-flash {
+     0% { opacity: 0; }
+     25% { opacity: 0.6; } /* Slightly more opaque peak */
+     75% { opacity: 0.4; }
+     100% { opacity: 0; }
+}
+
+@keyframes player-slimed-shake { /* Renamed in thought, but keep name for less change */
+    0%, 100% { transform: translateX(0) rotate(0); }
+    25% { transform: translateX(-4px) rotate(-1deg); } /* Add rotation */
+    50% { transform: translateX(4px) rotate(1deg); }  /* Add rotation */
+    75% { transform: translateX(-2px) rotate(0.5deg); } /* Add rotation */
+}
+
+/* Apply slime hit animation using pseudo-element for overlay */
+.player-side.slimed-hit-animation::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #8BC34A; /* Slime color */
+    border-radius: inherit; /* Match parent border radius */
+    opacity: 0;
+    pointer-events: none;
+    z-index: 1; /* Ensure overlay is above base background */
+    animation: player-slimed-overlay-flash 1s ease-out forwards; /* Longer duration */
+}
+
+.player-side.slimed-hit-animation {
+    /* Apply shake to the main element */
+    animation: player-slimed-shake 0.5s ease-out; /* Slightly longer shake within the flash */
+}
+
 

@@ -75,7 +75,8 @@ class TooltipManager {
             playerTimer: { el: this.ui.combatPlayerTimerContainer, text: "Attack every X seconds." },
             enemyTimer: { el: this.ui.combatEnemyTimerContainer, text: "Attack every X seconds." },
             enemyBreathTimer: { el: this.ui.combatEnemyBreathTimerContainer, text: "Firebreath every X seconds." },
-            stunTimer: { el: this.ui.combatEnemyStunTimerContainer, text: "Slams ground every X seconds." }
+            stunTimer: { el: this.ui.combatEnemyStunTimerContainer, text: "Slams ground every X seconds." },
+            slimeTimer: { el: this.ui.combatEnemySlimeTimerContainer, text: "Weapon Slime every Xs" }
         };
 
         const playerHealthBarContainer = document.querySelector('.player-side .health-bar-container');
@@ -140,6 +141,9 @@ class TooltipManager {
                         tooltipText = tooltipText.replace('X', this.ui.game?.currentCombat?.enemy?.breathAttackInterval?.toFixed(1) || '?');
                     } else if (key === 'stunTimer') {
                         tooltipText = tooltipText.replace('X', this.ui.game?.currentCombat?.enemy?.timedStunInterval?.toFixed(1) || '?');
+                    } else if (key === 'slimeTimer') {
+                        console.log(this.ui.game?.currentCombat?.enemy?.slimeInterval);
+                        tooltipText = tooltipText.replace('X', this.ui.game?.currentCombat?.enemy?.slimeInterval?.toFixed(1) || '?');
                     }
 
                     this.ui.showTooltip(tooltipText.replace(/\n/g, '<br>'), this.ui.statTooltip, e);

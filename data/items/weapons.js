@@ -34,17 +34,17 @@ const WEAPONS = {
     // hammers
     'wooden_hammer': {
         id: 'wooden_hammer', name: 'Wooden Hammer', type: 'weapon', slot: 'weapon', hands: 2, rarity: 'common',
-        stats: { attack: 5 }, speed: 2.3, value: 6,
-        description: 'A heavy wooden hammer.\nAttack: +5\nSpeed: 2.3s\n2-Handed'
+        stats: { attack: 5 }, speed: 2.5, value: 6,
+        description: 'A heavy wooden hammer.\nAttack: +5\nSpeed: 2.5s\n2-Handed'
     },
     'iron_hammer': {
         id: 'iron_hammer', name: 'Iron Hammer', type: 'weapon', slot: 'weapon', hands: 2, rarity: 'uncommon',
-        stats: { attack: 7 }, speed: 2.3, value: 14,
-        description: 'A weighty iron hammer.\nAttack: +7\nSpeed: 2.3s\n2-Handed'
+        stats: { attack: 7 }, speed: 2.5, value: 14,
+        description: 'A weighty iron hammer.\nAttack: +7\nSpeed: 2.5s\n2-Handed'
     },
     'steel_hammer': {
         id: 'steel_hammer', name: 'Steel Hammer', type: 'weapon', slot: 'weapon', hands: 2, rarity: 'rare',
-        stats: { attack: 9 }, speed: 2.3, value: 20,
-        description: 'A powerful steel hammer.\nAttack: +9\nSpeed: 2.3s\n2-Handed'
+        stats: { attack: 9 }, speed: 2.5, value: 20,
+        description: 'A powerful steel hammer.\nAttack: +9\nSpeed: 2.5s\n2-Handed'
     }
 }; 
