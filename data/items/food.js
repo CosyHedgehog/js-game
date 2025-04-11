@@ -12,7 +12,7 @@ const FOOD = {
     'small_fish': {
         id: 'small_fish', name: 'Small Fish', type: 'consumable', useAction: 'Eat', rarity: 'common',
         healAmount: 3, value: 1,
-        description: 'A tiny fish.\nHeals 2 HP.'
+        description: 'A tiny fish.\nHeals 3 HP.'
     },
     'medium_fish': {
         id: 'medium_fish', name: 'Medium Fish', type: 'consumable', useAction: 'Eat', rarity: 'uncommon',
