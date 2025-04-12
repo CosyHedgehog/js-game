@@ -36,8 +36,10 @@
 
 .fishing-choice-card {
     /* Match rest-card styling */
-    background-color: #252e38c7; /* Muted Blue */
-    border: 2px solid #2a3a4b; /* Adjusted border for blue */
+    
+    background-color: #2a2a2a;
+    /* background-color: #23446c99; */ /* Muted Blue */
+    border: 2px solid #4a4a4a; /* Adjusted border for blue */
     border-radius: 8px;
     padding: 15px; /* Reduced padding */
     text-align: center;
@@ -54,8 +56,7 @@
 
 .fishing-choice-card:hover {
     /* REMOVED card hover styles */
-    /* transform: translateY(-2px); */
-    border-color: #365c76; /* Subtle border highlight on hover */
+    transform: translateY(-2px); /* Add back slight lift */
     /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); */
     /* background-color: #4a6b8a; */ 
 }
@@ -95,7 +96,7 @@
 
 .fishing-choice-card .choice-start-button {
     /* Match rest-card button styling */
-    background-color: #2c4a60; /* Darker blue/teal */
+    background-color: #45a049; /* Darker blue/teal */
     color: #ffffff;
     border: none;
     padding: 10px; /* Match rest-card button padding */
@@ -110,7 +111,6 @@
 
 .fishing-choice-card .choice-start-button:hover:not(:disabled) {
     /* Match rest-card button:hover styling */
-    background-color: #365c76; /* Slightly lighter blue/teal */
     transform: translateY(-2px);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }

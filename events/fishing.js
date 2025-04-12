@@ -151,7 +151,15 @@ class Fishing {
         fishingButtons.forEach(button => {
             button.addEventListener('click', () => {
                 const areaKey = button.closest('.fishing-choice-card').dataset.area;
-                this.showFishingAnimation(areaKey);
+                
+                // Check if it's the shoreline (Scrounge) area
+                if (areaKey === 'shoreline') {
+                    // Skip animation, start fishing/scrounging directly
+                    this.startFishing(areaKey);
+                } else {
+                    // For other areas, show the fishing animation
+                    this.showFishingAnimation(areaKey);
+                }
             });
         });
     }
