@@ -83,8 +83,8 @@ class Game {
     ];
 
     start() {
-        // this.devMode();
-        this.normalMode();
+        this.devMode();
+        // this.normalMode();
         this.lastGlobalTickTime = Date.now();
         if (this.globalTickIntervalId) clearInterval(this.globalTickIntervalId);
         this.globalTickIntervalId = setInterval(() => this.gameTick(), this.globalTickRate);
@@ -108,10 +108,10 @@ class Game {
 
     devMode() {
         this.currentRound = 9;
-        // this.state = 'area_transition';
         this.state = 'choosing';
-        this.currentArea = "decrepit_cellar";
-        // this.pendingAreaTransitionName = "Giants pass";
+        this.currentArea = "blighted_swamp";
+        // this.currentArea = "giants_pass";
+
         this.player.health = 15;
         this.player.maxHealth = 15;
         this.player.gold = 1000;
@@ -714,10 +714,29 @@ class Game {
             return;
         }
 
+        // --- Handle Slime Status Swap --- 
+        const sourceSlimeDuration = this.player.slimedItems[sourceIndex];
+        const targetSlimeDuration = this.player.slimedItems[targetIndex];
+
+        // Clear existing slime status for both slots temporarily
+        if (sourceSlimeDuration !== undefined) delete this.player.slimedItems[sourceIndex];
+        if (targetSlimeDuration !== undefined) delete this.player.slimedItems[targetIndex];
+
+        // Re-apply slime status to the new slots
+        if (sourceSlimeDuration !== undefined) {
+            this.player.slimedItems[targetIndex] = sourceSlimeDuration;
+        }
+        if (targetSlimeDuration !== undefined) {
+            this.player.slimedItems[sourceIndex] = targetSlimeDuration;
+        }
+        // --- End Slime Status Swap --- 
+
+        // Swap items in inventory array
         const temp = this.player.inventory[sourceIndex];
         this.player.inventory[sourceIndex] = this.player.inventory[targetIndex];
         this.player.inventory[targetIndex] = temp;
 
+        // Update equipped item indices
         for (const slot in this.player.equipment) {
             if (this.player.equipment[slot] === sourceIndex) {
                 this.player.equipment[slot] = targetIndex;
@@ -725,7 +744,6 @@ class Game {
                 this.player.equipment[slot] = sourceIndex;
             }
         }
-
 
         this.ui.renderInventory();
     }

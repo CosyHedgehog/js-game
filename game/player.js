@@ -26,6 +26,7 @@ class Player {
         this.healOverTimeEffects = [];
         this.activeEffects = {};
         this.isStunned = false;
+        this.slimedItems = {};
     }
 
     getMaxHealth() {

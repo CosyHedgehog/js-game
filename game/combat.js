@@ -35,7 +35,7 @@ class Combat {
         this.player.attackTimerPaused = false;
 
         this.player.activeEffects = {};
-        this.player.slimedItems = {};
+        // this.player.slimedItems = {}; // REMOVED - Initialized in Player class
 
         const runButton = document.getElementById('combat-run-button');
         if (runButton) {
@@ -128,6 +128,16 @@ class Combat {
         }
         if (this.player.pendingActionDelay > 0) {
             this.player.pendingActionDelay = Math.max(0, this.player.pendingActionDelay - this.timeScale);
+            
+            // Update ALL active stun timer text elements
+            const stunTimerElements = this.ui.inventoryGrid?.querySelectorAll('.stun-timer-text');
+            if (stunTimerElements) {
+                const newTimeText = this.player.pendingActionDelay.toFixed(1) + 's';
+                stunTimerElements.forEach(el => {
+                    el.textContent = newTimeText;
+                });
+            }
+
             if (this.player.pendingActionDelay === 0) {
                 this.player.attackTimerPaused = false;
                 this.player.isStunned = false;
@@ -318,11 +328,22 @@ class Combat {
             this.enemy.attackTimer = this.enemy.currentSpeed;
         }
 
+        // Decrement slime duration timers on player items
         for (const index in this.player.slimedItems) {
-            this.player.slimedItems[index] = Math.max(0, this.player.slimedItems[index] - tickSeconds);
-            if (this.player.slimedItems[index] <= 0) {
-                delete this.player.slimedItems[index];
-                this.ui.renderInventory();
+            const numericIndex = parseInt(index);
+            this.player.slimedItems[numericIndex] = Math.max(0, this.player.slimedItems[numericIndex] - tickSeconds);
+            
+            // Find the corresponding inventory slot and timer text element
+            const slotElement = this.ui.inventoryGrid?.querySelector(`.inventory-slot[data-index="${numericIndex}"]`);
+            const timerTextElement = slotElement?.querySelector('.slime-timer-text');
+
+            if (this.player.slimedItems[numericIndex] <= 0) {
+                delete this.player.slimedItems[numericIndex];
+                // Re-render inventory to remove visual effect and timer text
+                this.ui.renderInventory(); 
+            } else if (timerTextElement) {
+                 // Update existing timer text if timer is still active
+                timerTextElement.textContent = this.player.slimedItems[numericIndex].toFixed(1) + 's';
             }
         }
 
@@ -593,8 +614,6 @@ class Combat {
         }
         this.player.slimedItems = {};
         this.player.activeEffects = {};
-
-
         
         if (playerWon) {
             this.game.addLog(`You defeated the ${this.enemy.name}!`);
@@ -709,7 +728,7 @@ class Combat {
         }
 
         // Determine how many items to slime (up to 3, or fewer if inventory has less)
-    const numToSlime = Math.min(this.game.getRandomInt(2, 6), occupiedIndices.length);
+        const numToSlime = Math.min(this.game.getRandomInt(this.enemy.slimeMin, this.enemy.slimeMax), occupiedIndices.length);
         const targets = [];
         const availableIndices = [...occupiedIndices]; // Copy to avoid modifying original
 

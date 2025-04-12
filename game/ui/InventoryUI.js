@@ -34,9 +34,19 @@ class InventoryUI {
                 this.ui.game.handleInventorySwap(sourceIndex, targetIndex);
             });
 
-            slot.classList.remove('slot-empty', 'slot-filled', 'dragging', 'equipped', 'food-stunned');
+            // Clear previous dynamic elements first
+            const existingSlimeTimer = slot.querySelector('.slime-timer-text');
+            if (existingSlimeTimer) existingSlimeTimer.remove();
+            const existingStunTimer = slot.querySelector('.stun-timer-text');
+            if (existingStunTimer) existingStunTimer.remove();
+            const existingChip = slot.querySelector('.equipped-slot-chip, .food-action-chip, .tool-action-chip, .potion-action-chip');
+            if (existingChip) existingChip.remove();
+            slot.innerHTML = ''; // Clear item name span potentially
+
+            slot.classList.remove('slot-empty', 'slot-filled', 'dragging', 'equipped', 'food-stunned', 'item-stunned');
             slot.classList.remove('item-slimed');
             delete slot.dataset.isSlimed;
+            delete slot.dataset.isItemStunned;
 
             if (item) {
                 slot.classList.remove('slot-empty');
@@ -145,14 +155,24 @@ class InventoryUI {
 
                 let isSlimed = this.ui.game.player.slimedItems && this.ui.game.player.slimedItems[index] > 0;
 
-                let isStunnedAndFood = false;
+                let isItemStunned = false;
                 if (this.ui.game.state === 'combat' && this.ui.game.player.isStunned) {
-                    isStunnedAndFood = true;
-                    slot.classList.add('food-stunned');
-                    slot.style.cursor = 'default'; slot.dataset.isStunnedFood = 'true';
+                    isItemStunned = true;
+                    slot.classList.add('item-stunned');
+                    slot.style.cursor = 'default';
+                    slot.dataset.isItemStunned = 'true';
+
+                    // --- Add Stun Timer Text ---
+                    const remainingStunTime = this.ui.game.player.pendingActionDelay;
+                    const stunTimerElement = document.createElement('div');
+                    stunTimerElement.classList.add('stun-timer-text');
+                    stunTimerElement.textContent = remainingStunTime.toFixed(1) + 's';
+                    slot.appendChild(stunTimerElement);
+                    // --- End Stun Timer Text ---
+
                 } else {
-                    slot.classList.remove('food-stunned');
-                    delete slot.dataset.isStunnedFood;
+                    slot.classList.remove('item-stunned');
+                    delete slot.dataset.isItemStunned;
                 }
 
                 slot.removeEventListener('mouseenter', slot._tooltipEnterHandler);
@@ -160,11 +180,11 @@ class InventoryUI {
 
                 const enterHandler = (e) => {
                     let currentActionText = originalActionText;
-                    if (slot.dataset.isStunnedFood === 'true') {
-                        currentActionText = "[You are stunned!]";
+                    if (slot.dataset.isItemStunned === 'true') {
+                        currentActionText = "<span style='color: #ffd700;'>[Stunned!]</span>";
                     } else if (slot.dataset.isSlimed === 'true') {
                         const remainingTime = this.ui.game.player.slimedItems[index];
-                        currentActionText = `<span style='color: #8BC34A;'>[Slimed! Cannot Use (${remainingTime.toFixed(1)}s)]</span>`;
+                        currentActionText = `<span style='color: #8BC34A;'>[Slimed! Cannot Use]</span>`;
                     }
 
                     let tooltipContent = '';
@@ -186,10 +206,10 @@ class InventoryUI {
                 slot._tooltipLeaveHandler = leaveHandler;
 
                 slot.removeEventListener('click', slot._clickHandler);
-                if (originalClickHandler && !isStunnedAndFood) {
+                if (originalClickHandler && !isItemStunned && !isSlimed) {
                     slot.addEventListener('click', originalClickHandler);
                     slot._clickHandler = originalClickHandler; slot.style.cursor = 'pointer';
-                } else if (!isStunnedAndFood) {
+                } else {
                     slot.style.cursor = 'default';
                 }
 
@@ -234,12 +254,14 @@ class InventoryUI {
                         slot.removeEventListener('click', slot._clickHandler);
                         delete slot._clickHandler;
                     }
-                } else {
-                    if (originalClickHandler && !isStunnedAndFood && !slot._clickHandler) {
-                        slot.addEventListener('click', originalClickHandler);
-                        slot._clickHandler = originalClickHandler;
-                        slot.style.cursor = 'pointer';
-                    }
+
+                    // --- Add Timer Text --- 
+                    const remainingTime = this.ui.game.player.slimedItems[index];
+                    const timerTextElement = document.createElement('div');
+                    timerTextElement.classList.add('slime-timer-text');
+                    timerTextElement.textContent = remainingTime.toFixed(1) + 's';
+                    slot.appendChild(timerTextElement);
+                    // --- End Timer Text --- 
                 }
 
             } else {

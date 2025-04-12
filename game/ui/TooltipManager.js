@@ -76,7 +76,7 @@ class TooltipManager {
             enemyTimer: { el: this.ui.combatEnemyTimerContainer, text: "Attack every X seconds." },
             enemyBreathTimer: { el: this.ui.combatEnemyBreathTimerContainer, text: "Firebreath every X seconds." },
             stunTimer: { el: this.ui.combatEnemyStunTimerContainer, text: "Slams ground every X seconds." },
-            slimeTimer: { el: this.ui.combatEnemySlimeTimerContainer, text: "Weapon Slime every Xs" }
+            slimeTimer: { el: this.ui.combatEnemySlimeTimerContainer, text: "Slimes items every Xs" }
         };
 
         const playerHealthBarContainer = document.querySelector('.player-side .health-bar-container');

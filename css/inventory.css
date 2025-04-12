@@ -312,8 +312,22 @@
 }
 
 #inventory-grid .inventory-slot.equipped {
-    background-color: #285028 !important;
-    border-color: green !important;
+    /* background-color: #285028 !important; */ /* Removed green background */
+    border-color: #eee !important; /* Use a bright neutral border */
+    /* Keep other styles like box-shadow if desired */
+}
+
+/* Add checkmark icon to equipped items */
+.inventory-slot.equipped::after {
+    content: '✔'; /* Checkmark symbol */
+    position: absolute;
+    bottom: 3px;
+    right: 4px;
+    font-size: 1.3em; /* Adjust size as needed */
+    color: #66bb6a; /* Green color for the checkmark */
+    text-shadow: 0 0 2px rgba(0, 0, 0, 0.7); /* Shadow for visibility */
+    z-index: 3; /* Ensure it's above potential overlays */
+    pointer-events: none; /* Don't interfere with clicks */
 }
 
 #inventory-grid .inventory-slot.equipped:hover {
@@ -410,4 +424,54 @@
     z-index: 1;
     pointer-events: none;
     animation: ooze-shimmer 3s infinite linear; /* Apply shimmer animation */
+}
+
+/* Style for the slime countdown timer text */
+.inventory-slot .slime-timer-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.1em; /* Make it prominent */
+    font-weight: bold;
+    color: #ffffff; /* White text */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8); /* Dark shadow for contrast */
+    z-index: 3; /* Ensure timer is above slime overlay */
+    pointer-events: none; /* Don't interfere with clicks/hovers on slot */
+    text-align: center;
+    width: 100%; /* Ensure centering works */
+}
+
+/* Optional: Slightly dim item name when slimed? */
+.inventory-slot.item-slimed span:not(.slime-timer-text) {
+    opacity: 0.6;
+}
+
+/* Style for the stun countdown timer text on food */
+.inventory-slot .stun-timer-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #ffffff;
+    text-shadow: 0 0 4px #000, 0 0 4px #000, 0 0 4px #000, 0 0 4px #000, 0 0 4px #000, 0 0 4px #000;
+    z-index: 3;
+    pointer-events: none;
+    text-align: center;
+    width: 100%;
+}
+
+/* Style for food items when stunned */
+.inventory-slot.item-stunned {
+    background-color: rgba(100, 100, 100, 0.5) !important; /* Greyed out slightly */
+    border-color: #888 !important;
+    position: relative; /* Context for timer */
+    overflow: hidden; /* Contain timer */
+}
+
+/* Dim item name when food is stunned */
+.inventory-slot.item-stunned span:not(.stun-timer-text):not(.slime-timer-text) {
+    opacity: 0.5;
 }
