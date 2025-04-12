@@ -23,7 +23,7 @@ class Fishing {
         safe: {
             name: 'Waterlogged Cave',
             description: 'Explore the dripping cave and its hidden pool.',
-            fishRange: [3, 4],
+            fishRange: [3, 5],
             ringChance: 0.20,
             requiresRod: true
         },
@@ -37,7 +37,7 @@ class Fishing {
         dangerous: {
             name: 'Murky Depths',
             description: 'Plunge your line into the dark, unknown depths.',
-            fishRange: [1, 3],
+            fishRange: [2, 3],
             ringChance: 0.30,
             requiresRod: true
         }
