@@ -180,6 +180,27 @@
     background: #383838;
 }
 
+/* Style for the standalone ignore button */
+.shrine-ignore-button-standalone {
+    /* Replicate .leave-button style */
+    background-color: #f44336; /* Red background like leave buttons */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 1em;
+    margin-top: 20px; 
+    align-self: center; 
+    width: fit-content;
+}
+
+.shrine-ignore-button-standalone:hover {
+    background-color: #d32f2f; /* Darker red on hover */
+    /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); */ /* Optional shadow */
+}
 
 /* Completion Message Styling */
 .shrine-message {

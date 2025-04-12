@@ -106,6 +106,9 @@ class Shrine {
                     <button id="shrine-speed-button" ${!canAffordSpeed ? 'disabled' : ''}>Sacrifice</button> 
                 </div>
             </div>
+
+            <!-- Add standalone Ignore button below choices -->
+            <button id="shrine-ignore-button" class="shrine-ignore-button-standalone">Ignore</button>
         `;
 
         document.getElementById('main-content').appendChild(shrineArea);
@@ -117,6 +120,8 @@ class Shrine {
         if (!speedButton.disabled) {
             speedButton.onclick = () => this.handleShrineSpeed();
         }
+        // Attach listener for ignore button
+        document.getElementById('shrine-ignore-button').onclick = () => this.endShrineEvent(); 
     }
 
     handleShrineAttack() {
