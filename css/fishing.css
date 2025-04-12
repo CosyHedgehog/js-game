@@ -1,5 +1,5 @@
 #fishing-area {
-    padding: 20px;
+    padding: 15px; /* Reduced padding */
     text-align: center;
     cursor: default; /* Set default cursor for the whole area */
 }
@@ -8,12 +8,12 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 15px; /* Space between elements */
+    gap: 10px; /* Reduced gap */
 }
 
 .fishing-icon {
     font-size: 3em; /* Large icon */
-    margin-bottom: 10px;
+    margin-bottom: 5px; /* Reduced margin */
 }
 
 .fishing-main-container h3 {
@@ -21,10 +21,13 @@
     color: #eee; /* Lighter color for title */
 }
 
+/* REMOVED fishing-prompt styles */
+/*
 .fishing-prompt {
-    color: #ddd; /* Lighter color for prompt */
-    margin-bottom: 20px;
+    color: #ddd; 
+    margin-bottom: 15px; 
 }
+*/
 
 .fishing-choices {
     display: flex;
@@ -35,47 +38,39 @@
 }
 
 .fishing-choice-card {
-    /* Match rest-card styling */
-    
+    /* Apply rest-card base styles */
     background-color: #2a2a2a;
-    /* background-color: #23446c99; */ /* Muted Blue */
-    border: 2px solid #4a4a4a; /* Adjusted border for blue */
+    border: 2px solid #4a4a4a;
     border-radius: 8px;
-    padding: 15px; /* Reduced padding */
+    padding: 10px; /* Reduced padding */
     text-align: center;
-    flex: 1 1 140px; /* Slightly adjusted flex-basis */
-    max-width: 160px; /* Reduced max-width */
+    flex: 1 1 140px; /* Keep flex sizing */
+    max-width: 180px; /* Adjusted max-width for padding */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    gap: 5px;
-    transition: all 0.3s ease; /* Match rest-card transition */
-    color: #ccc; /* Default text color */
+    gap: 5px; /* Reduced gap slightly */
+    transition: all 0.3s ease;
+    color: #ccc;
 }
 
 .fishing-choice-card:hover {
-    /* REMOVED card hover styles */
-    transform: translateY(-2px); /* Add back slight lift */
-    /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); */
-    /* background-color: #4a6b8a; */ 
+    /* Apply rest-card hover styles */
+    transform: translateY(-2px);
+    border-color: #555;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #333333;
 }
 
 .fishing-choice-card h4 {
-    margin: 0 0 10px 0; /* Adjusted margin */
+    margin: 0 0 10px 0; /* Reduced bottom margin */
     font-size: 1.1em;
-    color: #eee; /* Match rest-card h4 color */
-    min-height: 2.5em; /* Ensure space for two lines */
-    display: flex; /* Use flexbox for vertical centering */
-    align-items: center; /* Center text vertically */
-    justify-content: center; /* Center text horizontally */
-}
-
-.requirement-missing-small {
-    color: #e57373; /* Lighter red */
-    font-size: 0.8em;
-    font-weight: bold;
-    min-height: 1.2em; /* Prevent layout shift if text absent */
+    color: #eee;
+    min-height: 2.5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .fishing-info-icons-small {
@@ -95,28 +90,30 @@
 }
 
 .fishing-choice-card .choice-start-button {
-    /* Match rest-card button styling */
-    background-color: #45a049; /* Darker blue/teal */
+    /* Apply rest-card button styles */
+    background-color: #4a4a4a;
     color: #ffffff;
     border: none;
-    padding: 10px; /* Match rest-card button padding */
-    border-radius: 4px; /* Match rest-card button */
+    padding: 10px;
+    border-radius: 4px;
     cursor: pointer;
-    transition: all 0.3s ease; /* Match rest-card button */
-    margin-top: auto; /* Ensure button is at bottom */
-    font-weight: bold; /* Match rest-card button */
-    width: 100%; /* Match rest-card button */
-    font-size: 1em; /* Match rest-card button */
+    transition: all 0.3s ease;
+    margin-top: auto;
+    font-weight: bold;
+    width: 100%;
+    font-size: 1em;
 }
 
 .fishing-choice-card .choice-start-button:hover:not(:disabled) {
-    /* Match rest-card button:hover styling */
+    /* Apply rest-card button hover styles */
+    background-color: #5a5a5a;
     transform: translateY(-2px);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .fishing-choice-card .choice-start-button:disabled {
-    background-color: #3a3a3a; /* Darker disabled state */
+    /* Keep existing disabled style */
+    background-color: #3a3a3a;
     color: #777;
     cursor: default;
     transform: none;
@@ -283,113 +280,58 @@
     /* Optionally adjust border-radius or other properties */
 }
 
-/* Add placeholder style for consistent height */
-.requirement-placeholder-small {
-    display: inline-block; /* Needed for min-height to apply */
-    min-height: 1.2em; /* Match the missing requirement text height */
-    visibility: hidden; /* Keep space but hide content (like &nbsp;) */
-}
-
-/* --- Info Grid Layout --- */
+/* --- Info Grid Layout - Adapt from rest-stats-grid --- */
 .fishing-info-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr; /* Two equal columns */
-    grid-template-rows: auto auto; /* Two rows, auto height */
-    gap: 2px 8px; /* Small row gap, larger column gap */
-    text-align: center;
-    /* margin: 10px 0; */ /* Removed vertical margin */
-    padding: 5px 8px; /* Reduced vertical padding, keep horizontal */
-    /* border-top: 1px solid #4a4a4a; */ /* Removed border */
-    /* border-bottom: 1px solid #4a4a4a; */ /* Removed border */
-    background-color: rgba(0, 0, 0, 0.15); /* Added subtle background */
-    border-radius: 4px; /* Added slight rounding */
-    margin: 5px 0; /* Reduced vertical margin */
+    /* display: grid; REMOVED */
+    display: flex; /* Match rest-stats-grid */
+    flex-direction: row; /* Match rest-stats-grid */
+    flex-wrap: wrap;
+    justify-content: center; /* Match rest-stats-grid */
+    align-items: center;
+    gap: 8px; /* Match rest-stats-grid */
+    margin: 10px 0 15px 0; /* Reduced vertical margins */
+    /* Remove grid-specific properties */
+    /* grid-template-columns: 1fr 1fr; */
+    /* grid-template-rows: auto auto; */
+    /* Remove background/padding/border from grid container */
+    /* background-color: rgba(0, 0, 0, 0.15); */
+    /* padding: 5px 8px; */
+    /* border-radius: 4px; */
 }
 
 .info-header {
-    font-size: 0.8em;
-    color: #aaa;
-    font-weight: bold;
-    text-transform: uppercase;
+    /* Hide headers as rest-stats doesn't use them */
+    display: none;
 }
 
 .info-value {
-    font-size: 1.0em;
-    font-weight: bold;
-    /* Colors will be applied by level classes */
+    /* Apply rest-stat base styles */
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.95em;
+    font-weight: 500;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    /* Base color set by specific level */
 }
 /* --- End Info Grid Layout --- */
 
-/* Remove old icon container style */
-/*
-.fishing-info-icons-small {
-    display: flex;
-    justify-content: center;
-    gap: 10px; 
-    font-size: 0.9em; 
-    margin: 5px 0;
-}
-
-.fishing-info-icons-small .info-icon {
-    display: flex;
-    align-items: center;
-    gap: 3px;
-    font-size: 0.95em; 
-    font-weight: bold; 
-}
-*/
-
-/* --- Fish Level Colors --- */
-.info-value.fish-level-low {
-    color: #e57373; /* Red */
-}
-.info-value.fish-level-medium {
-    color: #fff176; /* Yellow */
-}
-.info-value.fish-level-high {
-    color: #81c784; /* Green */
-}
-/* --- End Fish Level Colors --- */
-
-/* --- Treasure Level Colors --- */
-.info-value.treasure-level-none {
-    color: #ccc; /* Default color */
-}
+/* --- Fish/Treasure Level Colors (Apply to info-value like rest-stat) --- */
+.info-value.fish-level-low, 
 .info-value.treasure-level-low {
-    color: #e57373; /* Red */
+    color: #ef9a9a; /* Red (like rest-maxhp) */
 }
-.info-value.treasure-level-medium {
-    color: #fff176; /* Yellow */
+.info-value.fish-level-medium, 
+.info-value.treasure-level-medium, 
+.info-value.treasure-level-none { /* Group medium/none */
+    color: #fff176; /* Yellow (keep yellow for Med/None) */
 }
+.info-value.fish-level-high, 
 .info-value.treasure-level-high {
-    color: #81c784; /* Green */
+    color: #a5d6a7; /* Green (like rest-heal) */
 }
-/* --- End Treasure Level Colors --- */
-
-/* Remove base .info-icon style and specific icon colors */
-/*
-.info-icon {
-    display: inline-flex; 
-    align-items: center;
-    gap: 5px; 
-    font-size: 0.9em;
-    padding: 3px 6px;
-    border-radius: 4px;
-    background-color: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #ccc;
-}
-
-.info-icon.fish-types {
-    
-}
-.info-icon.treasure-chance {
-    color: #ffd700; 
-}
-.info-icon.monster-risk {
-    color: #ff6b6b; 
-}
-*/
+/* --- End Level Colors --- */
 
 /* --- Fishing Animation --- */
 #fishing-animation {
@@ -508,3 +450,32 @@
 }
 
 /* --- End Fishing Animation --- */
+
+/* Add disabled state for the card */
+.fishing-choice-card.disabled {
+    opacity: 0.6;
+    pointer-events: none; /* Prevent hover effects on the card */
+    background: #383838; /* Match shrine disabled background */
+    /* Button inside will get its own disabled style, including cursor */
+}
+
+/* Add style for the short description */
+.fishing-card-desc {
+    font-size: 0.9em;
+    color: #bbb;
+    margin: 5px 0 5px 0; /* Reduced bottom margin */
+    min-height: 2.7em; /* Reserve space for ~2 lines */
+    display: flex; /* Allow centering */
+    align-items: center;
+    justify-content: center;
+}
+
+/* Style for the rating explanation text */
+.fishing-rating-explanation {
+    font-size: 0.95em; /* Increased font size */
+    color: #aaa; /* Greyed out color */
+    margin-top: 5px; /* Adjusted top margin */
+    margin-bottom: 15px; /* Space before choices */
+    max-width: 90%; /* Prevent excessive width */
+    line-height: 1.3;
+}

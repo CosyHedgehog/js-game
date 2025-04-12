@@ -1,5 +1,12 @@
 class Fishing {
 
+    // --- Configuration ---
+    FISH_CHANCE_SMALL = 0.40; // 40%
+    FISH_CHANCE_MEDIUM = 0.40; // 40%
+    FISH_CHANCE_LARGE = 0.20; // 20%
+    // Note: Ensure these add up to 1.00 (or close enough due to floating point)
+    // --- End Configuration ---
+
     constructor(game, ui) {
         this.game = game;
         this.ui = ui;
@@ -8,49 +15,30 @@ class Fishing {
     FISHING_AREAS = {
         shoreline: {
             name: 'Shallow Shoreline',
-            description: 'Scrounge near the water\'s edge. <br>Fish: <b>Small (75%)</b> - <b>Medium (25%)</b>.',
+            description: 'Scour the shallow waters and muddy banks.',
             fishRange: [1, 3],
-            lootTable: [
-                { itemId: 'small_fish', chance: 0.75 },
-                { itemId: 'medium_fish', chance: 0.25 }
-            ],
             ringChance: 0.05,
-            monsterChance: 0.05,
             requiresRod: false
         },
         safe: {
             name: 'Waterlogged Cave',
-            description: 'A damp cave with a pool of water. <br>Fish: <b>Medium (100%)</b>.',
+            description: 'Explore the dripping cave and its hidden pool.',
             fishRange: [3, 4],
-            lootTable: [
-                { itemId: 'medium_fish', chance: 1 }
-            ],
             ringChance: 0.20,
-            monsterChance: 0,
             requiresRod: true
         },
         moderate: {
             name: 'Rushing Stream',
-            description: 'A faster flowing area. <br>Fish: <b>Small (50%)</b> - <b>Medium (50%)</b>',
+            description: 'Battle the current in this fast-flowing stream.',
             fishRange: [4, 8],
-            lootTable: [
-                { itemId: 'small_fish', chance: 0.50 },
-                { itemId: 'medium_fish', chance: 0.50 },
-            ],
             ringChance: 0.10,
-            monsterChance: 0.10,
             requiresRod: true
         },
         dangerous: {
             name: 'Murky Depths',
-            description: 'A treacherous fishing spot. <br>Fish: <b>Medium (40%)</b> - <b>Large (60%)</b>.',
-            fishRange: [1, 2],
-            lootTable: [
-                { itemId: 'medium_fish', chance: 0.40 },
-                { itemId: 'large_fish', chance: 0.60 }
-            ],
+            description: 'Plunge your line into the dark, unknown depths.',
+            fishRange: [1, 3],
             ringChance: 0.30,
-            monsterChance: 0.40,
             requiresRod: true
         }
     };
@@ -75,15 +63,17 @@ class Fishing {
             <div class="fishing-main-container">
                 <div class="fishing-icon">🎣</div> 
                 <h3>Choose Fishing Spot</h3>
-                <p class="fishing-prompt">Where will you cast your line?</p>
+                <p class="fishing-rating-explanation">Ratings: Fish Quantity / Treasure Chance (Low/Med/High). Rod required for Med/High.</p>
                 <div class="fishing-choices">
                 ${Object.entries(this.FISHING_AREAS).map(([key, area]) => {
             const needsRod = area.requiresRod === true;
             const isDisabled = needsRod && !hasFishingRod ? 'disabled' : '';
-                        // Output placeholder span if requirement met or not applicable
-                        const requirementText = needsRod && !hasFishingRod 
-                            ? `<span class="requirement-missing-small">Requires Rod</span>` 
-                            : `<span class="requirement-placeholder-small">&nbsp;</span>`;
+            const disabledCardClass = isDisabled ? 'disabled' : ''; // Class for the card
+            
+                        // REMOVED requirementText logic
+                        // const requirementText = needsRod && !hasFishingRod 
+                        //     ? `<span class="requirement-missing-small">Requires Rod</span>` 
+                        //     : `<span class="requirement-placeholder-small">&nbsp;</span>`;
 
                         // --- Button Text Logic ---
                         let buttonText = "Fish"; // Default
@@ -127,10 +117,14 @@ class Fishing {
                         // const treasureDisplay = `<span class="info-icon treasure-chance ${treasureLevelClass}">💎: ${treasureText}</span>`; // Added colon and class
                         // --- REMOVED old treasureDisplay
 
+            // Extract short description
+            const shortDesc = area.description.split('<br>')[0];
+
             return `
-                            <div class="fishing-choice-card" data-area="${key}">
+                            <div class="fishing-choice-card ${disabledCardClass}" data-area="${key}">
                                 <h4>${area.name}</h4>
-                                ${requirementText}
+                                <p class="fishing-card-desc">${shortDesc}</p>
+                                <!-- REMOVED requirementText span -->
                                 <div class="fishing-info-grid">
                                     <span class="info-header">Fish</span>
                                     <span class="info-header">Treasure</span>
@@ -279,49 +273,33 @@ class Fishing {
             }
         }
 
-        const currentLootTable = area.lootTable;
         for (let i = 0; i < fishCaughtCount; i++) {
             const roll = Math.random();
-            let cumulative = 0;
+            let itemId = null;
 
-            for (const lootEntry of currentLootTable) {
-                cumulative += lootEntry.chance;
-                if (roll < cumulative) {
-                    const itemId = lootEntry.itemId;
-                    if (itemId) {
-                        const createdItem = this.game.createItem(itemId);
-                        if (createdItem) {
-                            caughtItems.push(createdItem);
-                        } else {
-                            console.error(`Failed to create item with ID: ${itemId}`);
-                        }
-                    }
-                    break; // Exit inner loop once an item type is determined
+            if (roll < this.FISH_CHANCE_SMALL) {
+                itemId = 'small_fish';
+            } else if (roll < this.FISH_CHANCE_SMALL + this.FISH_CHANCE_MEDIUM) {
+                itemId = 'medium_fish';
+            } else {
+                itemId = 'large_fish';
+            }
+
+            if (itemId) {
+                const createdItem = this.game.createItem(itemId);
+                if (createdItem) {
+                    caughtItems.push(createdItem);
+                } else {
+                    console.error(`Failed to create item with ID: ${itemId}`);
                 }
             }
         }
 
-        // if (Math.random() < area.monsterChance) {
-        //     this.game.addLog("Suddenly, something emerges from the water!");
-        //     const monsterId = 'river_troll'; // TODO: Make monster dynamic based on area?
-        //     const monsterData = MONSTERS[monsterId];
-        //     if (!monsterData) {
-        //         console.error("Monster data not found:", monsterId);
-        //         this.game.addLog("An unknown creature appears!");
-        //         this.game.proceedToNextRound();
-        //         return;
-        //     }
-        //     // Need to pass the ui object to the Combat constructor
-        //     this.game.currentCombat = new Combat(this.game.player, monsterData, this.game, this.ui);
-        //     this.game.state = 'combat';
-        //     this.game.currentCombat.start();
-        // } else {
              if (caughtItems.length > 0) {
                 this.game.enterLootState(0, caughtItems);
              } else {
                  this.game.addLog("You didn't find anything useful this time.");
                  this.game.proceedToNextRound(); // Proceed if nothing caught
              }
-        // }
     }
 }
