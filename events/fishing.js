@@ -7,7 +7,7 @@ class Fishing {
 
     FISHING_AREAS = {
         shoreline: {
-            name: '🐚 Shallow Shoreline',
+            name: 'Shallow Shoreline',
             description: 'Scrounge near the water\'s edge. <br>Fish: <b>Small (75%)</b> - <b>Medium (25%)</b>.',
             fishRange: [1, 3],
             lootTable: [
@@ -19,8 +19,8 @@ class Fishing {
             requiresRod: false
         },
         safe: {
-            name: '🐟 Calm Waters',
-            description: 'A peaceful spot. Home to a school of medium fish. <br>Fish: <b>Medium (100%)</b>.',
+            name: 'Waterlogged Cave',
+            description: 'A damp cave with a pool of water. <br>Fish: <b>Medium (100%)</b>.',
             fishRange: [3, 4],
             lootTable: [
                 { itemId: 'medium_fish', chance: 1 }
@@ -30,7 +30,7 @@ class Fishing {
             requiresRod: true
         },
         moderate: {
-            name: '🐠 Rushing Stream',
+            name: 'Rushing Stream',
             description: 'A faster flowing area. <br>Fish: <b>Small (50%)</b> - <b>Medium (50%)</b>',
             fishRange: [4, 8],
             lootTable: [
@@ -42,7 +42,7 @@ class Fishing {
             requiresRod: true
         },
         dangerous: {
-            name: '🦈 Deep Waters',
+            name: 'Murky Depths',
             description: 'A treacherous fishing spot. <br>Fish: <b>Medium (40%)</b> - <b>Large (60%)</b>.',
             fishRange: [1, 2],
             lootTable: [
@@ -67,52 +67,128 @@ class Fishing {
         const fishingAreaContainer = this.ui.fishingArea;
         fishingAreaContainer.id = 'fishing-area';
         fishingAreaContainer.classList.remove('hidden');
+        fishingAreaContainer.innerHTML = '';
 
         const hasFishingRod = this.game.player.inventory.some(item => item && item.id === 'fishing_rod');
 
-        fishingAreaContainer.innerHTML = `
-            <div class="fishing-areas-container">
+        const mainContainerHTML = `
+            <div class="fishing-main-container">
+                <div class="fishing-icon">🎣</div> 
+                <h3>Choose Fishing Spot</h3>
+                <p class="fishing-prompt">Where will you cast your line?</p>
+                <div class="fishing-choices">
                 ${Object.entries(this.FISHING_AREAS).map(([key, area]) => {
             const needsRod = area.requiresRod === true;
             const isDisabled = needsRod && !hasFishingRod ? 'disabled' : '';
-            const actualRequirement = needsRod && !hasFishingRod ? `<span class="requirement-missing">Requires Fishing Rod</span>` : '';
-            const placeholder = `<span class="requirement-placeholder">Requires Fishing Rod</span>`;
-            const requirementContent = actualRequirement || placeholder;
+                        // Output placeholder span if requirement met or not applicable
+                        const requirementText = needsRod && !hasFishingRod 
+                            ? `<span class="requirement-missing-small">Requires Rod</span>` 
+                            : `<span class="requirement-placeholder-small">&nbsp;</span>`;
 
-            const updatedDescription = area.description;
+                        // --- Button Text Logic ---
+                        let buttonText = "Fish"; // Default
+                        if (key === 'shoreline') {
+                            buttonText = "Scrounge";
+                        } else if (key === 'safe') {
+                            buttonText = "Explore";
+                        } else if (key === 'moderate') {
+                            buttonText = "Wade";
+                        } else if (key === 'dangerous') {
+                            buttonText = "Plunge";
+                        }
+                        // ---
 
-        //     <span class="fishing-stat monster-chance-stat">
-        //     <span class="fishing-stat-label">Monster Chance</span>
-        //     <span class="fishing-stat-value">${Math.round(area.monsterChance * 100)}%</span>
-        // </span>
+                        // --- Fish Level Logic ---
+                        let fishLevel = "Med"; // Changed from Medium
+                        let fishLevelClass = "fish-level-medium";
+                        if (key === 'shoreline' || key === 'dangerous') {
+                            fishLevel = "Low";
+                            fishLevelClass = "fish-level-low";
+                        } else if (key === 'moderate') {
+                            fishLevel = "High";
+                            fishLevelClass = "fish-level-high";
+                        } // 'safe' (Waterlogged Cave) defaults to Med
+                        // const fishDisplay = `<span class="info-icon ${fishLevelClass}">Fish: ${fishLevel}</span>`;
+                        // --- REMOVED old fishDisplay
+
+                        // Simplified Treasure Chance Display & Coloring
+                        let treasureText = 'None';
+                        let treasureLevelClass = 'treasure-level-none'; // Default class
+                        if (area.ringChance > 0.25) {
+                            treasureText = 'High';
+                            treasureLevelClass = 'treasure-level-high';
+                        } else if (area.ringChance > 0.10) {
+                            treasureText = 'Med';
+                            treasureLevelClass = 'treasure-level-medium';
+                        } else if (area.ringChance > 0) {
+                            treasureText = 'Low';
+                            treasureLevelClass = 'treasure-level-low';
+                        }
+                        // const treasureDisplay = `<span class="info-icon treasure-chance ${treasureLevelClass}">💎: ${treasureText}</span>`; // Added colon and class
+                        // --- REMOVED old treasureDisplay
 
             return `
-                    <div class="choice-card" data-area="${key}">
-                        <h4 class="choice-title">${area.name}</h4>
-                        ${requirementContent}
-                        <p class="choice-description">${updatedDescription}</p>
-                        <div class="monster-stats-grid">
-                            <span class="fishing-stat">Fish: ${area.fishRange[0]}-${area.fishRange[1]}</span>
-                            <span class="fishing-stat">
-                                <span class="fishing-stat-label">Treasure Chance</span>
-                                <span class="fishing-stat-value">${Math.round(area.ringChance * 100)}%</span>
-                            </span>
+                            <div class="fishing-choice-card" data-area="${key}">
+                                <h4>${area.name}</h4>
+                                ${requirementText}
+                                <div class="fishing-info-grid">
+                                    <span class="info-header">Fish</span>
+                                    <span class="info-header">Treasure</span>
+                                    <span class="info-value ${fishLevelClass}">${fishLevel}</span>
+                                    <span class="info-value ${treasureLevelClass}">${treasureText}</span>
+                                </div>
+                                <button class="choice-start-button" ${isDisabled}>${buttonText}</button> 
                         </div>
-                        <button class="choice-start-button" ${isDisabled}>Fish Here</button>
-                    </div>
-                `}).join('')}
+                        `;
+                    }).join('')}
+                </div>
             </div>
         `;
 
-        document.getElementById('main-content').appendChild(fishingAreaContainer);
+        fishingAreaContainer.innerHTML = mainContainerHTML;
 
-        const fishingButtons = fishingAreaContainer.querySelectorAll('.choice-start-button');
+        const fishingButtons = fishingAreaContainer.querySelectorAll('.fishing-choice-card .choice-start-button');
         fishingButtons.forEach(button => {
             button.addEventListener('click', () => {
-                const areaKey = button.closest('.choice-card').dataset.area;
-                this.startFishing(areaKey);
+                const areaKey = button.closest('.fishing-choice-card').dataset.area;
+                this.showFishingAnimation(areaKey);
             });
         });
+    }
+
+    showFishingAnimation(areaKey) {
+        this.ui.clearMainArea();
+        this.ui.fishingArea.innerHTML = '';
+        const animationContainer = document.createElement('div');
+        animationContainer.id = 'fishing-animation';
+        animationContainer.innerHTML = `
+            <div class="fishing-animation-container">
+                <div class="fishing-rod-anim">🎣</div>
+                <div class="fishing-line-anim"></div>
+                <div class="fishing-water-anim">
+                    <div class="wave-anim"></div>
+                    <div class="wave-anim"></div>
+                    <div class="wave-anim"></div>
+                </div>
+                <p class="fishing-status-text">Casting line...</p>
+            </div>
+        `;
+        this.ui.fishingArea.appendChild(animationContainer);
+        this.ui.fishingArea.classList.remove('hidden');
+
+        const statusText = animationContainer.querySelector('.fishing-status-text');
+
+        // setTimeout(() => {
+        //     if (statusText) statusText.textContent = "Waiting for a bite...";
+        // }, 1000);
+
+        // setTimeout(() => {
+        //      if (statusText) statusText.textContent = "Something's biting!";
+        // }, 2000);
+
+        setTimeout(() => {
+            this.startFishing(areaKey);
+        }, 1000);
     }
 
     // Helper function to get a random ring based on the area
