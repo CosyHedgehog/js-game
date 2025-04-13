@@ -28,13 +28,13 @@ const EVENTS_DATA = {
         icon: '⚗️',
         buttonText: 'Enter Shop'
     },
-    'treasure_chest': {
-        weight: 5,
-        choiceText: "Treasure Chest",
-        detailsTemplate: "You find a sturdy-looking treasure chest. It might be locked.\n\nApproach the chest?",
-        handler: 'TreasureHandler',
-        icon: '💎',
-        buttonText: 'Open Chest'
+    'treasure_room': {
+        weight: 15,
+        choiceText: "Treasure Room",
+        detailsTemplate: "You find a room containing several chests. Some look safer than others...\n\nEnter the room?",
+        handler: 'TreasureRoomHandler',
+        icon: '🗝️',
+        buttonText: 'Enter Room'
     },
     'forge': {
         weight: 10,
@@ -51,14 +51,6 @@ const EVENTS_DATA = {
         handler: 'FishingHandler',
         icon: '🎣',
         buttonText: 'Go Fishing'
-    },
-    'trap': {
-        weight: 5,
-        choiceText: "Disarm Trap",
-        detailsTemplate: "You notice a set of suspicious traps. You can attempt to disarm them.\n\nInvestigate traps?",
-        handler: 'TrapHandler',
-        icon: '⚡',
-        buttonText: 'Investigate'
     },
     'ancient_shrine': {
         weight: 5,

@@ -70,6 +70,7 @@ class CacheManager {
         this.ui.tooltipCache = { attack: new Map(), defense: new Map(), dps: new Map() };
         this.ui.weaponMerchantArea = document.getElementById('weapon-merchant-area');
         this.ui.shrineArea = document.getElementById('shrine-area');
+        this.ui.treasureRoomArea = document.getElementById('treasure-room-area');
 
         this.cacheDynamicElements();
     }
@@ -154,6 +155,7 @@ class CacheManager {
         document.getElementById('alchemist-area')?.remove();
         document.getElementById('starting-pack-area')?.remove();
         document.getElementById('area-transition-screen')?.remove();
+        this.ui.treasureRoomArea?.classList.add('hidden');
         this.cacheDynamicElements();
     }
 }

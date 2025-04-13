@@ -35,7 +35,7 @@ class Game {
         this.armorsmith = new Armoury(this, this.ui);
         this.sharpen = new Sharpen(this, this.ui);
         this.blacksmith = new Blacksmith(this, this.ui);
-        this.trap = new Trap(this, this.ui);
+        // this.trap = new Trap(this, this.ui); // Removed old Trap instance
         this.weaponMerchant = new WeaponMerchant(this, this.ui);
 
         this.weightedDiscounts = [
@@ -54,18 +54,17 @@ class Game {
         this.addLog = this.addLog.bind(this);
 
         this.eventHandlers = {
-            // Map string identifiers from EVENTS_DATA to actual handlers
-            'MonsterHandler': Monster, // Store the Class itself
-            'RestHandler': Rest,       // Store the Class itself
-            'ShopHandler': this.shop,  // Store the instance
-            'AlchemistHandler': this.alchemist, // Store the instance
-            'TreasureHandler': Treasure, // Store the Class itself
-            'ForgeHandler': Forge,     // Store the Class itself
-            'FishingHandler': Fishing, // Store the Class itself
-            'TrapHandler': this.trap,  // Store the instance
-            'WeaponMerchantHandler': this.weaponMerchant, // Store the instance
-            'ShrineHandler': new Shrine(this, this.ui) // Add new Shrine handler instance
-            // Add mappings for Blacksmith, Sharpen, Armorsmith if they become separate events again
+            'MonsterHandler': Monster, 
+            'RestHandler': Rest,       
+            'ShopHandler': this.shop,  
+            'AlchemistHandler': this.alchemist, 
+            // 'TreasureHandler': Treasure, // Removed old handler
+            'ForgeHandler': Forge,     
+            'FishingHandler': Fishing, 
+            // 'TrapHandler': this.trap,  // Removed old handler
+            'WeaponMerchantHandler': this.weaponMerchant, 
+            'ShrineHandler': new Shrine(this, this.ui), 
+            'TreasureRoomHandler': new TreasureRoom(this, this.ui) // Added new handler instance
         };
         // --- End Handler Registry ---
     }
@@ -75,11 +74,13 @@ class Game {
         { type: 'rest', weight: 10 }, // DONE
         { type: 'shop', weight: 10 }, // DONE
         { type: 'alchemist', weight: 5 }, // DONE
-        { type: 'treasure_chest', weight: 10 }, // DONE
+        // { type: 'treasure_chest', weight: 10 }, // Removed
         { type: 'forge', weight: 10 }, // DONE
-        { type: 'fishing', weight: 100 }, // DONE
-        { type: 'trap', weight: 10 }, // DONE
-        { type: 'weapon_merchant', weight: 5 }
+        { type: 'fishing', weight: 10 }, // Corrected weight for consistency
+        // { type: 'trap', weight: 10 }, // Removed
+        { type: 'weapon_merchant', weight: 5 },
+        { type: 'treasure_room', weight: 15 }, // Added new event probability
+        { type: 'ancient_shrine', weight: 5} // Added shrine probability
     ];
 
     start() {
@@ -112,9 +113,9 @@ class Game {
         this.currentArea = "blighted_swamp";
         // this.currentArea = "giants_pass";
 
-        this.player.health = 15;
+        this.player.health = 12;
         this.player.maxHealth = 15;
-        this.player.gold = 1000;
+        this.player.gold = 0;
         this.player.baseAttack = 2;
         this.player.baseDefense = 3;
 
@@ -131,6 +132,7 @@ class Game {
         this.player.addItem(this.createItem('bread'));
         this.player.addItem(this.createItem('bread'));
         this.player.addItem(this.createItem('bread'));
+        this.player.addItem(this.createItem('thief_tools'));
 
         this.ui.gameScreen?.classList.remove('hidden');
 
