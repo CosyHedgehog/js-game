@@ -257,7 +257,6 @@ class TreasureRoom {
                  failArea.classList.remove('hidden');
                  this.ui.createDamageSplat('.failure-display', damageTaken, 'damage'); // Show splat on the temp message
 
-
                  if (this.game.player.health <= 0) {
                      // Delay game over slightly to show message/splat
                       setTimeout(() => {
@@ -265,15 +264,31 @@ class TreasureRoom {
                       }, 1500); 
                      return; // Don't proceed further
                  } else {
-                      // Add a continue button after failure
-                      const continueButton = document.createElement('button');
-                      continueButton.textContent = "Continue";
-                      continueButton.className = 'continue-button'; // Use global style if available
-                      continueButton.onclick = () => {
+                      // Add Try Again and Leave buttons after failure
+                      const buttonContainer = document.createElement('div');
+                      buttonContainer.className = 'failure-button-container';
+
+                      const tryAgainButton = document.createElement('button');
+                      tryAgainButton.textContent = "Try Again";
+                      tryAgainButton.className = 'try-again-button button'; // Add base .button class if exists
+                      tryAgainButton.onclick = () => {
+                            // --- CORRECTED: Call handleChestInteraction with the specific chest key ---
+                            this.handleChestInteraction(chest.key); 
+                            // --- End Correction ---
+                      };
+
+                      const leaveButton = document.createElement('button');
+                      leaveButton.textContent = "Leave";
+                      leaveButton.className = 'leave-button'; // Use global style if available
+                      leaveButton.onclick = () => {
+                            this.game.addLog("You leave the triggered chest alone.");
                             this.ui.clearMainArea();
                             this.game.proceedToNextRound();
                       };
-                      failArea.querySelector('.failure-display').appendChild(continueButton);
+                      
+                      buttonContainer.appendChild(tryAgainButton);
+                      buttonContainer.appendChild(leaveButton);
+                      failArea.querySelector('.failure-display').appendChild(buttonContainer);
                  }
              }
          }, 800); // Delay for the "Disarming..." message/spinner

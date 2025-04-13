@@ -239,8 +239,60 @@
     margin-bottom: 20px;
     color: #ef9a9a;
 }
+
+/* Container for failure buttons */
+.failure-button-container {
+    display: flex;
+    flex-direction: column; /* Stack vertically */
+    gap: 10px; /* Adjust gap for vertical */
+    margin-top: 15px;
+    align-items: center; /* Center buttons horizontally */
+}
+
+/* Style for Try Again button */
+.failure-display .try-again-button {
+    background-color: #4CAF50; /* Green */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.1em;
+    width: 150px; /* Give buttons a consistent width */
+}
+
+.failure-display .try-again-button:hover {
+    background-color: #45a049; /* Darker green */
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Ensure leave button inherits styles */
+.failure-display .leave-button {
+    /* Inherit global .leave-button style */
+     background-color: #f44336; 
+     color: white;
+     border: none;
+     padding: 10px 20px;
+     border-radius: 4px;
+     font-weight: bold;
+     cursor: pointer;
+     transition: all 0.3s ease;
+     font-size: 1.1em;
+     width: 150px; /* Give buttons a consistent width */
+}
+.failure-display .leave-button:hover {
+     background-color: #d32f2f; 
+     transform: translateY(-2px);
+     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* REMOVED old single continue button */
+/*
 .failure-display .continue-button {
-    background-color: #f44336; /* Red background */
+    background-color: #f44336; 
     color: white;
     border: none;
     padding: 10px 20px;
@@ -251,7 +303,8 @@
     font-size: 1.1em;
 }
 .failure-display .continue-button:hover {
-    background-color: #d32f2f; /* Darker red */
+    background-color: #d32f2f; 
     transform: translateY(-2px);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 } 
+*/
