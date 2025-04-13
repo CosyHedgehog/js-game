@@ -1,11 +1,39 @@
 const TWISTED_FOREST_MONSTER_DATA = {
-    'Ent': {
-        name: 'Ent',
+    'mountain_goat': {
+        name: 'Mountain Goat', 
+        health: 18, 
+        attack: 2, 
+        defense: 2, 
+        speed: 1.6, 
+        goldDrop: [2, 5],
+        difficulty: 'easy',
+        description: "A sturdy goat navigating the steep hills.",
+        lootTable: [
+            { itemTier: 'uncommonFood', chance: 0.70 },
+            { itemTier: 'uncommonItem', chance: 0.40 },
+        ]
+    },
+    'mountain_lion': {
+        name: 'Mountain Lion', 
+        health: 20, 
+        attack: 3, 
+        defense: 1, 
+        speed: 1.4, 
+        goldDrop: [4, 11],
+        difficulty: 'medium',
+        description: "A sleek predator stalking the rocky terrain.",
+        lootTable: [
+            { itemTier: 'uncommonFood', chance: 1.00 },
+            { itemTier: 'uncommonItem', chance: 0.70 },
+        ]
+    },
+    'thornroot': {
+        name: 'Thornroot',
         icon: '🌳',
         health: 50, 
-        attack: 0, 
-        defense: 0, 
-        speed: 55,
+        attack: 4, 
+        defense: 5, 
+        speed: 3.0,
         goldDrop: [5, 15],
         isMiniBoss: true,
         description: "A massive tree-like creature, its form shifting between thorny defense and resilient regeneration.",

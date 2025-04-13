@@ -84,8 +84,8 @@ class Game {
     ];
 
     start() {
-        this.devMode();
-        // this.normalMode();
+        // this.devMode();
+        this.normalMode();
         this.lastGlobalTickTime = Date.now();
         if (this.globalTickIntervalId) clearInterval(this.globalTickIntervalId);
         this.globalTickIntervalId = setInterval(() => this.gameTick(), this.globalTickRate);
@@ -109,30 +109,38 @@ class Game {
 
     devMode() {
         this.currentRound = 19;
-        this.state = 'choosing';
+        // this.state = 'choosing';
         this.currentArea = "twisted_forest";
-        // this.currentArea = "giants_pass";
 
-        this.player.health = 1000;
-        this.player.maxHealth = 15;
+        this.player.health = 13;
+        this.player.maxHealth = 13;
         this.player.gold = 0;
-        this.player.baseAttack = 1;
-        this.player.baseDefense = 7;
+        this.player.baseAttack = 2;
+        this.player.baseDefense = 2;
 
-        this.player.addItem(this.createItem('wooden_shield'));
-        this.player.addItem(this.createItem('wooden_sword'));
+        // this.player.addItem(this.createItem('wooden_shield'));
+        this.player.addItem(this.createItem('iron_hammer'));
         this.player.equipItem(0);
+        this.player.addItem(this.createItem('iron_helm'));
+        this.player.addItem(this.createItem('iron_armor'));
         this.player.equipItem(1);
+        this.player.equipItem(2);
+
+        // this.player.equipItem(1);
         this.player.addItem(this.createItem('fishing_rod'));
+        this.player.addItem(this.createItem('medium_fish'));
+        this.player.addItem(this.createItem('medium_fish'));
+        this.player.addItem(this.createItem('medium_fish'));
+
         this.player.addItem(this.createItem('bread'));
         this.player.addItem(this.createItem('bread'));
         this.player.addItem(this.createItem('bread'));
         this.player.addItem(this.createItem('bread'));
-        this.player.addItem(this.createItem('bread'));
-        this.player.addItem(this.createItem('bread'));
-        this.player.addItem(this.createItem('bread'));
-        this.player.addItem(this.createItem('bread'));
-        this.player.addItem(this.createItem('thief_tools'));
+        
+        this.player.addItem(this.createItem('attack_potion'));
+        this.player.addItem(this.createItem('defense_potion'));
+        this.player.addItem(this.createItem('speed_potion'));
+
 
         this.ui.gameScreen?.classList.remove('hidden');
 

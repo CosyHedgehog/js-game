@@ -17,7 +17,7 @@ const AREA_CONFIG = [
             },
             'blighted_swamp': {
                 name: "Blighted Swamp",
-                tooltip: "A swamp filled with various creatures that have been corrupted by the blight. Be careful of their poison!",
+                tooltip: "A swamp filled with various creatures that have been corrupted by the blight.",
                 monsters: ['giant_frog', 'mutated_mushroom'],
                 miniBoss: 'globulus'
             },
@@ -30,20 +30,20 @@ const AREA_CONFIG = [
             'grizzly_hills': {
                 name: "Grizzly Hills",
                 tooltip: "Steep hills inhabited by tenacious wildlife.",
-                monsters: ['mountain_goat', 'mountain_lion', 'wolverine'],
+                monsters: ['mountain_goat', 'mountain_lion'],
                 miniBoss: 'raging_grizzly'
             },
             'giants_pass': {
                 name: "Giant's Pass",
                 tooltip: "A high mountain pass where colossal beings tread.",
-                monsters: ['hill_giant_grunt', 'moss_giant', 'giant_gatekeeper'],
-                miniBoss: 'cyclops_stone_thrower'
+                monsters: ['hill_giant_grunt', 'moss_giant'],
+                miniBoss: 'gronk'
             },
             'twisted_forest': {
                 name: "Twisted Forest",
                 tooltip: "A dense forest where the trees have become sentient and twisted.",
-                monsters: ['Ent', 'twisted_tree', 'ent_guardian'],
-                miniBoss: 'ent'
+                monsters: ['mountain_goat', 'mountain_lion'],
+                miniBoss: 'thornroot'
             }
         }
     },

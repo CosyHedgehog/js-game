@@ -27,8 +27,8 @@ const GIANTS_PASS_MONSTER_DATA = {
             { itemTier: 'uncommonItem', chance: 0.70 },
         ]
     },
-    'cyclops_stone_thrower': {
-        name: 'Cyclops Stone-Thrower',
+    'gronk': {
+        name: 'Gronk',
         icon: '🧌',
         health: 50, 
         attack: 8, 
@@ -39,7 +39,7 @@ const GIANTS_PASS_MONSTER_DATA = {
         hasTimedStun: true,
         timedStunInterval: 12,
         timedStunDuration: 4,
-        description: "A lumbering giant with a single, hateful eye.",
+        description: "A ogre with a single, hateful eye.",
         mechanics: "Hurls a massive boulder every 12 seconds, causing a shockwave that stuns you for 4 seconds!",
         mechanicTooltips: {
             default: "Stuns for 4 seconds."

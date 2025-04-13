@@ -559,9 +559,7 @@ class Combat {
         let combatEnded = false;
         let playerWon = false;
 
-        if (this.enemy.health <= 0) {
-
-
+        if (this.enemy.health <= 0 && this.player.health > 0) {
             if (this.ui.combatArea) {
                 this.ui.combatArea.classList.add('combat-ending');
             }
