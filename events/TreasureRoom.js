@@ -1,6 +1,6 @@
 class TreasureRoom {
     // --- Configuration ---
-    TOOL_BONUS_CHANCE = 0.20; // 20% bonus from Thief's Tools
+    TOOL_BONUS_CHANCE = 0.30; // 20% bonus from Thief's Tools
     // --- End Configuration ---
 
     constructor(game, ui) {
@@ -28,19 +28,19 @@ class TreasureRoom {
             requiresTools: false,
             rewardType: 'items',
             itemPool: COMMON_ITEMS, // Use pool constant
-            goldRange: [1, 4] // Added gold reward
+            goldRange: [2, 4] // Added gold reward
         },
         wooden: { // Renamed from X chest for clarity
             key: 'wooden',
             name: 'Reinforced Chest',
             description: 'Sturdier than the rusty one. Contains leather, wood and iron.',
             isTrap: true,
-            disarmChance: 0.7,
+            disarmChance: 0.6,
             damage: 5, // Fixed damage
             requiresTools: false,
             rewardType: 'items',
             itemPool: [...COMMON_ITEMS, ...UNCOMMON_ITEMS], // Use combined pool
-            goldRange: [3, 4] // Added gold reward
+            goldRange: [3, 5] // Added gold reward
         },
         iron: {
             key: 'iron',
@@ -52,7 +52,7 @@ class TreasureRoom {
             requiresTools: true,
             rewardType: 'items',
             itemPool: UNCOMMON_ITEMS, // Use pool constant
-            goldRange: [5, 8] // Added gold reward
+            goldRange: [4, 6] // Added gold reward
         },
         steel: {
             key: 'steel',
@@ -60,11 +60,11 @@ class TreasureRoom {
             description: 'Masterwork steel, deadly trap. Requires tools. Contains Steel.',
             isTrap: true,
             disarmChance: 0.3,
-            damage: 12, // Fixed damage
+            damage: 11, // Fixed damage
             requiresTools: true,
             rewardType: 'items',
             itemPool: RARE_ITEMS, // Use pool constant
-            goldRange: [6, 12] // Added gold reward
+            goldRange: [5, 7] // Added gold reward
         }
     };
 

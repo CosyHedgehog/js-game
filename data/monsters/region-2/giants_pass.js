@@ -10,7 +10,7 @@ const GIANTS_PASS_MONSTER_DATA = {
         description: "A dim-witted but large giant wandering the pass.",
         lootTable: [
             { itemTier: 'uncommonFood', chance: 0.70 },
-            { itemTier: 'uncommonItem', chance: 0.30 },
+            { itemTier: 'uncommonItem', chance: 0.40 },
         ]
     },
     'moss_giant': {
@@ -24,7 +24,7 @@ const GIANTS_PASS_MONSTER_DATA = {
         description: "A vigilant giant tasked with guarding the pass.",
         lootTable: [
             { itemTier: 'uncommonFood', chance: 1.00 },
-            { itemTier: 'uncommonItem', chance: 0.40 },
+            { itemTier: 'uncommonItem', chance: 0.70 },
         ]
     },
     'cyclops_stone_thrower': {

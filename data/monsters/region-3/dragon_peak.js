@@ -10,7 +10,7 @@ const DRAGON_PEAK_MONSTER_DATA = {
         description: "A young, fiery dragonkin guarding its territory.",
         lootTable: [
             { itemTier: 'rareFood', chance: 0.70 },
-            { itemTier: 'rareItem', chance: 0.30 },
+            { itemTier: 'rareItem', chance: 0.40 },
         ]
     },
     'stone_drake': {
@@ -24,7 +24,7 @@ const DRAGON_PEAK_MONSTER_DATA = {
         description: "A drake whose scales resemble hardened rock.",
         lootTable: [
             { itemTier: 'rareFood', chance: 1.00 },
-            { itemTier: 'rareItem', chance: 0.40 },
+            { itemTier: 'rareItem', chance: 0.70 },
         ]
     },
     'ancient_dragon': {
@@ -39,7 +39,7 @@ const DRAGON_PEAK_MONSTER_DATA = {
         hasBreathAttack: true,
         breathAttackInterval: 12,        
         breathAttackDamage: [4, 8],        
-        hardenThreshold: 0.25,        
+        hardenThreshold: 0.33,        
         hardenDefenseBonus: 5,        
         description: "An ancient dragon.",
         mechanics: "Firebreath every 12 seconds, dealing 4-8 damage that cannot be blocked and burns the player over 4 seconds.\n\n Hardens below 25% health, increasing defense by 5.",

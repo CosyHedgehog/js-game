@@ -10,7 +10,7 @@ const GRIZZLY_HILLS_MONSTER_DATA = {
         description: "A sturdy goat navigating the steep hills.",
         lootTable: [
             { itemTier: 'uncommonFood', chance: 0.70 },
-            { itemTier: 'uncommonItem', chance: 0.30 },
+            { itemTier: 'uncommonItem', chance: 0.40 },
         ]
     },
     'mountain_lion': {
@@ -24,7 +24,7 @@ const GRIZZLY_HILLS_MONSTER_DATA = {
         description: "A sleek predator stalking the rocky terrain.",
         lootTable: [
             { itemTier: 'uncommonFood', chance: 1.00 },
-            { itemTier: 'uncommonItem', chance: 0.40 },
+            { itemTier: 'uncommonItem', chance: 0.70 },
         ]
     },
     'raging_grizzly': {

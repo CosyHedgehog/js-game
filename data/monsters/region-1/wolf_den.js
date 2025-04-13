@@ -10,7 +10,7 @@ const WOLF_DEN_MONSTER_DATA = {
         description: "A young wolf, quick but not very strong.",
         lootTable: [
             { itemTier: 'commonFood', chance: 0.70 },
-            { itemTier: 'commonItem', chance: 0.30 },
+            { itemTier: 'commonItem', chance: 0.40 },
         ]
     },
     'wolf': {
@@ -24,14 +24,14 @@ const WOLF_DEN_MONSTER_DATA = {
         difficulty: 'medium',
         lootTable: [
             { itemTier: 'commonFood', chance: 1.00 },
-            { itemTier: 'commonItem', chance: 0.40 },
+            { itemTier: 'commonItem', chance: 0.70 },
         ]
     },
     'silverfang': {
         name: 'Silverfang',
         icon: '🐺',
         health: 25, 
-        attack: 4, 
+        attack: 5, 
         defense: 0, 
         speed: 1.2,
         goldDrop: [5, 15],

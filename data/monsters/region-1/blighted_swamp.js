@@ -10,7 +10,7 @@ const BLIGHTED_SWAMP_MONSTER_DATA = {
         difficulty: 'easy',
         lootTable: [
             { itemTier: 'commonFood', chance: 0.70 },
-            { itemTier: 'commonItem', chance: 0.30 },
+            { itemTier: 'commonItem', chance: 0.40 },
         ]
     },
     'mutated_mushroom': { 
@@ -24,7 +24,7 @@ const BLIGHTED_SWAMP_MONSTER_DATA = {
         difficulty: 'medium',
         lootTable: [
             { itemTier: 'commonFood', chance: 1.00 },
-            { itemTier: 'commonItem', chance: 0.40 },
+            { itemTier: 'commonItem', chance: 0.70 },
         ]
     },
     'globulus': {

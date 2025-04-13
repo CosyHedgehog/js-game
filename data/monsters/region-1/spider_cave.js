@@ -10,7 +10,7 @@ const SPIDER_CAVE_MONSTER_DATA = {
         difficulty: 'easy',
         lootTable: [
             { itemTier: 'commonFood', chance: 0.70 },
-            { itemTier: 'commonItem', chance: 0.30 },
+            { itemTier: 'commonItem', chance: 0.40 },
         ]
     },
     'web_weaver': {
@@ -24,7 +24,7 @@ const SPIDER_CAVE_MONSTER_DATA = {
         difficulty: 'medium',
         lootTable: [
             { itemTier: 'commonFood', chance: 1.00 },
-            { itemTier: 'commonItem', chance: 0.40 },
+            { itemTier: 'commonItem', chance: 0.70 },
         ]
     },
     'venox': {
@@ -38,7 +38,7 @@ const SPIDER_CAVE_MONSTER_DATA = {
         isMiniBoss: true,
         appliesPoison: true,
         poisonDamage: [1, 2],
-        poisonDuration: 10,
+        poisonDuration: 12,
         poisonChance: 0.35,
         description: "Venomous spider.",
         mechanics: "Chance to inflict poison, dealing damage over time.",
