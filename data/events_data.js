@@ -53,7 +53,7 @@ const EVENTS_DATA = {
         buttonText: 'Go Fishing'
     },
     'ancient_shrine': {
-        weight: 5,
+        weight: 2,
         choiceText: "Ancient Shrine",
         detailsTemplate: "An ancient shrine pulses with power. You feel you can draw upon it, but it demands a price. Choose your sacrifice?",
         handler: 'ShrineHandler',
