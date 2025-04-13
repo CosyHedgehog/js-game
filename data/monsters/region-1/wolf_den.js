@@ -40,6 +40,10 @@ const WOLF_DEN_MONSTER_DATA = {
         mechanics: "Attacks 50% faster when below 50% health.",
         speedIncreaseThreshold: 0.5,  
         speedIncreasePercent: 0.5,
+        mechanicTooltips: {
+            normal: "Attacks quicker below half health.",
+            quickened: "QUICKENED! Attacking faster."
+        },
         lootTable: [
             { itemTier: 'commonFood', chance: 0.50 },
             { itemTier: 'uncommonFood', chance: 0.50 },

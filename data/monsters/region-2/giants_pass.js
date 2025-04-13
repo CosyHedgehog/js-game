@@ -40,7 +40,10 @@ const GIANTS_PASS_MONSTER_DATA = {
         timedStunInterval: 12,
         timedStunDuration: 4,
         description: "A lumbering giant with a single, hateful eye.",
-        mechanics: "Hurls a massive boulder every 15 seconds, causing a shockwave that stuns you for 4 seconds!",
+        mechanics: "Hurls a massive boulder every 12 seconds, causing a shockwave that stuns you for 4 seconds!",
+        mechanicTooltips: {
+            default: "Stuns for 4 seconds."
+        },
         lootTable: [
             { itemTier: 'commonFood', chance: 0.50 },
             { itemTier: 'uncommonFood', chance: 1.00 },

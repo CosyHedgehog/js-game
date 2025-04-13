@@ -43,6 +43,9 @@ const BLIGHTED_SWAMP_MONSTER_DATA = {
         slimeMax: 6,
         description: "A large, quivering mass of corrosive ooze.",
         mechanics: "Periodically slimes items in your inventory, preventing its use for a short time.",
+        mechanicTooltips: {
+            default: "Slimes items preventing use temporarily."
+        },
         lootTable: [
             { itemTier: 'commonFood', chance: 0.50 },
             { itemTier: 'uncommonFood', chance: 0.50 },

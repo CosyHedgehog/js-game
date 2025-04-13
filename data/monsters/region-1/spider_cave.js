@@ -42,6 +42,9 @@ const SPIDER_CAVE_MONSTER_DATA = {
         poisonChance: 0.35,
         description: "Venomous spider.",
         mechanics: "Chance to inflict poison, dealing damage over time.",
+        mechanicTooltips: {
+            default: "Chance to apply poison on hit."
+        },
         lootTable: [
             { itemTier: 'commonFood', chance: 0.50 },
             { itemTier: 'uncommonFood', chance: 0.50 },

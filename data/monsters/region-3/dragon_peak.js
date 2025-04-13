@@ -42,10 +42,14 @@ const DRAGON_PEAK_MONSTER_DATA = {
         hardenThreshold: 0.33,        
         hardenDefenseBonus: 5,        
         description: "An ancient dragon.",
-        mechanics: "Firebreath every 12 seconds, dealing 4-8 damage that cannot be blocked and burns the player over 4 seconds.\n\n Hardens below 25% health, increasing defense by 5.",
+        mechanics: "Firebreath every 12 seconds, dealing 4-8 damage that cannot be blocked and burns the player over 5 seconds. Hardens below 33% health, increasing defense by 5.",
         breathDotDamage: 1,        
         breathDotDuration: 5,        
-        breathDotTickInterval: 1,        
+        breathDotTickInterval: 1,
+        mechanicTooltips: {
+            normal: "Breathing deadly fire. Hardens defense when low health.",
+            hardened: "HARDENED! Defense +5."
+        },
         lootTable: [],
     },
 }; 

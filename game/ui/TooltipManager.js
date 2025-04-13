@@ -190,12 +190,6 @@ class TooltipManager {
                         tooltipText = tooltipText.replace('X', this.ui.game?.currentCombat?.enemy?.slimeInterval?.toFixed(1) || '?');
                     } else if (key === 'formSwitchTimer') {
                         tooltipText = tooltipText.replace('X', this.ui.game?.currentCombat?.enemy?.formSwitchInterval?.toFixed(1) || '?');
-                        const currentForm = this.ui.game?.currentCombat?.enemy?.currentForm;
-                        if (currentForm === 'thorns') {
-                            tooltipText += "<br>(Currently Thorny)";
-                        } else if (currentForm === 'regenerate') {
-                            tooltipText += "<br>(Currently Regenerating)";
-                        }
                     }
 
                     this.ui.showTooltip(tooltipText.replace(/\n/g, '<br>'), this.ui.statTooltip, e);

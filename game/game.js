@@ -113,11 +113,11 @@ class Game {
         this.currentArea = "twisted_forest";
         // this.currentArea = "giants_pass";
 
-        this.player.health = 12;
+        this.player.health = 1000;
         this.player.maxHealth = 15;
         this.player.gold = 0;
-        this.player.baseAttack = 0;
-        this.player.baseDefense = 3;
+        this.player.baseAttack = 1;
+        this.player.baseDefense = 7;
 
         this.player.addItem(this.createItem('wooden_shield'));
         this.player.addItem(this.createItem('wooden_sword'));

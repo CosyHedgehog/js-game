@@ -18,8 +18,16 @@ class CombatUI {
 
         this.updateCombatTimers(player.attackTimer, enemy.attackTimer);
         this.updateCombatStats(player, enemy);
-        this.updateVisualForm(enemy.currentForm);
-        this.addFormTooltipListener();
+
+        // --- Initial Mechanic Icon Setup --- 
+        const iconContainer = document.querySelector('.enemy-side .mechanic-icon-container');
+        if (iconContainer && (enemy.isBoss || enemy.isMiniBoss) && enemy.mechanicTooltips) {
+            iconContainer.classList.remove('hidden');
+            this.attachMechanicTooltipListener(enemy); // Attach listener
+        } else if (iconContainer) {
+            iconContainer.classList.add('hidden'); // Hide if not applicable
+        }
+        // --- End Initial Setup ---
     }
 
     updateCombatTimers(playerTimer, enemyTimer, playerDelay = 0,
@@ -254,8 +262,14 @@ class CombatUI {
             enemy.currentForm
         );
 
-        this.updateVisualForm(enemy.currentForm);
-        this.addFormTooltipListener();
+        this.updateVisualForm(enemy);
+
+        // --- Re-attach Tooltip on Stats Update (if applicable) --- 
+        const iconContainer = document.querySelector('.enemy-side .mechanic-icon-container');
+         if (iconContainer && !iconContainer.classList.contains('hidden')) {
+             this.attachMechanicTooltipListener(enemy);
+         }
+         // --- End Re-attach Tooltip ---
     }
 
     updateCombatantHealth(who, current, max, damage = 0, blocked = 0, isHeal = false, fullBlock = false) {
@@ -319,74 +333,90 @@ class CombatUI {
         }
     }
 
-    updateVisualForm(currentForm) {
+    updateVisualForm(enemy) {
         const enemySide = document.querySelector('.enemy-side');
         const enemyHealthBar = document.querySelector('.enemy-health');
+        const mechanicIcon = enemySide?.querySelector('.mechanic-icon');
         if (!enemySide || !enemyHealthBar) return;
+
+        const currentForm = enemy.currentForm;
+
+        // Clear previous form classes
+        enemySide.classList.remove('form-thorns', 'form-regenerate');
+        enemyHealthBar.classList.remove('enemy-healing-effect');
+        if (mechanicIcon) mechanicIcon.textContent = '?'; // Default icon
 
         if (currentForm === 'thorns') {
             enemySide.classList.add('form-thorns');
-            enemySide.classList.remove('form-regenerate');
-            enemyHealthBar.classList.remove('enemy-healing-effect');
         } else if (currentForm === 'regenerate') {
-            enemySide.classList.remove('form-thorns');
             enemySide.classList.add('form-regenerate');
             enemyHealthBar.classList.add('enemy-healing-effect');
-        } else {
-            enemySide.classList.remove('form-thorns', 'form-regenerate');
-            enemyHealthBar.classList.remove('enemy-healing-effect');
         }
+        // else: Default state (no form classes, default icon)
     }
 
     triggerEnemyFormSwitchAnimation(newForm) {
         const enemySide = document.querySelector('.enemy-side');
-        if (enemySide) {
+        const enemy = this.ui.game?.currentCombat?.enemy;
+        if (enemySide && enemy) {
             enemySide.classList.add('enemy-form-switch-pulse');
-            this.updateVisualForm(newForm);
+            this.updateVisualForm(enemy);
+            this.attachMechanicTooltipListener(enemy);
             setTimeout(() => {
                 enemySide.classList.remove('enemy-form-switch-pulse');
             }, 600);
         }
     }
 
-    addFormTooltipListener() {
-        const enemySide = document.querySelector('.enemy-side');
-        const enemy = this.ui.game?.currentCombat?.enemy;
-        const tooltipManager = this.ui.tooltipManager; // Assuming tooltipManager is available on UI
+    attachMechanicTooltipListener(enemy) {
+        const iconContainer = document.querySelector('.enemy-side .mechanic-icon-container');
+        const tooltipManager = this.ui.tooltipManager;
 
-        if (!enemySide || !enemy || !tooltipManager || !this.ui.statTooltip) {
-            return; // Exit if essential elements/data are missing
+        if (!iconContainer || !enemy || !enemy.mechanicTooltips || !tooltipManager || !this.ui.statTooltip) {
+            return; // Exit if prerequisites missing
         }
 
         const enterHandler = (e) => {
-            let tooltipText = "";
-            if (enemy.currentForm === 'thorns') {
-                tooltipText = `The Ent is covered in sharp thorns!<br>Attacking deals ${enemy.thornsDamage} damage back to you.`;
-            } else if (enemy.currentForm === 'regenerate') {
-                tooltipText = `The Ent's bark is regenerating.<br>Heals ${enemy.regenerationAmount} HP per second.`;
+            let stateKey = 'default'; // Default key for simple mechanics
+
+            // --- Determine current state for tooltip key --- 
+            if (enemy.hasFormSwitching) {
+                stateKey = enemy.currentForm; // e.g., 'thorns', 'regenerate'
+            } else if (enemy.enrageThreshold) {
+                stateKey = enemy.currentAttack > enemy.attack ? 'enraged' : 'normal';
+            } else if (enemy.hardenThreshold) {
+                stateKey = enemy.scalesHardened ? 'hardened' : 'normal';
+            } else if (enemy.speedIncreaseThreshold) {
+                stateKey = enemy.currentSpeed < enemy.speed ? 'quickened' : 'normal';
             }
-            if (tooltipText) {
-                tooltipManager.showTooltip(tooltipText, this.ui.statTooltip, e);
-            }
+            // Add more else if for other state-based mechanics here
+            // --- End state determination ---
+
+            const tooltipText = enemy.mechanicTooltips[stateKey] || 
+                                enemy.mechanicTooltips['default'] || // Fallback to default if stateKey not found
+                                "Current mechanic details unavailable."; // Final fallback
+                                
+            tooltipManager.showTooltip(tooltipText.replace(/\n/g, '<br>'), this.ui.statTooltip, e);
         };
 
         const leaveHandler = () => {
             tooltipManager.hideTooltip(this.ui.statTooltip);
         };
 
-        // Remove previous listeners before adding new ones to prevent duplicates
-        if (enemySide._formTooltipEnterHandler) {
-            enemySide.removeEventListener('mouseenter', enemySide._formTooltipEnterHandler);
+        // Remove previous listeners first
+        if (iconContainer._mechanicTooltipEnterHandler) {
+            iconContainer.removeEventListener('mouseenter', iconContainer._mechanicTooltipEnterHandler);
         }
-        if (enemySide._formTooltipLeaveHandler) {
-            enemySide.removeEventListener('mouseleave', enemySide._formTooltipLeaveHandler);
+        if (iconContainer._mechanicTooltipLeaveHandler) {
+            iconContainer.removeEventListener('mouseleave', iconContainer._mechanicTooltipLeaveHandler);
         }
 
-        enemySide.addEventListener('mouseenter', enterHandler);
-        enemySide.addEventListener('mouseleave', leaveHandler);
+        // Add new listeners
+        iconContainer.addEventListener('mouseenter', enterHandler);
+        iconContainer.addEventListener('mouseleave', leaveHandler);
 
-        // Store handlers on the element for later removal
-        enemySide._formTooltipEnterHandler = enterHandler;
-        enemySide._formTooltipLeaveHandler = leaveHandler;
+        // Store handlers
+        iconContainer._mechanicTooltipEnterHandler = enterHandler;
+        iconContainer._mechanicTooltipLeaveHandler = leaveHandler;
     }
 }

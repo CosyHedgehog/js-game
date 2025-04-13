@@ -9,7 +9,6 @@ const TWISTED_FOREST_MONSTER_DATA = {
         goldDrop: [5, 15],
         isMiniBoss: true,
         description: "A massive tree-like creature, its form shifting between thorny defense and resilient regeneration.",
-        mechanics: "Ents have two forms: Regenerate and Thorny. In Regenerate form, they heal for 1 health per second. In Thorny form, they deal 2 damage per attack.",
         hasFormSwitching: true,
         formSwitchInterval: 15,
         initialForm: 'thorns',
@@ -17,6 +16,10 @@ const TWISTED_FOREST_MONSTER_DATA = {
         thornsDamage: 2,
         hasRegeneration: true,
         regenerationAmount: 1,
+        mechanicTooltips: {
+            thorns: "Thorns: Reflects 2 damage per attack.",
+            regenerate: "Regenerating: Heals 1 health per second."
+        },
         lootTable: [
             { itemTier: 'commonFood', chance: 0.50 },
             { itemTier: 'uncommonFood', chance: 1.00 },
