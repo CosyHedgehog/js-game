@@ -6,4 +6,5 @@ const MONSTERS = {
     ...(typeof DRAGON_PEAK_MONSTER_DATA !== 'undefined' ? DRAGON_PEAK_MONSTER_DATA : {}),
     ...(typeof MISC_MONSTER_DATA !== 'undefined' ? MISC_MONSTER_DATA : {}),
     ...(typeof BLIGHTED_SWAMP_MONSTER_DATA !== 'undefined' ? BLIGHTED_SWAMP_MONSTER_DATA : {}),
+    ...(typeof TWISTED_FOREST_MONSTER_DATA !== 'undefined' ? TWISTED_FOREST_MONSTER_DATA : {}),
 };

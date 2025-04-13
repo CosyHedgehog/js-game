@@ -16,9 +16,12 @@ class Combat {
             ferocityTimer: 0,
             regenerationActive: enemy.name === 'Moss Giant',
             regenerationTimer: enemy.name === 'Moss Giant' ? 5 : 0,
-            regenerationAmount: enemy.name === 'Moss Giant' ? 1 : 0,
+            regenerationAmount: enemy.regenerationAmount || 0,
             regenerationInterval: enemy.name === 'Moss Giant' ? 5 : null,
-            slimeAttackTimer: enemy.hasSlimeAttack ? enemy.slimeInterval : null
+            slimeAttackTimer: enemy.hasSlimeAttack ? enemy.slimeInterval : null,
+            currentForm: enemy.initialForm || null,
+            formSwitchTimer: enemy.hasFormSwitching ? enemy.formSwitchInterval : null,
+            regenerationTickCooldown: enemy.hasRegeneration ? 1 : null,
         };
         this.game = game;
         this.ui = ui;
@@ -218,6 +221,28 @@ class Combat {
             }
         }
 
+        // --- Ent Regeneration (only if in regenerate form) ---
+        if (this.enemy.hasRegeneration && this.enemy.currentForm === 'regenerate' && this.enemy.regenerationTickCooldown !== null) {
+            this.enemy.regenerationTickCooldown = Math.max(0, this.enemy.regenerationTickCooldown - this.timeScale);
+            
+            if (this.enemy.regenerationTickCooldown <= 0) {
+                const healAmount = this.enemy.regenerationAmount; // Heal the full amount
+
+                console.log(`${this.enemy.name} regenerationAmount: ${this.enemy.regenerationAmount}`);
+                const actualHeal = (this.enemy.health < this.enemy.maxHealth) ? healAmount : 0;
+                console.log(`${this.enemy.name} regenerates ${actualHeal} health.`);
+                console.log(`${this.enemy.name} maxHealth: ${this.enemy.maxHealth}`);
+                console.log(`${this.enemy.name} health: ${this.enemy.health}`);
+                this.enemy.health = Math.min(this.enemy.maxHealth, this.enemy.health + actualHeal);
+                this.game.addLog(`<span style="color: #66bb6a;">${this.enemy.name} regenerates ${actualHeal} health.</span>`);
+                // Update health bar only when heal happens
+                this.ui.updateCombatantHealth('enemy', this.enemy.health, this.enemy.maxHealth, actualHeal, 0, true);
+                
+                this.enemy.regenerationTickCooldown = 1; // Reset cooldown to 1 second
+            }
+        }
+        // --- End Ent Regeneration ---
+
         const healthPercent = this.enemy.health / this.enemy.maxHealth;
 
         if (this.enemy.speedIncreaseThreshold && this.enemy.speedIncreasePercent) {
@@ -292,6 +317,18 @@ class Combat {
             }
         }
 
+        if (this.enemy.hasFormSwitching && this.enemy.formSwitchTimer !== null) {
+            this.enemy.formSwitchTimer = Math.max(0, this.enemy.formSwitchTimer - this.timeScale);
+            if (this.enemy.formSwitchTimer <= 0) {
+                const oldForm = this.enemy.currentForm;
+                this.enemy.currentForm = (this.enemy.currentForm === 'thorns') ? 'regenerate' : 'thorns';
+                this.enemy.formSwitchTimer = this.enemy.formSwitchInterval;
+                this.game.addLog(`${this.enemy.name} shifts its form to ${this.enemy.currentForm === 'thorns' ? 'thorny defense' : 'resilient regeneration'}!`);
+                
+                this.ui.triggerEnemyFormSwitchAnimation(this.enemy.currentForm);
+            }
+        }
+
         this.ui.updateCombatTimers(
             this.player.attackTimer,
             this.enemy.attackTimer,
@@ -303,7 +340,10 @@ class Combat {
             this.enemy.regenerationTimer,
             this.enemy.regenerationInterval,
             this.enemy.slimeAttackTimer,
-            this.enemy.slimeInterval
+            this.enemy.slimeInterval,
+            this.enemy.formSwitchTimer,
+            this.enemy.formSwitchInterval,
+            this.enemy.currentForm
         );
         this.ui.updateCombatStats(this.player, this.enemy);
         if (!this.player.attackTimerPaused && this.player.attackTimer <= 0) {
@@ -390,6 +430,15 @@ class Combat {
                 }, 800);
             }
         }
+
+        if (this.enemy.hasThorns && this.enemy.currentForm === 'thorns' && playerAttackRoll > 0) {
+            const thornsDmg = this.enemy.thornsDamage;
+            this.player.takeRawDamage(thornsDmg);
+            this.game.addLog(`<span style="color: #e57373;">Thorns prick you for ${thornsDmg} damage!</span>`);
+            this.ui.updateCombatantHealth('player', this.player.health, this.player.maxHealth, thornsDmg, 0, false);
+            this.ui.updatePlayerStats();
+        }
+
         this.checkCombatEnd();
     }
 
@@ -488,7 +537,10 @@ class Combat {
                     this.enemy.regenerationTimer,
                     this.enemy.regenerationInterval,
                     this.enemy.slimeAttackTimer,
-                    this.enemy.slimeInterval
+                    this.enemy.slimeInterval,
+                    this.enemy.formSwitchTimer,
+                    this.enemy.formSwitchInterval,
+                    this.enemy.currentForm
                 );
             }
             if (useResult.item?.healAmount) {

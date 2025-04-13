@@ -84,8 +84,8 @@ class Game {
     ];
 
     start() {
-        // this.devMode();
-        this.normalMode();
+        this.devMode();
+        // this.normalMode();
         this.lastGlobalTickTime = Date.now();
         if (this.globalTickIntervalId) clearInterval(this.globalTickIntervalId);
         this.globalTickIntervalId = setInterval(() => this.gameTick(), this.globalTickRate);
@@ -108,15 +108,15 @@ class Game {
     }
 
     devMode() {
-        this.currentRound = 9;
+        this.currentRound = 19;
         this.state = 'choosing';
-        this.currentArea = "blighted_swamp";
+        this.currentArea = "twisted_forest";
         // this.currentArea = "giants_pass";
 
         this.player.health = 12;
         this.player.maxHealth = 15;
         this.player.gold = 0;
-        this.player.baseAttack = 2;
+        this.player.baseAttack = 0;
         this.player.baseDefense = 3;
 
         this.player.addItem(this.createItem('wooden_shield'));
@@ -595,7 +595,10 @@ class Game {
                     this.currentCombat.enemy.regenerationTimer,
                     this.currentCombat.enemy.regenerationInterval,
                     this.currentCombat.enemy.slimeAttackTimer,
-                    this.currentCombat.enemy.slimeInterval
+                    this.currentCombat.enemy.slimeInterval,
+                    this.currentCombat.enemy.formSwitchTimer,
+                    this.currentCombat.enemy.formSwitchInterval,
+                    this.currentCombat.enemy.currentForm
                 );
             }
 

@@ -18,13 +18,17 @@ class CombatUI {
 
         this.updateCombatTimers(player.attackTimer, enemy.attackTimer);
         this.updateCombatStats(player, enemy);
+        this.updateVisualForm(enemy.currentForm);
+        this.addFormTooltipListener();
     }
 
     updateCombatTimers(playerTimer, enemyTimer, playerDelay = 0,
         enemyBreathTimer, enemyBreathInterval,
         enemyStunTimer, enemyStunInterval,
         enemyRegenTimer, enemyRegenInterval,
-        enemySlimeTimer, enemySlimeInterval) {
+        enemySlimeTimer, enemySlimeInterval,
+        enemyFormSwitchTimer, enemyFormSwitchInterval,
+        currentEnemyForm) {
             const playerTimerEl = document.getElementById('combat-player-timer');
         const playerTimerBar = document.querySelector('.player-timer');
         const enemyTimerEl = document.getElementById('combat-enemy-timer');
@@ -41,6 +45,9 @@ class CombatUI {
         const enemySlimeTimerEl = document.getElementById('combat-enemy-slime-timer');
         const enemySlimeTimerContainer = document.querySelector('.slime-timer');
         const enemySlimeTimerBar = document.querySelector('.enemy-slime-timer');
+        const enemyFormSwitchTimerEl = this.ui.combatEnemyFormSwitchTimerText;
+        const enemyFormSwitchTimerContainer = this.ui.combatEnemyFormSwitchTimerContainer;
+        const enemyFormSwitchTimerBar = this.ui.combatEnemyFormSwitchTimerBar;
 
         const playerHealthBar = document.querySelector('.player-health');
         if (this.ui.game.player.healOverTimeEffects && this.ui.game.player.healOverTimeEffects.length > 0) {
@@ -133,6 +140,30 @@ class CombatUI {
                 enemySlimeTimerContainer.classList.add('hidden');
             }
         }
+
+        if (enemyFormSwitchTimerContainer) {
+            if (enemyFormSwitchInterval !== null && enemyFormSwitchInterval > 0) {
+                enemyFormSwitchTimerContainer.classList.remove('hidden');
+                if (enemyFormSwitchTimerEl) enemyFormSwitchTimerEl.textContent = enemyFormSwitchTimer.toFixed(1);
+                if (enemyFormSwitchTimerBar) {
+                    const formProgress = 1 - (enemyFormSwitchTimer / enemyFormSwitchInterval);
+                    enemyFormSwitchTimerBar.style.width = `${Math.min(100, formProgress * 100)}%`;
+
+                    if (currentEnemyForm === 'thorns') {
+                        enemyFormSwitchTimerBar.style.background = 'linear-gradient(to right, #66bb6a, #43a047)'; 
+                        if (enemyFormSwitchTimerEl) enemyFormSwitchTimerEl.style.color = '#a5d6a7';
+                    } else if (currentEnemyForm === 'regenerate') {
+                        enemyFormSwitchTimerBar.style.background = 'linear-gradient(to right, #a1887f, #795548)'; 
+                        if (enemyFormSwitchTimerEl) enemyFormSwitchTimerEl.style.color = '#bcaaa4';
+                    } else {
+                        enemyFormSwitchTimerBar.style.background = '';
+                        if (enemyFormSwitchTimerEl) enemyFormSwitchTimerEl.style.color = '';
+                    }
+                }
+            } else {
+                enemyFormSwitchTimerContainer.classList.add('hidden');
+            }
+        }
     }
 
     updateCombatStats(player, enemy) {
@@ -217,8 +248,14 @@ class CombatUI {
             enemy.regenerationTimer,
             enemy.regenerationInterval,
             enemy.slimeAttackTimer,
-            enemy.slimeInterval
+            enemy.slimeInterval,
+            enemy.formSwitchTimer,
+            enemy.formSwitchInterval,
+            enemy.currentForm
         );
+
+        this.updateVisualForm(enemy.currentForm);
+        this.addFormTooltipListener();
     }
 
     updateCombatantHealth(who, current, max, damage = 0, blocked = 0, isHeal = false, fullBlock = false) {
@@ -273,6 +310,83 @@ class CombatUI {
             void healthBar.offsetWidth;
             healthBar.classList.add('damage-taken');
             this.ui.createDamageSplat('.enemy-side', damage, splatType, blocked, fullBlock);
+
+            if (this.ui.game?.currentCombat?.enemy?.currentForm === 'regenerate') {
+                 healthBar.classList.add('enemy-healing-effect');
+            } else {
+                 healthBar.classList.remove('enemy-healing-effect');
+            }
         }
+    }
+
+    updateVisualForm(currentForm) {
+        const enemySide = document.querySelector('.enemy-side');
+        const enemyHealthBar = document.querySelector('.enemy-health');
+        if (!enemySide || !enemyHealthBar) return;
+
+        if (currentForm === 'thorns') {
+            enemySide.classList.add('form-thorns');
+            enemySide.classList.remove('form-regenerate');
+            enemyHealthBar.classList.remove('enemy-healing-effect');
+        } else if (currentForm === 'regenerate') {
+            enemySide.classList.remove('form-thorns');
+            enemySide.classList.add('form-regenerate');
+            enemyHealthBar.classList.add('enemy-healing-effect');
+        } else {
+            enemySide.classList.remove('form-thorns', 'form-regenerate');
+            enemyHealthBar.classList.remove('enemy-healing-effect');
+        }
+    }
+
+    triggerEnemyFormSwitchAnimation(newForm) {
+        const enemySide = document.querySelector('.enemy-side');
+        if (enemySide) {
+            enemySide.classList.add('enemy-form-switch-pulse');
+            this.updateVisualForm(newForm);
+            setTimeout(() => {
+                enemySide.classList.remove('enemy-form-switch-pulse');
+            }, 600);
+        }
+    }
+
+    addFormTooltipListener() {
+        const enemySide = document.querySelector('.enemy-side');
+        const enemy = this.ui.game?.currentCombat?.enemy;
+        const tooltipManager = this.ui.tooltipManager; // Assuming tooltipManager is available on UI
+
+        if (!enemySide || !enemy || !tooltipManager || !this.ui.statTooltip) {
+            return; // Exit if essential elements/data are missing
+        }
+
+        const enterHandler = (e) => {
+            let tooltipText = "";
+            if (enemy.currentForm === 'thorns') {
+                tooltipText = `The Ent is covered in sharp thorns!<br>Attacking deals ${enemy.thornsDamage} damage back to you.`;
+            } else if (enemy.currentForm === 'regenerate') {
+                tooltipText = `The Ent's bark is regenerating.<br>Heals ${enemy.regenerationAmount} HP per second.`;
+            }
+            if (tooltipText) {
+                tooltipManager.showTooltip(tooltipText, this.ui.statTooltip, e);
+            }
+        };
+
+        const leaveHandler = () => {
+            tooltipManager.hideTooltip(this.ui.statTooltip);
+        };
+
+        // Remove previous listeners before adding new ones to prevent duplicates
+        if (enemySide._formTooltipEnterHandler) {
+            enemySide.removeEventListener('mouseenter', enemySide._formTooltipEnterHandler);
+        }
+        if (enemySide._formTooltipLeaveHandler) {
+            enemySide.removeEventListener('mouseleave', enemySide._formTooltipLeaveHandler);
+        }
+
+        enemySide.addEventListener('mouseenter', enterHandler);
+        enemySide.addEventListener('mouseleave', leaveHandler);
+
+        // Store handlers on the element for later removal
+        enemySide._formTooltipEnterHandler = enterHandler;
+        enemySide._formTooltipLeaveHandler = leaveHandler;
     }
 }

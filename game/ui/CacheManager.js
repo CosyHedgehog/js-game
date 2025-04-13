@@ -132,6 +132,11 @@ class CacheManager {
         if (!this.ui.combatPlayerTimerContainer) this.ui.combatPlayerTimerContainer = document.querySelector('.player-side .attack-timer:not(.breath-timer)');
         if (!this.ui.combatEnemyTimerContainer) this.ui.combatEnemyTimerContainer = document.querySelector('.enemy-side .attack-timer:not(.breath-timer)');
         if (!this.ui.shrineArea) this.ui.shrineArea = document.getElementById('shrine-area');
+
+        if (!this.ui.combatEnemySlimeTimerContainer) this.ui.combatEnemySlimeTimerContainer = document.querySelector('.enemy-side .slime-timer');
+        if (!this.ui.combatEnemyFormSwitchTimerContainer) this.ui.combatEnemyFormSwitchTimerContainer = document.querySelector('.enemy-side .form-switch-timer');
+        if (!this.ui.combatEnemyFormSwitchTimerText) this.ui.combatEnemyFormSwitchTimerText = document.getElementById('combat-enemy-form-switch-timer');
+        if (!this.ui.combatEnemyFormSwitchTimerBar) this.ui.combatEnemyFormSwitchTimerBar = document.querySelector('.enemy-form-switch-timer');
     }
 
     clearMainArea() {

@@ -33,7 +33,7 @@ const GRIZZLY_HILLS_MONSTER_DATA = {
         health: 50, 
         attack: 5, 
         defense: 6, 
-        speed: 2.5, 
+        speed: 2.2, 
         goldDrop: [15, 30],
         isMiniBoss: true,
         enrageThreshold: 0.3,

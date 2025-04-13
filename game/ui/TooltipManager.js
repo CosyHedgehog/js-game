@@ -76,7 +76,8 @@ class TooltipManager {
             enemyTimer: { el: this.ui.combatEnemyTimerContainer, text: "Attack every X seconds." },
             enemyBreathTimer: { el: this.ui.combatEnemyBreathTimerContainer, text: "Firebreath every X seconds." },
             stunTimer: { el: this.ui.combatEnemyStunTimerContainer, text: "Slams ground every X seconds." },
-            slimeTimer: { el: this.ui.combatEnemySlimeTimerContainer, text: "Slimes items every Xs" }
+            slimeTimer: { el: this.ui.combatEnemySlimeTimerContainer, text: "Slimes items every Xs" },
+            formSwitchTimer: { el: this.ui.combatEnemyFormSwitchTimerContainer, text: "Changing form every Xs" }
         };
 
         const playerHealthBarContainer = document.querySelector('.player-side .health-bar-container');
@@ -113,6 +114,49 @@ class TooltipManager {
             console.warn("Combat Tooltip Listener: Player health bar container not found.");
         }
 
+        // --- Add Enemy Health Bar Tooltip --- 
+        const enemyHealthBarContainer = document.querySelector('.enemy-side .health-bar-container');
+
+        const enemyHealthBarEnterHandler = (e) => {
+            const enemy = this.ui.game?.currentCombat?.enemy;
+            if (!enemy) return;
+
+            let tooltipText = 'Health'; // Default text
+
+            // Check if the enemy is regenerating (Ent in regenerate form)
+            if (enemy.currentForm === 'regenerate') {
+                tooltipText = 'Healing over time.';
+            } 
+            // Add other conditions here if needed for other enemies
+
+            this.showTooltip(tooltipText, this.ui.statTooltip, e);
+        };
+
+        const enemyHealthBarLeaveHandler = () => {
+            this.hideTooltip(this.ui.statTooltip);
+        };
+
+        if (enemyHealthBarContainer) {
+            // Remove previous listeners if they exist
+            if (enemyHealthBarContainer._tooltipEnterHandler) {
+                 enemyHealthBarContainer.removeEventListener('mouseenter', enemyHealthBarContainer._tooltipEnterHandler);
+            }
+            if (enemyHealthBarContainer._tooltipLeaveHandler) {
+                 enemyHealthBarContainer.removeEventListener('mouseleave', enemyHealthBarContainer._tooltipLeaveHandler);
+            }
+            
+            // Add new listeners
+            enemyHealthBarContainer.addEventListener('mouseenter', enemyHealthBarEnterHandler);
+            enemyHealthBarContainer.addEventListener('mouseleave', enemyHealthBarLeaveHandler);
+            
+            // Store handlers for potential future removal
+            enemyHealthBarContainer._tooltipEnterHandler = enemyHealthBarEnterHandler;
+            enemyHealthBarContainer._tooltipLeaveHandler = enemyHealthBarLeaveHandler;
+        } else {
+            console.warn("Combat Tooltip Listener: Enemy health bar container not found.");
+        }
+        // --- End Enemy Health Bar Tooltip ---
+
         for (const key in combatElements) {
             const { el, text } = combatElements[key];
             if (el) {
@@ -144,6 +188,14 @@ class TooltipManager {
                     } else if (key === 'slimeTimer') {
                         console.log(this.ui.game?.currentCombat?.enemy?.slimeInterval);
                         tooltipText = tooltipText.replace('X', this.ui.game?.currentCombat?.enemy?.slimeInterval?.toFixed(1) || '?');
+                    } else if (key === 'formSwitchTimer') {
+                        tooltipText = tooltipText.replace('X', this.ui.game?.currentCombat?.enemy?.formSwitchInterval?.toFixed(1) || '?');
+                        const currentForm = this.ui.game?.currentCombat?.enemy?.currentForm;
+                        if (currentForm === 'thorns') {
+                            tooltipText += "<br>(Currently Thorny)";
+                        } else if (currentForm === 'regenerate') {
+                            tooltipText += "<br>(Currently Regenerating)";
+                        }
                     }
 
                     this.ui.showTooltip(tooltipText.replace(/\n/g, '<br>'), this.ui.statTooltip, e);

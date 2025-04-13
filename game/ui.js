@@ -36,10 +36,10 @@ class UI {
     updateCombatTimers(playerTimer, enemyTimer, playerDelay = 0,
         enemyBreathTimer, enemyBreathInterval,
         enemyStunTimer, enemyStunInterval,
-        enemyRegenTimer, enemyRegenInterval, enemySlimeTimer, enemySlimeInterval) { this.combatUI.updateCombatTimers(playerTimer, enemyTimer, playerDelay = 0,
+        enemyRegenTimer, enemyRegenInterval, enemySlimeTimer, enemySlimeInterval, enemyFormSwitchTimer, enemyFormSwitchInterval, currentForm) { this.combatUI.updateCombatTimers(playerTimer, enemyTimer, playerDelay = 0,
             enemyBreathTimer, enemyBreathInterval,
             enemyStunTimer, enemyStunInterval,
-            enemyRegenTimer, enemyRegenInterval, enemySlimeTimer, enemySlimeInterval); }
+            enemyRegenTimer, enemyRegenInterval, enemySlimeTimer, enemySlimeInterval, enemyFormSwitchTimer, enemyFormSwitchInterval, currentForm); }
     updateCombatStats(player, enemy) { this.combatUI.updateCombatStats(player, enemy); }
     updateCombatantHealth(who, current, max, damage = 0, blocked = 0, isHeal = false, fullBlock = false) { this.combatUI.updateCombatantHealth(who, current, max, damage, blocked, isHeal, fullBlock); }
     createDamageSplat(selector, amount, type = 'damage', blocked = 0, fullBlock = false) { this.splatUI.render(selector, amount, type, blocked, fullBlock); }
@@ -49,4 +49,22 @@ class UI {
     addStatTooltipListeners() { this.tooltipManager.addStatTooltipListeners(); }
     showEndScreen(win) { this.EndUI.render(win); }
     playPlayerAnimation(animationClass, duration) { this.animationUI.playPlayerAnimation(animationClass, duration); }
+
+    triggerEnemyFormSwitchAnimation(newForm) {
+        if (this.combatUI && typeof this.combatUI.triggerEnemyFormSwitchAnimation === 'function') {
+            this.combatUI.triggerEnemyFormSwitchAnimation(newForm);
+        } else {
+            const enemySide = document.querySelector('.enemy-side');
+            if (enemySide) {
+                enemySide.classList.add('enemy-form-switch-pulse');
+                setTimeout(() => {
+                    enemySide.classList.remove('enemy-form-switch-pulse');
+                }, 600); 
+            }
+        }
+    }
+
+    getEventAreaContainer(id) {
+        // Implementation of getEventAreaContainer method
+    }
 }

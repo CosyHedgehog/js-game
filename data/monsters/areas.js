@@ -39,6 +39,12 @@ const AREA_CONFIG = [
                 monsters: ['hill_giant_grunt', 'moss_giant', 'giant_gatekeeper'],
                 miniBoss: 'cyclops_stone_thrower'
             },
+            'twisted_forest': {
+                name: "Twisted Forest",
+                tooltip: "A dense forest where the trees have become sentient and twisted.",
+                monsters: ['Ent', 'twisted_tree', 'ent_guardian'],
+                miniBoss: 'ent'
+            }
         }
     },
     {
