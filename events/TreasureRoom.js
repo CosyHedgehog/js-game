@@ -1,6 +1,6 @@
 class TreasureRoom {
     // --- Configuration ---
-    TOOL_BONUS_CHANCE = 0.30; // 20% bonus from Thief's Tools
+    TOOL_BONUS_CHANCE = 0.40; // 20% bonus from Thief's Tools
     // --- End Configuration ---
 
     constructor(game, ui) {
@@ -23,7 +23,7 @@ class TreasureRoom {
             name: 'Rusty Chest',
             description: 'Looks old, might be trapped. Likely contains leather and wood.',
             isTrap: true,
-            disarmChance: 0.8, // Base chance
+            disarmChance: 0.6, // Base chance
             damage: 3, // Fixed damage
             requiresTools: false,
             rewardType: 'items',
@@ -35,7 +35,7 @@ class TreasureRoom {
             name: 'Reinforced Chest',
             description: 'Sturdier than the rusty one. Contains leather, wood and iron.',
             isTrap: true,
-            disarmChance: 0.6,
+            disarmChance: 0.4,
             damage: 5, // Fixed damage
             requiresTools: false,
             rewardType: 'items',
@@ -47,7 +47,7 @@ class TreasureRoom {
             name: 'Iron Chest',
             description: 'Heavy iron, complex lock. Requires tools. Contains Iron.',
             isTrap: true,
-            disarmChance: 0.5,
+            disarmChance: 0.2,
             damage: 8, // Fixed damage
             requiresTools: true,
             rewardType: 'items',
@@ -59,7 +59,7 @@ class TreasureRoom {
             name: 'Steel Chest',
             description: 'Masterwork steel, deadly trap. Requires tools. Contains Steel.',
             isTrap: true,
-            disarmChance: 0.3,
+            disarmChance: 0.1,
             damage: 11, // Fixed damage
             requiresTools: true,
             rewardType: 'items',
@@ -83,13 +83,19 @@ class TreasureRoom {
 
         const hasTools = this.game.player.inventory.some(item => item && item.id === 'thief_tools');
 
+        // Select 3 random chests
+        const allChestKeys = Object.keys(this.CHESTS);
+        const shuffledKeys = allChestKeys.sort(() => 0.5 - Math.random());
+        const selectedKeys = shuffledKeys.slice(0, 3);
+        const selectedChests = selectedKeys.map(key => this.CHESTS[key]);
+
         const mainContainerHTML = `
             <div class="treasure-main-container">
                 <div class="treasure-icon">🗝️</div> 
                 <h3>Treasure Room</h3>
                 <p class="treasure-rating-explanation">*Disarm: Success Chance / Failure Damage. Tools required for Iron/Steel.*</p>
                 <div class="treasure-choices">
-                ${Object.values(this.CHESTS).map(chest => {
+                ${selectedChests.map(chest => {
                     let isDisabled = false;
                     let disabledCardClass = '';
                     let buttonText = "Open";
@@ -131,6 +137,7 @@ class TreasureRoom {
                     `;
                 }).join('')}
                 </div>
+                <button id="treasure-room-leave-button" class="leave-button">Leave Room</button>
             </div>
         `;
 
@@ -148,11 +155,11 @@ class TreasureRoom {
             }
         });
 
-        // roomArea.querySelector('#treasure-room-leave-button').onclick = () => {
-        //     this.game.addLog("You decide to leave the remaining chests.");
-        //     this.ui.clearMainArea();
-        //     this.game.proceedToNextRound();
-        // };
+        roomArea.querySelector('#treasure-room-leave-button').onclick = () => {
+            this.game.addLog("You decide to leave the treasure room.");
+            this.ui.clearMainArea();
+            this.game.proceedToNextRound();
+        };
     }
 
     handleChestInteraction(key) {

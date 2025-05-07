@@ -84,8 +84,8 @@ class Game {
     ];
 
     start() {
-        // this.devMode();
-        this.normalMode();
+        this.devMode();
+        // this.normalMode();
         this.lastGlobalTickTime = Date.now();
         if (this.globalTickIntervalId) clearInterval(this.globalTickIntervalId);
         this.globalTickIntervalId = setInterval(() => this.gameTick(), this.globalTickRate);
@@ -118,29 +118,13 @@ class Game {
         this.player.baseAttack = 2;
         this.player.baseDefense = 2;
 
-        // this.player.addItem(this.createItem('wooden_shield'));
-        this.player.addItem(this.createItem('iron_hammer'));
-        this.player.equipItem(0);
-        this.player.addItem(this.createItem('iron_helm'));
-        this.player.addItem(this.createItem('iron_armor'));
-        this.player.equipItem(1);
-        this.player.equipItem(2);
 
-        // this.player.equipItem(1);
-        this.player.addItem(this.createItem('fishing_rod'));
-        this.player.addItem(this.createItem('medium_fish'));
-        this.player.addItem(this.createItem('medium_fish'));
-        this.player.addItem(this.createItem('medium_fish'));
-
-        this.player.addItem(this.createItem('bread'));
-        this.player.addItem(this.createItem('bread'));
-        this.player.addItem(this.createItem('bread'));
-        this.player.addItem(this.createItem('bread'));
-        
-        this.player.addItem(this.createItem('attack_potion'));
-        this.player.addItem(this.createItem('defense_potion'));
-        this.player.addItem(this.createItem('speed_potion'));
-
+        // this.includeRings();
+        this.includeWeapons();
+        // this.includeArmor();
+        // this.includePotions();
+        // this.includeFood();
+        // this.includeToots();
 
         this.ui.gameScreen?.classList.remove('hidden');
 
@@ -149,6 +133,80 @@ class Game {
         this.ui.renderAll();
         this.addLog("Game started with your chosen equipment.");
 
+    }
+
+    includeToots() {
+        this.player.addItem(this.createItem('fishing_rod'));
+        this.player.addItem(this.createItem('thief_tools'));
+        this.player.addItem(this.createItem('blacksmith_hammer'));
+    }
+
+    includeFood() {
+        this.player.addItem(this.createItem('small_fish'));
+        this.player.addItem(this.createItem('medium_fish'));
+        this.player.addItem(this.createItem('large_fish'));
+        this.player.addItem(this.createItem('cooked_meat'));
+        this.player.addItem(this.createItem('bread'));
+    }
+
+    includeRings() {
+        this.player.addItem(this.createItem('ring_of_strength'));
+        this.player.addItem(this.createItem('ring_of_vitality'));
+        this.player.addItem(this.createItem('ring_of_protection'));
+        this.player.addItem(this.createItem('ring_of_swiftness'));
+        this.player.addItem(this.createItem('ring_of_might'));
+        this.player.addItem(this.createItem('ring_of_fortitude'));
+        this.player.addItem(this.createItem('ring_of_warding'));
+        this.player.addItem(this.createItem('ring_of_ferocity'));
+    }
+
+    includeWeapons() {
+        this.player.addItem(this.createItem('wooden_dagger'));
+        this.player.addItem(this.createItem('iron_dagger'));
+        this.player.addItem(this.createItem('steel_dagger'));
+
+        this.player.addItem(this.createItem('wooden_sword'));
+        this.player.addItem(this.createItem('iron_sword'));
+        this.player.addItem(this.createItem('steel_sword'));
+
+        this.player.addItem(this.createItem('wooden_hammer'));
+        this.player.addItem(this.createItem('iron_hammer'));
+        this.player.addItem(this.createItem('steel_hammer'));
+    }
+
+    includeArmor() {
+        this.player.addItem(this.createItem('wooden_shield'));
+        this.player.addItem(this.createItem('iron_shield'));
+        this.player.addItem(this.createItem('steel_shield'));
+
+        this.player.addItem(this.createItem('leather_helm'));
+        this.player.addItem(this.createItem('iron_helm'));
+        this.player.addItem(this.createItem('steel_helm'));
+
+        this.player.addItem(this.createItem('leather_armor'));
+        this.player.addItem(this.createItem('iron_armor'));
+        this.player.addItem(this.createItem('steel_armor'));
+
+        this.player.addItem(this.createItem('leather_legs'));
+        this.player.addItem(this.createItem('iron_legs'));
+        this.player.addItem(this.createItem('steel_legs'));
+    }
+
+    includePotions() {
+        this.player.addItem(this.createItem('health_potion'));
+        this.player.addItem(this.createItem('greater_health_potion'));
+
+        this.player.addItem(this.createItem('restoration_potion'));
+        this.player.addItem(this.createItem('greater_restoration_potion'));
+
+        this.player.addItem(this.createItem('attack_potion'));
+        this.player.addItem(this.createItem('greater_attack_potion'));
+
+        this.player.addItem(this.createItem('defense_potion'));
+        this.player.addItem(this.createItem('greater_defense_potion'));
+
+        this.player.addItem(this.createItem('speed_potion'));
+        this.player.addItem(this.createItem('greater_speed_potion'));
     }
 
     addLog(message) {

@@ -153,11 +153,23 @@ class Alchemist {
                      buttonText = item.isFree ? 'Take' : 'Buy';
                  }
 
+                 let itemDisplay = '';
+                 if (window.itemSprites && window.itemSprites[item.name]) {
+                    let spriteSpecificClass = 'potion-svg'; // Alchemist primarily sells potions
+                    // Could add more checks if alchemist might sell other types with sprites
+                    itemDisplay = `<div class="sprite-container shop-item-sprite-container"><div class="${spriteSpecificClass}">${window.itemSprites[item.name]}</div></div>`;
+                 } else {
+                    itemDisplay = `<div class="shop-item-name-text">${item.name}</div>`;
+                 }
+
                  return `
                          <div class="shop-item ${isBought ? 'item-bought' : ''} ${item.isFree ? 'free-item' : ''}" data-item-id="${item.id}">
-                             <div class="shop-item-info">
-                                 <span class="shop-item-name">${item.name}${item.isFree ? ' ✨' : ''}</span>
-                                 <span class="shop-item-price">${priceText}</span>
+                             <div class="shop-item-main-content">
+                                 ${itemDisplay}
+                                 <div class="shop-item-details">
+                                     <span class="shop-item-name">${item.name}${item.isFree ? ' ✨' : ''}</span>
+                                     <span class="shop-item-price">${priceText}</span>
+                                 </div>
                              </div>
                              <button class="shop-item-button ${item.isFree ? 'free-button' : ''}" data-index="${index}" ${isBought || !canAfford ? 'disabled' : ''}>
                                  ${buttonText}

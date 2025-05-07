@@ -180,6 +180,17 @@
     box-sizing: border-box;
 }
 
+/* Add specific padding for sprite container within inventory slots to accommodate chips */
+.inventory-slot .sprite-container {
+    padding-top: 10px; /* Adjust this value as needed to clear chips */
+    /* Ensure it still fills the available space after padding */
+    width: 100%; 
+    height: calc(100% - 30px); /* Adjust height to account for padding-top */ 
+    /* Remove fixed dimensions from generic .sprite-container if they were being inherited */
+    /* width: auto; */ 
+    /* height: auto; */
+}
+
 .inventory-slot.slot-empty {
     border-style: dashed;
     color: #555;
@@ -294,13 +305,14 @@
 }
 
 .inventory-slot .potion-action-chip {
+    background-color: #883d8f; /* Purple for potions */
+    color: #fff;
+    /* Inherit positioning from the next block */
     position: absolute;
     top: 0;
     left: 50%;
     transform: translateX(-50%);
     width: 80%;
-    background-color: #6a4a7a;
-    color: #e0d0e8;
     font-size: 0.7em;
     font-weight: bold;
     padding: 1px 8px;
@@ -309,6 +321,41 @@
     z-index: 2;
     box-shadow: 0 1px 2px rgba(0,0,0,0.4);
     text-transform: uppercase;
+}
+
+.inventory-slot .weapon-action-chip,
+.inventory-slot .armor-action-chip,
+.inventory-slot .ring-action-chip {
+    position: absolute;
+    top: 0; /* Changed from bottom: 2px */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%; /* Matched width */
+    padding: 1px 8px; /* Matched padding */
+    font-size: 0.7em; /* Matched font size */
+    font-weight: bold;
+    border-radius: 0 0 5px 5px; /* Matched border-radius */
+    text-align: center;
+    z-index: 2; /* Ensure it's above sprite but below tooltip */
+    box-shadow: 0 1px 2px rgba(0,0,0,0.4); /* Matched box-shadow */
+    text-transform: uppercase;
+    /* letter-spacing: 0.5px; */ /* Removed letter-spacing if not on others */
+    line-height: 1.1; /* Added matching line-height */
+}
+
+.inventory-slot .weapon-action-chip {
+    background-color: #6a5a5a; /* Greyish-red, lighter than armor chip */
+    color: #fff;
+}
+
+.inventory-slot .armor-action-chip {
+    background-color: #37474f; /* Dark blue-grey for armor */
+    color: #fff;
+}
+
+.inventory-slot .ring-action-chip {
+    background-color: #f9a825; /* Gold/Yellow for rings */
+    color: #000; /* Black text for better contrast on yellow */
 }
 
 #inventory-grid .inventory-slot.equipped {

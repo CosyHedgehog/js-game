@@ -29,11 +29,31 @@ class Shop {
             items.forEach((item, index) => {
                 const isBought = item.bought === true;
                 const canAfford = this.game.player.gold >= item.buyPrice;
+                
+                let itemDisplay = '';
+                if (window.itemSprites && window.itemSprites[item.name]) {
+                    // Add a class to identify the type of sprite for specific styling if needed
+                    let spriteSpecificClass = '';
+                    if (item.type === 'weapon') spriteSpecificClass = 'weapon-svg';
+                    else if (item.type === 'armor') spriteSpecificClass = 'armor-svg';
+                    else if (item.isPotion) spriteSpecificClass = 'potion-svg'; // Assuming potions have isPotion flag
+                    else if (item.type === 'ring') spriteSpecificClass = 'ring-svg';
+                    else if (item.type === 'tool') spriteSpecificClass = 'tool-svg';
+                    else if (item.useAction === 'Eat') spriteSpecificClass = 'food-svg'; // Assuming food has useAction 'Eat'
+
+                    itemDisplay = `<div class="sprite-container shop-item-sprite-container"><div class="${spriteSpecificClass}">${window.itemSprites[item.name]}</div></div>`;
+                } else {
+                    itemDisplay = `<div class="shop-item-name-text">${item.name}</div>`; // Fallback text if no sprite
+                }
+
                 shopContent += `
                     <div class="shop-item ${isBought ? 'item-bought' : ''}" data-index="${index}">
-                        <div class="shop-item-info">
-                            <div class="shop-item-name">${item.name}</div>
-                            <div class="shop-item-price">${item.buyPrice} gold</div>
+                        <div class="shop-item-main-content">
+                            ${itemDisplay}
+                            <div class="shop-item-details">
+                                <div class="shop-item-name">${item.name}</div>
+                                <div class="shop-item-price">${item.buyPrice} gold</div>
+                            </div>
                         </div>
                         <button class="shop-item-button" data-index="${index}" 
                                 ${isBought || !canAfford ? 'disabled' : ''}>

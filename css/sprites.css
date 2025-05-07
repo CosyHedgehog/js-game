@@ -1,0 +1,270 @@
+/* Custom styles for the sprite containers */
+.sprite-container {
+    width: 64px; /* Standard sprite size */
+    height: 64px; /* Standard sprite size */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* background-color: #2d3748; */ /* Dark background for visibility - remove if using in-game slots */
+    /* border: 2px solid #4a5568; */ /* Border to simulate slot - remove if using in-game slots */
+    border-radius: 8px; /* Rounded corners */
+    margin: 0; /* Adjusted from 8px, inventory slots will handle spacing */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    /* padding-top: 15px; */ /* REMOVED GLOBAL PADDING */
+}
+
+/* Base style for the SVG icons */
+.potion-svg {
+    width: 40px; /* Adjust size as needed */
+    height: 40px; /* Adjust size as needed */
+    stroke: #4a5568; /* Darker gray stroke */
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* Specific styles for different potion types */
+.health-potion-fill {
+    fill: #48bb78; /* Green for health */
+}
+.greater-health-potion-fill {
+    fill: #38a169; /* Darker green for greater health */
+}
+.attack-potion-fill {
+    fill: #e53e3e; /* Red for attack (same as health, maybe add a different internal shape) */
+}
+.greater-attack-potion-fill {
+    fill: #c53030; /* Darker red for greater attack */
+}
+.defense-potion-fill {
+    fill: #4299e1; /* Blue for defense */
+}
+.greater-defense-potion-fill {
+    fill: #3182ce; /* Darker blue for greater defense */
+}
+.speed-potion-fill {
+    fill: #ecc94b; /* Yellow for speed */
+}
+.greater-speed-potion-fill {
+    fill: #d69e2e; /* Darker yellow for greater speed */
+}
+.restoration-potion-fill {
+    fill: #48bb78; /* Green for restoration */
+}
+.greater-restoration-potion-fill {
+    fill: #38a169; /* Darker green for greater restoration */
+}
+/* Style for the liquid inside the bottle */
+.potion-liquid {
+    stroke: none;
+}
+
+/* Ensure sprites fit within inventory slots */
+.inventory-slot .sprite-container {
+    width: 100%;
+    height: 100%;
+}
+
+.inventory-slot .potion-svg {
+    width: 100%; /* Make SVG take full width of its container */
+    height: 100%; /* Make SVG take full height of its container */
+}
+
+/* Hide item name span if sprite exists, can be shown in tooltip */
+.inventory-slot.has-sprite .item-name-span {
+    display: none;
+}
+
+/* Base style for the food SVG icons */
+.food-svg {
+    width: 50px; /* Adjust size as needed */
+    height: 50px; /* Adjust size as needed */
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* Specific styles for different food types */
+.bread-svg {
+    fill: #d69e2e; /* Brownish-yellow for bread */
+    stroke: #b7791f; /* Darker brown stroke */
+}
+
+.meat-svg {
+    fill: #c53030; /* Reddish-brown for cooked meat */
+    stroke: #9b2c2c; /* Darker red stroke */
+}
+
+/* Fish colors will be applied directly to the SVG paths */
+
+/* Ensure food sprites fit within inventory slots */
+.inventory-slot .food-svg {
+    width: 100%; /* Make SVG take full width of its container */
+    height: 100%; /* Make SVG take full height of its container */
+}
+
+/* Base style for the tool SVG icons */
+.tool-svg {
+    width: 50px; /* Adjust size as needed */
+    height: 50px; /* Adjust size as needed */
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* Specific styles for different tool types */
+.fishing-rod-svg {
+    fill: none; /* No fill for the rod */
+    stroke: #a0aec0; /* Grayish color for the rod */
+}
+
+.hammer-svg {
+    fill: #718096; /* Gray for the hammer head */
+    stroke: #4a5568; /* Darker gray stroke */
+}
+
+.thief-tools-svg {
+    fill: #a0aec0; /* Grayish color for tools */
+    stroke: #718096; /* Darker gray stroke */
+}
+
+/* Ensure tool sprites fit within inventory slots */
+.inventory-slot .tool-svg {
+    width: 100%; /* Make SVG take full width of its container */
+    height: 100%; /* Make SVG take full height of its container */
+}
+
+/* Base style for the Ring SVG icons */
+.ring-svg {
+    width: 50px; /* Adjust size as needed */
+    height: 50px; /* Adjust size as needed */
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* Specific styles for different ring types */
+.ring-base {
+    fill: #c0c0c0; /* Silver color for the ring band */
+    stroke: #a0aec0; /* Darker silver stroke */
+}
+
+.ring-symbol {
+    stroke-width: 1;
+    fill: none; /* Symbols usually don't have fill unless specified in SVG */
+}
+
+.strength-symbol {
+    stroke: #e53e3e; /* Red for strength */
+}
+
+.vitality-symbol {
+    stroke: #48bb78; /* Green for vitality */
+}
+
+.protection-symbol {
+    stroke: #4299e1; /* Blue for protection */
+}
+
+.swiftness-symbol {
+    stroke: #ecc94b; /* Yellow for swiftness */
+}
+
+.might-symbol {
+    stroke: #c53030; /* Darker red for might */
+}
+
+.fortitude-symbol {
+    stroke: #3182ce; /* Darker blue for fortitude */
+}
+
+.warding-symbol {
+    stroke: #48bb78; /* Green for warding (combines health and defense) */
+}
+
+.ferocity-symbol {
+    stroke: #e53e3e; /* Red for ferocity (combines health and attack) */
+}
+
+/* Ensure ring sprites fit within inventory slots */
+.inventory-slot .ring-svg {
+    width: 100%; /* Make SVG take full width of its container */
+    height: 100%; /* Make SVG take full height of its container */
+}
+
+/* Base style for the Weapon SVG icons */
+.weapon-svg {
+    width: 50px; /* Adjust size as needed */
+    height: 50px; /* Adjust size as needed */
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* Specific styles for different weapon materials */
+.wooden-weapon {
+    fill: #b7791f; /* Brown for wood */
+    stroke: #8b4513; /* Darker brown stroke */
+}
+
+.iron-weapon {
+    fill: #718096; /* Gray for iron */
+    stroke: #4a5568; /* Darker gray stroke */
+}
+
+.steel-weapon {
+    fill: #cbd5e0; /* Lighter gray/silver for steel */
+    stroke: #718096; /* Medium gray stroke */
+}
+
+.weapon-blade {
+    fill: #e2e8f0; /* Lighter color for blades */
+    stroke: #a0aec0; /* Grayish stroke for blades */
+}
+
+.wooden-blade {
+    fill: #d69e2e; /* Lighter wood color for wooden blades */
+    stroke: #b7791f; /* Brown stroke for wooden blades */
+}
+
+/* Ensure weapon sprites fit within inventory slots */
+.inventory-slot .weapon-svg {
+    width: 100%; /* Make SVG take full width of its container */
+    height: 100%; /* Make SVG take full height of its container */
+}
+
+/* Base style for the Armor SVG icons */
+.armor-svg {
+    width: 50px; /* Adjust size as needed */
+    height: 50px; /* Adjust size as needed */
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* Specific styles for different armor materials (replaces -armor with -item) */
+.wooden-item { /* Was .wooden-armor */
+    fill: #b7791f; /* Brown for wood */
+    stroke: #8b4513; /* Darker brown stroke */
+}
+
+.iron-item { /* Was .iron-armor */
+    fill: #718096; /* Gray for iron */
+    stroke: #4a5568; /* Darker gray stroke */
+}
+
+.steel-item { /* Was .steel-armor */
+    fill: #cbd5e0; /* Lighter gray/silver for steel */
+    stroke: #718096; /* Medium gray stroke */
+}
+
+.leather-item { /* New class for leather items */
+    fill: #a0522d; /* Saddle brown for leather */
+    stroke: #8b4513; /* Darker brown stroke */
+}
+
+/* Ensure armor sprites fit within inventory slots */
+.inventory-slot .armor-svg {
+    width: 100%; /* Make SVG take full width of its container */
+    height: 100%; /* Make SVG take full height of its container */
+} 

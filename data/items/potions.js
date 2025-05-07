@@ -2,12 +2,12 @@ const POTIONS = {
     'health_potion': {
         id: 'health_potion', name: 'Health Potion', type: 'consumable', useAction: 'Drink', rarity: 'common',
         healAmount: 10, value: 6, isPotion: true,
-        description: 'A bubbling red potion.\nHeals 10 HP.\nNo combat delay.'
+        description: 'A bubbling green potion.\nHeals 10 HP.\nNo combat delay.'
     },
     'greater_health_potion': {
         id: 'greater_health_potion', name: 'Greater Health Potion', type: 'consumable', useAction: 'Drink', rarity: 'uncommon',
         healAmount: 20, value: 8, isPotion: true,
-        description: 'A large healing potion.\nHeals 20 HP.\nNo combat delay.'
+        description: 'A large healing green potion.\nHeals 20 HP.\nNo combat delay.'
     },
     'attack_potion': {
         id: 'attack_potion', name: 'Attack Potion', type: 'consumable', useAction: 'Drink', rarity: 'common',

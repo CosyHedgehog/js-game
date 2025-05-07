@@ -2,61 +2,99 @@ class EquipmentUI {
     constructor(ui) { this.ui = ui; }
 
     render() {
-        for (const slotName in this.ui.equipmentTextDisplay) {
-            const parentPElement = this.ui.equipmentTextDisplay[slotName];
-            if (!parentPElement) {
-                console.warn(`UI renderEquipment: Parent <p> element reference missing for ${slotName}`);
+        const mainContainer = document.getElementById('equipment-text-display');
+        if (!mainContainer) {
+            console.error("EquipmentUI Error: Main container #equipment-text-display not found.");
+            return;
+        }
+        mainContainer.innerHTML = ''; // Clear previous content
+        mainContainer.classList.add('equipment-panel-grid'); // Add a class for grid styling
+
+        const slotOrder = ['weapon', 'shield', 'body', 'legs', 'helm', 'ring']; // New order for 2x3 grid
+
+        for (const slotName of slotOrder) {
+            if (!this.ui.game.player.equipment.hasOwnProperty(slotName)) {
+                console.warn(`EquipmentUI: Player equipment data does not have slot: ${slotName}`);
                 continue;
             }
 
-            const labelSpan = parentPElement.querySelector('.equip-label');
-            const unequipButton = parentPElement.querySelector(`.unequip-button[data-slot="${slotName}"]`);
+            const equipmentSlotDiv = document.createElement('div');
+            equipmentSlotDiv.classList.add('equipment-panel-slot');
+            equipmentSlotDiv.dataset.slotName = slotName;
 
-            if (!labelSpan || !unequipButton) {
-                console.warn(`UI renderEquipment: Label or Unequip button not found within parent P for ${slotName}`);
-                continue;
-            }
+            const spriteHolderDiv = document.createElement('div');
+            spriteHolderDiv.classList.add('equipment-sprite-holder');
 
+            const labelDiv = document.createElement('div');
+            labelDiv.classList.add('equipment-slot-text-label');
+            labelDiv.textContent = slotName.charAt(0).toUpperCase() + slotName.slice(1);
+
+            const unequipButton = document.createElement('button');
+            unequipButton.classList.add('unequip-button'); // Keep existing class for base styles
+            unequipButton.dataset.slot = slotName;
+            unequipButton.textContent = '×';
+            unequipButton.classList.add('hidden'); // Hidden by default
+            
             const equippedItemIndex = this.ui.game.player.equipment[slotName];
-            let itemDescription = '';
-            let isEquipped = false;
+            let itemDescription = ''; // For tooltip
+            let isSlotDisabledBy2H = false;
 
-            parentPElement.onmouseenter = null;
-            parentPElement.onmouseleave = null;
+            // Check if this is the shield slot and if a 2H weapon is equipped
+            if (slotName === 'shield') {
+                const weaponIndex = this.ui.game.player.equipment['weapon'];
+                if (weaponIndex !== null && this.ui.game.player.inventory[weaponIndex]) {
+                    const currentWeapon = this.ui.game.player.inventory[weaponIndex];
+                    if (currentWeapon.hands === 2) {
+                        isSlotDisabledBy2H = true;
+                        equipmentSlotDiv.classList.add('slot-disabled-by-2h');
+                        spriteHolderDiv.classList.add('empty'); // Ensure it looks empty
+                        itemDescription = 'Shield slot disabled (2H Weapon)';
+                    }
+                }
+            }
 
-            if (equippedItemIndex !== null && this.ui.game.player.inventory[equippedItemIndex]) {
+            if (!isSlotDisabledBy2H && equippedItemIndex !== null && this.ui.game.player.inventory[equippedItemIndex]) {
                 const item = this.ui.game.player.inventory[equippedItemIndex];
-                const statsText = Object.entries(item.stats || {})
-                    .map(([stat, value]) => `${stat.charAt(0).toUpperCase() + stat.slice(1)}: ${value}`)
-                    .join('<br>');
-                itemDescription = `<b>${item.name}</b><br>${statsText}`;
-                isEquipped = true;
+                itemDescription = `<b>${item.name}</b>`;
+                if (item.stats) {
+                    const statsText = Object.entries(item.stats)
+                        .map(([stat, value]) => `${stat.charAt(0).toUpperCase() + stat.slice(1)}: ${value}`)
+                        .join('<br>');
+                    if (statsText) itemDescription += `<br>${statsText}`;
+                }
 
-                parentPElement.onmouseenter = (e) => this.ui.showTooltip(itemDescription, this.ui.equipTooltip, e);
-                parentPElement.onmouseleave = () => this.ui.hideTooltip(this.ui.equipTooltip);
-
+                if (window.itemSprites && window.itemSprites[item.name]) {
+                    let spriteSpecificClass = '';
+                    if (item.type === 'weapon') spriteSpecificClass = 'weapon-svg';
+                    else if (item.type === 'armor') spriteSpecificClass = 'armor-svg';
+                    else if (item.type === 'ring') spriteSpecificClass = 'ring-svg';
+                    
+                    spriteHolderDiv.innerHTML = `<div class="${spriteSpecificClass}">${window.itemSprites[item.name]}</div>`;
+                } else {
+                    spriteHolderDiv.textContent = item.name.substring(0, 3); // Fallback, e.g., 'Swd'
+                    spriteHolderDiv.classList.add('equipment-slot-text-fallback');
+                }
+                equipmentSlotDiv.classList.add('equipped');
                 unequipButton.classList.remove('hidden');
                 unequipButton.onclick = (e) => {
                     e.stopPropagation();
                     this.ui.game.handleUnequipItem(equippedItemIndex);
                     this.ui.hideTooltip(this.ui.equipTooltip);
                 };
-            } else {
-                unequipButton.classList.add('hidden');
-                unequipButton.onclick = null;
-
-                const defaultText = "Slot empty - equip an item!";
-                parentPElement.onmouseenter = (e) => this.ui.showTooltip(defaultText, this.ui.equipTooltip, e);
-                parentPElement.onmouseleave = () => this.ui.hideTooltip(this.ui.equipTooltip);
+            } else if (!isSlotDisabledBy2H) { // Only process as empty if not disabled by 2H
+                itemDescription = `${slotName.charAt(0).toUpperCase() + slotName.slice(1)}: Slot Empty`;
+                spriteHolderDiv.classList.add('empty'); 
+                // Optionally add placeholder text/icon via CSS or here
+                // spriteHolderDiv.textContent = '?'; 
             }
 
-            if (isEquipped) {
-                parentPElement.classList.add('equipped');
-                labelSpan.classList.add('equipped');
-            } else {
-                parentPElement.classList.remove('equipped');
-                labelSpan.classList.remove('equipped');
-            }
+            equipmentSlotDiv.onmouseenter = (e) => this.ui.showTooltip(itemDescription, this.ui.equipTooltip, e);
+            equipmentSlotDiv.onmouseleave = () => this.ui.hideTooltip(this.ui.equipTooltip);
+
+            equipmentSlotDiv.appendChild(spriteHolderDiv);
+            equipmentSlotDiv.appendChild(labelDiv);
+            equipmentSlotDiv.appendChild(unequipButton);
+            mainContainer.appendChild(equipmentSlotDiv);
         }
     }
 }

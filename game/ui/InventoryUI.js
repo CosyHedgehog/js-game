@@ -51,13 +51,25 @@ class InventoryUI {
             if (item) {
                 slot.classList.remove('slot-empty');
                 slot.classList.add('slot-filled');
-                const MAX_NAME_LENGTH = 18; let displayName = item.name;
-                if (item.name.length > MAX_NAME_LENGTH) {
-                    displayName = item.name.substring(0, MAX_NAME_LENGTH - 1) + '…';
+
+                // Attempt to add sprite
+                if (window.itemSprites && window.itemSprites[item.name]) {
+                    const spriteContainer = document.createElement('div');
+                    spriteContainer.classList.add('sprite-container');
+                    spriteContainer.innerHTML = window.itemSprites[item.name];
+                    slot.appendChild(spriteContainer);
+                    slot.classList.add('has-sprite');
+                } else {
+                    // Fallback to text if no sprite
+                    const MAX_NAME_LENGTH = 18; let displayName = item.name;
+                    if (item.name.length > MAX_NAME_LENGTH) {
+                        displayName = item.name.substring(0, MAX_NAME_LENGTH - 1) + '…';
+                    }
+                    const itemNameSpan = document.createElement('span');
+                    itemNameSpan.classList.add('item-name-span'); // Add class for potential hiding
+                    itemNameSpan.textContent = displayName;
+                    slot.appendChild(itemNameSpan);
                 }
-                const itemNameSpan = document.createElement('span');
-                itemNameSpan.textContent = displayName;
-                slot.appendChild(itemNameSpan);
 
                 const deleteBtn = document.createElement('button');
                 deleteBtn.classList.add('delete-item-button');
@@ -226,7 +238,7 @@ class InventoryUI {
                     slot.appendChild(chip);
                 } else {
                     slot.classList.remove('equipped');
-                    const existingChip = slot.querySelector('.equipped-slot-chip, .food-action-chip, .tool-action-chip, .potion-action-chip');
+                    const existingChip = slot.querySelector('.equipped-slot-chip, .food-action-chip, .tool-action-chip, .potion-action-chip, .weapon-action-chip, .armor-action-chip, .ring-action-chip');
                     if (existingChip) existingChip.remove();
 
                     if (item.type === 'consumable' && item.useAction === 'Eat') {
@@ -244,6 +256,21 @@ class InventoryUI {
                         potionChip.classList.add('potion-action-chip');
                         potionChip.textContent = 'Potion';
                         slot.appendChild(potionChip);
+                    } else if (item.type === 'weapon') {
+                        const weaponChip = document.createElement('span');
+                        weaponChip.classList.add('weapon-action-chip');
+                        weaponChip.textContent = 'Weapon';
+                        slot.appendChild(weaponChip);
+                    } else if (item.type === 'armor') {
+                        const armorChip = document.createElement('span');
+                        armorChip.classList.add('armor-action-chip');
+                        armorChip.textContent = 'Armor';
+                        slot.appendChild(armorChip);
+                    } else if (item.type === 'ring') {
+                        const ringChip = document.createElement('span');
+                        ringChip.classList.add('ring-action-chip');
+                        ringChip.textContent = 'Ring';
+                        slot.appendChild(ringChip);
                     }
                 }
 
