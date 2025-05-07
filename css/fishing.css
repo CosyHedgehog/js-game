@@ -9,6 +9,9 @@
     flex-direction: column;
     align-items: center;
     gap: 10px; /* Reduced gap */
+    width: 100%;  /* Fill parent width */
+    height: 100%; /* Fill parent height */
+    justify-content: center; /* Vertically center content */
 }
 
 .fishing-icon {

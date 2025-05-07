@@ -154,10 +154,10 @@ class Alchemist {
                  }
 
                  let itemDisplay = '';
-                 if (window.itemSprites && window.itemSprites[item.name]) {
+                 if (window.itemSprites && window.itemSprites[item.id]) {
                     let spriteSpecificClass = 'potion-svg'; // Alchemist primarily sells potions
                     // Could add more checks if alchemist might sell other types with sprites
-                    itemDisplay = `<div class="sprite-container shop-item-sprite-container"><div class="${spriteSpecificClass}">${window.itemSprites[item.name]}</div></div>`;
+                    itemDisplay = `<div class="sprite-container shop-item-sprite-container"><div class="${spriteSpecificClass}">${window.itemSprites[item.id]}</div></div>`;
                  } else {
                     itemDisplay = `<div class="shop-item-name-text">${item.name}</div>`;
                  }

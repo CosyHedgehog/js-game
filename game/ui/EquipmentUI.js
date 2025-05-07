@@ -63,24 +63,46 @@ class EquipmentUI {
                     if (statsText) itemDescription += `<br>${statsText}`;
                 }
 
-                if (window.itemSprites && window.itemSprites[item.name]) {
+                const spriteKey = item.baseId || item.id; // Prioritize baseId if it exists
+                const baseSpriteSVG = window.itemSprites && window.itemSprites[spriteKey];
+
+                if (baseSpriteSVG) {
+                    let finalSVG = baseSpriteSVG;
+                    if (item.isSharpened && window.spriteEffects && window.spriteEffects.sharpened) {
+                        finalSVG = finalSVG.replace("</svg>", window.spriteEffects.sharpened + "</svg>");
+                    }
+                    if (item.isHoned && window.spriteEffects && window.spriteEffects.honed) {
+                        finalSVG = finalSVG.replace("</svg>", window.spriteEffects.honed + "</svg>");
+                    }
+                    if (item.isReinforced && window.spriteEffects && window.spriteEffects.reinforced) {
+                        finalSVG = finalSVG.replace("</svg>", window.spriteEffects.reinforced + "</svg>");
+                    }
+                    if (item.isFortified && window.spriteEffects && window.spriteEffects.fortified) {
+                        finalSVG = finalSVG.replace("</svg>", window.spriteEffects.fortified + "</svg>");
+                    }
+                    if (item.isForged && window.spriteEffects && window.spriteEffects.forged) {
+                        finalSVG = finalSVG.replace("</svg>", window.spriteEffects.forged + "</svg>");
+                    }
+
                     let spriteSpecificClass = '';
                     if (item.type === 'weapon') spriteSpecificClass = 'weapon-svg';
                     else if (item.type === 'armor') spriteSpecificClass = 'armor-svg';
                     else if (item.type === 'ring') spriteSpecificClass = 'ring-svg';
                     
-                    spriteHolderDiv.innerHTML = `<div class="${spriteSpecificClass}">${window.itemSprites[item.name]}</div>`;
+                    spriteHolderDiv.innerHTML = `<div class="${spriteSpecificClass}">${finalSVG}</div>`;
                 } else {
                     spriteHolderDiv.textContent = item.name.substring(0, 3); // Fallback, e.g., 'Swd'
                     spriteHolderDiv.classList.add('equipment-slot-text-fallback');
                 }
                 equipmentSlotDiv.classList.add('equipped');
-                unequipButton.classList.remove('hidden');
+                // unequipButton.classList.remove('hidden'); // Commented out to hide
+                /* // Commented out to disable click handler
                 unequipButton.onclick = (e) => {
                     e.stopPropagation();
                     this.ui.game.handleUnequipItem(equippedItemIndex);
                     this.ui.hideTooltip(this.ui.equipTooltip);
                 };
+                */
             } else if (!isSlotDisabledBy2H) { // Only process as empty if not disabled by 2H
                 itemDescription = `${slotName.charAt(0).toUpperCase() + slotName.slice(1)}: Slot Empty`;
                 spriteHolderDiv.classList.add('empty'); 

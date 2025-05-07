@@ -84,8 +84,8 @@ class Game {
     ];
 
     start() {
-        this.devMode();
-        // this.normalMode();
+        // this.devMode();
+        this.normalMode();
         this.lastGlobalTickTime = Date.now();
         if (this.globalTickIntervalId) clearInterval(this.globalTickIntervalId);
         this.globalTickIntervalId = setInterval(() => this.gameTick(), this.globalTickRate);
@@ -108,7 +108,7 @@ class Game {
     }
 
     devMode() {
-        this.currentRound = 19;
+        this.currentRound = 14;
         // this.state = 'choosing';
         this.currentArea = "twisted_forest";
 
@@ -119,10 +119,16 @@ class Game {
         this.player.baseDefense = 2;
 
 
+        this.player.addItem(this.createItem('wooden_sword'));
+        this.player.addItem(this.createItem('wooden_sword'));
+        this.player.addItem(this.createItem('wooden_shield'));
+        this.player.addItem(this.createItem('wooden_shield'));
+
+
         // this.includeRings();
-        this.includeWeapons();
+        // this.includeWeapons();
         // this.includeArmor();
-        // this.includePotions();
+        this.includePotions();
         // this.includeFood();
         // this.includeToots();
 
@@ -946,7 +952,8 @@ class Game {
             return null;
         }
         const newItem = JSON.parse(JSON.stringify(template));
-        newItem.baseId = itemId; return newItem;
+        newItem.baseId = itemId; 
+        return newItem;
     }
 
     continueAfterAreaTransition() {

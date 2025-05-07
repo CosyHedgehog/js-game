@@ -31,7 +31,27 @@ class Shop {
                 const canAfford = this.game.player.gold >= item.buyPrice;
                 
                 let itemDisplay = '';
-                if (window.itemSprites && window.itemSprites[item.name]) {
+                const spriteKey = item.baseId || item.id; // Prioritize baseId if it exists
+                const baseSpriteSVG = window.itemSprites && window.itemSprites[spriteKey];
+
+                if (baseSpriteSVG) {
+                    let finalSVG = baseSpriteSVG;
+                    if (item.isSharpened && window.spriteEffects && window.spriteEffects.sharpened) {
+                        finalSVG = finalSVG.replace("</svg>", window.spriteEffects.sharpened + "</svg>");
+                    }
+                    if (item.isHoned && window.spriteEffects && window.spriteEffects.honed) {
+                        finalSVG = finalSVG.replace("</svg>", window.spriteEffects.honed + "</svg>");
+                    }
+                    if (item.isReinforced && window.spriteEffects && window.spriteEffects.reinforced) {
+                        finalSVG = finalSVG.replace("</svg>", window.spriteEffects.reinforced + "</svg>");
+                    }
+                    if (item.isFortified && window.spriteEffects && window.spriteEffects.fortified) {
+                        finalSVG = finalSVG.replace("</svg>", window.spriteEffects.fortified + "</svg>");
+                    }
+                    if (item.isForged && window.spriteEffects && window.spriteEffects.forged) {
+                        finalSVG = finalSVG.replace("</svg>", window.spriteEffects.forged + "</svg>");
+                    }
+
                     // Add a class to identify the type of sprite for specific styling if needed
                     let spriteSpecificClass = '';
                     if (item.type === 'weapon') spriteSpecificClass = 'weapon-svg';
@@ -41,7 +61,7 @@ class Shop {
                     else if (item.type === 'tool') spriteSpecificClass = 'tool-svg';
                     else if (item.useAction === 'Eat') spriteSpecificClass = 'food-svg'; // Assuming food has useAction 'Eat'
 
-                    itemDisplay = `<div class="sprite-container shop-item-sprite-container"><div class="${spriteSpecificClass}">${window.itemSprites[item.name]}</div></div>`;
+                    itemDisplay = `<div class="sprite-container shop-item-sprite-container"><div class="${spriteSpecificClass}">${finalSVG}</div></div>`;
                 } else {
                     itemDisplay = `<div class="shop-item-name-text">${item.name}</div>`; // Fallback text if no sprite
                 }

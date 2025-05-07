@@ -59,13 +59,23 @@ class Fishing {
 
         const hasFishingRod = this.game.player.inventory.some(item => item && item.id === 'fishing_rod');
 
+        // --- Select Fishing Areas ---
+        const shorelineArea = { key: 'shoreline', ...this.FISHING_AREAS['shoreline'] }; // Ensure key is included
+        const otherAreaKeys = Object.keys(this.FISHING_AREAS).filter(key => key !== 'shoreline');
+        const shuffledOtherKeys = otherAreaKeys.sort(() => 0.5 - Math.random());
+        const selectedOtherKeys = shuffledOtherKeys.slice(0, 2);
+        const selectedOtherAreas = selectedOtherKeys.map(key => ({ key: key, ...this.FISHING_AREAS[key] }));
+        const areasToShow = [shorelineArea, ...selectedOtherAreas];
+        // --- End Select Fishing Areas ---
+
         const mainContainerHTML = `
             <div class="fishing-main-container">
                 <div class="fishing-icon">🎣</div> 
                 <h3>Choose Fishing Spot</h3>
                 <p class="fishing-rating-explanation">Ratings: Fish Quantity / Treasure Chance (Low/Med/High). Rod required for Med/High.</p>
                 <div class="fishing-choices">
-                ${Object.entries(this.FISHING_AREAS).map(([key, area]) => {
+                ${areasToShow.map(area => { // Iterate over areasToShow
+            const key = area.key; // Get key from the area object
             const needsRod = area.requiresRod === true;
             const isDisabled = needsRod && !hasFishingRod ? 'disabled' : '';
             const disabledCardClass = isDisabled ? 'disabled' : ''; // Class for the card

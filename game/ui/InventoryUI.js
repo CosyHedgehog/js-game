@@ -53,10 +53,31 @@ class InventoryUI {
                 slot.classList.add('slot-filled');
 
                 // Attempt to add sprite
-                if (window.itemSprites && window.itemSprites[item.name]) {
+                let spriteHTML = '';
+                const spriteKey = item.baseId || item.id; // Prioritize baseId if it exists
+                const baseSpriteSVG = window.itemSprites && window.itemSprites[spriteKey];
+
+                if (baseSpriteSVG) {
+                    let finalSVG = baseSpriteSVG;
+                    if (item.isSharpened && window.spriteEffects && window.spriteEffects.sharpened) {
+                        finalSVG = finalSVG.replace("</svg>", window.spriteEffects.sharpened + "</svg>");
+                    }
+                    if (item.isHoned && window.spriteEffects && window.spriteEffects.honed) {
+                        finalSVG = finalSVG.replace("</svg>", window.spriteEffects.honed + "</svg>");
+                    }
+                    if (item.isReinforced && window.spriteEffects && window.spriteEffects.reinforced) {
+                        finalSVG = finalSVG.replace("</svg>", window.spriteEffects.reinforced + "</svg>");
+                    }
+                    if (item.isFortified && window.spriteEffects && window.spriteEffects.fortified) {
+                        finalSVG = finalSVG.replace("</svg>", window.spriteEffects.fortified + "</svg>");
+                    }
+                    if (item.isForged && window.spriteEffects && window.spriteEffects.forged) {
+                        finalSVG = finalSVG.replace("</svg>", window.spriteEffects.forged + "</svg>");
+                    }
+                    spriteHTML = finalSVG;
                     const spriteContainer = document.createElement('div');
                     spriteContainer.classList.add('sprite-container');
-                    spriteContainer.innerHTML = window.itemSprites[item.name];
+                    spriteContainer.innerHTML = spriteHTML;
                     slot.appendChild(spriteContainer);
                     slot.classList.add('has-sprite');
                 } else {
