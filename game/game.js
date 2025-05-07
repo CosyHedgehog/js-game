@@ -84,6 +84,7 @@ class Game {
     ];
 
     start() {
+        
         // this.devMode();
         this.normalMode();
         this.lastGlobalTickTime = Date.now();
