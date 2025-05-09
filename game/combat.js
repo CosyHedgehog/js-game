@@ -21,7 +21,8 @@ class Combat {
             slimeAttackTimer: enemy.hasSlimeAttack ? enemy.slimeInterval : null,
             currentForm: enemy.initialForm || null,
             formSwitchTimer: enemy.hasFormSwitching ? enemy.formSwitchInterval : null,
-            regenerationTickCooldown: enemy.hasRegeneration ? 1 : null,
+            regenerationTickCooldown: enemy.hasRegeneration ? enemy.regenerationInterval ? 1 : null : null,
+            regenerationTickInterval: enemy.hasRegeneration ? enemy.regenerationInterval : null,
         };
         this.game = game;
         this.ui = ui;
@@ -238,7 +239,7 @@ class Combat {
                 // Update health bar only when heal happens
                 this.ui.updateCombatantHealth('enemy', this.enemy.health, this.enemy.maxHealth, actualHeal, 0, true);
                 
-                this.enemy.regenerationTickCooldown = 1; // Reset cooldown to 1 second
+                this.enemy.regenerationTickCooldown = this.enemy.regenerationTickInterval;
             }
         }
         // --- End Ent Regeneration ---

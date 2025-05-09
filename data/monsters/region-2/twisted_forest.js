@@ -41,12 +41,13 @@ const TWISTED_FOREST_MONSTER_DATA = {
         formSwitchInterval: 15,
         initialForm: 'thorns',
         hasThorns: true,
-        thornsDamage: 2,
+        thornsDamage: 1,
         hasRegeneration: true,
         regenerationAmount: 1,
+        regenerationInterval: 3,
         mechanicTooltips: {
-            thorns: "Thorns: Reflects 2 damage per attack.",
-            regenerate: "Regenerating: Heals 1 health per second."
+            thorns: "Thorns: Reflects 1 damage per attack.",
+            regenerate: "Regenerating: Heals 1 health every 3 seconds."
         },
         lootTable: [
             { itemTier: 'commonFood', chance: 0.50 },
@@ -54,7 +55,6 @@ const TWISTED_FOREST_MONSTER_DATA = {
             { itemTier: 'commonItem', chance: 0.10 },
             { itemTier: 'uncommonItem', chance: 0.30 },
             { itemTier: 'rareItem', chance: 0.60 },
-
         ]
     },
 }; 
