@@ -272,9 +272,131 @@ html {
 }
 
 #main-area::-webkit-scrollbar-thumb:hover {
-    background: #666;
+    background: #888;
 }
 
 #combat-area:not(.hidden) {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
     animation: combatFadeIn 0.3s ease-out;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+    #game-container {
+        min-width: 100%;
+    }
+
+    #game-body {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        padding: 5px;
+    }
+
+    #main-area {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        max-height: none;
+        order: 2;
+    }
+
+    #main-content {
+        max-height: none;
+    }
+
+    #left-column {
+        width: 100%;
+        max-width: 500px;
+        order: 1;
+        max-height: none;
+        overflow-y: visible;
+    }
+
+    #right-column {
+        width: 100%;
+        max-width: 500px;
+        order: 3;
+        max-height: none;
+    }
+
+    #output-log-area {
+        height: 80%;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+}
+
+@media (max-width: 700px) {
+    #left-column, #right-column {
+        max-width: 100%;
+    }
+
+    #player-stats-area {
+        gap: 10px;
+    }
+
+    #main-area {
+        /* Potentially reduce padding/margins further if needed */
+    }
+
+    /* Reduce font sizes for very small screens if necessary */
+    /*
+    body {
+        font-size: 14px;
+    }
+    */
+}
+
+/* Landscape specific adjustments if needed - can be combined with max-width */
+@media (orientation: landscape) and (max-height: 450px) {
+    #game-body {
+        flex-direction: row;
+        align-items: stretch;
+    }
+
+    #main-area {
+        height: calc(100vh - 40px);
+        max-height: calc(100vh - 40px);
+        order: 0;
+    }
+
+    #main-content {
+        max-height: calc(100vh - 40px);
+    }
+
+    #left-column, #right-column {
+        order: 0;
+        max-height: calc(100vh - 20px);
+        overflow-y: auto;
+    }
+
+    #left-column {
+        width: 180px;
+    }
+    #right-column {
+        width: 220px;
+    }
+
+    #game-container {
+        min-width: 0;
+    }
+
+    @media (max-width: 700px) and (orientation: landscape) {
+        #game-body {
+            flex-direction: column;
+            align-items: center;
+        }
+        #main-area, #left-column, #right-column {
+            width: 100%;
+            max-width: 100%;
+            order: 0;
+            height: auto;
+            max-height: none;
+        }
+    }
 }
